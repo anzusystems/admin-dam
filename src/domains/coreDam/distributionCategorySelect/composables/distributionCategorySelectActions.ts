@@ -1,5 +1,5 @@
 import {
-  handleRecordLoadError,
+  defineRecordLoader,
   isAnzuApiValidationError,
   isUndefined,
   renumberPositions,
@@ -60,23 +60,14 @@ export const useDistributionCategorySelectDetailActions = () => {
   const distributionCategorySelectOneStore = useDistributionCategorySelectOneStore()
   const { distributionCategorySelect } = storeToRefs(distributionCategorySelectOneStore)
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
-      const distributionCategorySelect = await fetchDistributionCategorySelect({
-        urlParams: { id },
-        signal: options.signal,
-      })
-      distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+    const distributionCategorySelect = await fetchDistributionCategorySelect({
+      urlParams: { id },
+      signal,
+    })
+    distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
+  })
 
   return {
     distributionCategorySelect,
@@ -92,22 +83,14 @@ export const useDistributionCategorySelectEditActions = () => {
   const distributionCategorySelectOneStore = useDistributionCategorySelectOneStore()
   const { distributionCategorySelect } = storeToRefs(distributionCategorySelectOneStore)
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
-      const distributionCategorySelect = await fetchDistributionCategorySelect({
-        urlParams: { id },
-        signal: options.signal,
-      })
-      distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+    const distributionCategorySelect = await fetchDistributionCategorySelect({
+      urlParams: { id },
+      signal,
+    })
+    distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
+  })
 
   const onUpdate = async (
     close = false,

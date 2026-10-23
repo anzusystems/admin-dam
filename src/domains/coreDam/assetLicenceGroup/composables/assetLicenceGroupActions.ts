@@ -1,5 +1,5 @@
 import type { DamAssetLicenceGroup, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -61,23 +61,14 @@ export const useAssetLicenceGroupDetailActions = () => {
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
   const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
-  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const res = await fetchAssetLicenceGroup({ urlParams: { id }, signal: options.signal })
-      addToCachedAssetLicences(res.licences)
-      addToCachedExtSystems(res.extSystem)
-      assetLicenceGroup.value = res
-      fetchCachedAssetLicences()
-      fetchCachedExtSystems()
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const res = await fetchAssetLicenceGroup({ urlParams: { id }, signal })
+    addToCachedAssetLicences(res.licences)
+    addToCachedExtSystems(res.extSystem)
+    assetLicenceGroup.value = res
+    fetchCachedAssetLicences()
+    fetchCachedExtSystems()
+  })
 
   return {
     assetLicenceGroup,
@@ -95,17 +86,9 @@ export const useAssetLicenceGroupEditActions = () => {
   const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
   const { execute: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
 
-  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      assetLicenceGroup.value = await fetchAssetLicenceGroup({ urlParams: { id }, signal: options.signal })
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    assetLicenceGroup.value = await fetchAssetLicenceGroup({ urlParams: { id }, signal })
+  })
 
   const onUpdate = async (close = false) => {
     try {

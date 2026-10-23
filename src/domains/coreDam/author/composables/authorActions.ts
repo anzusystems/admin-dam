@@ -8,7 +8,7 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   SortOrder,
-  handleRecordLoadError,
+  defineRecordLoader,
   syncUserAndTimeTracking,
   useAlerts,
   usePageNavigation,
@@ -79,28 +79,19 @@ export const useAuthorDetailActions = () => {
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { execute: fetchAuthor } = useFetchAuthor()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const author = await fetchAuthor({ urlParams: { id }, signal: options.signal })
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const author = await fetchAuthor({ urlParams: { id }, signal })
 
-      author.currentAuthors.forEach((item) => {
-        addToCachedAuthors(item)
-      })
-      author.childAuthors.forEach((item) => {
-        addToCachedAuthors(item)
-      })
-      fetchCachedAuthors()
+    author.currentAuthors.forEach((item) => {
+      addToCachedAuthors(item)
+    })
+    author.childAuthors.forEach((item) => {
+      addToCachedAuthors(item)
+    })
+    fetchCachedAuthors()
 
-      authorOneStore.setAuthor(author)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+    authorOneStore.setAuthor(author)
+  })
 
   return {
     author,
@@ -119,25 +110,17 @@ export const useAuthorEditActions = () => {
   const { execute: fetchAuthor } = useFetchAuthor()
   const { execute: updateAuthor } = useUpdateAuthor()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const author = await fetchAuthor({ urlParams: { id }, signal: options.signal })
-      author.currentAuthors.forEach((item) => {
-        addToCachedAuthors(item)
-      })
-      author.childAuthors.forEach((item) => {
-        addToCachedAuthors(item)
-      })
-      fetchCachedAuthors()
-      authorOneStore.setAuthor(author)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const author = await fetchAuthor({ urlParams: { id }, signal })
+    author.currentAuthors.forEach((item) => {
+      addToCachedAuthors(item)
+    })
+    author.childAuthors.forEach((item) => {
+      addToCachedAuthors(item)
+    })
+    fetchCachedAuthors()
+    authorOneStore.setAuthor(author)
+  })
 
   const onUpdate = async (close = false) => {
     try {

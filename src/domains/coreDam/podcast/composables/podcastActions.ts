@@ -7,7 +7,7 @@ import type {
   ValueObjectOption,
 } from '@anzusystems/common-admin'
 import {
-  handleRecordLoadError,
+  defineRecordLoader,
   isUndefined,
   renumberPositions,
   useAlerts,
@@ -68,19 +68,10 @@ export const usePodcastDetailActions = () => {
   const { podcast } = storeToRefs(podcastOneStore)
   const { execute: fetchPodcast } = useFetchPodcast()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const podcast = await fetchPodcast({ urlParams: { id }, signal: options.signal })
-      podcastOneStore.setPodcast(podcast)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const podcast = await fetchPodcast({ urlParams: { id }, signal })
+    podcastOneStore.setPodcast(podcast)
+  })
 
   return {
     detailLoading,
@@ -98,18 +89,10 @@ export const usePodcastEditActions = () => {
   const { execute: fetchPodcast } = useFetchPodcast()
   const { execute: updatePodcast } = useUpdatePodcast()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const podcast = await fetchPodcast({ urlParams: { id }, signal: options.signal })
-      podcastOneStore.setPodcast(podcast)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const podcast = await fetchPodcast({ urlParams: { id }, signal })
+    podcastOneStore.setPodcast(podcast)
+  })
 
   const onUpdate = async (close = false, onSuccess: ((podcast: Podcast) => void) | undefined = undefined) => {
     try {

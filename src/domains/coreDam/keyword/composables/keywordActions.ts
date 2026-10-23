@@ -8,7 +8,7 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   SortOrder,
-  handleRecordLoadError,
+  defineRecordLoader,
   syncUserAndTimeTracking,
   useAlerts,
   usePageNavigation,
@@ -75,20 +75,11 @@ export const useKeywordDetailActions = () => {
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchKeyword } = useFetchKeyword()
-      const keyword = await fetchKeyword({ urlParams: { id }, signal: options.signal })
-      keywordOneStore.setKeyword(keyword)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchKeyword } = useFetchKeyword()
+    const keyword = await fetchKeyword({ urlParams: { id }, signal })
+    keywordOneStore.setKeyword(keyword)
+  })
 
   return {
     detailLoading,
@@ -104,19 +95,11 @@ export const useKeywordEditActions = () => {
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchKeyword } = useFetchKeyword()
-      const keyword = await fetchKeyword({ urlParams: { id }, signal: options.signal })
-      keywordOneStore.setKeyword(keyword)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchKeyword } = useFetchKeyword()
+    const keyword = await fetchKeyword({ urlParams: { id }, signal })
+    keywordOneStore.setKeyword(keyword)
+  })
 
   const onUpdate = async (close = false) => {
     try {

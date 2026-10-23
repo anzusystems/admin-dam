@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -76,24 +76,15 @@ export const useAuthorCleanPhraseDetailActions = () => {
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
   const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
-  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal: options.signal })
-      authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
-      if (authorCleanPhrase.authorReplacement) {
-        addToCachedAuthors(authorCleanPhrase.authorReplacement)
-      }
-      fetchCachedAuthors()
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
+  const fetchData = defineRecordLoader(detailLoading, async (id: IntegerId, signal) => {
+    const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+    const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal })
+    authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+    if (authorCleanPhrase.authorReplacement) {
+      addToCachedAuthors(authorCleanPhrase.authorReplacement)
     }
-  }
+    fetchCachedAuthors()
+  })
 
   return {
     authorCleanPhrase,
@@ -109,19 +100,11 @@ export const useAuthorCleanPhraseEditActions = () => {
   const authorCleanPhraseOneStore = useAuthorCleanPhraseOneStore()
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
 
-  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal: options.signal })
-      authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: IntegerId, signal) => {
+    const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+    const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal })
+    authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+  })
 
   const onUpdate = async (close = false) => {
     try {

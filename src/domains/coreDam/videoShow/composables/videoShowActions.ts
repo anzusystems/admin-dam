@@ -1,5 +1,5 @@
 import type { FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
-import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -55,19 +55,10 @@ export const useVideoShowDetailActions = () => {
   const { videoShow } = storeToRefs(videoShowOneStore)
   const { execute: fetchVideoShow } = useFetchVideoShow()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const videoShow = await fetchVideoShow({ urlParams: { id }, signal: options.signal })
-      videoShowOneStore.setVideoShow(videoShow)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const videoShow = await fetchVideoShow({ urlParams: { id }, signal })
+    videoShowOneStore.setVideoShow(videoShow)
+  })
 
   return {
     detailLoading,
@@ -85,18 +76,10 @@ export const useVideoShowEditActions = () => {
   const { execute: fetchVideoShow } = useFetchVideoShow()
   const { execute: updateVideoShow } = useUpdateVideoShow()
 
-  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const videoShow = await fetchVideoShow({ urlParams: { id }, signal: options.signal })
-      videoShowOneStore.setVideoShow(videoShow)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const videoShow = await fetchVideoShow({ urlParams: { id }, signal })
+    videoShowOneStore.setVideoShow(videoShow)
+  })
 
   const onUpdate = async (close = false) => {
     try {

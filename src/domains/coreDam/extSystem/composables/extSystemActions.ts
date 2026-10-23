@@ -1,5 +1,5 @@
 import {
-  handleRecordLoadError,
+  defineRecordLoader,
   syncUserAndTimeTracking,
   useAlerts,
   useDamCachedUsers,
@@ -96,29 +96,20 @@ export const useExtSystemDetailActions = () => {
   const { extSystem } = storeToRefs(extSystemOneStore)
   const { execute: fetchExtSystem } = useFetchExtSystem()
 
-  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const extSystem = await fetchExtSystem({ urlParams: { id }, signal: options.signal })
-      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
-      fetchCachedUsers()
-      if (extSystem.ttsSettings.defaultVoiceFamilyId) {
-        addToCachedVoiceFamilies([extSystem.ttsSettings.defaultVoiceFamilyId])
-        fetchCachedVoiceFamilies()
-      }
-      if (extSystem.ttsSettings.autoKeywordId) {
-        addToCachedKeywords([extSystem.ttsSettings.autoKeywordId])
-        fetchCachedKeywords()
-      }
-      extSystemOneStore.extSystem = extSystem
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const extSystem = await fetchExtSystem({ urlParams: { id }, signal })
+    extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+    fetchCachedUsers()
+    if (extSystem.ttsSettings.defaultVoiceFamilyId) {
+      addToCachedVoiceFamilies([extSystem.ttsSettings.defaultVoiceFamilyId])
+      fetchCachedVoiceFamilies()
     }
-  }
+    if (extSystem.ttsSettings.autoKeywordId) {
+      addToCachedKeywords([extSystem.ttsSettings.autoKeywordId])
+      fetchCachedKeywords()
+    }
+    extSystemOneStore.extSystem = extSystem
+  })
 
   return {
     extSystem,
@@ -136,20 +127,12 @@ export const useExtSystemEditActions = () => {
   const { execute: fetchExtSystem } = useFetchExtSystem()
   const { execute: updateExtSystem } = useUpdateExtSystem()
 
-  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const extSystem = await fetchExtSystem({ urlParams: { id }, signal: options.signal })
-      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
-      fetchCachedUsers()
-      extSystemOneStore.extSystem = extSystem
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const extSystem = await fetchExtSystem({ urlParams: { id }, signal })
+    extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+    fetchCachedUsers()
+    extSystemOneStore.extSystem = extSystem
+  })
 
   const onUpdate = async (close = false) => {
     try {

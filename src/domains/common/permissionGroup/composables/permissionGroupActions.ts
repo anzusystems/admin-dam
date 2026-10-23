@@ -6,7 +6,7 @@ import type {
   PermissionGroup,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { handleRecordLoadError, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -52,23 +52,11 @@ export const usePermissionGroupActions = () => {
 
   const permissionGroupOneStore = usePermissionGroupOneStore()
   const { permissionGroup } = storeToRefs(permissionGroupOneStore)
-  const fetchPermissionGroup = async (
-    id: number,
-    options: { signal?: AbortSignal } = {}
-  ): Promise<boolean | undefined> => {
-    detailLoading.value = true
-    try {
-      const { execute } = useFetchPermissionGroup()
-      const permissionGroupRes = await execute({ urlParams: { id }, signal: options.signal })
-      permissionGroupOneStore.setPermissionGroup(permissionGroupRes)
-      return true
-    } catch (error) {
-      return handleRecordLoadError(error) ? false : undefined
-    } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
-      if (!options.signal?.aborted) detailLoading.value = false
-    }
-  }
+  const fetchPermissionGroup = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const { execute } = useFetchPermissionGroup()
+    const permissionGroupRes = await execute({ urlParams: { id }, signal })
+    permissionGroupOneStore.setPermissionGroup(permissionGroupRes)
+  })
 
   const { push } = usePageNavigation()
   const deletePermissionGroup = async (id: IntegerId) => {
