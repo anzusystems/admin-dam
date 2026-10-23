@@ -10,7 +10,7 @@ import {
   usePageNavigation,
   usePermissionGroupActions,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { ACL } from '@/domains/system/auth/auth'
@@ -55,15 +55,13 @@ const onCreate = async (close = false) => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-new' },
-    {
-      title: permissionGroup.value.title || t('breadcrumb.permissionGroup.create'),
-      routeName: '/(common)/permission-groups-new/new',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-new' },
+  {
+    title: permissionGroup.value.title || t('breadcrumb.permissionGroup.create'),
+    routeName: '/(common)/permission-groups-new/new',
+  },
+])
 
 onMounted(() => {
   resetPermissionGroupStore()

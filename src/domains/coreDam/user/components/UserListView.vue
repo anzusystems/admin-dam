@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import UserDatatable from '@/domains/coreDam/user/components/UserDatatable.vue'
@@ -13,9 +13,9 @@ const datatable = ref<InstanceType<typeof UserDatatable> | null>(null)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+])
 </script>
 
 <template>

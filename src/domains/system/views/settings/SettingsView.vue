@@ -16,7 +16,7 @@ import { SYSTEM_DAM } from '@/shared/systems'
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(computed(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }]))
+const breadcrumbs = defineBreadcrumbs(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }])
 
 const afterLanguageChange = async () => {
   window.location.reload()

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, ADamAuthorCreateButton, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
@@ -21,9 +21,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+])
 </script>
 
 <template>

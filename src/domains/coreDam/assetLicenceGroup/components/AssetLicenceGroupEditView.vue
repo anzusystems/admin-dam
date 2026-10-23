@@ -7,7 +7,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -30,15 +30,13 @@ const {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-groups' },
-    {
-      title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.edit'),
-      routeName: '/(coreDam)/asset-licence-groups/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-groups' },
+  {
+    title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.edit'),
+    routeName: '/(coreDam)/asset-licence-groups/[id]/edit',
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/asset-licence-groups',

@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -29,15 +29,13 @@ const {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
-    {
-      title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
-      routeName: '/(coreDam)/distribution-categories/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
+  {
+    title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
+    routeName: '/(coreDam)/distribution-categories/[id]/edit',
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/distribution-categories',

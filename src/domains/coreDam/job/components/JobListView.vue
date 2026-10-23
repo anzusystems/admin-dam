@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import JobCreateButton from '@/domains/coreDam/job/components/JobCreateButton.vue'
@@ -19,9 +19,7 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [{ title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' }])
 </script>
 
 <template>

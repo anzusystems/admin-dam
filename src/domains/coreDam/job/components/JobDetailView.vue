@@ -67,15 +67,13 @@ onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' },
-    {
-      title: t('breadcrumb.coreDam.job.detail'),
-      routeName: '/(coreDam)/jobs/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' },
+  {
+    title: t('breadcrumb.coreDam.job.detail'),
+    routeName: '/(coreDam)/jobs/[id]',
+  },
+])
 </script>
 
 <template>

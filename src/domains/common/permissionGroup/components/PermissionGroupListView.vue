@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import PermissionGroupCreateButton from '@/domains/common/permissionGroup/components/PermissionGroupCreateButton.vue'
@@ -20,9 +20,9 @@ const { listLoading } = usePermissionGroupActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
+])
 </script>
 
 <template>

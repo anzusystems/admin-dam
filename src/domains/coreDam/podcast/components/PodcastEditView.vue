@@ -8,7 +8,7 @@ import {
   useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -53,16 +53,14 @@ onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
-    {
-      title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.edit'),
-      routeName: '/(coreDam)/podcasts/[id]/edit',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
+  {
+    title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.edit'),
+    routeName: '/(coreDam)/podcasts/[id]/edit',
+    routeParams: { id },
+  },
+])
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import PublicExportCreateButton from '@/domains/coreDam/publicExport/components/PublicExportCreateButton.vue'
@@ -19,9 +19,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
+])
 </script>
 
 <template>

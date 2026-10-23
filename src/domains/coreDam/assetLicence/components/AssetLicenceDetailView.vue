@@ -7,7 +7,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -20,15 +20,13 @@ const { detailLoading, fetchData, resetStore, assetLicence } = useAssetLicenceDe
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licences' },
-    {
-      title: assetLicence.value.name || t('breadcrumb.coreDam.assetLicence.detail'),
-      routeName: '/(coreDam)/asset-licences/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licences' },
+  {
+    title: assetLicence.value.name || t('breadcrumb.coreDam.assetLicence.detail'),
+    routeName: '/(coreDam)/asset-licences/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

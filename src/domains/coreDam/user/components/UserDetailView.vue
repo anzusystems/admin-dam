@@ -7,7 +7,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -20,15 +20,13 @@ const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
-    {
-      title: `${t('breadcrumb.coreDam.user.detail')} #${id}`,
-      routeName: '/(coreDam)/users/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  {
+    title: `${t('breadcrumb.coreDam.user.detail')} #${id}`,
+    routeName: '/(coreDam)/users/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)

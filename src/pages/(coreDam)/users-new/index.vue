@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { AActionCreateButton, AAnzuUserDatatable, ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
 import type { MakeFilterOption } from '@anzusystems/common-admin'
-import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 
@@ -39,9 +38,9 @@ const filterFields = [
   { name: 'permissionGroups' as const, default: [], type: 'string', variant: 'custom' },
 ] satisfies readonly MakeFilterOption[]
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
+])
 </script>
 
 <template>

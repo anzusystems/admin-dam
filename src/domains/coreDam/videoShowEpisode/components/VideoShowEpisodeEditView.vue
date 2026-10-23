@@ -7,7 +7,7 @@ import {
   usePageNavigation,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -55,21 +55,19 @@ onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
-    {
-      title: t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-shows/[id]',
-      routeParams: { id: videoShowId },
-    },
-    {
-      title: videoShowEpisode.value.texts.title || t('breadcrumb.coreDam.videoShowEpisode.edit'),
-      routeName: '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
-      routeParams: { id: videoShowId, episodeId: id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+  {
+    title: t('breadcrumb.coreDam.videoShow.detail'),
+    routeName: '/(coreDam)/video-shows/[id]',
+    routeParams: { id: videoShowId },
+  },
+  {
+    title: videoShowEpisode.value.texts.title || t('breadcrumb.coreDam.videoShowEpisode.edit'),
+    routeName: '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+    routeParams: { id: videoShowId, episodeId: id },
+  },
+])
 </script>
 
 <template>

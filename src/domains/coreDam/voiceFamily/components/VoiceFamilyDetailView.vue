@@ -7,7 +7,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -27,16 +27,14 @@ const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.voiceFamily.list'), routeName: '/(coreDam)/voice-families' },
-    {
-      title: voiceFamily.value.displayName || t('breadcrumb.coreDam.voiceFamily.detail'),
-      routeName: '/(coreDam)/voice-families/[id]',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.voiceFamily.list'), routeName: '/(coreDam)/voice-families' },
+  {
+    title: voiceFamily.value.displayName || t('breadcrumb.coreDam.voiceFamily.detail'),
+    routeName: '/(coreDam)/voice-families/[id]',
+    routeParams: { id },
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/voice-families',

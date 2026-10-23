@@ -8,7 +8,7 @@ import {
   useRecordPage,
   useUnsavedChangesGuard,
 } from '@anzusystems/common-admin'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -48,18 +48,16 @@ const onSave = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    {
-      title: t('breadcrumb.coreDam.distributionCategorySelect.list'),
-      routeName: '/(coreDam)/distribution-category-selects',
-    },
-    {
-      title: distributionCategorySelect.value.id || t('breadcrumb.coreDam.distributionCategorySelect.edit'),
-      routeName: '/(coreDam)/distribution-category-selects/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  {
+    title: t('breadcrumb.coreDam.distributionCategorySelect.list'),
+    routeName: '/(coreDam)/distribution-category-selects',
+  },
+  {
+    title: distributionCategorySelect.value.id || t('breadcrumb.coreDam.distributionCategorySelect.edit'),
+    routeName: '/(coreDam)/distribution-category-selects/[id]/edit',
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/distribution-category-selects',

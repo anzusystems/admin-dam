@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -38,16 +38,14 @@ onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
-    {
-      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
-      routeName: '/(coreDam)/video-shows/[id]/edit',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+  {
+    title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
+    routeName: '/(coreDam)/video-shows/[id]/edit',
+    routeParams: { id },
+  },
+])
 </script>
 
 <template>

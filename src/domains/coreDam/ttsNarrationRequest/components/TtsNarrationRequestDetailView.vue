@@ -10,7 +10,7 @@ import {
   useRecordPage,
 } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -38,16 +38,14 @@ const ttsRequestId = (route.params as { id: DocId }).id
 const { detail, detailLoading, fetchDetail } = useTtsNarrationRequestDetailActions(() => ttsRequestId)
 const cancelDialog = ref(false)
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.ttsNarrationRequest.list'), routeName: '/(coreDam)/tts-narration-requests' },
-    {
-      title: detail.value?.id ?? t('breadcrumb.coreDam.ttsNarrationRequest.detail'),
-      routeName: '/(coreDam)/tts-narration-requests/[id]',
-      routeParams: { id: ttsRequestId },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.ttsNarrationRequest.list'), routeName: '/(coreDam)/tts-narration-requests' },
+  {
+    title: detail.value?.id ?? t('breadcrumb.coreDam.ttsNarrationRequest.detail'),
+    routeName: '/(coreDam)/tts-narration-requests/[id]',
+    routeParams: { id: ttsRequestId },
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/tts-narration-requests',

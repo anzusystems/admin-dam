@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -22,15 +22,13 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
-    {
-      title: author.value.name || t('breadcrumb.coreDam.author.edit'),
-      routeName: '/(coreDam)/authors/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+  {
+    title: author.value.name || t('breadcrumb.coreDam.author.edit'),
+    routeName: '/(coreDam)/authors/[id]/edit',
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/authors',

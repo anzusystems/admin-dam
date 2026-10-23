@@ -6,7 +6,7 @@ import {
   defineBreadcrumbs,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -64,16 +64,14 @@ onBeforeUnmount(resetStore)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
-    {
-      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-shows/[id]',
-      routeParams: { id: videoShowId },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+  {
+    title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
+    routeName: '/(coreDam)/video-shows/[id]',
+    routeParams: { id: videoShowId },
+  },
+])
 
 const afterVideoShowEpisodeCreate = () => {
   if (activeTab.value === VideoShowDetailTab.Episodes) {

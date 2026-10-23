@@ -9,7 +9,7 @@ import {
   useAnzuUserActions,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
@@ -48,16 +48,14 @@ const damUser = anzuUser as unknown as Ref<DamUser>
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
-    {
-      title: anzuUser.value.person.fullName || anzuUser.value.email || t('breadcrumb.anzuUser.detail'),
-      routeName: '/(coreDam)/users-new/[id]',
-      id,
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
+  {
+    title: anzuUser.value.person.fullName || anzuUser.value.email || t('breadcrumb.anzuUser.detail'),
+    routeName: '/(coreDam)/users-new/[id]',
+    id,
+  },
+])
 
 const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/users-new',

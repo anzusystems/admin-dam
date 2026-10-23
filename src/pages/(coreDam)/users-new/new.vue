@@ -10,7 +10,7 @@ import {
   useAnzuUserActions,
   usePageNavigation,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { ACL } from '@/domains/system/auth/auth'
@@ -48,12 +48,10 @@ const onCreate = async (close = false) => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
-    { title: anzuUser.value.email || t('breadcrumb.anzuUser.create'), routeName: '/(coreDam)/users-new/new' },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
+  { title: anzuUser.value.email || t('breadcrumb.anzuUser.create'), routeName: '/(coreDam)/users-new/new' },
+])
 
 onMounted(() => {
   // The library factory decides what a new account starts as: no roles, switched off.

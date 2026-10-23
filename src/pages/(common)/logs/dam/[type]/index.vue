@@ -27,11 +27,9 @@ const defaultTimeWindow = { from: dateTimeStartOfDay(-1), to: dateTimeEndOfDay()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.log.list'), routeName: '/(common)/logs/dam/[type]', routeParams: { type: type.value } },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.log.list'), routeName: '/(common)/logs/dam/[type]', routeParams: { type: type.value } },
+])
 
 const detailRoute = (log: Log) => ({
   name: '/(common)/logs/dam/[type]/[id]' as const,

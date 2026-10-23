@@ -24,16 +24,14 @@ const id = computed(() => route.params.id as string)
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.log.list'), routeName: '/(common)/logs/dam/[type]', routeParams: { type: type.value } },
-    {
-      title: t('breadcrumb.log.detail'),
-      routeName: '/(common)/logs/dam/[type]/[id]',
-      routeParams: { type: type.value, id: id.value },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.log.list'), routeName: '/(common)/logs/dam/[type]', routeParams: { type: type.value } },
+  {
+    title: t('breadcrumb.log.detail'),
+    routeName: '/(common)/logs/dam/[type]/[id]',
+    routeParams: { type: type.value, id: id.value },
+  },
+])
 </script>
 
 <template>

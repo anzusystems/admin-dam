@@ -8,7 +8,7 @@ import {
   stringToInt,
   useRecordPage,
 } from '@anzusystems/common-admin'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
@@ -28,15 +28,13 @@ const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
-    {
-      title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
-      routeName: '/(coreDam)/author-clean-phrases/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
+  {
+    title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
+    routeName: '/(coreDam)/author-clean-phrases/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
