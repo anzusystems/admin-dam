@@ -33,15 +33,10 @@ export function usePodcastListFilter() {
     },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }
 
 export function usePodcastFilter() {
@@ -55,13 +50,8 @@ export function usePodcastFilter() {
     },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

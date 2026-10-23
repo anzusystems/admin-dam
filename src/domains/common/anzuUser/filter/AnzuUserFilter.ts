@@ -10,13 +10,8 @@ const filterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useAnzuUserFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  return createFilter(filterFields, createFilterStore(filterFields), {
     system: 'common',
     subject: 'anzuUser',
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

@@ -9,13 +9,8 @@ const filterFields = [] satisfies readonly MakeFilterOption[]
 const filterStore = createFilterStore(filterFields)
 
 export function useAssetSlotFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, filterStore, {
+  return createFilter(filterFields, filterStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

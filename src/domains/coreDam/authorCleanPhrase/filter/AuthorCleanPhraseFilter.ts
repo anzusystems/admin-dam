@@ -12,13 +12,8 @@ export function useAuthorCleanPhraseListFilter() {
     { name: 'type' as const, default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

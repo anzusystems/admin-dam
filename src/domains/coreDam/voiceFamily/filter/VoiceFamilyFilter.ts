@@ -14,15 +14,10 @@ const filterFieldsList = [
 const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useVoiceFamilyListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+  return createFilter(filterFieldsList, listFiltersStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }
 
 export function useVoiceFamilyFilter() {
@@ -30,13 +25,8 @@ export function useVoiceFamilyFilter() {
     { name: 'displayName' as const, variant: 'startsWith', default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

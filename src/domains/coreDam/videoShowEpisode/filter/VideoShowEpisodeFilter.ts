@@ -31,13 +31,8 @@ const filterFieldsList = [
 const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useVideoShowEpisodeListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+  return createFilter(filterFieldsList, listFiltersStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

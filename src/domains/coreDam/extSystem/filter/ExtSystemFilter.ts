@@ -11,15 +11,10 @@ export function useExtSystemListFilter() {
     { name: 'slug' as const, variant: 'startsWith', default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }
 
 export function useExtSystemFilter() {
@@ -27,13 +22,8 @@ export function useExtSystemFilter() {
     { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

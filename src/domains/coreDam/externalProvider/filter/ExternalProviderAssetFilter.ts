@@ -17,14 +17,9 @@ const fields = [
 const listFilterStore = createFilterStore(fields)
 
 export function useExternalProviderAssetListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, listFilterStore, {
+  return createFilter(fields, listFilterStore, {
     elastic: true,
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

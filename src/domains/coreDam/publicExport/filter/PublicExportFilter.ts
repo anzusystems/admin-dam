@@ -11,13 +11,8 @@ export function usePublicExportListFilter() {
     { name: 'slug' as const, default: null, type: 'string', variant: 'startsWith', render: { skip: true } },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

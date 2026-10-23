@@ -13,13 +13,8 @@ const filterFieldsList = [
 const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useAssetLicenceListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+  return createFilter(filterFieldsList, listFiltersStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

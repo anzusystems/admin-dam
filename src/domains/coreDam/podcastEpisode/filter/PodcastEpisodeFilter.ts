@@ -29,13 +29,8 @@ export function usePodcastEpisodeListFilter() {
     },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  return createFilter(filterFields, createFilterStore(filterFields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

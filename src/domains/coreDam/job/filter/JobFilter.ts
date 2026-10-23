@@ -40,13 +40,8 @@ const filterFields = [
 const listFiltersStore = createFilterStore(filterFields)
 
 export function useJobListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, listFiltersStore, {
+  return createFilter(filterFields, listFiltersStore, {
     system: SYSTEM_CORE_DAM,
     subject: 'job',
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

@@ -13,15 +13,10 @@ const listFields = [
 const listFilterStore = createFilterStore(listFields)
 
 export function useDistributionCategoryListFilter() {
-  const { filterConfig, filterData } = createFilter(listFields, listFilterStore, {
+  return createFilter(listFields, listFilterStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }
 
 export function useDistributionCategoryFilter() {
@@ -30,13 +25,8 @@ export function useDistributionCategoryFilter() {
     { name: 'type' as const, default: DamAssetTypeDefault, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

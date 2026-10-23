@@ -53,14 +53,9 @@ export const filterFieldsList = [
 const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useAssetListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+  return createFilter(filterFieldsList, listFiltersStore, {
     elastic: true,
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

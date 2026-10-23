@@ -12,13 +12,8 @@ const fields = [
 const store = createFilterStore(fields)
 
 export function useTtsNarrationRequestListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, store, {
+  return createFilter(fields, store, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

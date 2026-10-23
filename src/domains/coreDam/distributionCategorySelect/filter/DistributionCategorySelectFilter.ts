@@ -18,13 +18,8 @@ const filterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useDistributionCategorySelectListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  return createFilter(filterFields, createFilterStore(filterFields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

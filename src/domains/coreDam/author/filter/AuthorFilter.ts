@@ -15,13 +15,11 @@ const fields = [
 const store = createFilterStore(fields)
 
 export function useAuthorListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, store, {
+  return createFilter(fields, store, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }
 
 export function useAuthorInnerFilter() {
@@ -30,11 +28,9 @@ export function useAuthorInnerFilter() {
     { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }
