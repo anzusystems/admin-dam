@@ -2,6 +2,7 @@ import {
   createFilter,
   createFilterStore,
   defineRecordLoader,
+  defineRecordSave,
   syncUserAndTimeTracking,
   useAlerts,
   usePageNavigation,
@@ -35,7 +36,7 @@ import { useVoiceFamilyOneStore } from '@/domains/coreDam/voiceFamily/store/voic
 import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -141,32 +142,19 @@ export const useVoiceFamilyEditActions = () => {
     voiceFamily.value = await fetchVoiceFamily({ urlParams: { id }, signal })
   })
 
-  const onUpdate = async () => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const payload: VoiceFamilyUpdate = {
-        slug: voiceFamily.value.slug,
-        displayName: voiceFamily.value.displayName,
-        language: voiceFamily.value.language,
-        preferredProvider: voiceFamily.value.preferredProvider,
-        active: voiceFamily.value.active,
-        keywords: voiceFamily.value.keywords,
-      }
-      const res = await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
-      syncUserAndTimeTracking(voiceFamilyOneStore.voiceFamily, res)
-      showRecordWas('updated')
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
+  const onUpdate = defineRecordSave(saveButtonLoading, v$, async () => {
+    const payload: VoiceFamilyUpdate = {
+      slug: voiceFamily.value.slug,
+      displayName: voiceFamily.value.displayName,
+      language: voiceFamily.value.language,
+      preferredProvider: voiceFamily.value.preferredProvider,
+      active: voiceFamily.value.active,
+      keywords: voiceFamily.value.keywords,
     }
-  }
+    const res = await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
+    syncUserAndTimeTracking(voiceFamilyOneStore.voiceFamily, res)
+    showRecordWas('updated')
+  })
 
   return {
     detailLoading,

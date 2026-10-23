@@ -4,6 +4,7 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  defineRecordSave,
   isUndefined,
   useAlerts,
   useAnzuUserFactory,
@@ -56,30 +57,17 @@ const onCancel = () => {
 const { push } = usePageNavigation()
 const { v$ } = useAnzuUserCreateValidation(anzuUser)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
-const onConfirm = async () => {
-  try {
-    buttonLoading.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      buttonLoading.value = false
-      return
-    }
-    const res = await createAnzuUserRequest({ body: anzuUser.value })
-    emit('afterCreate', res)
-    showRecordWas('created')
-    dialog.value = false
-    if (!isUndefined(res.id) && !props.disableRedirect) {
-      push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
-    }
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    buttonLoading.value = false
+const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
+  const res = await createAnzuUserRequest({ body: anzuUser.value })
+  emit('afterCreate', res)
+  showRecordWas('created')
+  dialog.value = false
+  if (!isUndefined(res.id) && !props.disableRedirect) {
+    push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
   }
-}
+})
 </script>
 
 <template>

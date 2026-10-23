@@ -4,6 +4,7 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  defineRecordSave,
   isUndefined,
   useAlerts,
   usePageNavigation,
@@ -54,30 +55,17 @@ const onCancel = () => {
 const { push } = usePageNavigation()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
-const onConfirm = async () => {
-  try {
-    buttonLoading.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      buttonLoading.value = false
-      return
-    }
-    const res = await apiCreatePermissionGroup({ body: permissionGroup.value })
-    emit('afterCreate', res)
-    showRecordWas('created')
-    dialog.value = false
-    if (!isUndefined(res.id) && !props.disableRedirect) {
-      push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
-    }
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    buttonLoading.value = false
+const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
+  const res = await apiCreatePermissionGroup({ body: permissionGroup.value })
+  emit('afterCreate', res)
+  showRecordWas('created')
+  dialog.value = false
+  if (!isUndefined(res.id) && !props.disableRedirect) {
+    push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
   }
-}
+})
 </script>
 
 <template>

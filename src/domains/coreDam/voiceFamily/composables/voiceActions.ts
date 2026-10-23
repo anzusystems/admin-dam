@@ -1,4 +1,4 @@
-import { createFilter, createFilterStore, useAlerts } from '@anzusystems/common-admin'
+import { createFilter, createFilterStore, defineRecordSave, useAlerts } from '@anzusystems/common-admin'
 import type { DocId, MakeFilterOption, Pagination } from '@anzusystems/common-admin'
 import useVuelidate from '@vuelidate/core'
 import { ref } from 'vue'
@@ -15,7 +15,7 @@ import {
 import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 // Voice list has no filter UI — an empty filter satisfies the new execute signature.
 const emptyFilterFields = [] satisfies readonly MakeFilterOption[]
@@ -81,28 +81,15 @@ export const useVoiceEditActions = () => {
   const v$ = useVuelidate()
   const { execute: updateVoiceRequest } = useUpdateVoice()
 
-  const onUpdate = async (voice: Voice, onSuccess?: () => void) => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      await updateVoiceRequest({
-        urlTemplate: writeEndpoint(voice.discriminator) + '/:id',
-        urlParams: { id: voice.id },
-        body: voice,
-      })
-      showRecordWas('updated')
-      if (onSuccess) onSuccess()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
-    }
-  }
+  const onUpdate = defineRecordSave(saveButtonLoading, v$, async (voice: Voice, onSuccess?: () => void) => {
+    await updateVoiceRequest({
+      urlTemplate: writeEndpoint(voice.discriminator) + '/:id',
+      urlParams: { id: voice.id },
+      body: voice,
+    })
+    showRecordWas('updated')
+    if (onSuccess) onSuccess()
+  })
 
   return {
     saveButtonLoading,

@@ -6,7 +6,7 @@ import type {
   PermissionGroup,
   ValueObjectOption,
 } from '@anzusystems/common-admin'
-import { defineRecordLoader, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, defineRecordSave, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
@@ -23,7 +23,7 @@ import {
 import { useCachedPermissionGroups } from '@/domains/common/permissionGroup/composables/cachedPermissionGroups'
 import { usePermissionGroupOneStore } from '@/domains/common/permissionGroup/store/permissionGroupStore'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -74,53 +74,27 @@ export const usePermissionGroupActions = () => {
   }
 
   const v$ = useVuelidate()
-  const updatePermissionGroup = async (close = false) => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const { execute } = useUpdatePermissionGroup()
-      await execute({
-        urlParams: { id: permissionGroupOneStore.permissionGroup.id },
-        body: permissionGroupOneStore.permissionGroup,
-      })
-      showRecordWas('updated')
-      if (!close) return
-      push({ name: '/(common)/permission-groups' })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
-    }
-  }
+  const updatePermissionGroup = defineRecordSave(saveButtonLoading, v$, async (close = false) => {
+    const { execute } = useUpdatePermissionGroup()
+    await execute({
+      urlParams: { id: permissionGroupOneStore.permissionGroup.id },
+      body: permissionGroupOneStore.permissionGroup,
+    })
+    showRecordWas('updated')
+    if (!close) return
+    push({ name: '/(common)/permission-groups' })
+  })
 
-  const createPermissionGroup = async (close = false) => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const { execute } = useCreatePermissionGroup()
-      const permissionGroupRes = await execute({ body: permissionGroupOneStore.permissionGroup })
-      showRecordWas('created')
-      if (close) {
-        push({ name: '/(common)/permission-groups' })
-        return
-      }
-      push({ name: '/(common)/permission-groups/[id]', params: { id: permissionGroupRes.id } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
+  const createPermissionGroup = defineRecordSave(saveButtonLoading, v$, async (close = false) => {
+    const { execute } = useCreatePermissionGroup()
+    const permissionGroupRes = await execute({ body: permissionGroupOneStore.permissionGroup })
+    showRecordWas('created')
+    if (close) {
+      push({ name: '/(common)/permission-groups' })
+      return
     }
-  }
+    push({ name: '/(common)/permission-groups/[id]', params: { id: permissionGroupRes.id } })
+  })
 
   const { addManualToCachedPermissionGroups } = useCachedPermissionGroups()
   const fetchPermissionGroupOptions = async (

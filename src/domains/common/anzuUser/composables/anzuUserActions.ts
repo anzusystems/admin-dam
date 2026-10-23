@@ -1,5 +1,5 @@
 import type { AnzuUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
-import { defineRecordLoader, isInt, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { defineRecordLoader, defineRecordSave, isInt, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
 import { useVuelidate } from '@vuelidate/core'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
@@ -77,29 +77,16 @@ export const useAnzuUserActions = () => {
     }
   }
 
-  const createAnzuUser = async (close = false) => {
-    saveButtonLoading.value = true
-    try {
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const { execute: createAnzuUserRequest } = useCreateAnzuUser()
-      const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
-      showRecordWas('created')
-      if (close) {
-        push({ name: '/(common)/anzu-users' })
-        return
-      }
-      push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
+  const createAnzuUser = defineRecordSave(saveButtonLoading, v$, async (close = false) => {
+    const { execute: createAnzuUserRequest } = useCreateAnzuUser()
+    const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
+    showRecordWas('created')
+    if (close) {
+      push({ name: '/(common)/anzu-users' })
+      return
     }
-  }
+    push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
+  })
 
   return {
     datatableHiddenColumns,

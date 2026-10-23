@@ -5,6 +5,7 @@ import {
   AFormTextarea,
   ARow,
   ASystemEntityScope,
+  defineRecordSave,
   isNull,
   useAlerts,
 } from '@anzusystems/common-admin'
@@ -47,7 +48,7 @@ const value = computed({
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
@@ -65,24 +66,11 @@ const closeDialog = (reloadList = false) => {
   if (reloadList) emit('reloadList')
 }
 
-const submit = async () => {
-  try {
-    saving.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      saving.value = false
-      return
-    }
-    await createPodcastEpisode({ body: podcastEpisode.value })
-    showRecordWas('created')
-    closeDialog(true)
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saving.value = false
-  }
-}
+const submit = defineRecordSave(saving, v$, async () => {
+  await createPodcastEpisode({ body: podcastEpisode.value })
+  showRecordWas('created')
+  closeDialog(true)
+})
 
 const loadFormData = async () => {
   if (!podcastEpisode.value.podcast) return
