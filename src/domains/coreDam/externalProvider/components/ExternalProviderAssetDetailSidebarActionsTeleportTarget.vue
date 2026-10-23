@@ -10,7 +10,9 @@ onMounted(async () => {
   mounted()
 })
 
-onBeforeUnmount(unMounted)
+onBeforeUnmount(() => {
+  unMounted()
+})
 </script>
 
 <template>

@@ -67,7 +67,9 @@ onMounted(() => {
   resetPermissionGroupStore()
 })
 
-onBeforeUnmount(resetPermissionGroupStore)
+onBeforeUnmount(() => {
+  resetPermissionGroupStore()
+})
 </script>
 
 <template>

@@ -31,7 +31,9 @@ useRecordPage({
   load: (signal) => fetchData(id, { signal }),
 })
 
-onBeforeUnmount(resetStore)
+onBeforeUnmount(() => {
+  resetStore()
+})
 
 const { t } = useI18n()
 

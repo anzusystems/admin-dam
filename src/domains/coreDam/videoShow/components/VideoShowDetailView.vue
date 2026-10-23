@@ -60,7 +60,9 @@ onMounted(async () => {
   videoShowLoaded.value = loaded === true
 })
 
-onBeforeUnmount(resetStore)
+onBeforeUnmount(() => {
+  resetStore()
+})
 
 const { t } = useI18n()
 

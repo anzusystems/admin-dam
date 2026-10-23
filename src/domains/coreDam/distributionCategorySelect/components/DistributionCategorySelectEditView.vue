@@ -66,7 +66,9 @@ useRecordPage({
   load: (signal) => fetchData(id, { signal }),
 })
 
-onBeforeUnmount(resetStore)
+onBeforeUnmount(() => {
+  resetStore()
+})
 </script>
 
 <template>

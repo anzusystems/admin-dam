@@ -39,7 +39,9 @@ useRecordPage({
   load: (signal) => fetchPermissionGroup(id, { signal }),
 })
 
-onBeforeUnmount(resetPermissionGroupStore)
+onBeforeUnmount(() => {
+  resetPermissionGroupStore()
+})
 </script>
 
 <template>

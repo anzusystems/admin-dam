@@ -60,7 +60,9 @@ const jobComponent = computed(() => {
   }
 })
 
-onBeforeUnmount(resetStore)
+onBeforeUnmount(() => {
+  resetStore()
+})
 
 const { t } = useI18n()
 

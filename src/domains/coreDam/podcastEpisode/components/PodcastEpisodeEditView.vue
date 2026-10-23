@@ -41,7 +41,9 @@ onMounted(async () => {
   }
 })
 
-onBeforeUnmount(resetStore)
+onBeforeUnmount(() => {
+  resetStore()
+})
 
 const { t } = useI18n()
 

@@ -38,7 +38,9 @@ useRecordPage({
   load: (signal) => fetchAnzuUser(id, { signal }),
 })
 
-onBeforeUnmount(resetAnzuUserStore)
+onBeforeUnmount(() => {
+  resetAnzuUserStore()
+})
 </script>
 
 <template>
