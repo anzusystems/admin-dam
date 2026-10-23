@@ -118,10 +118,6 @@ const resetFilterAction = () => {
 onMounted(() => {
   loadStoredFilters(pagination, getList)
 })
-
-defineExpose({
-  refresh: getList,
-})
 </script>
 
 <template>
