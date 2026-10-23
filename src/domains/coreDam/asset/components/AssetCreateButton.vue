@@ -22,9 +22,7 @@ import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const emit = defineEmits<{
-  (e: 'afterCreate', data: AssetDetailItemDto): void
-}>()
+const emit = defineEmits<{ afterCreate: [data: AssetDetailItemDto] }>()
 
 const { t } = useI18n()
 const { currentAssetLicenceId } = useCurrentAssetLicence()

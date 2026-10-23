@@ -8,9 +8,7 @@ import { cancelCustomDistribution } from '@/domains/coreDam/asset/api/distributi
 import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
 
-const emit = defineEmits<{
-  (e: 'reloadList'): void
-}>()
+const emit = defineEmits<{ reloadList: [] }>()
 
 const { dialogCancel, distributionIdToCancel, distributionTypeToCancel } = useAssetDetailDistributionDialogCancel()
 const distributionListStore = useDistributionListStore()

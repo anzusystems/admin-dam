@@ -12,9 +12,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'anyChange'): void
-}>()
+const emit = defineEmits<{ anyChange: [] }>()
 
 const modelValue = defineModel<{ [key: string]: CustomDataValue }>({ required: true })
 

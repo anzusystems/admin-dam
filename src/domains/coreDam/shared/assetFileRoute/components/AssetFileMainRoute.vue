@@ -28,9 +28,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'mainRouteChanged'): void
-}>()
+const emit = defineEmits<{ mainRouteChanged: [] }>()
 
 const makeFilePrivateDialog = ref(false)
 const loading = ref(false)

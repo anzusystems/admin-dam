@@ -23,9 +23,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'onSuccess', data: Voice): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: Voice] }>()
 
 const { t } = useI18n()
 const { createVoiceKind } = useVoiceKindFactory()

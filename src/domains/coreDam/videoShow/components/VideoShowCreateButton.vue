@@ -26,9 +26,7 @@ withDefaults(
     disabled: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: VideoShow): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: VideoShow] }>()
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 

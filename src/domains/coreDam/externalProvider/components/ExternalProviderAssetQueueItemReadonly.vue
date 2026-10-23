@@ -14,9 +14,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'removeItem', index: number): void
-}>()
+const emit = defineEmits<{ removeItem: [index: number] }>()
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 

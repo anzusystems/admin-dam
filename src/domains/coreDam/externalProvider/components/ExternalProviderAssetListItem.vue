@@ -18,10 +18,10 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'itemClick', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'toggleSelected', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'selectMultiple', data: { assetId: AssetExternalProviderId; index: number }): void
+  showDetail: [data: { assetId: AssetExternalProviderId; index: number }]
+  itemClick: [data: { assetId: AssetExternalProviderId; index: number }]
+  toggleSelected: [data: { assetId: AssetExternalProviderId; index: number }]
+  selectMultiple: [data: { assetId: AssetExternalProviderId; index: number }]
 }>()
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'

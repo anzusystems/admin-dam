@@ -35,9 +35,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'onDistributionDelete'): void
-}>()
+const emit = defineEmits<{ onDistributionDelete: [] }>()
 
 const assetDetailStore = useAssetDetailStore()
 const distributionListStore = useDistributionListStore()

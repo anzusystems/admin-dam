@@ -36,9 +36,7 @@ const props = withDefaults(
     disabled: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterCreate', data: AnzuUser): void
-}>()
+const emit = defineEmits<{ afterCreate: [data: AnzuUser] }>()
 
 const { createAnzuUser } = useAnzuUserFactory()
 const { execute: createAnzuUserRequest } = useCreateAnzuUser()

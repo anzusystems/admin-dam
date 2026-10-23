@@ -34,9 +34,7 @@ const props = withDefaults(
     disabled: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterCreate', data: PermissionGroup): void
-}>()
+const emit = defineEmits<{ afterCreate: [data: PermissionGroup] }>()
 
 const { createPermissionGroup } = usePermissionGroupFactory()
 const { execute: apiCreatePermissionGroup } = useCreatePermissionGroup()

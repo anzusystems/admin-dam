@@ -11,9 +11,7 @@ withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'change'): void
-}>()
+const emit = defineEmits<{ change: [] }>()
 
 const { fetchItems, fetchItemsByIds } = usePermissionGroupSelectAction()
 

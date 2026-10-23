@@ -12,10 +12,7 @@ import { inject } from 'vue'
 import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

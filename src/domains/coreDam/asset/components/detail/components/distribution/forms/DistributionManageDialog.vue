@@ -37,9 +37,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'onDistributionUpsert'): void
-  (e: 'onDistributionTypeSelect', data: DistributionItemResourceNameType): void
-  (e: 'onCancel'): void
+  onDistributionUpsert: []
+  onDistributionTypeSelect: [data: DistributionItemResourceNameType]
+  onCancel: []
 }>()
 
 const distribution = defineModel<DistributionUpdateDto>({ required: true })

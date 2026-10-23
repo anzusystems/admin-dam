@@ -30,9 +30,7 @@ withDefaults(
     dataCy: 'button-create',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-}>()
+const emit = defineEmits<{ onSuccess: [] }>()
 
 const { t } = useI18n()
 

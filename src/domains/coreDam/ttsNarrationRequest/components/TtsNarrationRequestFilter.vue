@@ -12,10 +12,7 @@ import { inject } from 'vue'
 import { useTtsNarrationRequestListActions } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { useTtsRequestStatus } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsRequestStatus'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

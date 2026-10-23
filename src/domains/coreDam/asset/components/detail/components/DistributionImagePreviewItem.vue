@@ -13,10 +13,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'toggleSelected', index: number): void
-  (e: 'invalidImage', index: number): void
-}>()
+const emit = defineEmits<{ toggleSelected: [index: number]; invalidImage: [index: number] }>()
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR = '#ccc'
 

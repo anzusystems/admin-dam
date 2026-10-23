@@ -18,10 +18,10 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: DocId; index: number }): void
-  (e: 'itemClick', data: { assetId: DocId; index: number; tile: Element | null }): void
-  (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
-  (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
+  showDetail: [data: { assetId: DocId; index: number }]
+  itemClick: [data: { assetId: DocId; index: number; tile: Element | null }]
+  toggleSelected: [data: { assetId: DocId; index: number }]
+  selectMultiple: [data: { assetId: DocId; index: number }]
 }>()
 
 const { t } = useI18n()

@@ -31,9 +31,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: VoiceFamily): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: VoiceFamily] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

@@ -15,9 +15,7 @@ withDefaults(
     dataCy: 'button-clear',
   }
 )
-const emit = defineEmits<{
-  (e: 'confirm'): void
-}>()
+const emit = defineEmits<{ confirm: [] }>()
 
 const dialog = ref(false)
 

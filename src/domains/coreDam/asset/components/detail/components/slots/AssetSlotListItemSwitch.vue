@@ -17,9 +17,7 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'switchSlot', targetName: string): void
-}>()
+const emit = defineEmits<{ switchSlot: [targetName: string] }>()
 
 const { t } = useI18n()
 // Off for an asset being deleted.

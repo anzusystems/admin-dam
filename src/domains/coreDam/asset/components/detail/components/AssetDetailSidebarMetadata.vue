@@ -27,9 +27,7 @@ withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'postDelete', data: DocId): void
-}>()
+const emit = defineEmits<{ postDelete: [data: DocId] }>()
 
 const { t } = useI18n()
 

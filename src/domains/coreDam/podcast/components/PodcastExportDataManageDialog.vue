@@ -18,9 +18,7 @@ withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'onCancel'): void
-}>()
+const emit = defineEmits<{ onCancel: [] }>()
 
 const podcastExportData = defineModel<PodcastExportData>({ required: true })
 const podcastExportDataManageDialog = defineModel<boolean>('manageDialog', { required: true })

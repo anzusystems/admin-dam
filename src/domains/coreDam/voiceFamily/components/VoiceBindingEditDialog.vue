@@ -14,9 +14,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-}>()
+const emit = defineEmits<{ onSuccess: [] }>()
 
 const modelValue = defineModel<boolean>({ required: true })
 

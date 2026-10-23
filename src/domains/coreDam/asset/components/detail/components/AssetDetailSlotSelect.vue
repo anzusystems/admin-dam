@@ -8,9 +8,7 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
-const emit = defineEmits<{
-  (e: 'activeSlotChange', data: null | AssetSlot): void
-}>()
+const emit = defineEmits<{ activeSlotChange: [data: null | AssetSlot] }>()
 
 const { t } = useI18n()
 

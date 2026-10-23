@@ -31,9 +31,7 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onCreateSuccess', data: DamAssetTypeType): void
-}>()
+const emit = defineEmits<{ onCreateSuccess: [data: DamAssetTypeType] }>()
 
 const dialog = ref(false)
 

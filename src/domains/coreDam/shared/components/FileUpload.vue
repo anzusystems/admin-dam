@@ -39,10 +39,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'change', event: DragEvent): void
-  (e: 'filesInput', files: File[]): void
-}>()
+const emit = defineEmits<{ change: [event: DragEvent]; filesInput: [files: File[]] }>()
 
 const BLOCK_DOUBLE_CLICK_MS = 200
 

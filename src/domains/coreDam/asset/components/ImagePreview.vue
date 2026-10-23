@@ -32,9 +32,7 @@ withDefaults(
     showActions: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'changed', data: AssetFileImagePreviewNullable): void
-}>()
+const emit = defineEmits<{ changed: [data: AssetFileImagePreviewNullable] }>()
 
 const modelValue = defineModel<AssetFileImagePreviewNullable>({ required: true })
 

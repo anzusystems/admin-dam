@@ -41,12 +41,12 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'update:customData', data: AssetCustomData): void
-  (e: 'update:keywords', data: DocId[]): void
-  (e: 'update:authors', data: DocId[]): void
-  (e: 'update:mainFileSingleUse', data: boolean | null): void
-  (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-  (e: 'refreshItem', data: { index: number; assetId: DocId; item: UploadQueueItem }): void
+  'update:customData': [data: AssetCustomData]
+  'update:keywords': [data: DocId[]]
+  'update:authors': [data: DocId[]]
+  'update:mainFileSingleUse': [data: boolean | null]
+  cancelItem: [data: { index: number; item: UploadQueueItem; queueId: string }]
+  refreshItem: [data: { index: number; assetId: DocId; item: UploadQueueItem }]
 }>()
 
 const { t } = useI18n()

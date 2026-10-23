@@ -29,9 +29,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: Podcast): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: Podcast] }>()
 
 const { t } = useI18n()
 

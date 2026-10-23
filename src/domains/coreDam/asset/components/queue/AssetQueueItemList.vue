@@ -18,9 +18,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-}>()
+const emit = defineEmits<{ cancelItem: [data: { index: number; item: UploadQueueItem; queueId: string }] }>()
 
 const { t } = useI18n()
 const { getAssetFileFailReasonOption } = useDamAssetFileFailReason()

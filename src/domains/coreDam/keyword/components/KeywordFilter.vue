@@ -11,10 +11,7 @@ import { inject } from 'vue'
 
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

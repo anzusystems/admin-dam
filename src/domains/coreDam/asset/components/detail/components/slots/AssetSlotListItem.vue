@@ -51,12 +51,12 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'removeFile', fileId: DocId): void
-  (e: 'makeMainFile', fileId: DocId): void
-  (e: 'unsetSlot', data: { fileId: DocId; slotName: string }): void
-  (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
-  (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
-  (e: 'refreshList'): void
+  removeFile: [fileId: DocId]
+  makeMainFile: [fileId: DocId]
+  unsetSlot: [data: { fileId: DocId; slotName: string }]
+  duplicateSlot: [data: { fileId: DocId; targetSlotName: string }]
+  switchSlot: [data: { sourceSlotName: string; targetSlotName: string }]
+  refreshList: []
 }>()
 
 const { t } = useI18n()

@@ -33,9 +33,7 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'reloadList'): void
-}>()
+const emit = defineEmits<{ reloadList: [] }>()
 
 const modelValue = defineModel<boolean>({ required: true })
 const value = computed({

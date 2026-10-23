@@ -9,10 +9,7 @@ import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-  (e: 'closeDialog'): void
-}>()
+const emit = defineEmits<{ onSuccess: []; closeDialog: [] }>()
 
 const buttonLoading = ref(false)
 const { createAuthorCurrentOptimize } = useJobFactory()

@@ -8,10 +8,7 @@ import { useI18n } from 'vue-i18n'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-  (e: 'closeDialog'): void
-}>()
+const emit = defineEmits<{ onSuccess: []; closeDialog: [] }>()
 
 const buttonLoading = ref(false)
 const { createUserDataDelete } = useCommonJobFactory()

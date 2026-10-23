@@ -22,9 +22,7 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: PodcastEpisode): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: PodcastEpisode] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

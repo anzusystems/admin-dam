@@ -26,9 +26,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: DamAssetLicenceExtended): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: DamAssetLicenceExtended] }>()
 
 const { createDefault } = useAssetLicenceFactory()
 const assetLicence = ref<DamAssetLicenceExtended>(createDefault())

@@ -16,9 +16,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'blur', data: DistributionCategoryOption | null | undefined): void
-}>()
+const emit = defineEmits<{ blur: [data: DistributionCategoryOption | null | undefined] }>()
 
 const modelValue = defineModel<DistributionCategoryOption | null | undefined>({ required: true })
 

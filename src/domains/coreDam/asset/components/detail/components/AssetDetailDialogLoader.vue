@@ -15,11 +15,7 @@ withDefaults(
   }>(),
   { title: '' }
 )
-const emit = defineEmits<{
-  (e: 'closeDialog'): void
-  (e: 'prevItem'): void
-  (e: 'nextItem'): void
-}>()
+const emit = defineEmits<{ closeDialog: []; prevItem: []; nextItem: [] }>()
 
 const { t } = useI18n()
 

@@ -15,10 +15,7 @@ import {
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 
-const emit = defineEmits<{
-  (e: 'nextItem'): void
-  (e: 'prevItem'): void
-}>()
+const emit = defineEmits<{ nextItem: []; prevItem: [] }>()
 
 const { t } = useI18n()
 

@@ -4,9 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 withDefaults(defineProps<{}>(), {})
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-}>()
+const emit = defineEmits<{ submit: [] }>()
 
 const modelValue = defineModel<string | null>({ required: true })
 

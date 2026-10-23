@@ -15,9 +15,7 @@ withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'deleteRecord', id: DocId): void
-}>()
+const emit = defineEmits<{ deleteRecord: [id: DocId] }>()
 
 const { t } = useI18n()
 // Off for an asset being deleted.

@@ -52,9 +52,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+const emit = defineEmits<{ closeDialog: [reloadList: boolean] }>()
 
 const existingDistributions = ref<Array<DistributionCustomItem>>([])
 

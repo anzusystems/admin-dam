@@ -12,10 +12,7 @@ import { inject } from 'vue'
 import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 import { usePublicExportListActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

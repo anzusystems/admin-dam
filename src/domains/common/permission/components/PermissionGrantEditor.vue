@@ -7,9 +7,7 @@ const props = defineProps<{
   availableGrants: GrantType[]
   selectedGrant: GrantType | undefined
 }>()
-const emit = defineEmits<{
-  (e: 'change', data?: GrantType): void
-}>()
+const emit = defineEmits<{ change: [data?: GrantType] }>()
 const selectedGrant = computed({
   get() {
     return props.selectedGrant

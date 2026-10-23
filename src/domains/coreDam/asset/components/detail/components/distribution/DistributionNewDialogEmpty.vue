@@ -16,9 +16,7 @@ withDefaults(
   }>(),
   {}
 )
-defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+defineEmits<{ closeDialog: [reloadList: boolean] }>()
 
 const { t } = useI18n()
 </script>

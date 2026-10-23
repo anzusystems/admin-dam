@@ -11,10 +11,7 @@ import { inject } from 'vue'
 
 import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

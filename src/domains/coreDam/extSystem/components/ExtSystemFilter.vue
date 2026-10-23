@@ -4,10 +4,7 @@ import { inject } from 'vue'
 
 import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

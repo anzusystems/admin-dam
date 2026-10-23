@@ -12,9 +12,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'onSuccessLogout'): void
-}>()
+const emit = defineEmits<{ onSuccessLogout: [] }>()
 
 const dialog = ref(false)
 const buttonLoading = ref(false)

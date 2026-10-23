@@ -28,9 +28,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: PublicExport): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: PublicExport] }>()
 
 const { createDefault } = usePublicExportFactory()
 const publicExport = ref<PublicExport>(createDefault())

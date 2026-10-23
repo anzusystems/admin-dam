@@ -20,10 +20,7 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'unsetSlot'): void
-  (e: 'removeFile'): void
-}>()
+const emit = defineEmits<{ unsetSlot: []; removeFile: [] }>()
 
 const { t } = useI18n()
 // Off for an asset being deleted.

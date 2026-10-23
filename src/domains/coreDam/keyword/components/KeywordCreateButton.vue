@@ -41,9 +41,7 @@ const props = withDefaults(
     validationScope: KeywordCreateValidationScopeSymbol,
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: DamKeyword): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: DamKeyword] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 

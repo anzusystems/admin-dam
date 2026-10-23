@@ -27,10 +27,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'openRedistribute'): void
-  (e: 'openCancel'): void
-}>()
+const emit = defineEmits<{ openRedistribute: []; openCancel: [] }>()
 
 const { t } = useI18n()
 // Off for an asset being deleted.

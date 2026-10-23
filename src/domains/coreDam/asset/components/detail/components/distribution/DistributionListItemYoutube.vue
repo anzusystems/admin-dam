@@ -23,9 +23,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'openRedistribute'): void
-}>()
+const emit = defineEmits<{ openRedistribute: [] }>()
 
 const { t } = useI18n()
 

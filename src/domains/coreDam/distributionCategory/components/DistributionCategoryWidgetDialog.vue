@@ -25,9 +25,7 @@ const props = withDefaults(
     categoryId: null,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterSave', data: DocIdNullable): void
-}>()
+const emit = defineEmits<{ afterSave: [data: DocIdNullable] }>()
 
 const modelValue = defineModel<boolean>({ default: false })
 

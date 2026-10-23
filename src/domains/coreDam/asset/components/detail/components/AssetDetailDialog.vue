@@ -35,10 +35,7 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
-const emit = defineEmits<{
-  (e: 'nextItem'): void
-  (e: 'prevItem'): void
-}>()
+const emit = defineEmits<{ nextItem: []; prevItem: [] }>()
 
 const { t } = useI18n()
 

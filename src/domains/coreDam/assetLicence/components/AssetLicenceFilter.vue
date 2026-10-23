@@ -5,10 +5,7 @@ import { inject } from 'vue'
 import { useAssetLicenceListActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import FilterExtSystemRemoteAutocomplete from '@/domains/coreDam/extSystem/components/FilterExtSystemRemoteAutocomplete.vue'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

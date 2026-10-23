@@ -29,9 +29,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: AuthorCleanPhrase): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: AuthorCleanPhrase] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
