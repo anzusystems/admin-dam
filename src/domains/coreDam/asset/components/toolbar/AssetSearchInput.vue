@@ -49,7 +49,7 @@ const modelValueComputed = computed({
 
 <style lang="scss" scoped>
 @use 'sass:map';
-@use 'vuetify/lib/styles/settings/_variables.scss' as vars;
+@use 'vuetify/lib/styles/settings/variables' as vars;
 
 .v-text-field--pill {
   min-width: 120px;
