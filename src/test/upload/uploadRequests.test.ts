@@ -4,9 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The requests of an upload as the server receives them, for each of the four asset types: the start, a chunk,
- * the finish, and the import from an external provider that stands in for all three. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -26,7 +23,9 @@ const types: Array<[DamAssetTypeType, string]> = [
 
 const paths = () => server.requests.map((request) => [request.method, request.url])
 
-/** Whether the request is refused - with whatever reason, or with none: the reason is not what is pinned. */
+/**
+ * Whether the request is refused, for any reason or none. The reason is not what is tested.
+ */
 const refused = (request: Promise<unknown>) =>
   request.then(
     () => false,
@@ -55,7 +54,6 @@ describe.each(types)('the upload requests of the type %s', (assetType, mimeType)
 
     expect(paths()).toEqual([['POST', `/adm/v1/${assetType}/licence/7`]])
     expect(JSON.parse(server.requests[0].data as string)).toEqual({ mimeType, size: 5 })
-    // The ids of the file and of the asset the server made for it.
     expect(answer).toEqual({ id: 'file-1', asset: 'asset-1' })
   })
 
@@ -102,10 +100,10 @@ describe.each(types)('the upload requests of the type %s', (assetType, mimeType)
     const config = server.requests[0].config
     // Longer than the client's own timeout: a chunk is the one request that takes its time.
     expect(config.timeout).toBe(420_000)
-    // The signal that Stop aborts.
     expect(config.signal).toBe(row.latestChunkAbortController?.signal)
-    // No type named: over the client's JSON default, axios leaves the type and its boundary to the browser.
-    // Strict: `toEqual` takes a missing key for an `undefined` one, and with the key missing the JSON default wins.
+    // No type is named: over the client JSON default, axios leaves the type and boundary to the browser.
+    // Strict equality is needed: `toEqual` treats a missing key as
+    // `undefined`, and with the key missing the JSON default wins.
     expect(config.headers).toStrictEqual({ 'Content-Type': undefined })
     expect(config.onUploadProgress).toBe(onProgress)
     expect(answer).toEqual({})
@@ -128,7 +126,6 @@ describe.each(types)('the upload requests of the type %s', (assetType, mimeType)
 
     expect(paths()).toEqual([['PATCH', `/adm/v1/${assetType}/file-4/uploaded`]])
     expect(JSON.parse(server.requests[0].data as string)).toEqual({ checksum: 'checksum-of-the-file' })
-    // From here the server works on the file.
     expect(row.status).toBe('processing')
   })
 

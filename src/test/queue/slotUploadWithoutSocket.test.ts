@@ -14,9 +14,10 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeAssetFile, FakeDam } from '@/test/support/fakeDam'
 
-/* A file uploaded into a slot of an existing asset, with no notification ever delivered. The asset speaks only
- * of its main file, so the poll asks for the list of the slots of the asset, which carries the file of every
- * slot, and settles the row by its own file. The real upload, poll and store over a fake server. */
+/*
+ * The asset speaks only of its main file.
+ * So the poll reads the slot list, which carries the file of every slot, and settles the row by its own file.
+ */
 
 let server: FakeDam
 
@@ -36,9 +37,7 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 }))
 
 const SLOTS = 'slots'
-// Far enough for one read of the poll, whatever its rhythm.
 const ONE_READ = 20_000
-// Far enough for the reads after which a file that is not there is given up on.
 const SEVERAL_READS = 60_000
 const A_LONG_TIME = 30 * 60_000
 
@@ -65,7 +64,6 @@ const load = async () => {
   return { store: useUploadQueuesStore(), detailStore: useAssetDetailStore() }
 }
 
-/** One file sent into the slot `extra` of `asset-1`, as far as the server's answer to its finish request. */
 const processingSlotUpload = async () => {
   const { store, detailStore } = await load()
   const [row] = seedQueue(store, SLOTS, [waitingSlotUpload()])
@@ -75,13 +73,11 @@ const processingSlotUpload = async () => {
     '/adm/v1/image/asset/asset-1/slot-name/extra',
     '/adm/v1/image/file-1/chunk',
   ])
-  // The asset it was sent into, and the file the server made for the slot.
   expect([row.status, row.assetId, row.fileId]).toEqual(['processing', 'asset-1', 'file-1'])
 
   return { store, row, detailStore }
 }
 
-/** What the slot `extra` of `asset-1` holds: the file of the upload, in the state the server has brought it to. */
 const slotFileIs = (status: FakeAssetFile['fileAttributes']['status'], over: Partial<FakeAssetFile> = {}) =>
   server.slotFile('asset-1', 'extra', assetFile('file-1', status, { asset: 'asset-1', ...over }))
 
@@ -111,16 +107,14 @@ describe('a slot upload whose file is not the main file of the asset', () => {
     expect(server.slotReads('asset-1')).toBeGreaterThan(0)
     expect(row.status).toBe('uploaded')
     expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
-    // The asset is read once the slot is settled: its state, but neither the preview nor the switch of its main
-    // file, which is another picture.
+    // The asset is read after the slot is settled.
+    // Its state is taken, but not the preview or the switch of its main file, which is another picture.
     expect(server.assetReads('asset-1')).toBeGreaterThan(0)
     expect(row.assetStatus).toBe('with_file')
     expect(row.imagePreview).toBeUndefined()
     expect(row.mainFileSingleUse).toBeNull()
-    // A slot row has no metadata form.
     expect([row.canEditMetadata, row.keywords, row.customData]).toEqual([false, [], {}])
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])
-    // And the slot it sits in stops showing an upload in progress.
     expect(store.getQueueItemForSlotItem(SLOTS, 'extra', 'asset-1')?.item.status).toBe('uploaded')
   })
 
@@ -148,7 +142,6 @@ describe('a slot upload whose file is not the main file of the asset', () => {
 
       expect(server.slotReads('asset-1')).toBeGreaterThan(0)
       expect([row.status, row.error.hasError]).toEqual(['processing', false])
-      // Nothing is taken from the asset for a row that is not settled yet.
       expect(server.assetReads('asset-1')).toBe(0)
       expect(row.assetStatus).toBe('draft')
       expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([0, 1])
@@ -169,12 +162,10 @@ describe('a slot upload whose file is not the main file of the asset', () => {
 
     expect(row.status).toBe('processing')
     expect(row.error.hasError).toBe(true)
-    // The slot row has only Cancel.
     expect(row.error.message).toBe('system.uploadErrors.processingTooLongSlot')
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([0, 1])
     const reads = server.slotReads('asset-1')
 
-    // It is asked about on, and the text goes when the file is done after all.
     slotFileIs('processed')
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
@@ -183,7 +174,7 @@ describe('a slot upload whose file is not the main file of the asset', () => {
     expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
   })
 
-  // The main file of the asset is another file: what became of it is not the news of this row.
+  // The main file of the asset is another file. What became of it is not news for this row.
   it('takes its state from its own file, not from the main file of the asset', async () => {
     const { row } = await processingSlotUpload()
     const failedMain = assetFile('file-main', 'failed', { asset: 'asset-1' })
@@ -196,7 +187,6 @@ describe('a slot upload whose file is not the main file of the asset', () => {
     slotFileIs('processed')
     await vi.advanceTimersByTimeAsync(SEVERAL_READS)
 
-    // Settled, and the read of the asset that follows does not take it back for the failure of the other file.
     expect(server.assetReads('asset-1')).toBeGreaterThan(0)
     expect([row.status, row.isDuplicate, row.error.hasError]).toEqual(['uploaded', false, false])
   })
@@ -240,7 +230,6 @@ describe('a slot upload whose file is not the main file of the asset', () => {
     expect([row.assetId, row.duplicateAssetId, row.fileId]).toEqual(['asset-1', 'asset-original', 'file-origin'])
   })
 
-  // The one thing left to the user while it waits: the row has no refresh button.
   it('can be cancelled, which takes it out of the queue and ends the asking', async () => {
     const { store, row } = await processingSlotUpload()
     server.asset(assetWithAnotherMainFile())
@@ -256,13 +245,12 @@ describe('a slot upload whose file is not the main file of the asset', () => {
     expect(store.getQueueItemForSlotItem(SLOTS, 'extra', 'asset-1')).toBeUndefined()
     expect(server.slotReads('asset-1')).toBe(reads)
     expect(server.assetReads('asset-1')).toBe(0)
-    // Nothing is taken back on the server: the file stays in its slot.
     expect(server.sent('DELETE')).toEqual([])
   })
 })
 
 describe('a slot upload whose file becomes the main file of the asset', () => {
-  // An asset created empty: the first file put into a slot is its main one.
+  // For an asset created empty, the first file put into a slot is its main one.
   it('is settled from the list of the slots and completed from the asset, with no metadata of its own', async () => {
     const { store, row } = await processingSlotUpload()
     server.asset(assetDetail('asset-1', { mainFileSingleUse: true }))
@@ -274,13 +262,14 @@ describe('a slot upload whose file becomes the main file of the asset', () => {
     expect(row.assetStatus).toBe('with_file')
     expect(row.imagePreview).toEqual({ url: 'https://dam.test/file-1/detail.jpg', width: 800, height: 450 })
     expect(row.mainFileSingleUse).toBe(true)
-    // A slot row has no metadata form.
     expect([row.canEditMetadata, row.keywords, row.customData]).toEqual([false, [], {}])
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])
   })
 
-  /* The page that draws the detail reads the asset for it, as for any main file the server is done with: the file
-   * is not written into the detail here, under a form read before it. */
+  /*
+   * The page that draws the detail reads the asset itself, as for any main file the server has finished.
+   * The file is not written into the detail here, under a form read before it.
+   */
   it('tells the page of the open detail of the asset, which reads it for its main file', async () => {
     const { row, detailStore } = await processingSlotUpload()
     detailStore.asset = assetDetail('asset-1', { mainFile: null }) as unknown as AssetDetailItemDto
@@ -324,8 +313,8 @@ describe('a slot upload whose file becomes the main file of the asset', () => {
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
     expect(row.status).toBe('uploaded')
-    // Not written into the detail. Its page is told, as of any file of an asset that is not described the server has
-    // processed: it may have filled in the metadata from it.
+    // Not written into the detail. Its page is told, as for any file of an undescribed
+    // asset the server processed, because processing may have filled in the metadata.
     expect(pageTold).toHaveBeenCalledTimes(1)
     expect(detailStore.asset?.mainFile?.id).toBe('file-kept')
   })
@@ -358,7 +347,6 @@ describe('two files uploaded into two slots of one asset', () => {
     expect(rows.map((row) => row.status)).toEqual(['uploaded', 'failed'])
     expect(rows[0].error.hasError).toBe(false)
     expect(rows[1].error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_checksum' })
-    // One request for both rows, and none after both are settled.
     expect(server.slotReads('asset-1')).toBe(1)
   })
 
@@ -383,7 +371,6 @@ describe('a slot upload whose file the server cannot tell about', () => {
   it('fails with a text of its own once its file was missing from three lists that were read', async () => {
     const { store, row } = await processingSlotUpload()
     server.asset(assetWithAnotherMainFile())
-    // The slot is there, and holds no file.
     server.slotFile('asset-1', 'extra', null)
 
     await vi.advanceTimersByTimeAsync(SEVERAL_READS)
@@ -395,8 +382,8 @@ describe('a slot upload whose file the server cannot tell about', () => {
     expect([store.getQueueProcessedCount(SLOTS), store.getQueueTotalCount(SLOTS)]).toEqual([1, 1])
   })
 
-  // Deleted while its file was being processed: the server answers 404 for the list of its slots, which is an
-  // answer - the file is in no slot of an asset that is not there.
+  // Deleted while its file was processed: the server answers 404 for the slot list.
+  // That is an answer, since the file is in no slot of a missing asset.
   it('fails with a text of its own once the server did not know its asset three times', async () => {
     const { store, row } = await processingSlotUpload()
     server.assetDeleted('asset-1')
@@ -434,7 +421,7 @@ describe('a slot upload whose file the server cannot tell about', () => {
     ['is answered by nothing at all', () => undefined],
   ]
 
-  // Only a list that was read says a file is missing: a read that failed says nothing.
+  // Only a list that was read says a file is missing. A failed read says nothing.
   it.each(unreadable)(
     'is not given up on while the list %s, and is settled when it is read again',
     async (_name, answer) => {
@@ -446,7 +433,6 @@ describe('a slot upload whose file the server cannot tell about', () => {
 
       expect(server.slotReads('asset-1')).toBeGreaterThan(3)
       expect(row.status).toBe('processing')
-      // No text of metadata that could not be loaded either: a slot row has no metadata, and no refresh button.
       expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
 
       server.slotsBy('asset-1', () => ({

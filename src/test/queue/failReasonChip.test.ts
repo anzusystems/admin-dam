@@ -5,15 +5,10 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The chip that says why the server failed a file: one text for each reason the server knows, in both languages of
- * the application. A row of the editable queue shows it over its picture, the slot of an asset and the info box of
- * the detail beside the file. The chip of the library, with the messages of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-// Every reason core-dam can give a failed file, `none` among them.
 const reasons: Array<[string, string, string]> = [
   ['none', 'None', 'Žiadny'],
   ['unknown', 'Unknown', 'Neznámy'],
@@ -62,7 +57,6 @@ describe('the chip of the reason a file failed for', () => {
     expect(Object.values(library.AssetFileFailReason).sort()).toEqual(reasons.map(([reason]) => reason).sort())
   })
 
-  // As it is today: a reason the application was not told of leaves nothing on the page.
   it('is not drawn at all for a reason it has no text for', async () => {
     const { chip } = await mountChip('quota_exceeded')
 
@@ -71,7 +65,6 @@ describe('the chip of the reason a file failed for', () => {
 })
 
 describe('a failed row of the editable queue whose reason has no text', () => {
-  // As it is today: the row says "Error" and nothing else, neither the chip nor the text of an unknown error.
   it('says that there is an error, and not which', async () => {
     const ui = await startUploadUi({
       server,

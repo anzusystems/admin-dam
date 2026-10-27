@@ -55,22 +55,22 @@ describe('what the listener passes on', () => {
     listener(event(name))
   }
 
-  // The event names the asset file, and an asset carries many of them: without the id two uploads into different
-  // slots of one asset settle each other.
+  // The event names the asset file and an asset has many. Without the
+  // id, two uploads into different slots of one asset settle each other.
   it('carries the file id of a processed file', async () => {
     await fire('asset_file_processed')
 
     expect(queueItemProcessed).toHaveBeenCalledWith('asset-1', 'file-1')
   })
 
-  // The detail that holds the asset is told of its processed file too, whether a queue has a row of it or not.
+  // The detail holding the asset is told of the processed file whether or not a queue has a row for it.
   it('tells the detail of a processed file, with its id', async () => {
     await fire('asset_file_processed')
 
     expect(fileStatusOnServer.mock.calls).toEqual([['asset-1', 'file-1', 'processed']])
   })
 
-  // And of a file whose processing ended otherwise: the detail holds it as still on its way as well.
+  // Same for a file whose processing failed: the detail would otherwise keep it as still in progress.
   it('carries it for a failed file, to the detail too', async () => {
     await fire('asset_file_failed')
 
@@ -102,7 +102,6 @@ describe('notification listeners', () => {
     initAppNotificationListeners()
     initAppNotificationListeners()
 
-    // It used to register another listener on every call, with nothing tearing the first one down.
     expect(addDamNotificationListener).toHaveBeenCalledTimes(1)
     expect(openConnection).toHaveBeenCalledTimes(1)
   })
@@ -115,8 +114,8 @@ describe('notification listeners', () => {
 
     expect(() => initAppNotificationListeners()).toThrow('bad webSocketUrl')
 
-    // Registered before the connection is opened, so a throw would otherwise leave a listener behind that nothing can
-    // reach - and the next attempt would add another.
+    // The listener is registered before the connection opens. If opening throws,
+    // an unreachable listener would stay and the next attempt would add another.
     expect(off).toHaveBeenCalledTimes(1)
 
     openConnection.mockImplementation(() => undefined)

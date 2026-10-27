@@ -36,7 +36,7 @@ import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 const { showErrorT, showErrorsDefault, showWarningT } = useAlerts()
-// A failure that ends after the user went elsewhere has nothing to say there.
+// A failure that ends after the user navigated away is not shown.
 const { onPage } = usePageNavigation()
 const route = useRoute()
 const assetDetailStore = useAssetDetailStore()
@@ -64,7 +64,7 @@ const { wide, panelId } = useDetailInfoPanel()
 
 const assetFileId = ref<DocId>('')
 
-// The asset the part of the detail that deleted it told of by its event: the page is emptied of it.
+// The asset reported deleted by the detail's event. The page is emptied of it.
 let emptiedOf: DocId | null = null
 
 const afterDelete = (deletedId: DocId) => {
@@ -72,7 +72,7 @@ const afterDelete = (deletedId: DocId) => {
   asset.value = null
 }
 
-// The asset read whole, behind the loader of the detail.
+// Reads the full asset behind the detail loader.
 const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
   assetDetailStore.setView('list')
   assetDetailStore.showLoader()
@@ -92,8 +92,11 @@ const readAsset = async (read: () => ReturnType<typeof fetchAsset>) => {
     fetchCachedUsers()
   } catch (error) {
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-    /* Cleared, as the list clears its detail: read again after a change of its file, the asset the page drew is the
-     * one from before the change, and would be left there under a working "Save". The first read has none yet. */
+    /*
+     * Cleared like the list's detail. On a re-read after a file change,
+     * the old asset would otherwise stay under a working "Save".
+     * The first read has nothing to clear.
+     */
     assetDetailStore.reset()
     if (!onPage()) return
     showErrorsDefault(error)
@@ -112,9 +115,11 @@ const getDetail = async () => {
   await readAsset(() => fetchAssetByFileId(assetFileId.value))
 }
 
-/* The detail tells of a change of the file of its asset: it is read again, by its own id - the file the address of
- * the page names can be the very one that was deleted, and is not found any more. Not once the page is left, which
- * the answer of the change can outlast. */
+/*
+ * Re-reads the asset by its own id after its file changed. The file
+ * in the page address may be the deleted one and no longer exist.
+ * Skipped once the page is left, which the change response can outlast.
+ */
 provideAssetFileChanged((byServer) => {
   if (!onPage()) return
   readAfterFileChange(async () => {
@@ -123,10 +128,12 @@ provideAssetFileChanged((byServer) => {
   }, byServer)
 })
 
-/* And of the asset deleted in the detail: marked as being deleted while the page holds it, so that what changes it is
- * off - also when another tab was opened before the delete was answered, and the part that deleted, gone with its tab,
- * has no event to send. Its event, when it sends one, comes right after this and empties the page; without it the page
- * stays on the asset, and says that it went meanwhile. */
+/*
+ * Marks the deleted asset as deleting while the page holds it, so editing is disabled.
+ * This also covers a delete answered after another tab opened, when the deleting part is gone and sends no event.
+ * If its event arrives, it comes right after and empties the
+ * page. Otherwise the page stays and shows the asset was deleted.
+ */
 provideAssetDeleted((deletedId) => {
   if (assetDetailStore.asset?.id !== deletedId) return
   assetDetailStore.setDeleting()
@@ -146,7 +153,7 @@ const resetAllStores = () => {
 const { currentExtSystemId } = useCurrentExtSystem()
 const { can } = useAuth()
 
-// The first read waits a moment: called off when the page is left before it, or it would read for the page after.
+// The first read is delayed. It is cancelled when the page is left first, or it would read for the next page.
 let firstRead: ReturnType<typeof setTimeout> | undefined
 
 onMounted(() => {
@@ -201,8 +208,10 @@ onUnmounted(() => {
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
-                   icon there, as in the library's detail. -->
+              <!--
+                Below 840 px the button toggles the image above the panel,
+                so it uses an image icon, as in the library's detail.
+              -->
               <VIcon
                 icon="mdi-information-outline"
                 class="d-none d-md-flex"

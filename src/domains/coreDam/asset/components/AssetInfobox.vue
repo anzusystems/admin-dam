@@ -19,7 +19,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <!-- An asset being deleted is said to be so, whatever its main file: what became of the file matters no more. -->
+  <!-- A deleting asset shows only that state, whatever its main file status. -->
   <div
     v-if="assetStatus === DamAssetStatus.Deleting"
     class="w-100 pa-2 text-body-small"
@@ -48,8 +48,11 @@ const { t } = useI18n()
       </div>
     </VAlert>
   </div>
-  <!-- The server holds an asset as a draft until it has processed a file of it: also while its main file is on its
-       way, or failed, or a duplicate. With a main file there is a file: what is said of it is its own state. -->
+  <!--
+    The server keeps an asset as draft until it processed a file,
+    also while the main file is uploading, failed or is a duplicate.
+    With a main file, the file's own state is shown instead.
+  -->
   <div
     v-else-if="assetStatus === DamAssetStatus.Draft && !assetMainFileStatus"
     class="w-100 pa-2 text-body-small"

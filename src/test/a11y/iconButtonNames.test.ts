@@ -6,12 +6,13 @@ import en from '@/locales/en'
 import sk from '@/locales/sk'
 import { i18n } from '@/plugins/i18n'
 
-/* The icon-only buttons of the upload queue have an accessible name. A tooltip is not one: it gives
- * `aria-describedby`, is rendered only on hover and is hidden on touch devices. The row, the list and the mass
- * operations of the queue are the library's, which guards them the same way (`src/test/a11y/iconButtonNames.test.ts`
- * there); what admin-dam wraps them in is read here, and has no icon-only button of its own today: the delete of a
- * row is the library's `AActionDeleteButton`. That the three wrappers have no button of their own, the guard of the
- * names of the whole app (`iconButtonTooltips.test.ts`) does not pin: it would take one they grew, named. */
+/*
+ * Icon-only buttons of the upload queue need an accessible name. A tooltip is not one:
+ * it gives `aria-describedby`, renders only on hover and is hidden on touch devices.
+ * The row, list and mass operations of the queue belong to the library, which guards them the same way.
+ * This test reads the admin-dam wrappers, which have no icon-only button of
+ * their own. `iconButtonTooltips.test.ts` would not catch one added later.
+ */
 
 const sources = import.meta.glob(
   [
@@ -33,7 +34,6 @@ const NOT_CONTENT = new Set(['VTooltip', 'VMenu', 'VDialog', 'VIcon'])
 
 const isElement = (node: TemplateChildNode): node is ElementNode => node.type === NodeTypes.ELEMENT
 
-/** What the button is named by: the expression of a bound `aria-label`, the text of a plain one. */
 const ariaLabel = (el: ElementNode): string | undefined => {
   for (const prop of el.props) {
     if (prop.type === NodeTypes.ATTRIBUTE && prop.name === 'aria-label') return prop.value?.content
@@ -51,7 +51,6 @@ const ariaLabel = (el: ElementNode): string | undefined => {
   return undefined
 }
 
-// What the button shows as its own content, overlays and icons left out.
 const content = (children: TemplateChildNode[]): TemplateChildNode[] =>
   children.flatMap((child) => {
     if (child.type === NodeTypes.COMMENT) return []
@@ -84,7 +83,6 @@ const iconButtons = (path: string, source: string): IconButton[] => {
 
 const buttons = Object.entries(sources).flatMap(([path, source]) => iconButtons(path, source))
 
-// The app's own messages, the library's `common.*` among them.
 i18n.global.setLocaleMessage('sk', sk)
 i18n.global.setLocaleMessage('en', en as never)
 const text = (key: string, locale: 'sk' | 'en') =>
@@ -112,7 +110,7 @@ describe('icon-only buttons of the upload queue', () => {
     expect(buttons.filter((button) => !button.label).map((button) => button.at)).toEqual([])
   })
 
-  // An `aria-label` is there even when its translation is not: then the button would be named by the key.
+  // An `aria-label` exists even when its translation is missing. Then the button would be named by the key.
   it.each(['sk', 'en'] as const)('are named by a text the app has in %s', (locale) => {
     const named = buttons.map((button) => {
       const key = button.label?.match(/^t\('([^']+)'\)$/)?.[1]

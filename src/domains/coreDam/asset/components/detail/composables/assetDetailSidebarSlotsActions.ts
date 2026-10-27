@@ -15,7 +15,7 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
-// The assets a change of a slot is on its way for, whichever part of a detail sent it: see the changes below.
+// Assets with a slot change in flight, from any part of a detail. See the changes below.
 const changesOnTheirWay = new Set<DocId>()
 
 export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: DamAssetTypeType) {
@@ -31,24 +31,25 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
     () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
   )
 
-  /* The list of the slots is one store for every asset, and this reads into it the slots of one: the asset of the
-   * part of a detail it was made for, its Slots tab or a select of its slots. What is asked about them can be
-   * answered once the detail holds another asset - after a change that took long, with the next asset of the list
-   * gone on to meanwhile. Written then, the rows of this asset are drawn in the Slots tab of that one, where the menu
-   * of a row deletes the file of the row, or puts it into a slot of the asset of the tab. So an answer is written
-   * only while the detail holds this asset, and only while nothing was asked about the slots since: of two reads,
-   * the answer of the older can come last. And the list is of this asset from the moment the part is made, before it
-   * is drawn and reads: rows of another asset are not drawn until the read is answered, nor left there when it fails.
-   * Every part that reads the list makes this first. */
+  /*
+   * The slot list store is shared by all assets. An answer can arrive after the detail moved to another asset.
+   * Written then, this asset's rows would show in the other
+   * asset's Slots tab, where row actions act on the wrong asset.
+   * So an answer is written only while the detail holds this asset and no newer slot request was made.
+   * The list is claimed for this asset at creation, so other assets'
+   * rows are never shown. Every part reading the list does this first.
+   */
   const detailHoldsAsset = () => assetDetailStore.asset?.id === assetId
   assetSlotsStore.holdListOf(assetId)
-  // The count the loader of the slots went up at for this part of the detail last: for a read, or for a change.
+  // The loader count this part last raised, for a read or a change.
   let raisedLoader = 0
   const showLoader = () => (raisedLoader = assetSlotsStore.showLoader())
 
   const getList = async () => {
-    /* Nothing is read for a detail that holds another asset by now: only the loader a change put up is taken down,
-     * unless the tab of that asset has put it up since. */
+    /*
+     * Nothing is read if the detail holds another asset. Only the loader a
+     * change raised is lowered, unless that asset's tab raised it since.
+     */
     if (!detailHoldsAsset()) {
       assetSlotsStore.hideLoader(raisedLoader)
 
@@ -56,33 +57,38 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
     }
     const asked = showLoader()
     const isTaken = () => assetSlotsStore.isAwaited(asked) && detailHoldsAsset()
-    // Without the finally a failed fetch leaves the slot panel spinning with nothing to say, and
-    // every mutation below ends in this read, or leaves it to the tab that is drawn again.
+    // Without the finally, a failed fetch leaves the slot panel spinning.
+    // Every mutation below ends in this read, or leaves it to the redrawn tab.
     try {
       const items = await fetchAssetSlotList(assetId, pagination, filterData, filterConfig)
       if (isTaken()) assetSlotsStore.setList(items, assetId)
     } catch (error) {
       if (isTaken()) showErrorsDefault(error)
     } finally {
-      // After an answer that was not written as well: nothing else would take the loader down for it.
+      // Also after an answer that was not written: nothing else lowers the loader for it.
       assetSlotsStore.hideLoader(asked)
     }
   }
 
-  /* The read of the slots after a change the page that draws the detail was told of just before. With nothing typed
-   * the page reads the asset whole, and the detail is behind its loader from that moment: the tab goes with it, and
-   * reads the slots as it is mounted again. A read from here too would be a second one, for nothing: the loader of
-   * the slots stays up for the tab that is drawn again. */
+  /*
+   * Reads slots after a change the page was just told about.
+   * With nothing typed the page rereads the asset and the detail
+   * shows its loader. The tab remounts and reads the slots itself.
+   * A read here would duplicate it, so the slots loader stays up for the redrawn tab.
+   */
   const getListAfterChange = async () => {
     if (assetDetailStore.loader) return
     await getList()
   }
 
-  /* The four changes of a slot below go one at a time: pressed a second time while the first is on its way, a change
-   * would be sent again, and refused over the one that went through. The loader that goes up with a change takes the
-   * rows away, with their menus and their dialogs, but only once the tab is drawn again; and a read of the slots
-   * takes it down under the change - the tab drawn again reads them, and its rows are back. So a change is also known
-   * as on its way until it is answered, for its asset. Each says when it failed, and why the server refused it. */
+  /*
+   * Slot changes go one at a time. A second press while the first is
+   * in flight would resend the change, and the server refuses it.
+   * The loader removes the rows, with their menus and dialogs, only after the tab
+   * re-renders. A slot read can also hide the loader before the change is answered.
+   * So a change counts as in flight for its asset until it is
+   * answered. Each failure is reported with the server's reason.
+   */
   const changeOnItsWay = () => assetSlotsStore.loader || changesOnTheirWay.has(assetId)
   const sendChange = async (request: () => Promise<unknown>) => {
     changesOnTheirWay.add(assetId)
@@ -96,7 +102,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
 
   const removeAssetFile = async (fileId: DocId) => {
     if (changeOnItsWay()) return
-    // Once the main file of the asset is deleted, the server makes another of its files the main one, or none.
+    // When the main file is deleted, the server makes another file the main one, or none.
     const ofMainFile = assetSlotsStore.list.some((slot) => slot.main && slot.assetFile?.id === fileId)
     try {
       await sendChange(() => deleteFile(assetType, fileId))
@@ -120,7 +126,7 @@ export function useAssetDetailSidebarSlotsActions(assetId: DocId, assetType: Dam
 
       return
     }
-    // The Info tab of the detail shows the main file of the asset, and that is another one now.
+    // The Info tab shows the asset's main file, which has changed now.
     fileChanged(assetId)
     getListAfterChange()
   }

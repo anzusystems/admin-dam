@@ -4,12 +4,15 @@ import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The dialog that adds a distribution has a tab for each service, each with a select of the slot whose file it
- * distributes; the dialog of a redistribution has no select. The file and its status are kept between the tabs, and
- * between one opening of the dialog and the next: a tab drawn again showed the main slot while the file of the slot
- * picked on the previous tab was distributed, and a slot whose file was not processed, picked once, left every later
- * dialog - also of another asset, also a redistribution - saying the file must be processed. The real tab of the
- * distributions with its real dialogs, the application around them as it starts; the server is a fake. */
+/*
+ * The add-distribution dialog has a tab per service, each with a select of
+ * the slot whose file it distributes. A redistribution dialog has no select.
+ * The file and its status are kept between tabs and between dialog openings. Bugs this guards:
+ * a redrawn tab showed the main slot while the file of the previously picked slot was distributed;
+ * a picked slot with an unprocessed file made every later dialog say the
+ * file must be processed, also for other assets and redistributions.
+ * Uses the real tab and dialogs; the server is a fake.
+ */
 
 let server: FakeDam
 
@@ -24,7 +27,6 @@ const MUST_BE_PROCESSED = 'Asset file must be processed before distribution'
 const CREATED = 'Record was created'
 const UPDATED = 'Record was updated'
 
-/** A slot of the asset with its file, as the list of the slots answers it. */
 const slot = (slotName: string, fileId: string, status: 'processed' | 'uploading' = 'processed', main = false) => ({
   id: 'slot-' + slotName,
   slotName,
@@ -33,7 +35,6 @@ const slot = (slotName: string, fileId: string, status: 'processed' | 'uploading
   assetFile: assetFile(fileId, status, { asset: 'asset-1' }),
 })
 
-/** A distribution to the service as the lists answer it, with the texts its form takes. */
 const distribution = (id: string, distributionService: string) => ({
   id,
   assetId: 'asset-1',
@@ -48,19 +49,15 @@ const distribution = (id: string, distributionService: string) => ({
   _resourceName: 'jwDistribution',
 })
 
-/** What the server lists for the asset. */
 let listed: ReturnType<typeof distribution>[] = []
 
 const dialog = () => document.body.querySelector<HTMLElement>('.dialog-distribution.v-overlay--active')
 const slotSelect = () => dialog()!.querySelector<HTMLElement>('.v-select')!
-/** The slot the select of the open tab shows. */
 const shownSlot = () => slotSelect().querySelector('.v-select__selection-text')?.textContent?.trim()
-/** The open tab shows its form, the distributions its file has, or that the file must be processed first. */
 const tabDrawn = () =>
   dialogButton('Add') !== null ||
   buttonsNamed(dialog()!, 'Redistribute').length > 0 ||
   !!dialog()!.textContent?.includes(MUST_BE_PROCESSED)
-/** What the server was asked to distribute: the file of each create, in order. */
 const distributed = () => server.sent('POST', DISTRIBUTE).map((request) => request.url.match(DISTRIBUTE)![1])
 
 const openTab = async () => {
@@ -105,7 +102,6 @@ const openTab = async () => {
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
   useAssetDetailStore().setAsset(asset as never)
 
-  // The place in the detail the button that adds a distribution is drawn in.
   await ui.mount(
     () => import('@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue')
   )
@@ -116,7 +112,6 @@ const openTab = async () => {
   )
   await eventually(() => expect(tab.textContent).toContain(listed.length ? 'Redistribute' : 'Nothing to show'))
 
-  /** The tab of the service in the open dialog, pressed, and what it shows of its file drawn. */
   const toService = async (title: string) => {
     buttonsNamed(dialog()!, title)[0].click()
     await eventually(() => expect(tabDrawn()).toBe(true))
@@ -126,20 +121,17 @@ const openTab = async () => {
     ...ui,
     tab,
     toService,
-    /** "Add new" of the tab, and the dialog it opens on the first service. */
     addNew: async (title = SERVICES.jw_a) => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="add-new-distribution"]')!.click()
       await eventually(() => expect(dialog()).not.toBeNull())
       await toService(title)
     },
-    /** "Redistribute" of the first distribution listed, and its form drawn. */
     redistribute: async () => {
       buttonsNamed(tab, 'Redistribute')[0].click()
       await eventually(() =>
         expect(dialogButton('Confirm') !== null || !!dialog()?.textContent?.includes(MUST_BE_PROCESSED)).toBe(true)
       )
     },
-    /** The slot picked in the select of the open tab, and the form of its file drawn. */
     pickSlot: async (slotName: string) => {
       await eventually(() => expect(shownSlot()).toBeTruthy())
       slotSelect()
@@ -157,7 +149,6 @@ const openTab = async () => {
       await eventually(() => expect(shownSlot()).toBe(slotName))
       await vi.advanceTimersByTimeAsync(100)
     },
-    /** The open dialog closed by its X. */
     close: async () => {
       dialog()!.querySelector('.v-toolbar .mdi-close')!.closest('button')!.click()
       await eventually(() => expect(dialog()).toBeNull())
@@ -176,7 +167,6 @@ beforeEach(() => {
     status: 200,
     data: { data: structuredClone(listed) },
   }))
-  // No file has a distribution to the service yet: the tab offers its form.
   server.on('GET', FILE_LIST, () => ({ status: 200, data: { data: [] } }))
   server.on('GET', /^\/adm\/v1\/jw-distribution\/asset-file\/[^/]+\/prepare-payload\/[^/]+$/, () => ({
     status: 200,
@@ -234,7 +224,6 @@ describe('the dialog that adds a distribution', () => {
 describe('the dialog of a redistribution', () => {
   it('opens its form after a slot whose file is not processed was picked in the dialog that adds one', async () => {
     listed = [distribution('dist-1', 'jw_a')]
-    // The redistribution reads its distribution among those of its file.
     server.on('GET', FILE_LIST, () => ({ status: 200, data: { data: structuredClone(listed) } }))
     const ui = await openTab()
     await ui.addNew()

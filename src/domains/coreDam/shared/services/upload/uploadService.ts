@@ -20,7 +20,7 @@ const messages: UploadMessages = {
   offset: () => i18n.global.t('system.uploadErrors.offset'),
   mimeType: () => i18n.global.t('system.uploadErrors.mimeType'),
   systemError: () => i18n.global.t('system.uploadErrors.systemError'),
-  // The store writes its own text over it, as it does today: the text a user sees does not change.
+  // The store overwrites this with its own text, so the user-visible message is unchanged.
   chunkValidationFailed: () => i18n.global.t('system.uploadErrors.unknownError'),
 }
 
@@ -44,8 +44,7 @@ export const resolveUploadErrorMessage = (error: unknown) => {
   return messages.unknownError()
 }
 
-/* The run of the library with admin-dam's set: its requests for the four asset types, its texts, its timeout and
- * its own `rusha`. Made for each run, so the timeout is the one the configuration holds by then. */
+/* Created per run so the timeout reflects the current configuration. */
 export const useUpload = (queueItem: UploadQueueItem, uploadCallback?: UploadProgressCallback) =>
   useDamUpload(
     queueItem,
@@ -54,7 +53,7 @@ export const useUpload = (queueItem: UploadQueueItem, uploadCallback?: UploadPro
       requests: { start: uploadStart, chunk: uploadChunk, finish: uploadFinish },
       messages,
       apiTimeout: envConfig.dam.apiTimeout,
-      // Already settled: no wait on the way of an upload (the hash is ready before the start goes out).
+      // Already resolved: the hash is ready before the upload start is sent, so there is no wait.
       loadHash: () => Promise.resolve(rusha.createHash()),
     })
   )

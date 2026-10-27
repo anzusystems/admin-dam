@@ -5,13 +5,13 @@ import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The panel beside the list can be opened while the server is still processing the main file of the asset; "Save" of
- * an asset that is not described is held back then. Two reads of the page learn how far the server is with the file
- * though they are made for something else: the list read anew, and the read of the metadata of the rows picked for
- * the mass edit. What they bring of a main file the server is done with is told to the detail as its notification
- * is: the panel reads the asset with no loader. No notification comes here. The real page of the list with its panel
- * and its mass edit, the application around it as it starts; the server is a fake, and so is the address the page
- * asks about a new version of the application. */
+/*
+ * The panel beside the list can be opened while the server is still processing
+ * the main file; "Save" is held back then for an asset that is not described.
+ * Two page reads reveal the file state: the list read anew, and the metadata read for rows picked for mass edit.
+ * When they show the main file as processed, the panel reads the asset with
+ * no loader, as it does for a notification. No notification comes here.
+ */
 
 let server: FakeDam
 
@@ -24,12 +24,10 @@ const FROM_SERVER = 'from the server'
 const STILL_PROCESSED = 'The file is still being processed.'
 
 const LIST = '/assets'
-/** The asset whose main file the server is processing, and that file; another asset of the list. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
-/** How far the server is with the main file of the asset. */
 let fileIs: 'stored' | 'processed' = 'stored'
 
 const fileOnServer = (fileId: string, assetId: string) => ({
@@ -39,7 +37,6 @@ const fileOnServer = (fileId: string, assetId: string) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -51,22 +48,18 @@ const onServer = (id: string) => ({
   authors: [],
 })
 
-/** Long enough for whatever a read sets off to have answered. */
 const answered = () => vi.advanceTimersByTimeAsync(1_000)
 
-/** How many times the asset was read by itself: the panel's reads. */
 const reads = () => server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + ASSET).length
 
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** The page of the list, the asset in the panel beside it with "Save" held back, nothing typed. */
 const openPanel = async () => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_image_update'],
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -92,18 +85,15 @@ const openPanel = async () => {
 
   return {
     ...ui,
-    /** "Save" of the panel: whether it is held back, and whether the panel says why. */
     save: () => ({
       heldBack: buttonsNamed(panel(), 'Save')[0]?.disabled,
       saysWhy: !!panel().textContent?.includes(STILL_PROCESSED),
     }),
     title: () => panel().querySelector<HTMLTextAreaElement>('textarea')?.value,
-    /** The list read anew by its "Refresh". */
     readListAnew: async () => {
       page.querySelector('.mdi-refresh')!.closest('button')!.click()
       await answered()
     },
-    /** The tile of the asset picked for the mass edit: the metadata of its row are read. */
     pickForMassEdit: async () => {
       tiles()[0].querySelectorAll<HTMLButtonElement>('.detail-icon')[0].click()
       await answered()
@@ -140,8 +130,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The two reads brought the file as processed and told nobody: "Save" of the panel stayed held back until a
- * notification came, or the asset was opened again. */
+/*
+ * The two reads brought the file as processed and told nobody. "Save" of the
+ * panel stayed held back until a notification came or the asset was opened again.
+ */
 describe('the panel beside the list, its main file processed since it was read', () => {
   it('is read anew once the list read anew brings the file as processed', async () => {
     const list = await openPanel()
@@ -164,7 +156,6 @@ describe('the panel beside the list, its main file processed since it was read',
     expect([server.sent('GET', BY_IDS).length, reads(), list.title(), list.alerts()]).toEqual([1, 2, FROM_SERVER, []])
   })
 
-  // The guard: nothing new, nothing read.
   it('is not read again by a list that brings the file as it holds it, still on its way or processed', async () => {
     const list = await openPanel()
 

@@ -4,15 +4,15 @@ import { routes } from 'vue-router/auto-routes'
 
 import { addLegacyRedirects } from '@/router/legacyRedirects'
 
-/* The addresses of the logs from before this version: `/log` (before 2.0.0) and `/logs` (2.x) with the list at the
- * root and the detail at `:system/:type/:id`. The system is now the fixed `dam` segment, so the rest of such an
- * address cannot be appended to the new list as the other renamed roots append theirs: a detail ended on the
- * catch-all page. The real route table with the redirects added as the application adds them. */
+/*
+ * Old log addresses: `/log` (before 2.0.0) and `/logs` (2.x), with the detail at `:system/:type/:id`.
+ * The system is now the fixed `dam` segment, so the rest of such an address cannot be appended to the new list.
+ * A detail used to end on the catch-all page.
+ */
 
 const ID = '0123456789abcdef01234567'
 const NOT_FOUND = '/[...pathMatch]'
 
-/** Where the router ends after the address: its path with query and hash, and the name of the page. */
 const landsOn = async (address: string) => {
   const router = createRouter({ history: createMemoryHistory(), routes })
   addLegacyRedirects(router)
@@ -50,7 +50,7 @@ describe('a log address from before this version', () => {
   )
 })
 
-// The redirect of the old detail has the shape of the current one: it must leave the current addresses to their pages.
+// The redirect of the old detail has the shape of the current one, so it must leave current addresses to their pages.
 describe('a current log address', () => {
   it.each([
     ['/logs/dam/audit', '/(common)/logs/dam/[type]'],

@@ -6,25 +6,20 @@ import { openAssetTab } from '@pages/assets/assetDetailPage'
 import { fixture } from '@pages/shared/fixtures'
 import { downloadLink } from '@pages/shared/api'
 
-/** What a slot row says about the file it holds. */
 export const MAIN_FILE = 'Hlavný súbor'
 export const NO_FILE = 'Žiaden súbor'
 
-/** The label of the slot action that has no `data-cy` of its own. */
 const MAKE_MAIN_FILE = 'Spraviť ako hlavný súbor'
 
-/** The two things the slot remove dialog can do, and the wording it explains itself with. */
 export const REMOVE_FILE = 'Odstrániť súbor natrvalo'
 export const UNSET_SLOT = 'Odstrániť len prepojenie z daného slotu'
 export const REMOVE_ONLY_DESCRIPTION = 'Súbor bude natrvalo odstránený zo systému'
 export const REMOVE_BOTH_DESCRIPTION = 'Súbor sa používa vo viacerých slotoch'
 
-/** The row of a slot (free, premium, ...) in the asset's slots tab. */
 export function slotRow(page: Page, slot: string): Locator {
   return page.locator('.sidebar-info .v-row').filter({ hasText: new RegExp(`^\\s*${slot}\\b`) })
 }
 
-/** Move the main file from the first slot (free) into `slot` through the slot actions menu. */
 export async function switchMainFileToSlot(page: Page, slot: string): Promise<void> {
   await visibleCy(page, 'button-slots').click()
   await page.locator('.sidebar-info [data-cy="button-slot-actions"]').first().click()
@@ -38,16 +33,13 @@ export async function switchMainFileToSlot(page: Page, slot: string): Promise<vo
 }
 
 /**
- * Open the slots tab of an asset detail and wait for its first slot row.
- *
- * `slot` defaults to audio's `free`; the single-slot types (image, video, document) name theirs `default`.
+ * `slot` defaults to audio's `free`. Single-slot types (image, video, document) name theirs `default`.
  */
 export async function openSlots(page: Page, assetId: string, slot = 'free'): Promise<void> {
   await openAssetTab(page, assetId, 'button-slots')
   await expect(slotRow(page, slot)).toBeVisible()
 }
 
-/** Re-fetch the slots through "Znovu načítať sloty assetu". */
 export async function reloadSlots(page: Page): Promise<void> {
   const reloaded = page.waitForResponse((response: Response) =>
     response.url().startsWith(`${CORE_DAM_API}/asset-slot/asset/`)
@@ -56,7 +48,6 @@ export async function reloadSlots(page: Page): Promise<void> {
   await reloaded
 }
 
-/** Make the file of `slot` public or private through its visibility menu. */
 export async function setSlotVisibility(page: Page, slot: string, visibility: 'public' | 'private'): Promise<void> {
   await slotRow(page, slot).locator('.mdi-dots-vertical').click()
   if (visibility === 'public') {
@@ -74,11 +65,9 @@ export async function setSlotVisibility(page: Page, slot: string, visibility: 'p
 }
 
 /**
- * Open the actions menu (copy id, download, make main file, duplicate, switch, remove) of `slot`.
- *
- * The press is re-issued until the menu is up: a dialog or menu that is still animating closed keeps
- * intercepting pointer events, so a press right after one closes lands on nothing — the swallowed click
- * `clickForAlert` documents. Re-pressing is safe because the activator only toggles the menu.
+ * The press is re-issued until the menu is up. A dialog or menu still animating closed intercepts
+ * pointer events, so a press right after it closes lands on nothing (see `clickForAlert`).
+ * Re-pressing is safe because the activator only toggles the menu.
  */
 export async function openSlotActions(page: Page, slot: string): Promise<Locator> {
   await closeAlerts(page)
@@ -90,17 +79,14 @@ export async function openSlotActions(page: Page, slot: string): Promise<Locator
   return menu
 }
 
-/** Close the slot actions menu and wait until it can no longer swallow the next click. */
 export async function closeSlotActions(page: Page): Promise<void> {
   await page.keyboard.press('Escape')
   await expect(page.locator('.v-overlay--active .v-list')).toHaveCount(0, { timeout: 5000 })
 }
 
 /**
- * Assert what the row of `slot` says, and what it does not.
- *
- * Every text is asserted on its own: the row is a single element, and `toContainText` given an array
- * expects one *element per text* instead, so a row holding all of them would fail.
+ * Each text is asserted on its own. `toContainText` given an array expects
+ * one element per text, so a single row holding all of them would fail.
  */
 export async function expectSlot(page: Page, slot: string, texts: string[], absent: string[] = []): Promise<void> {
   const row = slotRow(page, slot)
@@ -108,7 +94,6 @@ export async function expectSlot(page: Page, slot: string, texts: string[], abse
   for (const text of absent) await expect(row).not.toContainText(text)
 }
 
-/** The labels the actions menu of `slot` offers, in the order it lists them. Leaves the menu closed. */
 export async function slotMenuLabels(page: Page, slot: string): Promise<string[]> {
   const menu = await openSlotActions(page, slot)
   await expect(menu.locator('.v-list-item').first()).toBeVisible()
@@ -118,13 +103,9 @@ export async function slotMenuLabels(page: Page, slot: string): Promise<string[]
 }
 
 /**
- * Make the file of `slot` the asset's main file.
- *
- * The item carries no `data-cy`, so it is clicked by its label, and it is rendered only for a slot that is
- * not already the main one. A file *duplicated* into a second slot takes the main flag into both rows, so
- * neither of those offers it — only a slot holding a different file does.
- *
- * Nothing is alerted on success, which is why the PATCH is what gets waited for rather than an alert.
+ * The item has no `data-cy`, so it is clicked by label. It renders only for a slot that is not already the main one.
+ * A file duplicated into a second slot carries the main flag in both rows, so neither offers it.
+ * Nothing is alerted on success, so the PATCH is awaited instead of an alert.
  */
 export async function makeSlotMainFile(page: Page, slot: string): Promise<void> {
   const menu = await openSlotActions(page, slot)
@@ -137,17 +118,14 @@ export async function makeSlotMainFile(page: Page, slot: string): Promise<void> 
   await expect(slotRow(page, slot)).toContainText(MAIN_FILE)
 }
 
-/** Whether the actions menu of `slot` offers "Spraviť ako hlavný súbor". Leaves the menu closed. */
 export async function offersMakeMainFile(page: Page, slot: string): Promise<boolean> {
   return (await slotMenuLabels(page, slot)).includes(MAKE_MAIN_FILE)
 }
 
 /**
- * Download the file of `slot` through its menu, and return the file the app was given a link for.
- *
- * The app asks the API for a signed link and opens it in a new tab, which the browser turns straight into
- * a download — the popup therefore never navigates anywhere and its URL stays blank, so the link has to be
- * read from the API answer rather than from the tab.
+ * The app asks the API for a signed link and opens it in a new tab. The
+ * browser turns that into a download, so the popup URL stays blank.
+ * The link is therefore read from the API answer, not from the tab.
  */
 export async function downloadSlotFile(page: Page, slot: string): Promise<{ id: string; link: string }> {
   const menu = await openSlotActions(page, slot)
@@ -160,8 +138,7 @@ export async function downloadSlotFile(page: Page, slot: string): Promise<{ id: 
 }
 
 /**
- * Duplicate (`button-slot-duplicate`) or switch (`button-slot-switch`) the file of `slot` into `target`. The
- * slot picker offers every other slot; `expectedOptions` asserts that list.
+ * `expectedOptions` asserts the list of slots the picker offers (every other slot).
  */
 export async function moveSlotFile(
   page: Page,
@@ -181,10 +158,8 @@ export async function moveSlotFile(
 }
 
 /**
- * Open the remove confirmation of `slot` and return it.
- *
- * What it offers depends on how many slots hold the file: unlinking is only a choice when the file sits in
- * more than one, because for the last slot there would be nothing left to unlink it from.
+ * Unlinking is a choice only when the file sits in more than one
+ * slot. For the last slot there is nothing left to unlink it from.
  */
 export async function openSlotRemove(page: Page, slot: string): Promise<Locator> {
   const menu = await openSlotActions(page, slot)
@@ -194,14 +169,12 @@ export async function openSlotRemove(page: Page, slot: string): Promise<Locator>
   return dialog
 }
 
-/** Close the remove confirmation without removing anything. */
 export async function cancelSlotRemove(page: Page, dialog: Locator): Promise<void> {
   await dialog.locator('[data-cy="button-cancel"]').click()
   await expect(dialog).toBeHidden()
   await closeSlotActions(page).catch(() => {})
 }
 
-/** Unlink the file from `slot` only (not deleting the file) through the slot's remove action. */
 export async function unlinkSlotFile(page: Page, slot: string): Promise<void> {
   const dialog = await openSlotRemove(page, slot)
   await expect(dialog.locator('[data-cy="button-cancel"]')).toBeVisible()
@@ -212,8 +185,7 @@ export async function unlinkSlotFile(page: Page, slot: string): Promise<void> {
 }
 
 /**
- * Delete the file of `slot` from the system through the remove dialog's permanent option. The file goes
- * everywhere at once, so every other slot holding it is emptied too.
+ * The file is deleted everywhere, so every other slot holding it is emptied too.
  */
 export async function deleteSlotFile(page: Page, slot: string): Promise<void> {
   const dialog = await openSlotRemove(page, slot)
@@ -222,7 +194,6 @@ export async function deleteSlotFile(page: Page, slot: string): Promise<void> {
   await expect(slotRow(page, slot)).toContainText(NO_FILE)
 }
 
-/** Upload a file (fixture name or absolute path) into the empty `slot` of the asset shown in the detail. */
 export async function uploadIntoSlot(page: Page, assetId: string, slot: string, filePath: string): Promise<void> {
   const slotsReloaded = page.waitForResponse((response: Response) =>
     response.url().startsWith(`${CORE_DAM_API}/asset-slot/asset/${assetId}`)
@@ -231,12 +202,10 @@ export async function uploadIntoSlot(page: Page, assetId: string, slot: string, 
   await slotsReloaded
 }
 
-/** The "Dvojička" (twin asset) row of the slots tab. */
 export function twinRow(page: Page): Locator {
   return page.locator('.sidebar-info .v-row').filter({ hasText: /^\s*Dvojička/ })
 }
 
-/** Link the first asset of the picker as the twin and return its id and the title its tile shows. */
 export async function addFirstAssetAsTwin(page: Page): Promise<{ id: string; tileTitle: string }> {
   await twinRow(page).getByRole('button', { name: 'Pridať' }).click()
   const tile = page.locator('.asset-list-tiles__item').first()

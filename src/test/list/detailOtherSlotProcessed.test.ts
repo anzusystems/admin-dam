@@ -6,14 +6,15 @@ import { assetDetail, assetFile, createFakeDam, queueRow } from '@/test/support/
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The server fills in the metadata of an asset that is not described from whichever of its files it processes first,
- * not from its main file alone: a file put into another slot of the asset as well. The detail learns of such a file as
- * of its main file - by the notification, and by the read of the upload queue that settles the row of its upload -
- * and reads the asset with no loader: with nothing typed the form takes it in its place, with something typed "Save"
- * is held back, as the form is older than what the server filled in. Not for an asset that is described. The real
- * pages, the real listener of the notifications, and the application around them as it starts; the server is a fake,
- * and so are the connection its notifications come by and the address the page asks about a new version of the
- * application. */
+/*
+ * The server fills in the metadata of an undescribed asset from whichever file it
+ * processes first, not only the main file. That can be a file in another slot.
+ * The detail learns of such a file like a main file: by the
+ * notification and by the upload queue read that settles the row.
+ * It then reads the asset with no loader. With nothing typed the form takes the new data.
+ * With typed input "Save" is held back, as the form is older than what the server filled in.
+ * Not applied to described assets.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -37,21 +38,17 @@ const BY_FILE = /^\/adm\/v1\/asset\/asset-file\/([^/]+)$/
 const TYPED = 'typed and not saved'
 const FROM_SERVER = 'from the server'
 const STILL_PROCESSED = 'The file is still being processed.'
-/** What the card says of a main file that failed, and of one that is a duplicate. */
 const SAYS = { failed: 'Asset file processing failed', duplicate: 'Asset main file is duplicate' }
 
 const LIST = '/assets'
-/** The asset whose main file the server is processing, and that file. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
-/** A file in another slot of the asset, and another asset of the list. */
 const IN_SLOT = 'bbbbbbbb-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
 type Ended = 'failed' | 'duplicate'
 type FileStatus = 'stored' | 'processed' | Ended
 
-/** How far the server is with each of the two files of the asset, and whether the asset is described. */
 let fileIs: Record<string, FileStatus> = {}
 let described = false
 
@@ -65,14 +62,12 @@ const fileOnServer = (fileId: string, assetId = ASSET) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
     licence: 1,
     flags: { described, visible: true },
     mainFile: fileOnServer(id === ASSET ? FILE : 'file-of-other', id),
-    // What the server has filled in from the file of the other slot, once it has processed it.
     metadata: {
       customData: { title: fileIs[IN_SLOT] === 'processed' ? FROM_SERVER : '' },
       authorSuggestions: {},
@@ -96,21 +91,17 @@ const slotsOnServer = () => {
 }
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
-/** Long enough for whatever the news sets off to have answered. */
 const answered = () => vi.advanceTimersByTimeAsync(1_000)
 
-/** How many times the page asked for the asset, by its own id or by the id of its file. */
 const reads = () =>
   server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + ASSET || BY_FILE.test(request.url)).length
 
-/** The server says by its notification that it has processed the file, having done so. */
 const processed = async (fileId: string, assetId = ASSET) => {
   fileIs[fileId] = 'processed'
   listeners.forEach((listener) => listener({ name: 'asset_file_processed', data: { asset: assetId, id: fileId } }))
   await settled()
 }
 
-/** The server says by its notification that it has ended the processing of the file so, having done so. */
 const ended = async (status: Ended, fileId = FILE, assetId = ASSET) => {
   fileIs[fileId] = status
   const event =
@@ -127,7 +118,6 @@ const ended = async (status: Ended, fileId = FILE, assetId = ASSET) => {
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** The upload into the other slot of the asset, in the cases that have one: its file is with the server. */
 let inQueue = false
 
 const start = async () => {
@@ -144,7 +134,6 @@ const start = async () => {
         }
       : {},
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -159,7 +148,6 @@ const start = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
@@ -170,7 +158,6 @@ const start = async () => {
 
 type Ui = Awaited<ReturnType<typeof start>>
 
-/** A place the form of the asset is drawn in: opened, it answers the element the form is drawn in. */
 type Place = () => Promise<{ ui: Ui; form: () => HTMLElement | null }>
 
 const listOpened = async () => {
@@ -197,7 +184,6 @@ const inThePanelBesideTheList: Place = async () => {
   return { ui, form: panel }
 }
 
-/** The form of the asset, opened in the place and drawn: what a case reads of it. */
 const openForm = async (place: Place) => {
   const { ui, form } = await place()
   const title = () => form()?.querySelector<HTMLTextAreaElement>('textarea') ?? null
@@ -214,12 +200,10 @@ const openForm = async (place: Place) => {
 
       return field
     },
-    /** "Save" of the form: whether it is held back, and whether the form says why. */
     save: () => ({
       heldBack: buttonsNamed(form()!, 'Save')[0]?.disabled,
       saysWhy: !!form()!.textContent?.includes(STILL_PROCESSED),
     }),
-    /** Whether the form says the text. */
     says: (text: string) => !!form()!.textContent?.includes(text),
   }
 }
@@ -249,7 +233,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  // The file of an image, as the row of its slot reads it to draw it, and the original of a duplicate.
   for (const fileId of [FILE, IN_SLOT]) server.fileBy('image', fileId, () => fileOnServer(fileId))
   server.fileBy('image', 'file-origin', () => ({ ...fileOnServer('file-origin', OTHER), id: 'file-origin' }))
   // The window is one for the whole file, and so is its address.
@@ -260,8 +243,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The detail heard only of the main file: a file of another slot processed meanwhile filled in the metadata, and
- * "Save" came free over a form older than they are once the main file was done with - as a duplicate, say. */
+/*
+ * The detail used to hear only of the main file. A file in another slot processed meanwhile fills in metadata,
+ * and once the main file was done (as a duplicate, say) "Save" became available over a form older than that metadata.
+ */
 describe('a form whose asset has a file of another slot processed while it is open', () => {
   it('keeps what was typed into it, and "Save" held back also once its main file is found a duplicate', async () => {
     const form = await openForm(inThePanelBesideTheList)
@@ -293,9 +278,11 @@ describe('a form whose asset has a file of another slot processed while it is op
     expect([reads(), form.save(), form.ui.alerts()]).toEqual([2, FREE, []])
   })
 
-  /* The notification settles the row of the upload into that slot as well, and the queue tells the detail of it too:
-   * one read of the detail for both. (Without a notification the poll of the queue tells it, as it settles the row:
-   * `slotFileTellsDetail.test.ts`.) */
+  /*
+   * The notification settles the row of the upload into that
+   * slot, and the queue tells the detail too: one read for both.
+   * Without a notification the queue poll tells it: `slotFileTellsDetail.test.ts`.
+   */
   it('is read once when the notification and the upload queue both say the file is processed', async () => {
     inQueue = true
     const form = await openForm(inTheDetailOfTheList)
@@ -304,12 +291,14 @@ describe('a form whose asset has a file of another slot processed while it is op
     await eventually(() => expect(form.title()?.value).toBe(FROM_SERVER))
     await answered()
 
-    // The read of the detail, and the one of the queue that completes the row.
     expect([reads(), form.ui.rows.slots[0].status, form.ui.alerts()]).toEqual([3, 'uploaded', []])
   })
 
-  /* "Save" sends the asset as described, and the server fills in nothing more of it from then on; the asset held in the
-   * panel was not marked so, and the file was taken for news: "Save" held back over what was typed after the save. */
+  /*
+   * "Save" sends the asset as described, and the server fills in nothing more afterwards.
+   * The asset held in the panel was not marked so, the file was taken
+   * as news, and "Save" was held back over text typed after the save.
+   */
   it('is not read, nor "Save" held back, for a file of another slot once the form was saved', async () => {
     server.on('PATCH', /^\/adm\/v1\/asset\/metadata-bulk-update$/, (request) => ({
       status: 200,
@@ -333,7 +322,6 @@ describe('a form whose asset has a file of another slot processed while it is op
     ])
   })
 
-  // The guard: the server leaves the metadata of an asset that is described alone.
   it('is not read for a file of another slot of an asset that is described', async () => {
     described = true
     const form = await openForm(inThePanelBesideTheList)

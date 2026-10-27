@@ -130,9 +130,9 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
       />
     </Acl>
     <!--
-      The merged view: the AnzuUser half and the dam half of the same record on one page, saved by
-      one call. It sits beside both originals until their parity is signed off, then takes over
-      `/users` and the two entries above and in the Settings group collapse into one.
+      Merged view: the AnzuUser and dam parts of one record on one page, saved by one call.
+      It sits beside both originals until parity is signed off. Then
+      it takes over `/users` and the entries collapse into one.
     -->
     <Acl
       v-if="showDebugFeatures"

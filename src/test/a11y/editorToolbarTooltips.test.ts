@@ -19,12 +19,13 @@ import en from '@/locales/en'
 import sk from '@/locales/sk'
 import { i18n } from '@/plugins/i18n'
 
-/* The buttons of the editor toolbar say what they do in the language of the user. Their tooltips come from the
- * list of the toolbar, not from a template, so `iconButtonTooltips.test.ts` sees that each button has a tooltip
- * but not what it says. The real toolbar over an editor built as the dialog of podcast export data builds it, and
- * over the messages of the application. */
+/*
+ * Editor toolbar buttons must show tooltips in the user's language.
+ * Their tooltips come from the toolbar list, not a template.
+ * `iconButtonTooltips.test.ts` checks that a tooltip exists but not its text.
+ * Uses the real toolbar, an editor built like the podcast export data dialog builds it, and the app messages.
+ */
 
-// The app's own messages, the library's `common.*` among them.
 i18n.global.setLocaleMessage('sk', sk)
 i18n.global.setLocaleMessage('en', en as never)
 
@@ -36,7 +37,9 @@ const SAID = {
 let app: App | undefined
 let editor: Editor | undefined
 
-/** The editor of `PodcastExportDataBodyEditor.vue`, its cursor in a link: only then is the link offered for removal. */
+/**
+ * Editor of `PodcastExportDataBodyEditor.vue` with the cursor in a link. The link removal is offered only then.
+ */
 const editorInLink = () => {
   editor = new Editor({
     content: {
@@ -56,7 +59,6 @@ const editorInLink = () => {
   return editor
 }
 
-/** The toolbar over the editor, in the language; answers its buttons, in the order of the toolbar. */
 const mountToolbar = async (locale: 'sk' | 'en') => {
   i18n.global.locale.value = locale
   const root = document.createElement('div')
@@ -65,14 +67,13 @@ const mountToolbar = async (locale: 'sk' | 'en') => {
   app.use(createVuetify({ components }))
   app.use(i18n)
   app.mount(root)
-  // The toolbar draws its buttons once it is mounted, and each tooltip takes its button a tick after that.
+  // The toolbar draws its buttons after mount, and each tooltip attaches to its button one tick later.
   await vi.advanceTimersByTimeAsync(0)
   await nextTick()
 
   return () => Array.from(root.querySelectorAll('.anzutap-toolbar__item--button'))
 }
 
-/** What the buttons of the toolbar say of themselves when the pointer is over them, in the order of the toolbar. */
 const tooltips = async (locale: 'sk' | 'en') => {
   const buttons = await mountToolbar(locale)
   const said: string[] = []
@@ -90,7 +91,7 @@ const tooltips = async (locale: 'sk' | 'en') => {
 
 beforeEach(() => {
   vi.useFakeTimers()
-  // happy-dom has none, and an open tooltip listens on it for the size of the window.
+  // happy-dom has no `visualViewport`, and an open tooltip listens on it for window resize.
   vi.stubGlobal('visualViewport', new EventTarget())
 })
 
@@ -119,7 +120,7 @@ describe('the buttons of the editor toolbar', () => {
     ])
   })
 
-  // A title that is not a key of the app would show as it is written, in every language.
+  // A title that is not a key of the app would be shown as written in every language.
   it.each(['sk', 'en'] as const)('are titled by keys the app has texts for in %s', (locale) => {
     const text = (key: string) => (i18n.global.te(key, locale) ? i18n.global.t(key, {}, { locale }) : undefined)
 
@@ -130,7 +131,8 @@ describe('the buttons of the editor toolbar', () => {
     expect(await tooltips(locale)).toEqual(SAID[locale])
   })
 
-  // A tooltip is not a name. The link opens a dialog and the removal of it acts once: they are no marks to switch.
+  // A tooltip is not an accessible name. The link opens a dialog
+  // and the removal acts once, so they are not toggle marks.
   it('are named as their tooltips say, and the marks say whether they are on', async () => {
     const buttons = await mountToolbar('en')
     const named = () =>
@@ -144,7 +146,7 @@ describe('the buttons of the editor toolbar', () => {
       ['Remove link', null],
     ])
     editor!.chain().setTextSelection({ from: 1, to: 7 }).toggleBold().run()
-    // The editor tells the toolbar of its new state two frames later.
+    // The editor reports its new state to the toolbar two frames later.
     await vi.advanceTimersByTimeAsync(100)
     await nextTick()
     expect(named().map(([, pressed]) => pressed)).toEqual(['true', 'false', 'false', null, null])

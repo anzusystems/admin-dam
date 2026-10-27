@@ -88,7 +88,7 @@ export const usePublicExportDetailActions = () => {
     } catch (error) {
       return handleRecordLoadError(error) ? false : undefined
     } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
       if (!options.signal?.aborted) detailLoading.value = false
     }
   }

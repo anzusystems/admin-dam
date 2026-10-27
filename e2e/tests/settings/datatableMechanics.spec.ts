@@ -13,21 +13,16 @@ import {
 } from '@pages/shared/datatable'
 
 /**
- * The datatable mechanics every settings list shares: the page-size toggle, the paginator, the
- * `Radenie` ordering menu and the column-configuration cog. Covered once, here, on the authors list —
- * the longest one that no other spec reads back — through the helpers in `pages/shared/datatable.ts`.
- *
- * **Ordering is not in the column headers.** No list in the app renders a sortable `th`; the ordering
- * menu above the table offers `Najnovšie` and `Najstaršie` and nothing else.
- *
- * Every assertion here is about mechanics rather than content: the list is written to by other specs
- * (and by a parallel worker), so a page is pinned down by the `limit`/`offset` it asks for and by the
- * footer's readout, never by which authors happen to be on it.
+ * Mechanics shared by every settings list: page-size toggle, paginator,
+ * `Radenie` ordering menu and column cog. Covered once, on the authors list.
+ * Ordering is not in the column headers. No list renders a sortable
+ * `th`; the ordering menu offers only `Najnovšie` and `Najstaršie`.
+ * Other specs and parallel workers write to the list, so a page is identified
+ * by its `limit`/`offset` and the footer readout, never by its authors.
  */
 
 let page: Page
 
-/** The authors list — `/author/ext-system/<id>/search`. */
 const authors = () => datatable(page, '/author/ext-system')
 
 async function openAuthors(): Promise<void> {
@@ -54,7 +49,6 @@ test.describe.serial(`${ADMIN_SUITE} - Datatable mechanics`, () => {
     expect(await table.summary()).toMatch(/^1 - \d+ od/)
     expect(await table.currentOrdering()).toBe(ORDERING.newest)
 
-    // Nowhere to go back to from the first page, and no way to jump to a last page the API never counts.
     await expect(table.paginatorButton('first')).toBeDisabled()
     await expect(table.paginatorButton('prev')).toBeDisabled()
     await expect(table.paginatorButton('next')).toBeEnabled()
@@ -106,10 +100,8 @@ test.describe.serial(`${ADMIN_SUITE} - Datatable mechanics`, () => {
     await toggleColumn(page, 'ID')
     await closeColumnMenu(page)
     expect(await tableHeaders(page)).toContain('ID')
-    // The first cell is now the author's id, which is a uuid.
     expect((await tableRows(page).first().locator('td').first().innerText()).trim()).toMatch(/^[0-9a-f-]{36}$/)
 
-    // The choice is kept per table in localStorage, so it outlives a reload.
     await openAuthors()
     expect(await tableHeaders(page)).toContain('ID')
 

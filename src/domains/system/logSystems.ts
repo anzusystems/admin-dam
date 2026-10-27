@@ -4,9 +4,9 @@ import type { AxiosClientFn, LogPaths } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 
 /**
- * One backend, so one entry -- but the registry exists anyway. The guard reads `authSystem` from
- * it and the page reads `client`, `apiSystem` and `logPaths`, which keeps the three identities in
- * one place instead of spread across two files. Here `authSystem` and `apiSystem` differ.
+ * One backend, but the registry is still used: the guard reads
+ * `authSystem`, the page reads `client`, `apiSystem` and `logPaths`.
+ * Here `authSystem` and `apiSystem` differ.
  */
 export interface LogSystemDescriptor {
   segment: string

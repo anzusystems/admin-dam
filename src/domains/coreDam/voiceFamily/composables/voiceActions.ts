@@ -17,7 +17,7 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
-// Voice list has no filter UI — an empty filter satisfies the new execute signature.
+// The voice list has no filter UI. An empty filter satisfies the execute signature.
 const emptyFilterFields = [] satisfies readonly MakeFilterOption[]
 const { filterData: emptyFilterData, filterConfig: emptyFilterConfig } = createFilter(
   emptyFilterFields,

@@ -6,15 +6,16 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* Who may create a keyword or an author from the metadata of the asset detail. The inputs are the library's and ask
- * for the grant the application gives the plugin (`src/plugins/commonAdminCoreDam.ts`). The real sidebar of the
- * detail over the application as it starts; the server is a fake. */
+/*
+ * Who may create a keyword or author from the asset detail metadata. The inputs are the library's
+ * and ask for the grant the app gives the plugin (`src/plugins/commonAdminCoreDam.ts`).
+ * Uses the real detail sidebar, the app initialised and a fake server.
+ */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-// A user who may edit the asset, and create neither a keyword nor an author.
 const NO_CREATE: Partial<UploadUiSetup> = { grants: ['dam_asset_update'] }
 
 const mountSidebar = async (setup: Partial<UploadUiSetup> = {}) => {
@@ -42,7 +43,6 @@ const mountSidebar = async (setup: Partial<UploadUiSetup> = {}) => {
     Array.from(sidebar.querySelectorAll<HTMLElement>('.v-autocomplete')).find(
       (input) => input.querySelector('label')?.textContent?.trim() === label
     )!
-  /** Types into an input and answers the offer of its open menu to add the searched name. */
   const offerToAdd = async (label: string, text: string) => {
     const input = field(label).querySelector<HTMLInputElement>('input[type="text"]')!
     input.focus()

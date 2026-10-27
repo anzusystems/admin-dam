@@ -13,7 +13,7 @@ const vueRouter = createRouter({
   routes,
 })
 
-// First guard: a page skips its redirect after an async step once the user is navigating away or has left.
+// Must be the first guard. It lets a page skip its redirect after an async step once the user navigates away.
 trackNavigation(vueRouter)
 
 addLegacyRedirects(vueRouter)
@@ -27,7 +27,7 @@ if (import.meta.hot) {
 
 vueRouter.beforeEach(async (to, from) => await beforeEachRoute(to, from))
 
-// No reload for a page's code that does not load: a running upload queue would go with it, the message says enough.
+// No reload when a page chunk fails to load. A running upload queue would be lost, and the message is enough.
 vueRouter.onError(createNavigationErrorHandler(vueRouter, { reloadOnChunkError: false }))
 
 export const router = vueRouter

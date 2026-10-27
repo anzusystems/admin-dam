@@ -41,7 +41,8 @@ const { signal, leave } = useRecordPage({
 onMounted(async () => {
   const loaded = await fetchData(id, { signal })
   if (loaded === false) await leave()
-  // An address naming another video show than the episode's: the episode's own, so the breadcrumb and the way back fit.
+  // The URL names a different video show than the episode's. Use
+  // the episode's own so the breadcrumb and back link match.
   const parent = videoShowEpisode.value.videoShow
   if (loaded && parent && parent !== videoShowId) {
     await replace({

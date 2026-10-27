@@ -19,7 +19,7 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicence } = useAssetLicenceEditActions()
-// The authors are searched and created in the current ext system, as before; the licence's own would change both.
+// Authors are searched and created in the current ext system, not the licence's own.
 const { currentExtSystemId } = useCurrentExtSystem()
 
 const { v$ } = useAssetLicenceValidation(assetLicence)

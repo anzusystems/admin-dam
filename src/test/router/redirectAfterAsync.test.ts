@@ -46,7 +46,6 @@ const settle = () => new Promise((resolve) => setTimeout(resolve))
 const Page = defineComponent(() => () => null)
 let chunk = deferred<void>()
 
-// The app's router in small: the tracker first, and the page the user clicks to is fetched on its first visit.
 const mount = async <T>(path: string, composable: () => T) => {
   chunk = deferred<void>()
   const router = createRouter({
@@ -75,7 +74,6 @@ const mount = async <T>(path: string, composable: () => T) => {
   return { router, actions: actions as T }
 }
 
-// The user clicks away while the request is on the wire, and it answers before the page they go to has loaded.
 const userLeavesDuring = async (router: Router, request: Mock, act: () => Promise<unknown>, answer: unknown) => {
   const response = deferred<unknown>()
   request.mockReturnValueOnce(response.promise)

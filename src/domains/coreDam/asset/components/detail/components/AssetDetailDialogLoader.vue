@@ -2,9 +2,11 @@
 import { useTheme } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
-/* The bar of a detail while its asset is read. It knows no list: whoever draws it says what its own bar has - whether
- * it walks a list by two buttons, which of them leads nowhere, the place of the asset in that list and its name - and
- * is told of a press as that bar would be. */
+/*
+ * Detail bar shown while the asset loads. It knows no list.
+ * The parent passes what its bar has: list navigation buttons, which one is
+ * disabled, the asset position and name. Clicks are emitted as that bar would.
+ */
 withDefaults(
   defineProps<{
     walksList: boolean

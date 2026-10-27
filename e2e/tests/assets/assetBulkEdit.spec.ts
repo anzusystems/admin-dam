@@ -30,12 +30,15 @@ import {
 } from '@pages/assets/assetBulkEditPage'
 
 let page: Page
-/** The three uploaded assets, in upload order. The middle one is left without a description. */
 const assetIds: string[] = []
-/** Assets outside that trio — kept apart so `saved()` never re-fetches one the tests deleted. */
+/**
+ * Assets outside the trio. Kept apart so `saved()` never re-fetches one the tests deleted.
+ */
 const extraIds: string[] = []
 
-/** Titles caption the tiles, which is how the three are told apart — so they stay unique until the end. */
+/**
+ * Titles caption the tiles and tell the three apart, so they must stay unique until the end.
+ */
 const TITLE = (index: number) => `BulkTitle${index}${RAND_NUM}`
 const TITLE_DOOMED = `BulkDoomed${RAND_NUM}`
 const TITLE_REPLACED = `BulkReplaced${RAND_NUM}`
@@ -45,7 +48,6 @@ const DESCRIPTION_FILLED = `BulkFilledDesc${RAND_NUM}`
 const DESCRIPTION_FORM = `BulkFormDesc${RAND_NUM}`
 const DESCRIPTION_DISCARDED = `BulkDiscardedDesc${RAND_NUM}`
 
-/** A metadata field of each asset as the API has it, in upload order. */
 async function saved(field: 'title' | 'description'): Promise<string[]> {
   const values: string[] = []
   for (const id of assetIds) {
@@ -54,7 +56,6 @@ async function saved(field: 'title' | 'description'): Promise<string[]> {
   return values
 }
 
-/** Open the asset list and wait until the uploads have reached the search index. */
 async function openListWithUploads(): Promise<void> {
   await page.goto('/assets')
   await waitForAssetList(page)
@@ -62,8 +63,8 @@ async function openListWithUploads(): Promise<void> {
 }
 
 /**
- * Select the three uploaded assets by their titles, in upload order, and open the editor on them.
- * Selecting them in a fixed order is what makes the editor rows line up with `assetIds`.
+ * Select the three uploaded assets by title, in upload order, and open the editor on them.
+ * The fixed order makes the editor rows line up with `assetIds`.
  */
 async function selectUploadedAssets(): Promise<void> {
   await openListWithUploads()
@@ -114,7 +115,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
     await fillMassText(page, 'description', DESCRIPTION_FILLED)
     await applyMass(page, 'description', 'fill-empty')
 
-    // The rows follow the order the tiles were selected in, which is the upload order.
     const filled = [DESCRIPTION_SEEDED(0), DESCRIPTION_FILLED, DESCRIPTION_SEEDED(2)]
     expect(await rowTexts(page, 'description')).toEqual(filled)
 
@@ -163,7 +163,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
     // The rows keep what was applied to them — only the form the values came from is emptied.
     expect(await rowTexts(page, 'description')).toEqual(Array(3).fill(DESCRIPTION_FORM))
 
-    // The second save button writes the same way, but leaves the selection open to carry on editing.
     await saveSelectionKeepingOpen(page, 3)
     expect(await saved('description')).toEqual(Array(3).fill(DESCRIPTION_FORM))
     await clearSelection(page)
@@ -183,10 +182,10 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
     expect(await copyRowAssetId(page, 0)).toBe(doomedId)
     await deleteSelectionRow(page, 0)
 
-    // The asset is gone for good — the trash button is a delete, not a way to drop the row. The grid
-    // keeps showing its tile until the list is fetched again, so the API is what gets asserted here.
-    // Polled rather than read once: the delete is accepted before it is carried out, and the asset
-    // answers 200 for a moment after the alert says it is gone.
+    // The asset is deleted for good. The grid keeps showing its
+    // tile until the list is fetched again, so the API is asserted.
+    // Polled, not read once: the delete is accepted before it is carried out,
+    // and the asset answers 200 for a moment after the alert says it is gone.
     await expectApiStatus(page, `asset/${doomedId}`, 404)
   })
 

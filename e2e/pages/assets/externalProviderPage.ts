@@ -3,18 +3,14 @@ import { ALERT_UPLOAD, CORE_DAM_API } from '@pages/shared/constants'
 import { createdAssetIds, waitForUpload } from '@pages/shared/upload'
 
 /**
- * Importing assets from an external provider — today only Unsplash (`unsplash_cms`).
- *
- * The view is a second asset grid fed by the provider instead of by DAM. A tile can be made active,
- * which opens the right sidebar with the photo's metadata and a "Nahrať do ADAM" button, or ticked
- * through its checkbox, which fills the same selection footer the asset list uses and imports the
- * whole selection at once. Importing POSTs `{ id, externalProvider }` to
- * `/<type>/licence/<licence>/external-provider`, and the backend fetches the photo itself.
+ * The view is a second asset grid fed by the provider. An active tile opens the right sidebar with
+ * metadata and "Nahrať do ADAM". Ticked tiles fill the selection footer and are imported together.
+ * Import POSTs `{ id, externalProvider }` to
+ * `/<type>/licence/<licence>/external-provider`. The backend fetches the photo itself.
  */
 
 export const UNSPLASH = 'unsplash_cms'
 
-/** One photo as the provider endpoints return it. */
 export interface ProviderPhoto {
   id: string
   url: string
@@ -23,32 +19,26 @@ export interface ProviderPhoto {
   metadata: Record<string, unknown>
 }
 
-/** Open an external provider's grid. */
 export async function openProvider(page: Page, provider: string = UNSPLASH): Promise<void> {
   await page.goto(`/external-providers/${provider}`)
   await expect(providerSearchButton(page)).toBeVisible()
 }
 
-/** The "Hľadať" button of the provider view's filter drawer, which holds only a `Text` field. */
 export function providerSearchButton(page: Page): Locator {
   return page.locator('nav.v-navigation-drawer').getByRole('button', { name: 'Hľadať' }).first()
 }
 
-/** The `Text` field of the provider view's filter drawer. */
 export function providerSearchInput(page: Page): Locator {
   return page.locator('nav.v-navigation-drawer [data-cy="filter-string"] input').first()
 }
 
-/** The provider's result tiles. */
 export function providerTiles(page: Page): Locator {
   return page.locator('.dam-image-grid__item')
 }
 
 /**
- * Search the provider for `text` and return the HTTP status of the search it fires.
- *
- * The status is returned rather than asserted because the caller is sometimes documenting a failure:
- * the search is broken on every environment (DAM-B1).
+ * The status is returned, not asserted, because callers sometimes
+ * document a failure: the search is broken on every environment (DAM-B1).
  */
 export async function searchProvider(page: Page, text: string, provider: string = UNSPLASH): Promise<number> {
   const searched = page.waitForResponse(
@@ -61,11 +51,8 @@ export async function searchProvider(page: Page, text: string, provider: string 
 }
 
 /**
- * Fetch real photos from the provider by id, through the single-photo endpoint.
- *
- * This is the one provider read that works, and it answers with exactly the DTO the search would have
- * listed — which is what lets `stubProviderSearch` stand in for the broken search with real data rather
- * than something invented.
+ * The single-photo endpoint is the one provider read that works. It answers with
+ * the same DTO the search would list, so `stubProviderSearch` can use real data.
  */
 export async function fetchProviderPhotos(
   page: Page,
@@ -82,11 +69,9 @@ export async function fetchProviderPhotos(
 }
 
 /**
- * Answer the provider's search with `photos` instead of letting it reach the API.
- *
- * **This stub exists only because of DAM-B1** — the provider's own search returns 500 everywhere, so
- * nothing downstream of it could be reached otherwise. Everything after the search is real: the photos
- * are the provider's own payloads (see `fetchProviderPhotos`) and the import really imports them.
+ * Exists only because of DAM-B1: the provider search returns 500 everywhere, so nothing after it could be reached.
+ * Everything after the search is real: photos are the provider's own
+ * payloads (see `fetchProviderPhotos`) and the import really runs.
  * Delete the stub once the search works.
  */
 export async function stubProviderSearch(page: Page, photos: ProviderPhoto[], provider: string = UNSPLASH) {
@@ -99,7 +84,6 @@ export async function stubProviderSearch(page: Page, photos: ProviderPhoto[], pr
   })
 }
 
-/** Make a result tile the active one, which opens the sidebar holding its metadata and import button. */
 export async function activateProviderTile(page: Page, index: number): Promise<Locator> {
   const tile = providerTiles(page).nth(index)
   await expect(tile).toBeVisible()
@@ -109,9 +93,9 @@ export async function activateProviderTile(page: Page, index: number): Promise<L
 }
 
 /**
- * Tick a result tile's checkbox, which only mounts while the tile is hovered. The press is repeated
- * until the tile reports itself selected — the grid reflows as the selection footer mounts, and that
- * swallows a click on its way, the same way it does in the asset list.
+ * The checkbox mounts only while the tile is hovered.
+ * The press is repeated until the tile reports itself selected. The grid reflows
+ * as the selection footer mounts and swallows a click, as in the asset list.
  */
 export async function selectProviderTile(page: Page, index: number): Promise<void> {
   const tile = providerTiles(page).nth(index)
@@ -125,7 +109,6 @@ export async function selectProviderTile(page: Page, index: number): Promise<voi
   }).toPass({ timeout: 20000 })
 }
 
-/** Import the active photo through the sidebar's "Nahrať do ADAM" and return the created asset id. */
 export async function importActivePhoto(page: Page): Promise<string> {
   const [id] = await createdAssetIds(page, 1, () =>
     page.getByRole('button', { name: 'Nahrať do ADAM', exact: true }).first().click()
@@ -134,10 +117,6 @@ export async function importActivePhoto(page: Page): Promise<string> {
   return id
 }
 
-/**
- * Import the whole ticked selection through the footer's "Nahrať do ADAM (n)" button, which counts the
- * selection in its own label, and return the created asset ids.
- */
 export async function importSelection(page: Page, count: number): Promise<string[]> {
   const button = page.getByRole('button', { name: `Nahrať do ADAM (${count})`, exact: true })
   await expect(button).toBeVisible()

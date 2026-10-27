@@ -6,12 +6,6 @@ import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/te
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The panel beside the list of assets, with the detail closed: the ways to another asset ask about what was typed into
- * it and not saved, also while a save of it is on its way, and the keys walk the list only where nothing else is in
- * use. The active tile stays with its asset over a list read anew, and the page says what failed under its question
- * whether to leave. The real page of the list with its real panel, detail and queues, as the router draws it; the
- * server is a fake, and so is the address the page asks about a new version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -33,17 +27,14 @@ const RIGHT = 'ArrowRight'
 
 const LIST = '/assets'
 const SETTINGS = '/settings'
-/** The asset of the row of the upload queue: an image the list does not hold. */
 const UPLOADED = 'asset-9'
 
-/** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
   keywords: [],
   authors: [],
 })
 
-/** The second asset as an image whose file is public, or no longer. */
 const PUBLISHED = { id: 'route-1', publicUrl: 'https://dam.test/public/file-1' }
 const image = (mainRoute: typeof PUBLISHED | null) =>
   onServer('asset-2', {
@@ -51,21 +42,20 @@ const image = (mainRoute: typeof PUBLISHED | null) =>
     mainFile: { ...assetFile('file-1', 'processed', { asset: 'asset-2' }), mainRoute },
   })
 
-/** What the server lists, in this order: the three videos unless a case lists others. */
 let listed: ReturnType<typeof onServer>[] = []
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** Past the few seconds in which an asset read a moment ago is not read again. */
+/**
+ * Moves past the few seconds in which an asset read a moment ago is not read again.
+ */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
-/** An arrow key let go over the element, as the window hears it. */
 const arrow = async (over: Element) => {
   over.dispatchEvent(new KeyboardEvent('keyup', { key: RIGHT, bubbles: true }))
   await settled()
 }
 
-/** How many times the server was asked for each of the three assets, and for the one of the queue row. */
 const reads = () => ['asset-1', 'asset-2', 'asset-3', UPLOADED].map((assetId) => server.assetReads(assetId))
 
 const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
@@ -73,7 +63,6 @@ const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-bt
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
-/** The questions about changes that were not saved that are open: one at most, whoever draws it. */
 const questions = () =>
   Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
     dialog.textContent?.includes(UNSAVED)
@@ -83,7 +72,6 @@ const answer = async (name: typeof STAY | typeof LEAVE) => {
   await settled()
 }
 
-/** The page of the list with what the server lists, none of it picked, and one uploaded asset in the upload queue. */
 const openList = async () => {
   const ui = await startUploadUi({
     server,
@@ -91,7 +79,6 @@ const openList = async () => {
     customForm: { video: [customField('title')], image: [customField('title')] },
     queues: { global: [queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' })] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -111,10 +98,8 @@ const openList = async () => {
   ui.router.addRoute({ path: SETTINGS, component: { render: () => null } })
   await ui.router.push(LIST)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
   await eventually(() => expect(tiles()).toHaveLength(listed.length))
-  /** The queue drawn over the whole page, or null while none is. */
   const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 
   return {
@@ -122,23 +107,18 @@ const openList = async () => {
     page,
     tiles,
     queue,
-    /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles()[index].click()
       await settled()
     },
     pencil: (index: number) => tiles()[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1],
-    /** The title in the form of the panel. */
     title: () => panel().querySelector<HTMLTextAreaElement>('textarea')!,
     save: () => buttonsNamed(panel(), 'Save')[0],
-    /** The list read anew, by its button. */
     reload: async () => {
       buttonsNamed(page, 'Reload list')[0].click()
       await settled()
     },
-    /** "Make private" of the menu of the file card of the panel, pressed. */
     makePrivate: async () => {
       panel().querySelector('.mdi-dots-vertical')!.closest('button')!.click()
       const item = await eventually(() => {
@@ -152,7 +132,6 @@ const openList = async () => {
       item.click()
       await settled()
     },
-    /** The upload queue drawn over the whole page, and the edit of its row pressed once the row can be edited. */
     editRowOfUploadQueue: async () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
       await eventually(() => expect(queue()).not.toBeNull())
@@ -165,7 +144,6 @@ const openList = async () => {
       edit.click()
       await settled()
     },
-    /** The tile picked for the mass edit, and its queue drawn over the whole page. */
     openMassEdit: async (index: number) => {
       tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
       const open = await eventually(() => {
@@ -178,7 +156,6 @@ const openList = async () => {
       open.click()
       await eventually(() => expect(queue()).not.toBeNull())
     },
-    /** What the bar of the open detail says: the place of the asset in the list and its title; null with none open. */
     detail: () => {
       const dialog = dialogOfList()
       if (!dialog) return null
@@ -199,7 +176,6 @@ const typeInto = async (field: HTMLTextAreaElement) => {
   await nextTick()
 }
 
-/** The second asset picked, and its title typed into the panel: the element typed into. */
 const typedIntoTheSecond = async (list: List) => {
   await list.pick(1)
   await typeInto(list.title())
@@ -207,7 +183,6 @@ const typedIntoTheSecond = async (list: List) => {
   return list.title()
 }
 
-/** What was typed is where it was typed, in the very field, and its "Save" still to be pressed. */
 const typedIsKept = (list: List, typedInto: HTMLTextAreaElement) =>
   expect([list.title() === typedInto, typedInto.isConnected, typedInto.value, standsOut(list.save())]).toEqual([
     true,
@@ -216,7 +191,6 @@ const typedIsKept = (list: List, typedInto: HTMLTextAreaElement) =>
     true,
   ])
 
-/** The save of the form is held from now on: it fails once let go. */
 const holdSaveToFail = () => {
   let fail: () => void = () => undefined
   server.on(
@@ -261,8 +235,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The keys were not heard over any input of the page: a switch of the panel with the focus held them, though they do
- * nothing to it. */
+/*
+ * The keys were not heard over any input of the page.
+ * A panel switch holding the focus caught them, though they do nothing to it.
+ */
 describe('the arrow keys of the list, with the detail closed', () => {
   it('walk the list when let go over a switch of the panel, and not over its title', async () => {
     const list = await openList()
@@ -284,7 +260,6 @@ describe('the arrow keys of the list, with the detail closed', () => {
     ])
   })
 
-  // The menu of the page is what is in use: the list under it is not walked, as under a menu of the detail.
   it('walk nothing under an open menu of the page, and the list once it is closed', async () => {
     const list = await openList()
     await list.pick(1)
@@ -307,8 +282,10 @@ describe('the arrow keys of the list, with the detail closed', () => {
   })
 })
 
-/* What a save on its way took of the form is not saved until the server says so: it fails, and the form is as unsaved
- * as it was - unless the asset was left meanwhile. */
+/*
+ * What a save on its way took of the form is not saved until the server says so.
+ * If it fails, the form is as unsaved as before, unless the asset was left meanwhile.
+ */
 describe('metadata typed into the panel while their save is on its way', () => {
   it('are asked about by a click on another tile: "Stay" keeps them, and the save that fails leaves them unsaved', async () => {
     const fail = holdSaveToFail()
@@ -325,7 +302,6 @@ describe('metadata typed into the panel while their save is on its way', () => {
     await fail()
     expect(list.alerts()).toEqual([SYSTEM_ERROR])
     typedIsKept(list, typedInto)
-    // Unsaved still: the next try asks again.
     await list.pick(2)
     expect([questions().length, reads()]).toEqual([1, [0, 1, 0, 0]])
   })
@@ -352,8 +328,10 @@ describe('metadata typed into the panel while their save is on its way', () => {
     expect([questions(), list.active()]).toEqual([[], [true, false, false]])
   })
 
-  /* The detail opened over the form while the save of the panel was on its way saved what it holds: the save of the
-   * panel failing after that has nothing left to call unsaved. */
+  /*
+   * The detail opened over the form while the panel save was on its way saved what it holds.
+   * A panel save failing after that has nothing left to call unsaved.
+   */
   it('are not called unsaved again by a save of the panel that fails after the detail saved them', async () => {
     let fail: () => void = () => undefined
     let first = true
@@ -367,7 +345,6 @@ describe('metadata typed into the panel while their save is on its way', () => {
     await typedIntoTheSecond(list)
     list.save().click()
     await settled()
-    // Its pencil a moment after it was read: the detail opens over the same form, and nothing is read.
     list.pencil(1).click()
     await eventually(() => expect(list.detail()).toBe('2 / 3 asset-2'))
     dialogOfList()!.querySelector<HTMLButtonElement>('[data-cy="button-save"]')!.click()
@@ -384,8 +361,11 @@ describe('metadata typed into the panel while their save is on its way', () => {
   })
 })
 
-/* In a browser the second click of a double click, and the double click itself, land on the question its first click
- * opened: "Leave anyway" only picked the tile, and the detail had to be opened again. */
+/*
+ * In a browser the second click of a double click, and the double
+ * click itself, land on the question its first click opened.
+ * "Leave anyway" then only picked the tile, and the detail had to be opened again.
+ */
 describe('a double click on another tile under metadata typed into the panel', () => {
   it('asks once, and "Leave anyway" opens the detail of the tile also when the rest of it lands on the question', async () => {
     const list = await openList()
@@ -414,8 +394,10 @@ describe('a double click on another tile under metadata typed into the panel', (
   })
 })
 
-/* A double click inside the question, after a single click on a tile raised it, is no double click of the tile: the
- * user selects a word, or presses a button twice. */
+/*
+ * A double click inside the question, after a single click on a tile raised it, is not a double click of the tile.
+ * The user may be selecting a word or pressing a button twice.
+ */
 describe('a double click inside the question a click on another tile raised', () => {
   it('leaves "Leave anyway" to pick the tile only', async () => {
     const list = await openList()
@@ -433,8 +415,10 @@ describe('a double click inside the question a click on another tile raised', ()
   })
 })
 
-/* A double click whose second click was inside the card of the question, sent by the browser to an element that
- * holds both the tile and the card, is no double click of the tile either. */
+/*
+ * A double click whose second click lands inside the question card is not a double click of the tile either.
+ * The browser sends it to an element that holds both the tile and the card.
+ */
 describe('a double click begun on another tile and ended inside the question its click raised', () => {
   it('leaves "Leave anyway" to pick the tile only', async () => {
     const list = await openList()
@@ -453,8 +437,10 @@ describe('a double click begun on another tile and ended inside the question its
   })
 })
 
-/* A row of a queue that is gone from its queue by the answer is opened no more: the edit pressed in it was of a row
- * nobody sees. */
+/*
+ * A queue row that the answer removed from its queue is no longer opened.
+ * The edit pressed in it was for a row nobody sees.
+ */
 describe('the edit of a row of the upload queue under metadata typed into the panel', () => {
   it('reads and opens nothing after "Leave anyway" when the row has gone from its queue meanwhile', async () => {
     const list = await openList()
@@ -471,9 +457,12 @@ describe('the edit of a row of the upload queue under metadata typed into the pa
   })
 })
 
-/* A bulk save of the asset the panel holds asks about what was typed into the panel first (`massEditAsksPanel.test.ts`);
- * "Leave anyway" saves it, and the asset is read whole into the panel behind its loader. What was typed was given up
- * then: a way to another asset behind that loader asks nothing, as behind the loader of every read so let go. */
+/*
+ * A bulk save of the asset the panel holds first asks about
+ * what was typed into the panel (`massEditAsksPanel.test.ts`).
+ * "Leave anyway" saves it, and the asset is read whole into the panel behind its loader.
+ * What was typed is given up then, so a way to another asset behind that loader asks nothing.
+ */
 describe('metadata typed into the panel while the mass edit saves the same asset', () => {
   it('are asked about by the save; after "Leave anyway" a click on another tile behind the loader of the read asks nothing', async () => {
     const list = await openList()
@@ -504,8 +493,11 @@ describe('metadata typed into the panel while the mass edit saves the same asset
   })
 })
 
-/* A save of the form sent before its asset was marked as being deleted, failing after that, called what it took
- * unsaved again: the next way elsewhere asked about metadata that have nowhere to be saved. */
+/*
+ * A form save sent before its asset was marked as being deleted,
+ * and failing after that, called what it took unsaved again.
+ * The next way elsewhere then asked about metadata that have nowhere to be saved.
+ */
 describe('metadata typed into the panel and saved just before their asset is deleted', () => {
   it('are not called unsaved again when that save fails after the delete', async () => {
     const fail = holdSaveToFail()
@@ -514,7 +506,6 @@ describe('metadata typed into the panel and saved just before their asset is del
     await typedIntoTheSecond(list)
     list.save().click()
     await settled()
-    // Its pencil a moment after it was read: the detail opens over the same form, and deletes the asset.
     list.pencil(1).click()
     await eventually(() => expect(list.detail()).toBe('2 / 3 asset-2'))
     buttonsNamed(dialogOfList()!, 'Delete')[0].click()
@@ -526,14 +517,12 @@ describe('metadata typed into the panel and saved just before their asset is del
     })
     confirm.click()
     await eventually(() => expect(dialogOfList()).toBeNull())
-    /** Whether the browser is to ask before the window goes. */
     const windowAsks = () => {
       const going = new Event('beforeunload', { cancelable: true })
       window.dispatchEvent(going)
 
       return going.defaultPrevented
     }
-    // While the save is still on its way, what it took is no longer asked about either.
     expect([standsOut(list.save()), windowAsks()]).toEqual([false, false])
 
     await fail()
@@ -545,7 +534,6 @@ describe('metadata typed into the panel and saved just before their asset is del
 })
 
 describe('"Edit more" of the panel', () => {
-  // As the pencil of its tile reads it: a "Save" held back comes free with that.
   it('reads the asset of the panel into the detail when nothing typed waits to be saved', async () => {
     const list = await openList()
     await list.pick(1)
@@ -575,8 +563,10 @@ describe('"Edit more" of the panel', () => {
   })
 })
 
-/* The tile of the asset the panel holds is the active one in a list read anew; while that asset is read again, the
- * panel holds it all the same. */
+/*
+ * The tile of the asset the panel holds is the active one in a list read anew.
+ * While that asset is read again, the panel holds it all the same.
+ */
 describe('the active tile over a list read anew', () => {
   it('waits for its asset also through a list that comes while the panel reads that asset again', async () => {
     const [first, , third] = listed
@@ -584,11 +574,9 @@ describe('the active tile over a list read anew', () => {
     server.asset(image(PUBLISHED))
     const list = await openList()
     await list.pick(1)
-    // Read anew without it: no tile is active, and its asset is waited for.
     listed = [first, third]
     await list.reload()
     expect(list.active()).toEqual([false, false])
-    // Its file made private, with nothing typed: the panel reads it whole, behind its loader, and the read is held.
     let answerRead: () => void = () => undefined
     server.assetBy('asset-2', () => new Promise((resolve) => (answerRead = () => resolve(image(null)))))
     await list.makePrivate()
@@ -616,8 +604,10 @@ describe('the active tile over a list read anew', () => {
   })
 })
 
-/* The page asks before it is left with metadata typed into it and not saved; meanwhile a request it sent can fail.
- * Its error belongs to the page, which is still there once the question is answered "Stay". */
+/*
+ * The page asks before it is left with unsaved typed metadata. Meanwhile a request it sent can fail.
+ * Its error belongs to the page, which is still there once the question is answered "Stay".
+ */
 describe('a read that fails under the question whether to leave the page', () => {
   it.each<[string, typeof STAY | typeof LEAVE, string[], string]>([
     ['"Stay"', STAY, [SYSTEM_ERROR], LIST],
@@ -628,7 +618,6 @@ describe('a read that fails under the question whether to leave the page', () =>
     server.asset(image(PUBLISHED))
     const list = await openList()
     await typedIntoTheSecond(list)
-    // The file made private under what was typed: the panel reads its file alone, and that read fails later.
     let failRead: () => void = () => undefined
     server.assetBy('asset-2', () => new Promise((_resolve, reject) => (failRead = () => reject(httpError(500)))))
     await list.makePrivate()
@@ -646,8 +635,10 @@ describe('a read that fails under the question whether to leave the page', () =>
     expect([list.alerts(), list.address()]).toEqual([alerts, at])
   })
 
-  /* A way back given up is undone by the browser only after the router has said so, by a popstate that may never come:
-   * here the history of the router is left elsewhere, as it is meanwhile. The error waited for that popstate for ever. */
+  /*
+   * A given up way back is undone by the browser only after the router said so, by a popstate that may never come.
+   * Here the router history is left elsewhere, as it is meanwhile. The error waited for that popstate forever.
+   */
   it('says so after "Stay" a moment later when the history is not back on the page by then', async () => {
     const [first, , third] = listed
     listed = [first, image(PUBLISHED), third]
@@ -672,9 +663,11 @@ describe('a read that fails under the question whether to leave the page', () =>
   })
 })
 
-/* The change of a file of the asset, answered under a read of it, waits for that read and reads it again; a bulk
- * save of the asset answered meanwhile waits for the same read. Its read of the asset took the place of the one of
- * the change, and when it failed only the console heard of it. */
+/*
+ * A file change answered under a read of the asset waits for that read and
+ * reads it again. A bulk save answered meanwhile waits for the same read.
+ * That read took the place of the one of the change, and when it failed only the console heard of it.
+ */
 describe('the change of the file of the asset of the panel, and a bulk save of it, both answered under a read of it', () => {
   it('say so when the read of the asset after them fails', async () => {
     const [first, , third] = listed
@@ -682,7 +675,6 @@ describe('the change of the file of the asset of the panel, and a bulk save of i
     server.asset(image(PUBLISHED))
     const list = await openList()
     await list.pick(1)
-    // Picked for the mass edit, its row read for it: the strip of the mass edit is under the list.
     list.tiles()[1].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
     const editOfStrip = await eventually(() => {
       const footer = document.body.querySelector('.asset-footer__selected')
@@ -692,8 +684,6 @@ describe('the change of the file of the asset of the panel, and a bulk save of i
       return button!
     })
     await later()
-    // The change of the file is held; then a read of the asset, its tile clicked again: held as well, and every read
-    // of it after that fails. The mass edit opened over the page meanwhile.
     let madePrivate: () => void = () => undefined
     server.on(
       'PATCH',

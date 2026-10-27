@@ -4,13 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { assetDetail, createFakeDam, queueRow, seedDamConfig, seedQueue, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The start of the application, from the `config.json` of a deployment to the notification socket: `main.ts`
- * itself runs here, with the config a faked `fetch` answers, and hands the plugin what the file says of the
- * notification service. What is not the subject is a stand-in: the root component, the router and Vuetify, the
- * server and the global `WebSocket`. Nothing of the library is replaced.
- *
- * The service is used only where a deployment asks for it. Where it does not, the upload queue asks the server
- * itself; that side, in all its cases, is in `fallback/uploadStatusPolling.test.ts`. */
+/*
+ * Runs `main.ts` itself with a `config.json` answered by a faked `fetch`.
+ * Stand-ins: the root component, the router, Vuetify, the server
+ * and the global `WebSocket`. Nothing of the library is replaced.
+ * Without the notification service the upload queue asks the server
+ * itself. That side is tested in `fallback/uploadStatusPolling.test.ts`.
+ */
 
 let server: FakeDam
 const appSetUp = vi.fn()
@@ -27,7 +27,7 @@ vi.mock('@/App.vue', () => ({
 }))
 vi.mock('@/router', () => ({ router: { install: () => undefined } }))
 vi.mock('@/plugins/vuetify', () => ({ vuetify: { install: () => undefined } }))
-// Its stylesheet and Sentry have no part in this: the first is not code, the second starts only with a dsn.
+// The stylesheet is not code, and Sentry starts only with a dsn.
 vi.mock('@anzusystems/common-admin/styles', () => ({}))
 vi.mock('@sentry/vue', () => ({}))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
@@ -64,7 +64,6 @@ class FakeSocket {
     this.onclose?.({ code: 1000 })
   }
 
-  /** The connection is made. */
   opens() {
     this.readyState = 1
     this.onopen?.()
@@ -75,7 +74,6 @@ const GLOBAL = 'global'
 const SECOND = 1000
 const SOCKET_URL = 'wss://notifications.test/ws'
 
-/** A `config.json` with everything but the block of the notification service. */
 const deployed = (over: Record<string, unknown> = {}) => ({
   adminSwitcherConfigUrl: '',
   appEnvironment: 'test',
@@ -88,7 +86,6 @@ const deployed = (over: Record<string, unknown> = {}) => ({
   ...over,
 })
 
-/** The application started with this `config.json`, as far as its listeners of the notifications. */
 const start = async (config: Record<string, unknown>) => {
   vi.resetModules()
   vi.stubGlobal(
@@ -100,7 +97,7 @@ const start = async (config: Record<string, unknown>) => {
     }))
   )
   await import('@/main')
-  // `main.ts` hands out nothing to wait on: the root component being set up is the start having run.
+  // `main.ts` returns nothing to wait on. The root component being set up means the start has run.
   await vi.waitFor(() => expect(appSetUp).toHaveBeenCalledTimes(1))
   expect(document.getElementById('app')?.textContent).not.toContain('Fatal error')
 
@@ -114,7 +111,6 @@ const start = async (config: Record<string, unknown>) => {
   return useUploadQueuesStore()
 }
 
-/** One file sent whole: its row waits for the server from this moment, as `asset-1` with `file-1`. */
 const sentFile = async (store: Awaited<ReturnType<typeof start>>) => {
   const [row] = seedQueue(store, GLOBAL, [
     queueRow({
@@ -132,7 +128,6 @@ const sentFile = async (store: Awaited<ReturnType<typeof start>>) => {
   return row
 }
 
-/** After how many seconds of its wait the server was first asked about the row, which that read settles. */
 const firstReadAt = async (row: UploadQueueItem) => {
   for (let second = 1; second <= 60; second++) {
     await vi.advanceTimersByTimeAsync(SECOND)
@@ -152,7 +147,7 @@ beforeEach(() => {
   sockets.length = 0
   vi.stubGlobal('WebSocket', FakeSocket)
   server = createFakeDam()
-  // What `main.ts` mounts into, and the mark that keeps the library from asking the network for its fonts.
+  // `main.ts` mounts into `#app`. The font mark keeps the library from fetching its fonts from the network.
   document.body.innerHTML = '<div id="app"></div>'
   document.head.innerHTML = '<link data-anzu-common-fonts>'
 })
@@ -171,7 +166,6 @@ const withoutService: Array<[string, Record<string, unknown>]> = [
   // A deployment template puts the value in quotes: a text, and not the text that switches the service on.
   ['has the service off as a text', { notification: { enabled: 'false', webSocketUrl: SOCKET_URL } }],
   ['has the service off as a text with a capital', { notification: { enabled: 'False', webSocketUrl: SOCKET_URL } }],
-  // Only the word switches it on, in whatever case; no other way of saying yes does.
   ['says "1" for the service', { notification: { enabled: '1', webSocketUrl: SOCKET_URL } }],
   ['says "yes" for the service', { notification: { enabled: 'yes', webSocketUrl: SOCKET_URL } }],
   ['has an address for the service and does not say it is on', { notification: { webSocketUrl: SOCKET_URL } }],
@@ -190,7 +184,7 @@ describe.each(withoutService)('an application whose config.json %s', (_name, blo
   })
 })
 
-// As a text the word counts in whatever case and with spaces around it, as an environment variable may bring it.
+// As a text, the word counts in any case and with surrounding spaces, as an environment variable may bring it.
 describe.each([true, 'true', 'True', ' TRUE '])(
   'an application whose config.json has the service on (%j) with its address',
   (enabled) => {

@@ -34,11 +34,10 @@ jobs:
         id: yarn-cache
         uses: actions/cache@v6
         with:
-          # node_modules/.cache has its own entry below. Inside this one it would ride along frozen at the
-          # last yarn.lock change and come back, through the fallback key, across a dependency change.
-          # `node_modules/*`, not `node_modules`: actions/cache globs without implicit descendants, so the bare
-          # directory would be archived whole and the exclusion never applied. `*` matches dotfiles as well,
-          # so .yarn-state.yml stays in.
+          # node_modules/.cache has its own entry below. Here it would stay frozen at the last
+          # yarn.lock change and be restored across dependency changes via the fallback key.
+          # `node_modules/*`, not `node_modules`: actions/cache globs without implicit descendants, so the
+          # bare directory would ignore the exclusion. `*` matches dotfiles, so .yarn-state.yml stays in.
           path: |
             node_modules/*
             !node_modules/.cache
@@ -49,10 +48,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      # node_modules/.cache holds only caches that follow what a result depends on: vue-tsc's build info and vitest's
-      # test order. eslint, stylelint and vitest's transform cache stay off: they reuse a file's result without tracking
-      # everything it depends on. A new entry per passing run, restored from the latest one for the same runner, Node
-      # version, yarn.lock and tsconfigs (vue-tsc's build info does not notice a vueCompilerOptions change).
+      # Only caches that track their inputs: vue-tsc's build info and vitest's test order. eslint, stylelint
+      # and vitest's transform cache stay off because they reuse results without tracking all dependencies.
+      # A new entry per passing run, restored from the latest for the same runner,
+      # Node version, yarn.lock and tsconfigs. The tsconfigs are in the key
+      # because vue-tsc's build info does not notice a vueCompilerOptions change.
       - name: Restore tool caches
         id: tool-cache
         uses: actions/cache/restore@v6

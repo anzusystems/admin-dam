@@ -46,7 +46,7 @@ const onSuccessfulCallback = () => {
 onMounted(async () => {
   const loaded = await fetchData(id, { signal })
   if (loaded === false) await leave()
-  // An address naming another podcast than the episode's: the episode's own, so the breadcrumb and the way back fit.
+  // The URL names a different podcast than the episode's. Use the episode's own so the breadcrumb and back link fit.
   const parent = podcastEpisode.value.podcast
   if (loaded && parent && parent !== podcastId) {
     await replace({ name: '/(coreDam)/podcasts/[id]/episodes/[episodeId]', params: { id: parent, episodeId: id } })

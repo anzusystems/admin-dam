@@ -30,7 +30,7 @@ withDefaults(
 
 const { t } = useI18n()
 
-// The library's store: its frame of the region beside this panel draws what this panel puts there.
+// The library's store. Its region frame beside this panel draws what this panel puts there.
 const imageRoiStore = useDamImageRoiStore()
 const assetDetailStore = useAssetDetailStore()
 
@@ -39,9 +39,11 @@ const { pagination } = usePagination(null)
 
 const { showErrorsDefault, showUnknownError } = useAlerts()
 
-/* What the tab loads - the main file as it opens, the file of another slot, a rotated file as the server answered its
- * rotation - and the region of each: only the latest load writes into the store, says that it failed or stops the
- * spinner, and none does once the tab is gone. `shown`: the file the latest load is of, also while it is read. */
+/*
+ * Loads of the main file, another slot's file, or a rotated file, each with its region.
+ * Only the latest load writes to the store, reports failure or stops the spinner. None does once the tab is gone.
+ * `shown` is the file of the latest load, also while it is being read.
+ */
 let loads = 0
 let gone = false
 let shown: DocId | null = null
@@ -67,7 +69,9 @@ const loadRois = async (load: number, file: AssetFileImage) => {
   }
 }
 
-/** The file read anew for the load, put in the store; nothing when the read failed or another load came since. */
+/**
+ * Reads the file and puts it in the store. Returns nothing if the read failed or a newer load started.
+ */
 const readFile = async (load: number, fileId: DocId) => {
   try {
     const file = cloneDeep(await fetchImageFile(fileId))
@@ -82,9 +86,11 @@ const readFile = async (load: number, fileId: DocId) => {
   }
 }
 
-/* A rotation answered while the tab is there, pressed here or in a tab of the detail open before: the frame of the
- * region draws the image anew only for a file it is given anew, so the file the server answered with is put in, and
- * its region read anew. Only when it is the file the tab shows, or is about to show; another one is left as it is. */
+/*
+ * A rotation answered while the tab exists, started here or in an earlier tab.
+ * The region frame redraws only for a new file object, so the server's file is put in and its region read again.
+ * Only for the file the tab shows or is about to show.
+ */
 const rotationStore = useImageRotationStore()
 watch(
   () => rotationStore.rotated,
@@ -99,8 +105,10 @@ watch(
   }
 )
 
-/* The slot chosen has no image: the frame draws none, and nothing can be dragged or rotated there. A guard: core-dam
- * lists no slot without a file, and the select hands `null` only when its list changed under it. */
+/*
+ * The chosen slot has no image, so nothing is drawn, dragged or rotated.
+ * A guard: core-dam lists no slot without a file, and the select passes `null` only when its list changed.
+ */
 const slotWithoutImage = ref(false)
 
 const activeSlotChange = async (slot: null | AssetSlot) => {
@@ -140,9 +148,10 @@ onUnmounted(() => {
   gone = true
 })
 
-/* The previews drawn anew. Not behind the loader of the panel, nor while the frame beside it saves a region and reads
- * the file the DAM draws anew after it (`cropperBusy`): drawn before that, they are the old ones, and the frame draws
- * them anew itself once its read is over (`timestampRoiPreviews`). Also a press that comes as the frame starts. */
+/*
+ * Not offered behind the panel loader, or while the frame saves a region and rereads the file (`cropperBusy`).
+ * Previews drawn then would be stale. The frame redraws them itself after its read (`timestampRoiPreviews`).
+ */
 const refreshOffered = computed(() => !imageRoiStore.loader && !imageRoiStore.cropperBusy)
 const refresh = () => {
   if (refreshOffered.value) imageRoiStore.forceReloadRoiPreviews()

@@ -76,7 +76,6 @@ const load = async () => {
     history: createMemoryHistory(),
     routes: [
       { path: '/assets', component: Page },
-      // Fetched on its first visit, as every page is in production.
       { path: '/elsewhere', component: () => elsewhere.then(() => Page) },
     ],
   })
@@ -89,17 +88,14 @@ const load = async () => {
 
   return {
     actions: useAssetListActions(),
-    // The tiles, the table and the view around them each call the composable for themselves.
     otherInstance: useAssetListActions(),
     assetListStore,
     assetDetailStore: useAssetDetailStore(),
   }
 }
 
-// The rows a page carries say which page it is, so a page fetched twice is visible in the list.
 const pageOf = (args: unknown[]) => {
   const pagination = args[1] as { value: { page: number; hasNextPage?: boolean } }
-  // What the library does with the pagination object it is handed as it answers.
   pagination.value = { ...pagination.value, hasNextPage }
 
   return [listItem(`page-${pagination.value.page}`)]
@@ -157,8 +153,8 @@ describe('two components asking at once', () => {
     fetchAsset.mockImplementationOnce(() => new Promise((_resolve, reject) => (failFirst = reject)))
     fetchAsset.mockResolvedValue(detailOf('asset-b'))
 
-    // A click comes from the tiles, the arrow key from the view around them - two instances, one
-    // detail store between them.
+    // A click comes from the tiles and the arrow key from the view
+    // around them. These are two instances sharing one detail store.
     const first = actions.showDetail({ assetId: 'asset-a', index: 0 })
     await otherInstance.showDetail({ assetId: 'asset-b', index: 1 })
     failFirst(new Error('gone'))
@@ -193,7 +189,6 @@ describe('a detail the user has walked away from', () => {
     fetchAsset.mockImplementation(() => new Promise((_resolve, reject) => (fail = reject)))
 
     const running = actions.showDetail({ assetId: 'asset-a', index: 0 })
-    // Leaving the list unmounts it and resets the detail; the request is still on the wire.
     assetDetailStore.reset()
     fail(new Error('gone'))
     await running
@@ -213,13 +208,12 @@ describe('a detail that fails while the user is on the way to another page', () 
 
     const running = actions.showDetail({ assetId: 'asset-a', index: 0 })
     const navigation = router.push('/elsewhere')
-    // Until its page has been fetched the list is still mounted, so nothing has abandoned the request.
+    // Until its page is fetched the list is still mounted, so nothing has abandoned the request.
     await new Promise((resolve) => setTimeout(resolve))
     fail(new Error('gone'))
     await running
     openElsewhere()
 
-    // The list is being left: its address is not put back, nor its error shown on the page the user goes to.
     expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(1)
     expect(showErrorsDefault).not.toHaveBeenCalled()
     expect(await navigation).toBeUndefined()
@@ -244,7 +238,6 @@ describe('a detail the user closed', () => {
     fetchAsset.mockImplementation(() => new Promise((_resolve, reject) => (fail = reject)))
 
     const running = actions.showDetail({ assetId: 'asset-a', index: 0 })
-    // The dialog's own close button, which is not a new request taking this one's place.
     assetDetailStore.hideDetail()
     fail(new Error('gone'))
     await running
@@ -289,12 +282,10 @@ describe('a detail the user closed', () => {
   it('leaves no asset behind when the dialog fetch of a double click fails', async () => {
     const { actions, assetDetailStore } = await load()
     fetchAsset.mockResolvedValue(detailOf('asset-b'))
-    // Something the user opened a moment ago, still on screen behind the list.
     await actions.onItemClick({ assetId: 'asset-b', index: 1 })
 
     const failures: ((reason: unknown) => void)[] = []
     fetchAsset.mockImplementation(() => new Promise((_resolve, reject) => failures.push(reject)))
-    // A double click fires both: the click opens the panel, the second click the dialog.
     const panel = actions.onItemClick({ assetId: 'asset-a', index: 0 })
     const dialog = actions.showDetail({ assetId: 'asset-a', index: 0 })
     failures.forEach((fail) => fail(new Error('gone')))
@@ -315,7 +306,6 @@ describe('a detail the user closed', () => {
     fail(new Error('gone'))
     await running
 
-    // The request used to go on answering. And the detail goes with its list: the page that comes next has none open.
     expect(browserHistoryReplaceUrlByRouter).toHaveBeenCalledTimes(1)
     expect(showErrorsDefault).not.toHaveBeenCalled()
     expect(assetDetailStore.detail).toBe(false)
@@ -329,7 +319,6 @@ describe('the detail loader', () => {
     fetchAsset.mockImplementation(() => new Promise((resolve) => (finish = resolve)))
 
     const running = actions.showDetail({ assetId: 'asset-a', index: 0 })
-    // The reset filter button does exactly this underneath the request.
     assetListStore.resetList()
     finish(detailOf('asset-a'))
     await running
@@ -347,12 +336,10 @@ describe('a page that arrives after the filter has changed', () => {
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishOldPage = resolve)))
 
     const scrolling = actions.fetchNextPage()
-    // The filter changes underneath it, and the list starts again from page one.
     await actions.fetchAssetList()
     finishOldPage([listItem('stale')])
     await scrolling
 
-    // Its rows belong to a filter nobody is looking at any more.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1'])
   })
 
@@ -364,8 +351,8 @@ describe('a page that arrives after the filter has changed', () => {
     await actions.fetchNextPage()
     await actions.fetchNextPage()
 
-    // The counter was raised before the request and never put back, so the next scroll used to ask
-    // for the one after it and the failed page was gone for good.
+    // The counter was raised before the request and not restored on failure.
+    // The next scroll then asked for the page after the failed one, and the failed page was lost.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1', 'page-2'])
   })
 
@@ -398,7 +385,6 @@ describe('a page that arrives after the filter has changed', () => {
     failPageTwo(new Error('the asset service is down'))
     await two
 
-    // The postponed scroll asks for the page that failed, not for the one after it.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1', 'page-2'])
   })
 
@@ -409,7 +395,6 @@ describe('a page that arrives after the filter has changed', () => {
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishPageTwo = resolve)))
 
     const two = actions.fetchNextPage()
-    // The filter changes, and the user scrolls again while the new first page is still loading.
     let finishNewFirstPage: (value: unknown[]) => void = () => undefined
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishNewFirstPage = resolve)))
     const newList = actions.fetchAssetList()
@@ -434,7 +419,6 @@ describe('a page that arrives after the filter has changed', () => {
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishSecond = resolve)))
     const newer = actions.fetchAssetList()
     await actions.fetchNextPage()
-    // The older of the two answers first; its list has already been replaced.
     finishFirst([listItem('stale')])
     await older
     finishSecond([listItem('page-1')])
@@ -460,7 +444,6 @@ describe('a page that arrives after the filter has changed', () => {
     finishNewer([listItem('page-1')])
     await newer
 
-    // The scroll belongs to the list that is still loading, not to the one that gave up.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1', 'page-2'])
   })
 
@@ -475,7 +458,6 @@ describe('a page that arrives after the filter has changed', () => {
     failNewList(new Error('the asset service is down'))
     await newList
 
-    // The rows on screen belong to the list this one was meant to replace; its page two is not theirs.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1'])
   })
 
@@ -492,13 +474,13 @@ describe('a page that arrives after the filter has changed', () => {
 
     const two = actions.fetchNextPage()
     await actions.fetchNextPage()
-    // The library writes this onto the pagination object it was handed, as the answer comes back.
     const pagination = fetchAssetList.mock.calls.at(-1)?.[1] as { value: { hasNextPage?: boolean } }
     pagination.value = { ...pagination.value, hasNextPage: false }
     finishPageTwo([listItem('page-2')])
     await two
 
-    // Two requests: the list and its page two, and no ask for a page the answer says is not there.
+    // Two requests: the list and its page two.
+    // No request for a page the answer says does not exist.
     expect(fetchAssetList).toHaveBeenCalledTimes(2)
   })
 
@@ -509,13 +491,11 @@ describe('a page that arrives after the filter has changed', () => {
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishPageTwo = resolve)))
 
     const two = actions.fetchNextPage()
-    // Both of these belong to the list that is about to be replaced.
     await actions.fetchNextPage()
     await actions.fetchAssetList()
     finishPageTwo([listItem('stale-page-2')])
     await two
 
-    // Three requests: the first list, its page two, the list that replaced it - and no fourth.
     expect(fetchAssetList).toHaveBeenCalledTimes(3)
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1'])
   })
@@ -527,14 +507,14 @@ describe('a page that arrives after the filter has changed', () => {
 
     const scrolling = actions.fetchNextPage()
     await actions.fetchAssetList()
-    // The new list is scrolled to its own second page before the old request gives up.
+    // The new list scrolls to its second page before the old request fails.
     await actions.fetchNextPage()
     failOldPage(new Error('gone'))
     await scrolling
     await actions.fetchNextPage()
 
-    // Rolling back a counter this request did not raise makes the next scroll ask for a page the list already has,
-    // and the same rows arrive twice.
+    // Rolling back a counter this request did not raise makes the next scroll ask for a page the list already has.
+    // The same rows then arrive twice.
     expect(assetListStore.list.map((row) => row.asset.id)).toEqual(['page-1', 'page-2', 'page-3'])
   })
 })
@@ -561,14 +541,12 @@ describe('stepping to the next asset', () => {
     assetListStore.setActiveByIndex(0)
     assetListStore.resetList()
 
-    // The active index used to outlive the list it points into, and this threw on `undefined.asset` with the spinner
-    // already up and no `finally` yet to take it down.
+    // A stale active index threw on `undefined.asset` while the spinner was up, with no `finally` to take it down.
     await actions.nextItem()
     await actions.prevItem()
 
     expect(assetDetailStore.loader).toBe(false)
     expect(fetchAsset).not.toHaveBeenCalled()
-    // And the list that is gone has no active place any more.
     expect(assetListStore.activeItemIndex).toBeNull()
   })
 })
@@ -581,12 +559,12 @@ describe('the tiles of the mass edit selection', () => {
     await nextTick()
     expect(assetListStore.list.map((row) => row.selected)).toEqual([true, false])
 
-    // What the cancel button in the mass edit dialog does, with no way to reach the list itself.
+    // Same as the cancel button in the mass edit dialog, which cannot reach the list directly.
     massEditItems.value = []
     await nextTick()
 
-    // Every action that put an asset in the queue also set the flag by hand, and the ones that take it back out left
-    // the tile highlighted for an asset nothing was going to save.
+    // Actions that queued an asset set the flag by hand.
+    // Actions that removed it left the tile highlighted for an asset that would not be saved.
     expect(assetListStore.list.map((row) => row.selected)).toEqual([false, false])
   })
 })
@@ -600,21 +578,21 @@ describe('a next page left over from a list that has been replaced', () => {
     const stalePage = actions.fetchNextPage()
 
     await actions.fetchAssetList()
-    // The new list's own scroll, with the old request still on the wire and nothing aborting it.
+    // Scroll of the new list while the old request is still pending. Nothing aborts the old request.
     let finishNewPage: (value: unknown[]) => void = () => undefined
     fetchAssetList.mockImplementationOnce(() => new Promise((resolve) => (finishNewPage = resolve)))
     const newPage = actions.fetchNextPage()
 
-    // Made to wait for the old request, the new list would not scroll until that one answered - and nothing aborts
-    // it, so that is its whole timeout.
+    // If the new list waited for the old request, it would not scroll until that one answered.
+    // Nothing aborts it, so that is its whole timeout.
     expect(fetchAssetList).toHaveBeenCalledTimes(4)
     finishStalePage([listItem('stale')])
     await stalePage
-    // And the old one finishing must not hand the flag of the running one away: a scroll starting
-    // now would append beside it, in whatever order the two answered.
+    // The old request finishing must not release the flag of the running one.
+    // A scroll starting now would append beside it, in whatever order the two answer.
     await actions.fetchNextPage()
     expect(fetchAssetList).toHaveBeenCalledTimes(4)
-    // Nor take the spinner down under it, which leaves the list looking idle while it loads.
+    // It must not take the spinner down either. The list would look idle while it loads.
     expect(assetListStore.loader.soft).toBe(true)
 
     finishNewPage([listItem('page-2')])
@@ -637,8 +615,9 @@ describe('a next page that answers after the filter changed', () => {
     finishStalePage([listItem('stale')])
     await stalePage
 
-    // `fetchAssetList` raises `hard` and never lowers `soft`, so leaving it to a newer next-page request that never
-    // comes is a spinner at the end of the list for the rest of the session.
+    // `fetchAssetList` raises `hard` and never lowers `soft`.
+    // Leaving it to a newer next-page request that never comes
+    // keeps a spinner at the end of the list for the whole session.
     expect(assetListStore.loader.soft).toBe(false)
   })
 })
@@ -658,8 +637,8 @@ describe('a page counter written by a request that no longer owns the list', () 
     await actions.fetchNextPage()
     finishNewList([listItem('page-1')])
     await newList
-    // The library writes this onto whatever pagination object it was handed, before it returns - so a request that
-    // has been replaced would otherwise stop the new list scrolling.
+    // The library writes this onto the pagination object it was given, before it returns.
+    // A replaced request would otherwise stop the new list scrolling.
     stalePagination.value = { ...stalePagination.value, hasNextPage: false }
     finishStalePage([listItem('stale')])
     await stalePage

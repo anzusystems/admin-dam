@@ -9,7 +9,6 @@ export interface AssetTexts {
   description: string
 }
 
-/** Keywords and authors the metadata form created on the fly, so a spec can delete them afterwards. */
 export interface CreatedMetadataRecords {
   keywordIds: string[]
   authorIds: string[]
@@ -23,7 +22,6 @@ export function detailSidebar(page: Page): Locator {
   return page.locator('.dam-image-detail__sidebar')
 }
 
-/** The visible content of the detail sidebar (the current tab). */
 export function sidebarContent(page: Page): Locator {
   return page.locator('.sidebar-info__content').filter({ visible: true }).first()
 }
@@ -45,24 +43,23 @@ export async function openAssetDetail(page: Page, assetId: string): Promise<void
   await expect(metadataField(page, 'description')).toBeVisible()
 }
 
-/** Open a sidebar tab (button-meta, button-slots, button-podcast, ...) of the shown detail and wait for it to load. */
 export async function openSidebarTab(page: Page, tab: string): Promise<void> {
   await visibleCy(page, tab).click()
   await expect(page.locator('.sidebar-info .v-progress-circular')).toHaveCount(0, { timeout: 15000 })
 }
 
-/** Open an asset detail on the given sidebar tab. */
 export async function openAssetTab(page: Page, assetId: string, tab: string): Promise<void> {
   await openAssetDetail(page, assetId)
   await openSidebarTab(page, tab)
 }
 
-/** The wrapper of a custom metadata field of the detail, e.g. `title`, `description`, `keywords`, `authors`. */
 export function metadataField(page: Page, name: string): Locator {
   return detailSidebar(page).locator(`[data-cy="custom-field-${name}"]`).filter({ visible: true }).first()
 }
 
-/** The editable textarea of a text metadata field (a second one is Vuetify's hidden autosize sizer). */
+/**
+ * The editable textarea of a text metadata field (a second one is Vuetify's hidden autosize sizer).
+ */
 export function metadataTextarea(page: Page, name: string): Locator {
   return metadataField(page, name).locator('textarea').first()
 }
@@ -82,24 +79,20 @@ export async function revealMetadataField(page: Page, name: string): Promise<voi
   await expect(metadataField(page, name)).toBeVisible()
 }
 
-/** Expand the collapsed image metadata ("Zobraziť viac detailov"). */
 export async function showMoreDetails(page: Page): Promise<void> {
   await revealMetadataField(page, 'title')
 }
 
-/** Replace the text of a textarea metadata field; an empty `value` clears it. */
 export async function fillMetadataText(page: Page, name: string, value: string): Promise<void> {
   await revealMetadataField(page, name)
   await metadataTextarea(page, name).fill(value)
 }
 
-/** Fill the title and description of the metadata form. */
 export async function fillTexts(page: Page, data: AssetTexts): Promise<void> {
   await fillMetadataText(page, 'title', data.title)
   await fillMetadataText(page, 'description', data.description)
 }
 
-/** Reopen the asset and assert the saved title and description. */
 export async function expectSavedTexts(page: Page, assetId: string, data: AssetTexts): Promise<void> {
   await openAssetDetail(page, assetId)
   await revealMetadataField(page, 'title')
@@ -107,12 +100,10 @@ export async function expectSavedTexts(page: Page, assetId: string, data: AssetT
   await expect(metadataTextarea(page, 'description')).toHaveValue(data.description)
 }
 
-/** Save the metadata form from the detail sidebar actions and wait for the update alert. */
 export async function saveMetadata(page: Page): Promise<void> {
   await clickForAlert(page, visibleCy(page.locator('#anzu-asset-detail-sidebar-actions'), 'button-save'), ALERT_UPDATE)
 }
 
-/** Fill the title of the shown asset and save it. */
 export async function saveAssetTitle(page: Page, title: string): Promise<void> {
   await fillMetadataText(page, 'title', title)
   await saveMetadata(page)
@@ -133,7 +124,6 @@ export function createdId(page: Page, resource: string): Promise<string> {
     })
 }
 
-/** Type a new keyword into the keywords field and create it from the suggestion's "add" button. Returns its id. */
 export async function addNewKeyword(page: Page, name: string): Promise<string> {
   await metadataField(page, 'keywords').locator('input').fill(name)
   const created = createdId(page, 'keyword')
@@ -144,7 +134,6 @@ export async function addNewKeyword(page: Page, name: string): Promise<string> {
   return id
 }
 
-/** Create an author through the "+" next to the authors field; the app attaches it right away. Returns its id. */
 export async function addNewAuthor(page: Page, name: string): Promise<string> {
   await visibleCy(page, 'add-author').click()
   const dialog = page.getByRole('dialog').filter({ has: page.locator('[data-cy="author-name"]') })
@@ -157,20 +146,17 @@ export async function addNewAuthor(page: Page, name: string): Promise<string> {
   return id
 }
 
-/** Remove every chip of a keywords/authors field with its clear icon. */
 export async function clearChips(page: Page, name: string): Promise<void> {
   await metadataField(page, name).locator('.mdi-close-circle').first().click()
   await expect(metadataField(page, name).locator('.v-chip')).toHaveCount(0)
 }
 
-/** Empty the title and description and clear the keywords and authors fields. */
 export async function clearMetadata(page: Page): Promise<void> {
   await fillTexts(page, { title: '', description: '' })
   await clearChips(page, 'keywords')
   await clearChips(page, 'authors')
 }
 
-/** Best-effort API cleanup of the keywords and authors the metadata form created. */
 export async function cleanupMetadataRecords(page: Page, created: CreatedMetadataRecords): Promise<void> {
   for (const id of created.keywordIds) {
     await page.request.delete(`${CORE_DAM_API}/keyword/${id}`).catch(() => {})
@@ -180,7 +166,6 @@ export async function cleanupMetadataRecords(page: Page, created: CreatedMetadat
   }
 }
 
-/** Open the delete confirmation from the sidebar actions, check it and cancel it without deleting. */
 export async function openAndCancelDelete(page: Page): Promise<void> {
   await visibleCy(page, 'button-delete').click()
   const dialog = page.getByRole('dialog').filter({ has: page.locator('[data-cy="button-confirm-delete"]') })
@@ -190,7 +175,6 @@ export async function openAndCancelDelete(page: Page): Promise<void> {
   await expect(dialog).toBeHidden()
 }
 
-/** Open the download dialog from the sidebar actions, check it offers the original file and close it. */
 export async function openAndCancelDownload(page: Page): Promise<void> {
   await visibleCy(page, 'button-download').click()
   const dialog = page.getByRole('dialog').filter({ has: page.locator('[data-cy="button-download-file"]') })
@@ -200,7 +184,6 @@ export async function openAndCancelDownload(page: Page): Promise<void> {
   await expect(dialog).toBeHidden()
 }
 
-/** Assert the detail sidebar offers these tabs (by data-cy). */
 export async function expectDetailTabs(page: Page, tabs: string[]): Promise<void> {
   for (const tab of tabs) {
     await expect(visibleCy(page, tab)).toBeVisible()
@@ -231,7 +214,9 @@ export function downloadDialog(page: Page): Locator {
   return page.getByRole('dialog').filter({ has: page.locator('[data-cy="button-download-file"]') })
 }
 
-/** The slots the download dialog's picker offers. Only slots that actually hold a file are listed. */
+/**
+ * The slots the download dialog's picker offers. Only slots that actually hold a file are listed.
+ */
 export async function downloadDialogSlots(page: Page): Promise<string[]> {
   await downloadDialog(page).getByRole('combobox').first().click()
   // `allInnerTexts` reads once, and the menu opens a beat after the click — read too early, it is empty.
@@ -242,7 +227,6 @@ export async function downloadDialogSlots(page: Page): Promise<string[]> {
   return slots
 }
 
-/** Switch the download dialog to `slot` and return the file it then offers. */
 export async function chooseDownloadSlot(page: Page, slot: string): Promise<{ id: string; link: string }> {
   const dialog = downloadDialog(page)
   const linked = downloadLink(page)
@@ -252,20 +236,15 @@ export async function chooseDownloadSlot(page: Page, slot: string): Promise<{ id
   return file
 }
 
-// "Fókus" tab (region of interest)
-
-/** The crop previews of the "Fókus" tab — one per configured ratio, each titled with that ratio. */
 function roiPreviews(page: Page): Locator {
   return detailSidebar(page).locator('.crop-preview > div')
 }
 
-/** The ratio titles of the crop previews, e.g. `["3:2", "1:1"]`. */
 export async function roiPreviewTitles(page: Page): Promise<string[]> {
   await expect(roiPreviews(page).first()).toBeVisible()
   return (await roiPreviews(page).locator('.text-label-large').allInnerTexts()).map((title) => title.trim())
 }
 
-/** The `src` of every crop preview image, in the order they are shown. */
 export function roiPreviewSources(page: Page): Promise<(string | null)[]> {
   return roiPreviews(page)
     .locator('img')
@@ -288,12 +267,10 @@ export async function expectRoiPreviewsLoaded(page: Page): Promise<void> {
     .toBe(true)
 }
 
-/** Press "Znovu načítať náhľady" in the sidebar actions of the "Fókus" tab. */
 export async function refreshRoiPreviews(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Znovu načítať náhľady' }).click()
 }
 
-/** Rotate the image on the "Fókus" tab, clockwise (`right`) or back (`left`). */
 export async function rotateImage(page: Page, direction: 'right' | 'left'): Promise<void> {
   await clickForAlert(page, visibleCy(page, `button-rotate-${direction}`), ALERT_UPDATE)
 }
@@ -313,8 +290,6 @@ export async function assignAndUnassignThumbnail(page: Page): Promise<void> {
   await expect(picker).toBeHidden()
   await clickForAlert(page, unassign, ALERT_UPDATE)
 }
-
-// Detail lightbox
 
 /**
  * The asset detail as the list opens it: a full-screen lightbox over the list, not a page of its own.

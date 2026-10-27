@@ -40,7 +40,7 @@ const setEnvConfig = (data: DeployedEnvConfig) => {
     envConfig.dam.apiTimeout = data.dam.apiTimeout
     envConfig.dam.adminUrl = data.dam.adminUrl
     envConfig.dam.authorCleanPhraseTestSample = data.dam.authorCleanPhraseTestSample
-    // The service is used only where a deployment asks for it: no block, or no value, is the service off.
+    // The service is off unless a deployment enables it. A missing block or value means off.
     envConfig.notification.enabled = data.notification?.enabled ?? false
     envConfig.notification.webSocketUrl = data.notification?.webSocketUrl ?? ''
     envConfig.sentry.dsn = data.sentry.dsn
@@ -49,6 +49,6 @@ const setEnvConfig = (data: DeployedEnvConfig) => {
   }
 }
 
-// The fetch, its checks and the fatal error live in the library: a failed start is reported as
-// itself, not as a config that did not load.
+// The fetch, checks and fatal error live in the library. A failed
+// start is reported as itself, not as a config load failure.
 export const loadEnvConfig = (callback: () => void | Promise<void>) => startWithEnvConfig(setEnvConfig, callback)

@@ -75,7 +75,6 @@ test.describe.serial(
       assetIds.push(await uploadAndDescribe(page, uniqueFixtureCopy('audio/sample.mp3'), episode.title))
       await waitForAssetProcessed(page, assetIds[0])
       await addAssetToNewEpisode(page, assetIds[0], PODCAST, episode.title)
-      // With the free slot empty, the episode cannot be played on the web until the synchronizer fills it.
       await switchMainFileToSlot(page, 'premium')
     })
 

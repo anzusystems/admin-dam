@@ -9,7 +9,6 @@ vi.mock('@/domains/coreDam/asset/api/assetApi', () => ({
   fetchAssetListByIds: () => fetchAssetListByIds(),
 }))
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: vi.fn() }))
-// Which asset types have keywords and authors, for the mass operations at the end.
 const extSystem = vi.hoisted(() => ({ config: {} as Record<string, unknown> }))
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
@@ -88,7 +87,7 @@ describe('assets picked for mass edit', () => {
   it('fails the ones the metadata call left out instead of loading them for ever', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Deleted between the listing and this call, or outside the licence: the response is short.
+    // The response is short when an asset was deleted between the listing and this call, or is outside the licence.
     fetchAssetListByIds.mockResolvedValue([detail('asset-1')])
 
     await store.addByAssets(QUEUE, [listedAsset('asset-1'), listedAsset('asset-2')] as never)
@@ -97,10 +96,10 @@ describe('assets picked for mass edit', () => {
     const [found, missing] = itemsOf(store as never)
     expect(found.status).toBe(UploadQueueItemStatus.Uploaded)
     expect(found.canEditMetadata).toBe(true)
-    // The footer counts `Loading` as unfinished, and nothing else would ever move this one on.
+    // The footer counts `Loading` as unfinished, and nothing else would ever move this item on.
     expect(missing.status).toBe(UploadQueueItemStatus.Failed)
     expect(missing.error.hasError).toBe(true)
-    // Its own wording: this row was never uploaded and has no refresh button to be sent to.
+    // Own wording: this row was never uploaded and has no refresh button to send the user to.
     expect(missing.error.message).toBe('system.uploadErrors.metadataUnavailable')
   })
 
@@ -115,8 +114,8 @@ describe('assets picked for mass edit', () => {
     await store.addByAssets(QUEUE, [listedAsset('asset-1')] as never)
     await vi.waitFor(() => expect(itemsOf(store as never)[0].canEditMetadata).toBe(true))
 
-    // Two selections that overlap fetch the same asset twice; taken in order, as here, the second one has the
-    // metadata the first was complaining about, so the warning has to go with it.
+    // Overlapping selections fetch the same asset twice.
+    // In order, the second fetch has the metadata the first one warned about, so the warning must go.
     expect(itemsOf(store as never)[0].error.hasError).toBe(false)
   })
 
@@ -128,14 +127,16 @@ describe('assets picked for mass edit', () => {
     await store.addByAssets(QUEUE, [listedAsset('asset-1'), listedAsset('asset-2')] as never)
     await vi.waitFor(() => expect(itemsOf(store as never)[1].status).not.toBe(UploadQueueItemStatus.Loading))
 
-    // Fire-and-forget: a rejection here used to leave every item it was fetching on `Loading`.
+    // Fire-and-forget: a rejection here used to leave every item being fetched on `Loading`.
     const statuses = itemsOf(store as never).map((item) => item.status)
     expect(statuses).toEqual([UploadQueueItemStatus.Failed, UploadQueueItemStatus.Failed])
   })
 })
 
-/* An asset that is not described yet, whose file the server is still processing: the processing may fill in its
- * metadata, which a form loaded now would overwrite when saved. Decided by the read of the batch, fresh. */
+/*
+ * The server may still be processing the file of an undescribed asset and fill in its metadata.
+ * A form loaded now would overwrite that on save. The fresh batch read decides.
+ */
 describe('an asset picked for mass edit whose file the server may still be processing', () => {
   const withFile = (id: string, status: string, described = false) => ({
     ...detail(id),
@@ -193,7 +194,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     }
   )
 
-  // The metadata notification reaches the row while its batch is on the wire, and its read answers first.
   it('keeps the form the metadata notification gave it before its batch answered that the file is still processed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -214,7 +214,7 @@ describe('an asset picked for mass edit whose file the server may still be proce
     await notified
     vi.useRealTimers()
     expect(itemsOf(store as never)[0].canEditMetadata).toBe(true)
-    // What the batch read before the notification came is older: it does not overwrite what the row has now.
+    // A batch read from before the notification is older and must not overwrite the current row.
     answerBatch([{ ...withFile('asset-1', 'stored'), keywords: ['keyword-of-the-batch'] }])
     await vi.waitFor(() => expect(itemsOf(store as never)[0].status).not.toBe(UploadQueueItemStatus.Loading))
 
@@ -227,8 +227,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
   })
 
-  /* The same race, and the batch then says the file is processed, leaves the asset out or fails: the row has its form
-   * from the notification, and what the user typed into it since. */
   it.each<[string, (answer: (assets: unknown[]) => void, fail: (error: Error) => void) => void]>([
     [
       'answered with the asset',
@@ -278,7 +276,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     }
   )
 
-  // Nothing typed into it either: the batch was sent before the read of the notification, so its answer is the older.
   it('keeps what the metadata notification read when its batch, sent before that, answers with the asset after it', async () => {
     vi.useFakeTimers()
     onTestFinished(() => void vi.useRealTimers())
@@ -309,7 +306,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     ])
   })
 
-  // Taken out and picked again while the first batch is on the wire: the second batch answers first, and stands.
   it('keeps what a newer batch gave it when an older one answers after, that the file is still processed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -329,7 +325,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     expect([picked.error.hasError, picked.error.message]).toEqual([false, ''])
   })
 
-  // The newer batch left it out: the row has its text and no form, and the older answer says nothing new of it.
   it('keeps what a newer batch that left it out said when an older one answers after, that the file is still processed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -349,7 +344,6 @@ describe('an asset picked for mass edit whose file the server may still be proce
     expect(picked.error.message).toBe('system.uploadErrors.metadataUnavailable')
   })
 
-  // The one who uploaded the asset is told when its metadata is processed, and the row comes alive.
   it('gets its metadata and its form from the metadata notification, and loses the text', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -393,7 +387,7 @@ describe('mass operations: filling a custom value into the queue', () => {
     return (store.queues[QUEUE].items as unknown as typeof items).map((item) => item.customData.title)
   }
 
-  // `null` is a value that was emptied, as a cleared number and as the API returns it.
+  // `null` is an emptied value, such as a cleared number, and is how the API returns it.
   it('fills what is empty: never set, an empty text, null, or an empty list', async () => {
     expect(await fill([{}, { title: '' }, { title: null }, { title: [] }])).toEqual([
       'filled',
@@ -414,7 +408,6 @@ describe('mass operations: filling a custom value into the queue', () => {
   })
 })
 
-// The rows show keywords and authors only where the ext system has them on for the asset type.
 describe('mass operations: filling keywords and authors into the queue', () => {
   const fill = async (forceReplace = false) => {
     extSystem.config = {
@@ -435,7 +428,7 @@ describe('mass operations: filling keywords and authors into the queue', () => {
     return (store.queues[QUEUE].items as unknown as typeof items).map((item) => [item.keywords, item.authors])
   }
 
-  // A document got the keywords typed for the images: its row has no input for them, and the bulk save sent them.
+  // A document got the keywords typed for images. Its row has no input for them, and the bulk save sent them.
   it('writes them only into the items whose asset type has them enabled', async () => {
     const written = [
       [['keyword'], []],

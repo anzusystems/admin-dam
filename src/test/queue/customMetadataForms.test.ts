@@ -10,14 +10,6 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The form that draws the custom fields DAM is configured with, the one of an asset in a row of the queue, in the
- * detail and in the sidebar of the list: which fields it shows, what "show more details" does, and what it gives back
- * when typed into. The form of the library over its config store, under a parent that holds its value as a row of
- * the queue does. The scratch form of the mass operations, the library's too, is inside its sidebar: it is in
- * `massOperationsRows.test.ts`.
- *
- * What they validate, and for whom, is in `asset/assetMetadataValidation.test.ts` and `queueRowValidation.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -58,11 +50,9 @@ describe('the custom metadata form of an asset', () => {
   interface Mounted {
     assetType?: DamAssetTypeType
     value?: Record<string, unknown>
-    /** How many forms the page holds: each with a value of its own. */
     forms?: number
   }
 
-  /** Mounts the form under a parent that keeps its value, and can ask everything below it to validate. */
   const mountForm = async (setup: Partial<UploadUiSetup>, mounted: Mounted = {}) => {
     const ui = await startUploadUi({ server, ...setup })
     const assetType: Ref<DamAssetTypeType> = ref(mounted.assetType ?? 'image')
@@ -87,7 +77,6 @@ describe('the custom metadata form of an asset', () => {
                       modelValue: value.value,
                       'onUpdate:modelValue': (updated: Record<string, unknown>) => (value.value = updated),
                       assetType: assetType.value,
-                      // As the row of the queue hands them in: the ext system of the application, the scope of admin-dam.
                       extSystem: 1,
                       validationScope: AssetMetadataValidationScopeSymbol,
                       onAnyChange: changes,
@@ -130,8 +119,8 @@ describe('the custom metadata form of an asset', () => {
       expect(form().querySelectorAll('button')).toHaveLength(0)
     })
 
-    // What the form of the library falls back on; the form of admin-dam pinned none there. The backend always
-    // says a number, so only a configuration left incomplete comes here.
+    // Fallback of the library form when admin-dam pins no fields.
+    // The backend always sends a number, so only an incomplete configuration reaches this case.
     it('is two fields, and the rest behind the button, where the ext system says nothing of pinning', async () => {
       const { form } = await mountForm({
         customForm: { image: three },
@@ -194,7 +183,6 @@ describe('the custom metadata form of an asset', () => {
       expect([buttonsNamed(form(), SHOW).length, buttonsNamed(form(), HIDE).length]).toEqual([1, 0])
     })
 
-    // Every row of the queue has a form: one press opens them all.
     it('is one choice for every form on the page', async () => {
       const { form } = await mountForm(oneOfThree, { forms: 2 })
 
@@ -220,7 +208,6 @@ describe('the custom metadata form of an asset', () => {
         },
         { forms: 2 }
       )
-      // Only the second form is put right.
       await typeInto(form(1), 'note', 'filled')
 
       validateAll()
@@ -242,7 +229,6 @@ describe('the custom metadata form of an asset', () => {
 
       await typeInto(form(), 'title', 'new')
 
-      // Also a value no field of the form shows.
       expect(values[0].value).toEqual({ title: 'new', description: 'kept', unknown: 7 })
       expect(changes).toHaveBeenCalledTimes(1)
       expect(fields(form()).map((field) => field.textarea.value)).toEqual(['new', 'kept', ''])

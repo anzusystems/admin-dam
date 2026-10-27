@@ -12,11 +12,12 @@ import {
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The changes of a file of an asset - its route, its slot, which file is the main one - are refused by the server for
- * a reason: the user may not (403), or what was sent cannot be (422, with the field or the operation). They were
- * sent by hand-made promises that handed the alerts the raw error of axios, and every refusal said "System error". The
- * real page of an asset and the application around it as it starts; the server is a fake, and so is the address the
- * page asks about a new version of the application. */
+/*
+ * Changes of an asset file (route, slot, main file) are refused by the server for a reason:
+ * the user may not (403), or what was sent is invalid (422, with the field or operation).
+ * They used to be sent by hand-made promises that passed the raw
+ * axios error to the alerts, so every refusal said "System error".
+ */
 
 let server: FakeDam
 
@@ -27,7 +28,6 @@ const FORBIDDEN = "Access denied, you don't have correct rights for this action"
 const SLUG_NOT_UNIQUE = 'Please, fix these errors\nSlug: Field must be unique.'
 const OPERATION_REFUSED = 'An unknown error occurred. Contact the administrator if necessary.'
 
-/** A document with its file, private, and an image with a file in each of its two slots. */
 const DOCUMENT = '11111111-2222-4333-8444-555555555555'
 const DOCUMENT_FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
 const IMAGE = '22222222-2222-4333-8444-555555555555'
@@ -59,7 +59,6 @@ const menuItem = (name: string) =>
     return found!
   })
 
-/** The page of the asset, its form drawn. */
 const openPage = async (assetId: string) => {
   const ui = await startUploadUi({
     server,

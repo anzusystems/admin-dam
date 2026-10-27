@@ -2,11 +2,12 @@ import { describe, expect, it } from 'vitest'
 
 import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 
-/* The fake server of the upload tests answers as a server does: every read of an asset, of a file and of the slots
- * of an asset is a new object. The
- * application writes into what it is handed - the detail into its asset, a mass operation into the custom data of a
- * row - and with the stored object handed out, a later read would answer with what the application wrote, so a case
- * about "the asset as the server has it" could pass on code that is wrong. */
+/*
+ * Every read of an asset, a file or the slots of an asset returns a new object, as a real server does.
+ * The application writes into what it receives (the detail into its asset, a mass operation into the row custom data).
+ * If the stored object were handed out, later reads would return those writes,
+ * and a case about the asset as the server has it could pass on wrong code.
+ */
 
 type Answered = { keywords: string[]; metadata: { customData: Record<string, unknown> } }
 
@@ -60,8 +61,10 @@ describe('the fake server', () => {
   })
 })
 
-/* As axios settles an answer: by the `validateStatus` of the request, and without one only a 2xx is an answer. The
- * fake handed every answer back, and the cases about a request the server refused had to say so themselves. */
+/*
+ * Axios settles an answer by the request `validateStatus`; without one only a 2xx is an answer.
+ * The fake used to return every answer, so cases about refused requests had to set this up themselves.
+ */
 describe('the answers of the fake server', () => {
   const answering = (status: number) => {
     const server = createFakeDam()

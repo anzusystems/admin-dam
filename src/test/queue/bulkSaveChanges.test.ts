@@ -8,13 +8,12 @@ import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* What the bulk save of a queue sends of each row: of its keywords, authors, custom data and single-use switch only
- * what was changed since the row last got them from the server, or last saved them. A field sent as it was loaded
- * would overwrite what another editor saved meanwhile. A row that goes out is marked described; a row nothing is to
- * be written of does not go out at all, and with no such row there is no request.
- *
- * The real store and the real request over a fake server; the rows get their metadata the ways they do in the app.
- * What the overlays do around the save is in `overlaySave.test.ts`, how the save fails in `asset/bulkMetadata.test.ts`. */
+/*
+ * The bulk save sends only the keywords, authors, custom data and single-use
+ * switch changed since the row last got them from the server or saved them.
+ * A field sent as loaded would overwrite what another editor saved meanwhile.
+ * A row with nothing to write is not sent, and with no such rows there is no request.
+ */
 
 let server: FakeDam
 
@@ -25,10 +24,8 @@ const BATCH_READ = /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/
 const EDIT = 'edit'
 const UPLOADS = 'global'
 
-/** The bodies of the saves, a list of rows each, in the order they were sent. */
 const saved = () => server.sent('PATCH', BULK).map((request) => JSON.parse(request.data as string))
 
-/** An asset the server has, described unless told otherwise. */
 const onServer = (id: string, over: Record<string, unknown> = {}) =>
   assetDetail(id, {
     flags: { described: true },
@@ -37,7 +34,6 @@ const onServer = (id: string, over: Record<string, unknown> = {}) =>
   })
 const notDescribed = { flags: { described: false } }
 
-/** An asset as the list of assets hands it to the mass edit. */
 const listed = (id: string, assetType = 'image') => ({
   id,
   attributes: { assetType, assetStatus: 'with_file' },
@@ -54,12 +50,10 @@ const start = async (queues: Record<string, UploadQueueItem[]> = {}, setup: Part
   return {
     ...ui,
     save: (queueId: string) => api.bulkUpdateAssetsMetadata(ui.store.getQueueItems(queueId)),
-    /** What the application takes for the metadata the server has of the row. */
     baseline: (row: UploadQueueItem) => queueRowBaseline(row),
   }
 }
 
-/** The assets picked for mass edit as the list picks them, their metadata read from the server in one batch. */
 const pickedForMassEdit = async (assets: Array<ReturnType<typeof assetDetail>>, setup: Partial<UploadUiSetup> = {}) => {
   assets.forEach((asset) => server.asset(asset))
   const ui = await start({}, setup)
@@ -85,8 +79,10 @@ afterEach(() => {
 })
 
 describe('the bulk save of assets picked for mass edit', () => {
-  /* Sent with its id alone, it would be told to everyone who listens for a change of the asset: core-dam takes the
-   * custom data and the authors a row leaves out for a change. */
+  /*
+   * A row sent with its id alone would be reported to every listener as a change of the asset.
+   * core-dam treats the custom data and authors a row leaves out as a change.
+   */
   it('does not send a row nobody changed, of an asset that is described', async () => {
     const { rows, save } = await pickedForMassEdit([onServer('asset-1'), onServer('asset-2'), onServer('asset-3')])
 
@@ -121,7 +117,7 @@ describe('the bulk save of assets picked for mass edit', () => {
     ],
     ['the keywords, emptied', (row) => (row.keywords = []), { keywords: [] }],
     ['the authors', (row) => (row.authors = ['author-other']), { authors: ['author-other'] }],
-    // The server takes a field of the form that is left out as one emptied: the custom data go whole.
+    // The server treats a form field that is left out as emptied, so the custom data are sent whole.
     [
       'one custom field, with the others',
       (row) => (row.customData = { ...row.customData, title: 'typed' }),
@@ -147,7 +143,7 @@ describe('the bulk save of assets picked for mass edit', () => {
     ])
   })
 
-  // By their values: the forms and the mass operations write new lists and objects into a row.
+  // Compared by value: forms and mass operations write new lists and objects into a row.
   it('takes the same values in a new list or object as no change, and another order of a list as a change', async () => {
     const { rows, save } = await pickedForMassEdit([
       onServer('asset-1', { keywords: ['keyword-a', 'keyword-b'] }),
@@ -156,7 +152,7 @@ describe('the bulk save of assets picked for mass edit', () => {
 
     rows[0].keywords = ['keyword-a', 'keyword-b']
     rows[0].authors = [...rows[0].authors]
-    // A key without a value is not sent, so it is no change either.
+    // A key without a value is not sent, so it is not a change.
     rows[0].customData = { note: 'kept', title: 'from the server', caption: undefined }
     rows[1].keywords = ['keyword-b', 'keyword-a']
     await save()
@@ -170,10 +166,8 @@ describe('the bulk save of assets picked for mass edit', () => {
       onServer('asset-2'),
     ])
 
-    // Fill the empty ones: only the first row has no keywords and no authors.
     store.queueItemsReplaceEmptyKeywords(EDIT, ['keyword-filled'])
     store.queueItemsReplaceEmptyAuthors(EDIT, ['author-filled'])
-    // Replace in all.
     store.queueItemsReplaceEmptyCustomDataValue(
       EDIT,
       { assetType: 'image', elementProperty: 'title', value: 'replaced' },
@@ -235,7 +229,7 @@ describe('the bulk save of assets picked for mass edit', () => {
     expect(saved()).toEqual([[body], [body]])
   })
 
-  // The batch on the wire was made as the save began: what is typed after that is a change the next save sends.
+  // The batch on the wire is made when the save begins. Text typed after that is sent by the next save.
   it('sends with the next save what was typed into a row while its save was on the wire', async () => {
     const { rows, save } = await pickedForMassEdit([onServer('asset-1')])
     let answer = () => undefined as void
@@ -264,7 +258,6 @@ describe('the bulk save of assets picked for mass edit', () => {
     const many = Array.from({ length: 23 }, (_value, index) => onServer('asset-' + index))
     const ids = (batch: Array<{ id: string }>) => batch.map((row) => row.id)
 
-    // Ten of the rows that go out, not ten of the queue.
     it('counts the rows that are sent: twelve changed among twenty-three go as ten and two', async () => {
       const { rows, save } = await pickedForMassEdit(many)
       const changed = rows.filter((_row, index) => index % 2 === 0)
@@ -287,7 +280,6 @@ describe('the bulk save of assets picked for mass edit', () => {
       expect(saved().flatMap(ids)).toEqual(many.map((asset) => asset.id))
     })
 
-    // The requests before the one that failed were saved, that one and those after it were not.
     it('sends with the next save the rows of the request that failed and of those after it, not of those before', async () => {
       const { store, save } = await pickedForMassEdit(many)
       store.queueItemsReplaceEmptyKeywords(EDIT, ['keyword-replaced'], true)
@@ -301,13 +293,12 @@ describe('the bulk save of assets picked for mass edit', () => {
       await expect(save()).rejects.toBeDefined()
       await save()
 
-      // The first save: the first request and the one that failed. The second: the thirteen rows not saved yet.
       expect(saved().map((batch) => batch.length)).toEqual([10, 10, 10, 3])
       expect(saved().slice(2).flatMap(ids)).toEqual(many.slice(10).map((asset) => asset.id))
       expect(saved()[3][2]).toEqual({ id: 'asset-22', described: true, keywords: ['keyword-replaced'] })
     })
 
-    // The server names a refused field by its place in the request, which is not the place of the row in the queue.
+    // The server names a refused field by its place in the request, not by the row's place in the queue.
     it('names a refused field by the row the request held at that place, when rows before it were not sent', async () => {
       const titled = (name: string) => ({ ...customField('title'), name })
       const { rows, save } = await pickedForMassEdit(
@@ -331,7 +322,7 @@ describe('the bulk save of assets picked for mass edit', () => {
 })
 
 describe('the bulk save of a row of which it is not known what the server has', () => {
-  // Put into the queue with its form and its values, as no path of the app does: the fallback, should one appear.
+  // No app path puts a row in like this. It is the fallback should one appear.
   const unknown = (over: Partial<UploadQueueItem> = {}) =>
     queueRow({
       type: 'asset',
@@ -373,7 +364,6 @@ describe('the bulk save of a row of which it is not known what the server has', 
     ])
   })
 
-  // An answer that does not say whether the asset is described: as little is known as of a row put in as it is.
   it('sends whole a row whose asset the server did not say of whether it is described', async () => {
     const { save } = await pickedForMassEdit([onServer('asset-1', { flags: undefined })])
 
@@ -395,11 +385,10 @@ describe('the bulk save of a row of which it is not known what the server has', 
 })
 
 describe('what the bulk save takes for the metadata the server has of a row', () => {
-  // That save always marks the asset described, whatever the asset it was made from says: it is from before it.
+  // That save always marks the asset described, whatever the asset it was made from says.
   it('what the detail or the panel of the list saved of its asset, which is described from then on', async () => {
     const { store, save } = await pickedForMassEdit([onServer('asset-1', notDescribed)])
 
-    // What the two panels call once their own save is answered, with what they sent.
     store.updateAssetMetadata(
       onServer('asset-1', { ...notDescribed, keywords: ['keyword-of-the-detail'], mainFileSingleUse: true }) as never
     )
@@ -408,8 +397,10 @@ describe('what the bulk save takes for the metadata the server has of a row', ()
     expect(server.sent('PATCH')).toEqual([])
   })
 
-  /* An upload: the notification of its metadata comes while the file is still being sent. The first load fills only
-   * what is empty on the row, so what a mass operation wrote into it before stays - and that is a change. */
+  /*
+   * During an upload the metadata notification comes while the file is still being sent.
+   * The first load fills only what is empty on the row, so earlier mass-operation values stay and count as a change.
+   */
   const uploading = (over: Partial<UploadQueueItem> = {}) => queueRow({ status: 'uploading', ...over })
   const notified = async (store: Awaited<ReturnType<typeof start>>['store']) => {
     const read = store.queueItemMetadataProcessed('asset-1')
@@ -448,8 +439,10 @@ describe('what the bulk save takes for the metadata the server has of a row', ()
     expect(saved()).toEqual(sent)
   })
 
-  /* A row gets its metadata once. A later read of its asset leaves the row as it is, so it says nothing new of what
-   * the row holds: taken for it, the keywords the row still has would be sent over the ones saved meanwhile. */
+  /*
+   * A row gets its metadata once. A later read of its asset leaves the row as it is.
+   * Treating it as new data would send the row's keywords over ones saved meanwhile.
+   */
   it('not a later read of the asset, which does not load the row again', async () => {
     server.asset(onServer('asset-1', { keywords: ['keyword-at-first'], mainFile: assetFile('file-1', 'uploading') }))
     const { store, save } = await start({ [UPLOADS]: [uploading()] })
@@ -466,7 +459,6 @@ describe('what the bulk save takes for the metadata the server has of a row', ()
     expect(saved()).toEqual([[{ id: 'asset-1', described: true, authors: ['author-typed'] }]])
   })
 
-  // Its file had failed and was processed after all: the row gets its form back as it was left, nothing is loaded.
   it('what a mass-edit row had before its file failed, once the file is processed after all', async () => {
     const { store, rows, save } = await pickedForMassEdit([onServer('asset-1', notDescribed)])
     store.queueItemFailed('asset-1', 'unknown', 'file-of-asset-1')
@@ -481,9 +473,12 @@ describe('what the bulk save takes for the metadata the server has of a row', ()
   })
 })
 
-/* The reads of the metadata of a row and the saves of it have an order. An answer asked for before the row was last
- * given its metadata - by a newer read, or by a save - is older than what the row holds, however late it comes: taken,
- * it would put the row and what is known of the server back, and the next save would undo the one before it. */
+/*
+ * Reads and saves of a row's metadata have an order.
+ * An answer asked for before the row was last given its metadata
+ * is older than what the row holds, however late it arrives.
+ * Taking it would revert the row and the known server state, and the next save would undo the previous one.
+ */
 describe('a mass-edit row whose metadata are read twice', () => {
   const customData = (title: string) => ({ title, note: 'kept' })
   const answered = (keyword: string, title = 'from the server', over: Record<string, unknown> = {}) =>
@@ -493,8 +488,6 @@ describe('a mass-edit row whose metadata are read twice', () => {
       ...over,
     })
 
-  /* The asset is taken out of the mass edit and picked again while the read of its first picking is on its way: the
-   * two reads answer into the one row the queue holds, when the case lets them. */
   const twiceRead = async () => {
     const answers: Array<(asset: ReturnType<typeof assetDetail>) => void> = []
     server.on(
@@ -516,7 +509,6 @@ describe('a mass-edit row whose metadata are read twice', () => {
       await vi.advanceTimersByTimeAsync(0)
       await eventually(() => expect(row().status).toBe('uploaded'))
     }
-    /** What the row holds, and what the application takes for the server's. */
     const held = () => ({
       row: [row().keywords, row().customData],
       baseline: [ui.baseline(row())?.keywords, ui.baseline(row())?.customData],
@@ -525,7 +517,6 @@ describe('a mass-edit row whose metadata are read twice', () => {
     return { ...ui, row, answer, held, save: () => ui.save(EDIT) }
   }
 
-  // The bare "it has a form already" kept the older answer, which is not what the server has.
   it('takes the newer answer when the older one came first and nobody changed the row', async () => {
     const { answer, held, save } = await twiceRead()
 
@@ -570,8 +561,10 @@ describe('a mass-edit row whose metadata are read twice', () => {
     expect(saved()).toEqual([[{ id: 'asset-1', described: true, keywords: ['keyword-typed'] }]])
   })
 
-  /* Typed and saved between the two answers: the row holds what the server has again, so "nobody changed it" would
-   * let the newer read in - and that one was sent before the save. */
+  /*
+   * Typed and saved between the two answers, the row holds what the server has again.
+   * A "nobody changed it" check would accept the newer read, which was sent before the save.
+   */
   it('keeps what was saved between the two answers, and the next save sends only what is typed after it', async () => {
     const { row, answer, held, save } = await twiceRead()
     await answer('older', answered('keyword-older', 'older'))
@@ -588,7 +581,6 @@ describe('a mass-edit row whose metadata are read twice', () => {
     await save()
     expect(saved()).toEqual([
       [{ id: 'asset-1', described: true, customData: customData('typed') }],
-      // Not the title the late answer carried: that would undo the save before.
       [{ id: 'asset-1', described: true, customData: { title: 'typed', note: 'typed later' } }],
     ])
   })
@@ -596,7 +588,6 @@ describe('a mass-edit row whose metadata are read twice', () => {
   it('keeps what the detail or the panel saved of the asset between the two answers', async () => {
     const { store, answer, held, save } = await twiceRead()
     await answer('older', answered('keyword-older', 'older'))
-    // What the two panels call once their own save is answered, with what they sent.
     store.updateAssetMetadata(answered('keyword-of-the-detail', 'of the detail') as never)
 
     await answer('newer', answered('keyword-newer', 'newer'))
@@ -609,8 +600,11 @@ describe('a mass-edit row whose metadata are read twice', () => {
     expect(server.sent('PATCH')).toEqual([])
   })
 
-  /* The save of a row nobody changed sends only that its asset is described now. The newer read answers while it is
-   * on the wire and the row takes it: the answer of the save must not put back what the row held at the click. */
+  /*
+   * The save of an unchanged row sends only that its asset is now described.
+   * The newer read answers while it is on the wire and the row takes it.
+   * The save answer must not restore what the row held at the click.
+   */
   it('keeps the newer answer a row took while its save was on the wire, and the next save sends nothing', async () => {
     const { answer, held, save } = await twiceRead()
     await answer('older', answered('keyword-older', 'older', notDescribed))
@@ -637,7 +631,7 @@ describe('a mass-edit row whose metadata are read twice', () => {
 })
 
 describe('a mass-edit row saved from the detail while its bulk save is on the wire', () => {
-  // The answer of the bulk save writes what it sent, not the whole row as it was at the click.
+  // The bulk save answer writes what it sent, not the whole row as it was at the click.
   it('does not send with the next bulk save what the detail saved and nobody changed since', async () => {
     const { store, rows, save, baseline } = await pickedForMassEdit([onServer('asset-1')])
     rows[0].keywords = ['keyword-typed']
@@ -651,7 +645,6 @@ describe('a mass-edit row saved from the detail while its bulk save is on the wi
 
     const saving = save()
     await eventually(() => expect(saved()).toHaveLength(1))
-    // What the detail calls once its own save is answered, with what it sent.
     store.updateAssetMetadata(
       onServer('asset-1', {
         keywords: ['keyword-typed'],
@@ -671,12 +664,14 @@ describe('a mass-edit row saved from the detail while its bulk save is on the wi
   })
 })
 
-/* The asset open in the panel beside the list is one of those a range picks (shift-click): its mass-edit row is
- * still loading when the panel saves the asset. The save writes into that row; the read of the picking may answer
- * with the asset as it was before the save, whenever it was sent before the save was answered. */
+/*
+ * The asset open in the side panel can be part of a shift-click range,
+ * so its mass-edit row may still be loading when the panel saves.
+ * The save writes into that row, and the picking read may answer with the asset from before the save.
+ */
 describe('an asset saved from the panel of the list while its mass-edit row is still loading', () => {
   const opened = async () => {
-    // Made anew for each answer: the detail writes into the asset it was handed.
+    // Made anew for each answer, because the detail writes into the asset it is given.
     const before = () => [onServer('asset-1'), onServer('asset-2')]
     before().forEach((asset) => server.asset(asset))
     let answerRead = () => undefined as void
@@ -707,7 +702,6 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
       default: defineComponent({ setup: () => () => h(VLayout, null, () => h(Panel)) }),
     }))
     const tile = (index: number) => tiles.querySelectorAll<HTMLElement>('.dam-image-grid__item')[index]
-    // The first asset is opened in the panel, and its title typed over.
     tile(0).click()
     await eventually(() => expect(panel.querySelector('textarea')).not.toBeNull())
     const title = panel.querySelector<HTMLTextAreaElement>('textarea')!
@@ -719,7 +713,6 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
     return {
       ...ui,
       row,
-      /** Shift-click on the second tile: the range from the open asset to it is picked, and read in one batch. */
       pickBoth: async () => {
         tile(1).dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }))
         await eventually(() => expect(server.sent('GET', BATCH_READ)).toHaveLength(1))
@@ -733,7 +726,6 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
         answerSave?.()
         await eventually(() => expect(ui.alerts()).toEqual(['Record was updated']))
       },
-      /** The read of the picking answers with both assets as they were before the save. */
       readAnswered: async () => {
         answerRead()
         await vi.advanceTimersByTimeAsync(0)
@@ -745,7 +737,7 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
 
   it.each<[string, Array<'pickBoth' | 'startSave'>]>([
     ['was sent before the save started', ['pickBoth', 'startSave']],
-    // The read may still have been answered from before the save: the save counts from where it is answered.
+    // The read may still be answered from before the save. The save counts from where it is answered.
     ['was sent while the save was on the wire', ['startSave', 'pickBoth']],
   ])('keeps in the row what the panel saved when the read of the picking %s', async (_when, steps) => {
     const ui = await opened()
@@ -761,16 +753,13 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
       savedInThePanel,
       savedInThePanel,
     ])
-    // The other asset of the range is as the read brought it.
     expect(ui.store.getQueueItems(EDIT)[1].customData).toEqual({ title: 'from the server', note: 'kept' })
     await ui.save(EDIT)
-    // Only the save of the panel went out: the bulk save has nothing to write.
     expect(saved()).toHaveLength(1)
   })
 })
 
 describe('a mass-edit row that gets its form from the notification while its read is on its way', () => {
-  /** The read of the picking is held; the read of the notification answers with what the server has by then. */
   const notifiedBeforeItsRead = async () => {
     let answerRead: (asset: ReturnType<typeof assetDetail>) => void = () => undefined
     server.on(
@@ -793,7 +782,6 @@ describe('a mass-edit row that gets its form from the notification while its rea
     return {
       ...ui,
       row,
-      /** The read of the picking answers at last, with the asset as it was when that read was sent. */
       answerRead: async () => {
         answerRead(onServer('asset-1', { keywords: ['keyword-of-the-read'] }))
         await vi.advanceTimersByTimeAsync(0)
@@ -804,7 +792,7 @@ describe('a mass-edit row that gets its form from the notification while its rea
     }
   }
 
-  // The read was sent before the notification's: its answer is the older word, changed row or not.
+  // The picking read was sent before the notification's read, so its answer is older, changed row or not.
   it('keeps what the notification read when the read of its picking answers after it', async () => {
     const { answerRead, held, save } = await notifiedBeforeItsRead()
 
@@ -832,7 +820,6 @@ describe('a mass-edit row that gets its form from the notification while its rea
   })
 })
 
-// The detail and the panel write what they saved into every row of the asset, in the upload queue and the mass edit.
 describe('one asset in a row of the upload queue and in a row of the mass edit', () => {
   it('is changed by a mass operation only in the queue the operation was made in', async () => {
     const { store, save } = await start({
@@ -841,7 +828,6 @@ describe('one asset in a row of the upload queue and in a row of the mass edit',
     })
     store.updateAssetMetadata(onServer('asset-1') as never)
 
-    // Replace in all, in the mass edit: it writes into the custom data of its rows in place.
     store.queueItemsReplaceEmptyCustomDataValue(
       EDIT,
       { assetType: 'image', elementProperty: 'title', value: 'replaced' },

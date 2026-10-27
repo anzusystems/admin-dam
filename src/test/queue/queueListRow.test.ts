@@ -6,17 +6,12 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The compact row of an upload: one line with an icon for its state, its title and a way to cancel it. The floating
- * panels of the uploads and of the slot uploads list their queue with it. The real list and rows over the real
- * store; the server is a fake and is asked nothing here. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
 const QUEUE = 'global'
 
-/** Mounts the list of the queue over the rows and answers what each row of it shows. */
 const mountList = async (rows: UploadQueueItem[]) => {
   const ui = await startUploadUi({ server, queues: { [QUEUE]: rows } })
   const list = await ui.mount(() => import('@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'), {
@@ -38,7 +33,7 @@ const mountList = async (rows: UploadQueueItem[]) => {
           : 'measured'
         : 'none',
       hint: status.getAttribute('title'),
-      // The one button of the row: it has a tooltip and no name of its own.
+      // The row has one button. It has a tooltip and no accessible name.
       cancel: element.querySelector<HTMLButtonElement>('button'),
     }
   }
@@ -79,7 +74,7 @@ describe('the icon of a compact row', () => {
     const { row, drawn } = await mountList([queueRow({ status: 'uploaded', isDuplicate: true })])
 
     expect([row().icon, row().iconColor]).toEqual(['mdi-alert', 'warning'])
-    // The end-to-end tests of the application find it by this.
+    // The end-to-end tests of the application find the icon by this `data-cy`.
     expect(drawn()[0].querySelector('[data-cy="icon-duplicate"]')).not.toBeNull()
   })
 
@@ -116,7 +111,8 @@ describe('what the icon of a compact row says when pointed at', () => {
     expect(row().hint).toBe('Invalid size')
   })
 
-  // As it is today: the reason is looked up first, and one the application has no text for hides the message too.
+  // Current behavior: the reason is looked up first.
+  // A reason the application has no text for hides the message too.
   it('is nothing for a reason the application has no text for, although the row has a message', async () => {
     const { row } = await mountList([failed('Incorrect file format', 'quota_exceeded')])
 

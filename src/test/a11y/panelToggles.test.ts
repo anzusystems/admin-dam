@@ -6,10 +6,12 @@ import { assetDetail, createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, setWindowWidth, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* A button that opens and closes a panel says whether it is open only where the panel opens and closes, and a closed
- * panel the library only slides out of view is out of reach of the keyboard and of a screen reader too: the info
- * panel of a detail from 840 px wide, the mass operations of the two overlays of a queue from two rows. The real
- * components in English, with the application around them as it starts, over a fake server. */
+/*
+ * A button that toggles a panel should state whether it is open only where the panel really opens and closes.
+ * A closed panel that the library only slides out of view is still reachable by keyboard and screen reader.
+ * Cases: the detail info panel from 840 px width, and the mass operations of the two queue overlays from two rows.
+ * Uses the real components in English, the app initialised, and a fake server.
+ */
 
 let server: FakeDam
 
@@ -27,7 +29,6 @@ afterEach(() => {
 })
 
 describe('the info toggle of a detail', () => {
-  /** The detail of an asset of an external provider, open as its list opens it, in a window of the width. */
   const mountDetail = async (width: number) => {
     const ui = await startUploadUi({ server })
     setWindowWidth(width)
@@ -66,7 +67,7 @@ describe('the info toggle of a detail', () => {
     expect(said()).toEqual({ expanded: 'false', controls: true, inert: true })
   })
 
-  // There the panel always shows, and the toggle shows and hides the image above it.
+  // Below this width the panel is always shown, and the toggle shows and hides the image above it.
   it('says nothing of the panel narrower, and leaves it in reach', async () => {
     const { toggle, said } = await mountDetail(839)
 
@@ -81,7 +82,6 @@ describe('the mass operations toggle of an overlay', () => {
   const editable = (assetId: string, over: Partial<UploadQueueItem> = {}) =>
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId, fileId: 'file-of-' + assetId, ...over })
 
-  /** The overlay of the uploads or of the mass edit, open full, over its queue of rows of as many assets. */
   const overlays = {
     uploads: async (assets: string[]) => {
       const ui = await startUploadUi({ server, queues: { global: assets.map((id) => editable(id)) } })
@@ -123,7 +123,7 @@ describe('the mass operations toggle of an overlay', () => {
       const toggle = buttonsNamed(overlay, MASS)[0]!
       const held = () => overlay.querySelector<HTMLElement>('.asset-queue-editable__sidebar > div')!
       const said = () => [toggle.getAttribute('aria-expanded'), held().inert, !!held().textContent?.trim()]
-      // Open or closed as the overlay starts, at the width of the window (narrow: closed).
+      // The overlay starts open or closed depending on window width (narrow: closed).
       const open = toggle.getAttribute('aria-expanded') === 'true'
 
       expect(said()).toEqual([String(open), !open, true])

@@ -21,8 +21,8 @@ definePage({
 const route = useRoute('/(common)/logs/dam/[type]')
 const type = computed(() => route.params.type as LogTypeType)
 
-// The one admin that always bounded its log query. Computed once per mount, as the old
-// module-level default was -- see the staleness note in ADMIN-LOGY-PLAN.md 4.5.
+// This admin always bounded its log query. Computed once per mount.
+// See the staleness note in ADMIN-LOGY-PLAN.md 4.5.
 const defaultTimeWindow = { from: dateTimeStartOfDay(-1), to: dateTimeEndOfDay() }
 
 const { t } = useI18n()
@@ -44,10 +44,7 @@ const typeRoute = (next: LogTypeType) => ({
 
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs" />
-  <!--
-    Keyed on the type: the view binds its endpoint, columns and filter visibility at mount, so a
-    type change has to remount it rather than update it in place.
-  -->
+  <!-- Keyed on type: the view binds endpoint, columns and filters at mount, so a type change must remount it. -->
   <ALogListView
     :key="type"
     :client="LOG_SYSTEM.client"

@@ -33,7 +33,7 @@ const id = stringToInt((route.params as { id: string }).id)
 
 useRecordPage({
   fallbackRouteName: '/(coreDam)/users',
-  // Also the same person's permissions edit, the page's second edit button.
+  // Also skips the permissions edit of the same user, the page's second edit button.
   skipRouteNames: ['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit'],
   loading: detailLoading,
   load: (signal) => fetchData(id, { signal }),

@@ -19,14 +19,9 @@ import {
 } from '@pages/settings/assetLicenceGroupPage'
 
 /**
- * Asset licence groups — a named bundle of asset licences belonging to one ext system.
- *
- * **This spec leaves its fixture behind, on purpose.** A group cannot be deleted (DAM-B3: the API
- * answers a delete with a 500), so `afterAll` sweeps every group named with the `E2E` prefix
- * best-effort and the sweep starts working — clearing the leftovers of earlier runs with it — the day
- * the bug is fixed.
- *
- * Known bugs: DAM-B3.
+ * Asset licence groups: a named bundle of asset licences of one ext system.
+ * This spec leaves its fixture behind on purpose. A group cannot be deleted (DAM-B3: the API answers 500), so
+ * `afterAll` sweeps groups with the `E2E` prefix best-effort. The sweep starts working once the bug is fixed.
  */
 
 let page: Page
@@ -34,12 +29,15 @@ let GROUP_ID = ''
 
 const NAME_PREFIX = 'E2E licence group'
 const NAME = `${NAME_PREFIX} ${RAND_NUM}`
-/** Ext system of the licence every test runs under. The select offers ext systems by **slug**… */
+/**
+ * Ext system of the licence every test runs under. The select offers ext systems by **slug**…
+ */
 const EXT_SYSTEM = 'cms'
-/** …while the list and the detail render the same ext system by its display name. */
+/**
+ * …while the list and the detail render the same ext system by its display name.
+ */
 const EXT_SYSTEM_NAME = 'CMS system'
 const LICENCE = 'Sme Family'
-/** A group every environment carries, used to assert the list renders what it holds. */
 const LIVE_GROUP = 'Sme family'
 const SECOND_LICENCE = 'Spectator'
 
@@ -110,7 +108,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
     const panel = await openCreateDialog(page)
     await fillLicenceGroupForm(page, panel, { licence: LICENCE })
 
-    // A form that fails validation must not reach the API at all.
     await expectNoWrite(page, async () => {
       await panel.locator('[data-cy="button-confirm"]').click()
       await expect(page.locator('.v-alert').filter({ hasText: 'Vyplňte všetky povinné polia' })).toBeVisible()
@@ -126,7 +123,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
     test.info().annotations.push({ type: 'bug', description: 'DAM-B3' })
 
     const status = await deleteLicenceGroupStatus(page, GROUP_ID)
-    // Either the group goes, or the API says plainly that it cannot be deleted. Never a server error.
     expect([204, 404, 405], `DELETE /asset-licence-group/${GROUP_ID} responded ${status}`).toContain(status)
   })
 })

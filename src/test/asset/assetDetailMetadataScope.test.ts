@@ -6,12 +6,12 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* "Save" of the sidebar of the asset detail and what it validates: the metadata form under it - the custom fields
- * and the keyword and author inputs - reports to the scope the save reads. The real sidebar of the detail, with
- * its tabs and the place its buttons are moved to, over the real detail store and the application around it as it
- * starts; the server is a fake.
- *
- * The same scope in the bare form is in `assetMetadataValidation.test.ts`. */
+/*
+ * "Save" of the asset detail sidebar and what it validates: the metadata form under
+ * it (custom fields, keyword and author inputs) reports to the scope the save reads.
+ * Uses the real sidebar with its tabs and button target, the real detail store, and a fake server.
+ * The same scope in the bare form is tested in `assetMetadataValidation.test.ts`.
+ */
 
 let server: FakeDam
 
@@ -28,7 +28,6 @@ const requiredInputs = (keywords: boolean, authors: boolean): Partial<UploadUiSe
   },
 })
 
-/** Mounts the sidebar over an asset with the values given, and answers its "Save" and what the page says. */
 const mountSidebar = async (asset: Record<string, unknown>, setup: Partial<UploadUiSetup> = {}) => {
   const ui = await startUploadUi({ server, ...setup })
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
@@ -46,7 +45,7 @@ const mountSidebar = async (asset: Record<string, unknown>, setup: Partial<Uploa
       assetType: 'image',
     }
   )
-  // The buttons are moved into their place once it is there.
+  // The buttons are moved into their target only once it exists.
   await nextTick()
   const save = () => sidebar.querySelector<HTMLButtonElement>('[data-cy="button-save"]')
 
@@ -62,7 +61,6 @@ const press = async (button: HTMLButtonElement | null) => {
 
 beforeEach(() => {
   server = createFakeDam()
-  // The names of the keywords and authors the asset holds.
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, (_request, match) => ({
     status: 200,
     data: { data: [match[1] === 'keyword' ? { id: 'keyword-1', name: 'river' } : { id: 'author-1', name: 'Jane' }] },

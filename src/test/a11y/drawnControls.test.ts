@@ -6,15 +6,17 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUi } from '@/test/support/uploadUi'
 
-/* What the page hands a screen reader for the controls that say a state, and for those that are not buttons of
- * Vuetify: `iconButtonTooltips.test.ts` reads the templates, these cases what they draw. The real components with the
- * application around them as it starts, in English, over a fake server. */
+/*
+ * Checks what the page gives a screen reader for controls that
+ * state a state and for controls that are not Vuetify buttons.
+ * `iconButtonTooltips.test.ts` reads the templates; these cases check what is rendered.
+ * Uses the real components with the app initialised in English, over a fake server.
+ */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-/** An asset as the search of the list answers it. */
 const listItem = (id: string) => ({
   id,
   texts: { displayTitle: id, description: '' },
@@ -35,7 +37,6 @@ const listItem = (id: string) => ({
   _system: 'dam',
 })
 
-/** The list of two assets, the second one picked. */
 const listWithPick = async () => {
   const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
   const store = useAssetListStore()
@@ -43,9 +44,10 @@ const listWithPick = async () => {
   store.toggleSelectedByIndex(1)
 }
 
-/** The colour filter of the list over three colours, one of them with no name of its own in the app, as its filter
- * form provides it, and what it filters by; with
- * `inForm`, inside that form, which searches on Enter, and how many times it did. */
+/**
+ * Colour filter over three colours, one of them without a name in the app, as its filter form provides it.
+ * With `inForm`, it is mounted inside that form, which searches on Enter, and the searches are counted.
+ */
 const mountColours = async (ui: UploadUi, inForm = false) => {
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = { ...config.damPrvConfig, colorSet: { red: '#ff0000', blue: '#0000ff', teal: '#008080' } }
@@ -73,7 +75,6 @@ const mountColours = async (ui: UploadUi, inForm = false) => {
 const key = (type: 'keydown' | 'keyup', name: string) =>
   new KeyboardEvent(type, { key: name, bubbles: true, cancelable: true })
 
-/** What the tooltip of the element says while the pointer is over it. */
 const tooltipOf = async (element: HTMLElement) => {
   element.dispatchEvent(new MouseEvent('mouseenter'))
   await vi.advanceTimersByTimeAsync(1000)
@@ -129,7 +130,6 @@ describe('the controls of the page as a screen reader gets them', () => {
     ])
   })
 
-  // A colour the app has no name for is named by its key, as the configuration names it.
   it('a colour of the filter is a button, named by the name of its colour, that says whether it is chosen', async () => {
     const { swatches } = await mountColours(await startUploadUi({ server }))
 
@@ -144,7 +144,6 @@ describe('the controls of the page as a screen reader gets them', () => {
     ])
   })
 
-  // One tooltip, no native one beside it: the name of the colour and its code.
   it('a colour of the filter says its name and its code in one tooltip, in the language of the user', async () => {
     const { swatches } = await mountColours(await startUploadUi({ server }))
     const said = async () => {
@@ -168,7 +167,7 @@ describe('the controls of the page as a screen reader gets them', () => {
     ])
   })
 
-  // As a button: Enter as it goes down, Space as it comes up; Space going down only keeps the page where it is.
+  // Button keys: Enter acts on keydown, Space on keyup. Space on keydown only prevents page scroll.
   it('a colour of the filter is chosen and let go by the keys of a button', async () => {
     const { data, swatches } = await mountColours(await startUploadUi({ server }))
     const pressed = () => swatches().map((swatch) => swatch.getAttribute('aria-pressed'))
@@ -186,14 +185,13 @@ describe('the controls of the page as a screen reader gets them', () => {
     await nextTick()
     expect([data.color, pressed()]).toEqual([[], ['false', 'false', 'false']])
 
-    // Another key does nothing, and is left to the page.
     const tab = key('keydown', 'Tab')
     swatches()[0]!.dispatchEvent(tab)
     await nextTick()
     expect([tab.defaultPrevented, data.color]).toEqual([false, []])
   })
 
-  // The form of the filter searches on Enter going up (`AFilterWrapperSidebar`); a colour keeps the key, as Space.
+  // The form searches on Enter keyup (`AFilterWrapperSidebar`). The colour must swallow that key, as it does for Space.
   it('a colour of the filter chosen by Enter does not set off the search of its form', async () => {
     const { data, searched, form, swatches } = await mountColours(await startUploadUi({ server }), true)
 
@@ -202,13 +200,12 @@ describe('the controls of the page as a screen reader gets them', () => {
     swatches()[0]!.dispatchEvent(up)
     await nextTick()
     expect([data.color, up.defaultPrevented, searched.value]).toEqual([['#ff0000'], true, 0])
-    // Enter anywhere else in the form searches.
     form().dispatchEvent(key('keyup', 'Enter'))
     await nextTick()
     expect(searched.value).toBe(1)
   })
 
-  // The browser presses a button by Enter and Space; the input it opens stays out of the way, hidden.
+  // The browser presses a button with Enter and Space. The file input it opens stays hidden.
   it('an upload button of each kind is reached by Tab and opens the file picker', async () => {
     const ui = await startUploadUi({ server })
     const said: unknown[] = []
@@ -291,8 +288,10 @@ describe('the controls of the page as a screen reader gets them', () => {
     ])
   })
 
-  /* As a button: Enter as it goes down, Space as it comes up. The key stays with the icon: neither the field nor its
-   * form (which searches on its own submit) gets it, so each key searches once. */
+  /*
+   * Button keys: Enter acts on keydown, Space on keyup. The icon keeps the key: neither the
+   * field nor its form (which searches on its own submit) gets it, so each key searches once.
+   */
   it('the search icon of the list searches by Enter and by Space, once each', async () => {
     server.on('GET', SEARCH, () => ({ status: 200, data: { data: [], hasNextPage: false } }))
     const ui = await startUploadUi({ server })

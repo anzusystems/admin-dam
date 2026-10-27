@@ -68,7 +68,7 @@ const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
 })
-// Behind the loader the name of the asset being read: every read of this detail is of the active tile.
+// Loader title is the active tile's asset name: every read of this detail is of the active tile.
 const loaderTitle = computed(() => {
   const active = externalProviderAssetListStore.activeItemIndex
   if (isNull(active)) return ''
@@ -93,7 +93,7 @@ const totalCountText = computed(() => {
     fullscreen
     :class="EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS"
   >
-    <!-- The bar of the loaded detail below: its two buttons are there always, each disabled at its end of the list. -->
+    <!-- The loaded detail bar below always shows both buttons, each disabled at its end of the list. -->
     <AssetDetailDialogLoader
       v-if="externalProviderAssetDetailStore.loader"
       walks-list
@@ -176,8 +176,10 @@ const totalCountText = computed(() => {
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
-                   icon there, as in the library's detail. -->
+              <!--
+                Below 840 px the button toggles the image above the panel,
+                so it uses an image icon, as in the library's detail.
+              -->
               <VIcon
                 icon="mdi-information-outline"
                 class="d-none d-md-flex"

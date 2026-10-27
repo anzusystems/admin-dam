@@ -25,8 +25,9 @@ const text = computed(() =>
     : t('system.errorPage.subTitle')
 )
 
-// A full load, not a router push: the start-up leaves module state behind - a half-filled config
-// store, a login status that nothing clears - and only a fresh document is a clean retry.
+// A full load, not a router push. Start-up leaves module state behind,
+// such as a half-filled config store and a login status nothing clears.
+// Only a fresh document gives a clean retry.
 const reload = () => {
   window.location.href = '/'
 }

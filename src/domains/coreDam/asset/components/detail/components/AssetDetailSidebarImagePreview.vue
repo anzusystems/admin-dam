@@ -33,12 +33,14 @@ const assetDetailStore = useAssetDetailStore()
 const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 const { can, canForAll } = useAuth()
 
-/* The image the server holds for the file the card shows. The card shows an image as soon as it is picked, before
- * it is saved: this is what it goes back to when the save fails. */
+/*
+ * The server's image for the shown file. The card shows a picked
+ * image before it is saved, and reverts to this when the save fails.
+ */
 let savedImagePreview: AssetFileImagePreviewNullable = null
-// The changes made in the card, counted: a save that failed puts the saved image back only under its own change.
+// Counts card changes. A failed save reverts the image only if no later change was made.
 let changes = 0
-// One save after the other: an image can be picked in the card again while the one before it is being saved.
+// Saves run sequentially. A new image can be picked while the previous one is saving.
 let saves: Promise<void> = Promise.resolve()
 
 const showVideoFile = (file: AssetFileVideo) => {
@@ -46,15 +48,18 @@ const showVideoFile = (file: AssetFileVideo) => {
   savedImagePreview = file.imagePreview
 }
 
-/* The reads of the file the card is to show, counted: two changes of the slot close after each other start two of
- * them, and the answer of the older can come last. Only the one asked for last is shown, and the card spins until
- * that one is answered. */
+/*
+ * Counts file reads. Two quick slot changes start two reads, and the older response can arrive last.
+ * Only the latest read is shown, and the card spins until it is answered.
+ */
 let latestFileRead = 0
-// The file of that read: the one the card shows, or is to show once it is answered.
+// File of the latest read: shown now, or shown once answered.
 let fileAsked: DocId | null = null
 
-/* A read that failed leaves the card with no file. The one read before it is of another slot than the select above
- * the card says by now, and what is picked in the card is saved for the file the card shows. */
+/*
+ * A failed read leaves the card empty. The previous file belongs to another slot
+ * than the select shows, and a picked image would be saved to the wrong file.
+ */
 const readVideoFile = async (fileId: DocId) => {
   const asked = ++latestFileRead
   fileAsked = fileId
@@ -86,10 +91,12 @@ const initLoad = async () => {
   loading.value = false
 }
 
-/* The image was set for the file the dialog was opened for, which is the one the card shows - of the slot of the
- * select above it, not always the main file of the asset. Read again, it shows what the server has set; also when
- * the dialog was closed before the save answered, and in a card drawn in the place of the one that opened it, whose
- * read of the file can be from before the image was set, answered or still on its way. */
+/*
+ * The image was set for the file the dialog opened for, which is
+ * the card's file from the selected slot, not always the main file.
+ * Re-reading shows what the server set. This also covers a dialog closed before
+ * the save answered, and a re-rendered card whose read may predate the change.
+ */
 onVideoPreviewSet((fileId) => {
   if (fileAsked === fileId) readVideoFile(fileId)
 })
@@ -100,15 +107,14 @@ const save = async (fileId: DocId, picked: AssetFileImagePreviewNullable, change
     if (videoFile.value?.id === fileId) savedImagePreview = picked
     showRecordWas('updated')
   } catch (e) {
-    // Why the server refused it; anything else as an unknown error.
+    // Shows the server's refusal reason, otherwise an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
-    // Unless the card shows another file by now, or was changed again meanwhile: that change is saved next.
+    // Skipped if the card shows another file or was changed again. That change is saved next.
     if (videoFile.value?.id === fileId && change === changes) videoFile.value.imagePreview = savedImagePreview
   }
 }
 
-/* A save goes out for the file and with the image it was asked for, whatever the card shows by the time its turn
- * comes. */
+/* A queued save uses the file and image from when it was requested, whatever the card shows when it runs. */
 const onSave = (picked: AssetFileImagePreviewNullable) => {
   const fileId = videoFile.value?.id
   if (!fileId) return

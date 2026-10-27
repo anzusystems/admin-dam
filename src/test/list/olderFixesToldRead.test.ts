@@ -5,11 +5,13 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The page that draws a detail reads its asset with no loader when it is told how the server ended the main file - by
- * the row of a queue and by the notification, one after the other: the second is let go while the first read is on its
- * way. A first read that failed left the second, and every later word of the same end, let go as well: the detail held
- * the file as still on its way. A page that reads as the pages of a detail read on such a word, the application around
- * it as it starts; the server is a fake. */
+/*
+ * The detail page reads its asset without a loader when told how the server ended
+ * the main file, by the queue row and by the notification, one after the other.
+ * The second is let go while the first read is on its way.
+ * A failed first read left the second and every later word of the same
+ * end let go too, and the detail kept the file as still on its way.
+ */
 
 let server: FakeDam
 

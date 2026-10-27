@@ -35,7 +35,7 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-// With what was clicked: a double click begun on it is told from one elsewhere.
+// Pass the clicked element so a double click started on it can be told from one started elsewhere.
 const onItemClick = (event: MouseEvent) => {
   emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }

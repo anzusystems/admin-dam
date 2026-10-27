@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-/* What the application takes from its `config.json` about the upload: the notification service as the file has
- * it, and no switch for the poll of the upload queue, which always runs. */
+/*
+ * The notification service is taken from `config.json` as the file has it.
+ * The poll of the upload queue has no switch and always runs.
+ */
 
 const template = Object.values(
   import.meta.glob<string>('/public/config.json.dist', { query: '?raw', import: 'default', eager: true })
@@ -20,7 +22,6 @@ const deployed = (over: Record<string, unknown> = {}) => ({
   ...over,
 })
 
-/** The application started with this `config.json`; answers what it holds of it once the start has run. */
 const startWith = async (config: Record<string, unknown>) => {
   vi.resetModules()
   vi.stubGlobal(
@@ -44,7 +45,6 @@ afterEach(() => {
 })
 
 describe('the config template of the application', () => {
-  // Every `${VARIABLE}` outside quotes stands for a value of its own: a boolean here.
   const keys = JSON.parse(template.replace(/: \$\{\w+\}/g, ': true')) as Record<string, unknown>
 
   it('has no switch for the poll of the upload queue', () => {
@@ -64,15 +64,14 @@ describe('the config the application starts with', () => {
     expect(envConfig).not.toHaveProperty('uploadStatusFallback')
   })
 
-  // A deployment that was not touched still carries the key: it is read past.
   it.each([true, false])('takes no switch for the poll from a config that still has it (%s)', async (value) => {
     const envConfig = await startWith(deployed({ uploadStatusFallback: value }))
 
     expect(envConfig).not.toHaveProperty('uploadStatusFallback')
   })
 
-  // What switches the service on is the library's to say, by the value as the file has it: a text in quotes is
-  // handed on as that text.
+  // The library decides what switches the service on, from the value
+  // as the file has it. A text in quotes is handed on as that text.
   it.each([true, false, 'true', 'false', ' TRUE '])(
     'hands on the switch of the notification service as it is: %j',
     async (enabled) => {
@@ -94,7 +93,6 @@ describe('a config that says less than everything of the notification service', 
     return config
   }
 
-  // The service is used only where a deployment asks for it.
   it('starts the application without the block, with the service off', async () => {
     const envConfig = await startWith(withBlock())
 

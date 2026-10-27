@@ -5,13 +5,14 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* One tile of the list of an external provider is the active one: the tile of the asset picked last, by a click or by
- * an arrow key. The arrow keys go on from it, and the panel beside the list shows its asset. The list is read anew by
- * its filter and its "Refresh", and a further page of it is read as its end is scrolled into view: the active tile is
- * the tile of its asset, wherever that is by then, not the tile at the place it had - as in the list of assets. With no
- * tile active the right arrow picks the first tile. The real page of the list of the provider with its panel, the
- * application around it as it starts; the server is a fake, and so are the address the page asks about a new version
- * of the application and what the browser tells the page of its end coming into view. */
+/*
+ * The active tile of an external provider list is the tile of the asset picked last, by click or arrow key.
+ * Arrow keys continue from it and the panel beside the list shows its asset.
+ * After a filter, "Refresh" or a further page it stays the tile
+ * of its asset wherever that is, not the tile at the old place.
+ * With no active tile the right arrow picks the first one.
+ * Real page and panel; fake server, new-version address and end-of-list view observer.
+ */
 
 let server: FakeDam
 
@@ -26,13 +27,11 @@ const LEFT = 'ArrowLeft'
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** An arrow key let go over the page, as the window hears it. */
 const arrow = async (key: typeof RIGHT | typeof LEFT) => {
   document.body.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }))
   await settled()
 }
 
-/** An image of the provider. */
 const provided = (id: string) => ({
   id,
   texts: { displayTitle: id },
@@ -41,12 +40,9 @@ const provided = (id: string) => ({
   metadata: {},
 })
 
-/** The pages of the list the provider has, in their order. */
 let pages: string[][] = []
-/** The addresses the server was asked, each whole: the one asked last says which page of the list it is for. */
 let asked: string[] = []
 
-/** What the page watches for coming into view. */
 let watched: Array<{ element: Element; tell: (entries: Array<{ isIntersecting: boolean }>) => void }> = []
 
 class ViewWatcher {
@@ -58,11 +54,8 @@ class ViewWatcher {
   disconnect() {}
 }
 
-/** The assets of the provider the server was asked for one at a time, in the order it was asked. */
 const read = () => server.sent('GET', PROVIDER_ASSET).map((request) => request.url.split('/').pop())
 
-/** The page of the list of the provider with the first page of its images, none of them picked; with one uploaded
- * asset in the upload queue, if told. */
 const openProviderList = async (uploaded = false) => {
   vi.stubGlobal('IntersectionObserver', ViewWatcher)
   const ui = await startUploadUi({
@@ -73,11 +66,9 @@ const openProviderList = async (uploaded = false) => {
       : {},
   })
   asked = ui.asked
-  // The provider, as the config of the ext system names it.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider', listingLimit: 3 } }
-  // The user as the bar of the page draws them, with the provider on their account.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -95,7 +86,6 @@ const openProviderList = async (uploaded = false) => {
   }))
   const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
     .default
-  // The page of the list of DAM is only linked to here.
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/not-found', component: { render: () => null } })
   ui.router.addRoute({
@@ -105,30 +95,24 @@ const openProviderList = async (uploaded = false) => {
   })
   await ui.router.push('/external-providers/' + PROVIDER)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
-  /** The images of the tiles, in the order they are drawn in. */
   const order = () => tiles().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim())
   await eventually(() => expect(order()).toEqual(pages[0]))
 
   return {
     ...ui,
     order,
-    /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles()[index].click()
       await settled()
     },
-    /** The list is read anew by its "Refresh", and from now on the provider has these pages of it. */
     readAnew: async (...now: string[][]) => {
       pages = now
       page.querySelector('.mdi-refresh')!.closest('button')!.click()
       await settled()
       await eventually(() => expect(order()).toEqual(now[0]))
     },
-    /** The end of the list is scrolled into view, as the browser tells the page: the next page of it is read. */
     scrollToTheEnd: async () => {
       const end = watched.filter(({ element }) => element.isConnected && element.className === 'w-100').at(-1)!
       end.tell([{ isIntersecting: true }])
@@ -160,8 +144,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The rows of a list read anew were all drawn inactive, and the place of the active tile stayed: no tile was
- * highlighted, the keys went on from the old place, and a click on the tile at that place did not highlight it. */
+/*
+ * Rows of a list read anew were all drawn inactive and the place of the active tile stayed.
+ * No tile was highlighted, the keys continued from the old place,
+ * and a click on the tile at that place did not highlight it.
+ */
 describe('the active tile of the list of an external provider, once the list is read anew', () => {
   it('is the tile of its asset at the place the asset has by then: the keys go on from there', async () => {
     const list = await openProviderList()
@@ -217,8 +204,10 @@ describe('the active tile of the list of an external provider, once the list is 
   })
 })
 
-/* "Import to ADAM" took the asset of the active tile: with no tile active it did nothing, drawn as it was beside the
- * asset the panel shows. */
+/*
+ * "Import to ADAM" used the asset of the active tile.
+ * With no tile active it did nothing, although the panel showed an asset.
+ */
 describe('"Import to ADAM" of the panel beside the list of an external provider', () => {
   it('imports the asset the panel shows, also with no tile active', async () => {
     const list = await openProviderList()
@@ -270,7 +259,6 @@ describe('the arrow keys of the list of an external provider with no tile active
     expect([list.active(), read()]).toEqual([[true], ['provided-1']])
   })
 
-  // The guard: there is no tile before the first one.
   it('do nothing by the left one', async () => {
     const list = await openProviderList()
 
@@ -280,7 +268,6 @@ describe('the arrow keys of the list of an external provider with no tile active
   })
 })
 
-/* The view the selection of the page is drawn in - "hidden", "compact" or "full" - was printed above the queue. */
 describe('the upload queue drawn over the whole page of an external provider', () => {
   it('has no word above it', async () => {
     await openProviderList(true)

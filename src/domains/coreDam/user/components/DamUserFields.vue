@@ -23,13 +23,9 @@ const { t } = useI18n()
 
 <template>
   <!--
-    The dam half of the merged form. It goes into the shared form's `#systemFields` slot, so both
-    halves are saved by one `PUT /adm/users/{id}` -- the endpoint takes `DamUserDto`, which is
-    `UserDto` plus exactly these fields.
-
-    "Nové heslo" is deliberately gone: no PHP in `core-dam` or `core-dam-bundle` accepts
-    `plainPassword`, and the endpoint drops unknown keys, so whatever was typed there was never
-    written anywhere.
+    Goes into the shared form's `#systemFields` slot, so one `PUT /adm/users/{id}` saves both halves.
+    The endpoint takes `DamUserDto`, which is `UserDto` plus these fields.
+    "Nové heslo" is omitted on purpose: no backend code accepts `plainPassword` and the endpoint drops unknown keys.
   -->
   <ARow>
     <ADamAssetLicenceGroupRemoteAutocomplete

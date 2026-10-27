@@ -12,16 +12,19 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import { metadataMayStillChange } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
 
-/* The page that draws a detail is told that the file of its asset has changed - the route of its main file, or which
- * of its files is the main one - by a function it provides, not by an event of the part of the detail that made the
- * change. The change is answered after a request, and by then that part can be unmounted (another tab of the detail,
- * the detail closed): what an unmounted component emits Vue drops. */
+/*
+ * The page is told about a file change (main file route or which
+ * file is main) through a provided function, not an event.
+ * The change answers after a request, and the component may be
+ * unmounted by then. Vue drops events from unmounted components.
+ */
 const AssetFileChangedKey: InjectionKey<() => void> = Symbol('assetFileChanged')
 
 /**
- * For the page that draws the detail, in its setup: `fileChanged` is what the parts of the detail tell it by. And
- * what is no part of a detail, through the store of the detail, for as long as the page is there: the upload queue
- * and the notifications, of a file the server has processed - `byServer` then.
+ * Call in the setup of the page that draws the detail.
+ * `fileChanged` is called by detail parts, and through the detail
+ * store by the upload queue and notifications while the page exists.
+ * `byServer` is set when the server has processed a file.
  */
 export const provideAssetFileChanged = (fileChanged: (byServer?: boolean) => void) => {
   provide(AssetFileChangedKey, fileChanged)
@@ -29,14 +32,11 @@ export const provideAssetFileChanged = (fileChanged: (byServer?: boolean) => voi
 }
 
 /**
- * For a part of the detail that changes the file of the asset, in its setup. What it gives back is called once such a
- * change went through, with the asset the change was asked for: the page is told unless the detail holds another
- * asset by then. Behind its loader the detail is being read, and holds the asset before until that read lands - read
- * again then, that one would take the place of the asset the user went on to. So the page is told once the read has
- * landed: of another asset, there is nothing to tell; of the same one, it may have been answered as the asset was
- * before the change, and the page reads it once more. The asset is not as it was fetched either way: come back to
- * within the moment in which an asset just read is not read again - which also gives up a read that waits - it is
- * read all the same.
+ * Call in the setup of a detail part that changes the asset's file.
+ * Call the result after the change, with the asset it was for.
+ * The page is told only if the detail still holds that asset.
+ * While the detail loader is up, the detail still holds the previous asset, so the page is told once that read lands.
+ * If the read is of the same asset it may predate the change, so the page reads again, bypassing the recent-read cache.
  */
 export const useAssetFileChanged = () => {
   const tellPage = inject(AssetFileChangedKey, () => undefined)
@@ -50,20 +50,27 @@ export const useAssetFileChanged = () => {
   }
 }
 
-/* The reads below with no loader, counted: two changes close after each other start two of them, and so do a change
- * and the news of the server, and the answer of the older can come last. Only the one asked for last is taken. */
+/*
+ * Counts loader-less reads: two changes, or a change and a server
+ * notice, can overlap and the older answer can arrive last.
+ * Only the latest read is applied.
+ */
 let latestQuietRead = 0
 
-/* The states a file is ended in after its processing ran: the server may have filled in the metadata from it. A file
- * that failed too - the metadata are saved before the processing ends, and what fails after that fails the file. Not a
- * duplicate: it is found before anything of the file is saved. */
+/*
+ * States after processing ran, when the server may have filled in metadata from the file.
+ * `Failed` is included because metadata are saved before processing
+ * ends. A duplicate is not: it is detected before anything is saved.
+ */
 const PROCESSING_RAN: AssetFileProcessStatusType[] = [AssetFileProcessStatus.Processed, AssetFileProcessStatus.Failed]
 
-/* Whether the form of `held`, read before `read`, can be older than the metadata the server has or is yet to have: of
- * an asset that is not described the server fills them in from a file as it processes it. So when the main file was
- * held as still on its way - unless the server has found that very file a duplicate. And when none was held and the
- * answer brings the first one with its processing run: one still on its way holds "Save" back by its state
- * meanwhile, and is told of again once the server has ended it. */
+/*
+ * Whether the form of `held` can be older than the server's metadata,
+ * which the server fills in from the file for an undescribed asset.
+ * True when the held main file was still processing, unless the server found it a duplicate.
+ * Also true when none was held and the answer brings a first file whose processing ran.
+ * One still processing blocks "Save" by its state and is reported again when done.
+ */
 const formMayBeOlder = (held: AssetDetailItemDto, read: AssetDetailItemDto) => {
   const before = held.mainFile
   const now = read.mainFile
@@ -73,32 +80,26 @@ const formMayBeOlder = (held: AssetDetailItemDto, read: AssetDetailItemDto) => {
   return metadataMayStillChange(held)
 }
 
-/* The asset a detail holds is read again once its file was changed there, in the dialog over the list, in the panel
- * beside the list and on the pages of a detail alike. */
+/* Rereads the detail's asset after its file changes, in the list dialog, the side panel and the detail pages alike. */
 export function useAssetDetailFileChange() {
   const assetDetailStore = useAssetDetailStore()
   const whileOnPage = useWhileOnPage()
   const { showErrorsDefault, showWarningT } = useAlerts()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
-  /* A read of the asset the detail holds, by its id, with no loader over the detail: it unmounts nothing - neither the
-   * form with what was typed into it, nor a tab or a dialog open over the detail with what was typed there.
-   * Metadata that were not saved stay as they are, in the form they were typed into, and of the answer only the main
-   * file is taken, with the state of the asset that goes with it - as the server has it by now, with its route and how
-   * far it is processed, or another file, or none. The form is as old as it was: a "Save" held back, since the server could still fill in the metadata from
-   * the file, would come free over a form older than what the server has filled in since, so it stays held back
-   * whatever is held of the file from now on - and so does one taken with the first file of an asset that had none,
-   * processed or failed by then. Not for a file the server found a duplicate: it filled in nothing. An open question
-   * is not answered by it either.
-   * `whole`: the form takes the whole answer in its place (`setAsset`: the form is new, a "Save" held back comes
-   * free) - when nothing is typed into it and no save of it went out, as the read is asked and as it is answered. What
-   * was typed would go, and a read sent before a save can be answered as the asset was before it: saved again, that
-   * form would write the old values back. Otherwise only the main file is taken, as above. */
+  /*
+   * Reads the held asset without a loader, so the form, tabs and dialogs with typed input stay mounted.
+   * Unsaved metadata stay. Only the main file and its asset state are taken from the answer.
+   * If "Save" was held back because the server could still fill metadata, it stays
+   * held back, also for a first file processed or failed by now. Not for a duplicate.
+   * `whole`: replace the form with the answer (`setAsset`, frees "Save") only if nothing is typed and no save
+   * went out, both at request and answer. Otherwise a read sent before a save could write old values back.
+   */
   const readQuietly = async (whole: boolean) => {
     const held = assetDetailStore.asset
     if (isNull(held)) return
     const asked = ++latestQuietRead
-    // Only into the very asset it was read for: not into another one, nor into this one read anew since.
+    // Applied only to the asset it was read for, and only if no newer read started.
     const isTaken = () => assetDetailStore.asset === held && asked === latestQuietRead
     const savesBefore = assetDetailStore.savesOf(held.id)
     const formIsAsRead = () =>
@@ -108,19 +109,21 @@ export function useAssetDetailFileChange() {
     try {
       res = await fetchAsset(held.id)
     } catch (error) {
-      // What the server said of the file is still to be read: said again, it is.
+      // The server's file notice is still unread, so a repeated notice triggers the read again.
       assetDetailStore.readOfToldFailed()
       if (isTaken()) whileOnPage(() => showErrorsDefault(error))
       return
     }
     if (!isTaken()) return
-    /* Deleted elsewhere meanwhile: the asset is taken as being deleted below, and that is said - not only shown by its
-     * buttons going off. Not deleted here: the server marks it before it answers the delete, and the answer reaches the
-     * part that sent it after the delete is known here as answered. */
+    /*
+     * Deleted elsewhere meanwhile: treat it as being deleted and say so, not only disable buttons.
+     * Not for a delete sent here: the server marks it before answering,
+     * and the sender gets the answer after the delete is known here.
+     */
     const deletingNow = res.attributes.assetStatus === DamAssetStatus.Deleting
     if (deletingNow && held.attributes.assetStatus !== DamAssetStatus.Deleting) {
       const say = () => whileOnPage(() => showWarningT('coreDam.asset.detail.deletedMeanwhile'))
-      // Said once that delete fails, then - on this page still.
+      // If a delete from here is in flight, say it only once that delete fails, while still on this page.
       if (assetDeleteOnItsWay(held.id)) deletingTakenOverWhileOnItsWay(held.id, say)
       else if (!assetDeletedHere(held.id)) say()
     }
@@ -135,9 +138,8 @@ export function useAssetDetailFileChange() {
   }
 
   /**
-   * With nothing typed the asset is read whole, the way of the page that draws the detail (`readWhole`): after a
-   * change the user made in the detail. Told by the server (`byServer`), the read is quiet whatever is typed: it
-   * comes at any moment, under whatever the user is doing in the detail.
+   * After a user change with nothing typed, the page reads the asset whole (`readWhole`).
+   * A server notice (`byServer`) always reads quietly, because it can arrive during any user action.
    */
   const readAfterFileChange = (readWhole: () => Promise<void>, byServer = false) => {
     if (byServer) return readQuietly(true)

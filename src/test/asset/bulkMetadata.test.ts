@@ -10,11 +10,12 @@ import type { FakeAssetFile, FakeDam, FakeDamAnswer } from '@/test/support/fakeD
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The save of asset metadata, both ways the app makes it: the bulk save of a queue, ten assets a request, and the
- * save of one asset from its detail or from the panel on the right of the list. Both go to the same endpoint, and
- * a save that fails says why, as any other request of the app does.
- *
- * What the two overlays of the queue tell the user is in `queue/overlaySave.test.ts`. */
+/*
+ * Saving asset metadata, both ways the app does it: the bulk save of a queue (ten
+ * assets per request), and the save of one asset from its detail or the right-hand list
+ * panel. Both use the same endpoint, and a failed save says why, like other requests.
+ * What the two queue overlays tell the user is tested in `queue/overlaySave.test.ts`.
+ */
 
 let server: FakeDam
 
@@ -74,7 +75,7 @@ describe('bulk metadata update', () => {
 
     await api.bulkUpdateAssetsMetadata([queueItem()] as never)
 
-    // A field the payload leaves out is one this save does not write; the rules still run after.
+    // A field left out of the payload is one this save does not write. The rules still run afterwards.
     expect(saved()).toEqual([
       [
         {
@@ -107,12 +108,12 @@ describe('bulk metadata update', () => {
 
   it('counts its batches from the items it is going to send', async () => {
     const { api } = await load()
-    // Eleven selected, one of them editable: duplicates and failures are dropped by the mapping.
+    // Eleven selected, one editable: the mapping drops duplicates and failures.
     const items = [queueItem(), ...Array.from({ length: 10 }, () => queueItem({ canEditMetadata: false }))]
 
     await api.bulkUpdateAssetsMetadata(items as never)
 
-    // Counted from the input, this sent a second PATCH with an empty body.
+    // Counting from the input used to send a second PATCH with an empty body.
     expect(saved()).toHaveLength(1)
     expect(saved()[0]).toHaveLength(1)
   })
@@ -142,9 +143,11 @@ describe('bulk metadata update', () => {
   })
 })
 
-/* What each save fails with, by what the server did: the kind of error the alerts know, as every request made
- * through the library's helpers fails. A 200 is the one answer that carries the saved metadata; an answer other
- * than that is a failed save, a 2xx as much as any. */
+/*
+ * How each save fails, by what the server did: the error kinds the
+ * alerts know, as for any request made through the library helpers.
+ * Only a 200 carries the saved metadata. Any other answer, including other 2xx, is a failed save.
+ */
 const failures: Array<[string, () => FakeDamAnswer, (library: Library, error: unknown) => boolean]> = [
   ['no access (403)', failWith(() => httpError(403)), (library, error) => library.isAnzuApiForbiddenError(error)],
   [
@@ -163,8 +166,8 @@ const failures: Array<[string, () => FakeDamAnswer, (library: Library, error: un
   ['no answer in time', failWith(timedOut), (library, error) => library.isAnzuApiTimeoutError(error)],
 ]
 
-// What is written down for the api error logger, as for the other requests: not a refusal of the user's rights or
-// of what the user typed.
+// What is logged for the api error logger, as for other requests:
+// not a refusal of the user's rights or of what the user typed.
 const reported: Array<[string, () => FakeDamAnswer, boolean]> = [
   ['a server error (500)', failWith(() => httpError(500)), true],
   ['not signed in (401)', failWith(() => httpError(401)), false],
@@ -219,8 +222,6 @@ describe('the save of one asset', () => {
   const titled = (name: string) => ({ ...customField('title'), name })
   const namedTitle: Partial<UploadUiSetup> = { customForm: { image: [titled('Title of the photo')] } }
 
-  /* The two panels that save the asset the detail store holds: the one of the detail, its buttons in the bar the
-   * detail puts them in, and the one on the right of the list. */
   const panels: Array<[string, () => Promise<Component>]> = [
     [
       'from its detail',
@@ -275,7 +276,7 @@ describe('the save of one asset', () => {
     assetDetail('asset-1', { flags: { described }, mainFile: assetFile('file-1', status, { asset: 'asset-1' }) })
 
   describe.each(panels)('%s', (_where, panel) => {
-    // The server may yet fill in the metadata of the asset from its file: a save now would overwrite that.
+    // The server may still fill in the metadata of the asset from its file. A save now would overwrite that.
     it.each(['uploading', 'uploaded', 'stored'] as const)(
       'keeps Save off, and says why, while the file of an asset nobody described is with the server: %s',
       async (status) => {
@@ -283,7 +284,7 @@ describe('the save of one asset', () => {
 
         expect(save().disabled).toBe(true)
         expect(root.textContent).toContain(STILL_PROCESSING)
-        // Not in the bar of the actions of the detail, which has a fixed height.
+        // Not in the detail's actions bar, which has a fixed height.
         expect(root.querySelector('#anzu-asset-detail-sidebar-actions')?.textContent ?? '').not.toContain(
           STILL_PROCESSING
         )
@@ -301,7 +302,7 @@ describe('the save of one asset', () => {
       expect(root.textContent).not.toContain(STILL_PROCESSING)
     })
 
-    // Finding 50: whatever the detail was opened from, a later bulk save would send the row as it was before.
+    // Whatever the detail was opened from, a later bulk save would otherwise send the row as it was before.
     it('writes what it saved into the row of the asset in the mass-edit queue', async () => {
       const picked = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['old'] })
       const { save, alerts, store } = await mountPanel(panel, { ...namedTitle, queues: { edit: [picked] } })
@@ -317,7 +318,6 @@ describe('the save of one asset', () => {
       ])
     })
 
-    // Another asset opened while the save is on the wire: the row of the saved one gets what was saved.
     it('writes into the row of the asset it saved, though another asset was opened while it was on the wire', async () => {
       const first = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, keywords: ['old-1'] })
       const second = queueRow({
@@ -342,7 +342,7 @@ describe('the save of one asset', () => {
       expect([row1.keywords, row2.keywords]).toEqual([['keyword-server'], ['old-2']])
     })
 
-    // The switch is the panel's own: the asset carries the value it was opened with.
+    // The switch belongs to the panel. The asset carries the value it was opened with.
     it('writes the single-use switch it saved into the row, not the one the asset was opened with', async () => {
       const picked = queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true, mainFileSingleUse: false })
       const { save, alerts, store } = await mountPanel(panel, { ...namedTitle, queues: { edit: [picked] } })
@@ -365,7 +365,8 @@ describe('the save of one asset', () => {
       expect(saved()).toHaveLength(1)
     })
 
-    // The server names a field by its key in the list it was sent; the user is told it once, as the form names it.
+    // The server names a field by its key in the list that was
+    // sent. The user is told once, using the form's name for it.
     it.each([
       ['a custom field', '[0].customData.title', 'Title of the photo'],
       ['the keywords', '[0].keywords', 'Keywords'],
@@ -398,9 +399,10 @@ describe('the save of one asset', () => {
     })
   })
 
-  /* The Save of the panel on the right of the list stands out while its form holds something that is not saved. It
-   * stops standing out as the save is sent, so that what is typed while it is on the wire shows; a save that fails
-   * has saved nothing. */
+  /*
+   * The Save of the right-hand list panel stands out while its form holds unsaved changes. It stops standing
+   * out when the save is sent, so input typed during the request still shows. A failed save has saved nothing.
+   */
   describe('from the panel on the right of the list: its Save stands out while something is not saved', () => {
     const panel = panels[1][1]
     const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
@@ -410,7 +412,6 @@ describe('the save of one asset', () => {
       title.dispatchEvent(new Event('input'))
       await nextTick()
     }
-    /** The save is held on the wire until the case answers it, or fails it. */
     const heldSave = () => {
       const held = { answer: () => undefined as void, fail: () => undefined as void }
       server.on(
@@ -443,7 +444,7 @@ describe('the save of one asset', () => {
       expect(standsOut(save())).toBe(false)
     })
 
-    // The switches of the form go out with the same save as its fields; the asset here is read with one of them on.
+    // Form switches are sent with the same save as its fields. The asset here is read with one of them on.
     it('stands out once a switch of the form is changed, not for a switch the asset was read with', async () => {
       const { save, root } = await mountPanel(panel, namedTitle, assetDetail('asset-1', { mainFileSingleUse: true }))
       const singleUse = root.querySelector<HTMLInputElement>('.v-switch input')!
@@ -455,7 +456,7 @@ describe('the save of one asset', () => {
       expect([singleUse.checked, standsOut(save())]).toEqual([false, true])
     })
 
-    // Finding 56: it looked as if nothing was left to save.
+    // Regression: after a failed save it looked as if nothing was left to save (finding 56).
     it('stands out again after a save that failed', async () => {
       server.on(
         'PATCH',
@@ -500,8 +501,10 @@ describe('the save of one asset', () => {
       expect(standsOut(save())).toBe(true)
     })
 
-    /* The button only spins while a save is on the wire, so a second one can be started. Each is held until the
-     * case ends it, in the order given. */
+    /*
+     * The button spins only while a save is on the wire, so a second one can be
+     * started. Each save is held until the case ends it, in the given order.
+     */
     const twoSaves = async (between: () => Promise<void> = async () => undefined) => {
       const ends: Array<{ answer: () => void; fail: () => void }> = []
       server.on(
@@ -523,7 +526,7 @@ describe('the save of one asset', () => {
       return { ...mounted, first: ends[0], second: ends[1] }
     }
 
-    // The later save sent what the form held, and it went through: the failure before it says nothing of the form.
+    // The later save sent the current form and succeeded, so the earlier failure says nothing about the form.
     it('does not stand out after a save that failed when a save started after it had gone through', async () => {
       const { save, alerts, first, second } = await twoSaves()
 
@@ -549,7 +552,7 @@ describe('the save of one asset', () => {
       expect(standsOut(saves.save())).toBe(true)
     })
 
-    // What the save still on the wire took off was of the asset before: it is not this one's to put back.
+    // The save still in flight took data off the previous asset. This asset must not put it back.
     it('does not stand out after a failed save of an asset opened while the save of another was on the wire', async () => {
       const { save, alerts, second } = await twoSaves(() => openAsset(assetDetail('asset-2')))
 
@@ -559,7 +562,7 @@ describe('the save of one asset', () => {
       expect(standsOut(save())).toBe(false)
     })
 
-    // The form the failed save was of is gone: the one in the panel now came from the server as it is.
+    // The form of the failed save is gone. The form in the panel now comes from the server unchanged.
     it.each([
       ['another asset was opened', assetDetail('asset-2')],
       ['the same asset was read again', assetDetail('asset-1')],

@@ -6,11 +6,12 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { customField, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The file of an asset is made public from the menu of its file card, by a dialog. For an audio and a document the
- * dialog asks for the slug of the address the file gets; an image has none. What is sent is not what was typed but
- * the slug made of it, and the server has rules for it: 3 to 128 characters, small letters and digits in groups
- * joined by single hyphens. The real page of the list with its real detail, the application around it as it starts;
- * the server is a fake, and so is the address the page asks about a new version of the application. */
+/*
+ * The file is made public from the menu of its file card, by a dialog.
+ * For an audio and a document the dialog asks for the slug of the file address; an image has none.
+ * The slug made from the typed text is sent, not the typed text. Server rules: 3
+ * to 128 characters, small letters and digits in groups joined by single hyphens.
+ */
 
 let server: FakeDam
 
@@ -34,14 +35,12 @@ const FILE = 'file-2'
 
 type Kind = 'image' | 'document' | 'audio'
 
-/** What the asset is, whether the server holds its file as public, and its title when that is not its id. */
 let kind: Kind = 'audio'
 let published = false
 let titled: string | null = null
 
 const routeOf = (fileId: string) => ({ id: 'route-' + fileId, publicUrl: 'https://dam.test/public/' + fileId })
 
-/** An asset as the server holds it now: the second of the list is the one whose file is made public. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: id === ASSET ? kind : 'video', assetStatus: 'with_file' },
@@ -57,25 +56,20 @@ const onServer = (id: string) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** What the file card of the detail says of the file: public or private. */
 const route = () =>
   Array.from(detail()?.querySelectorAll('.v-chip') ?? [])
     .map((chip) => chip.textContent?.trim())
     .find((text) => text === PUBLIC || text === PRIVATE) ?? null
 
-/** The open dialog, its slug field, and what the field says is wrong with it. */
 const dialog = () => dialogButton('Confirm')?.closest<HTMLElement>('.v-dialog') ?? null
 const slug = () => dialog()?.querySelector<HTMLInputElement>('input') ?? null
 const said = () =>
   Array.from(dialog()?.querySelectorAll('.v-messages__message') ?? []).map((message) => message.textContent?.trim())
 
-/** The slugs the server was asked to make the file public under. */
 const sentSlugs = () => server.sent('PATCH', MAKE_PUBLIC).map((request) => JSON.parse(request.data as string).slug)
 
-/** The dialog of "Make public", open over the detail of the asset: of an asset of the kind, its file private. */
 const openDialog = async (of: Kind) => {
   kind = of
   const ui = await startUploadUi({
@@ -83,7 +77,6 @@ const openDialog = async (of: Kind) => {
     grants: ['dam_asset_update', 'dam_image_update', 'dam_document_update', 'dam_audio_update'],
     customForm: { image: [customField('title')], document: [customField('title')], audio: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -111,8 +104,10 @@ const openDialog = async (of: Kind) => {
   })
   tiles[1].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
   await eventually(() => expect(route()).toBe(PRIVATE))
-  /* With metadata typed into the form and not saved: the detail then stays as it is once the change went through, so
-   * no loader takes the dialog away with it - it is gone only when it closes itself. */
+  /*
+   * With metadata typed and not saved, the detail stays as it is once the change went
+   * through, so no loader removes the dialog. It is gone only when it closes itself.
+   */
   const title = detail()!.querySelector<HTMLTextAreaElement>('textarea')!
   title.value = 'typed and not saved'
   title.dispatchEvent(new Event('input'))
@@ -122,8 +117,6 @@ const openDialog = async (of: Kind) => {
   return ui
 }
 
-/** "Make public" of the menu of the file card pressed - the menu opened first, unless it is still open - and the
- * dialog open. */
 const pressMakePublic = async () => {
   const menuIsOpen = () => !!document.body.querySelector('.v-menu.v-overlay--active')
   if (!menuIsOpen()) detail()!.querySelector('.mdi-dots-vertical')!.closest('button')!.click()
@@ -166,7 +159,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  // As core-dam answers a file made public: 200 with its route, for every kind.
   server.on('PATCH', MAKE_PUBLIC, (_request, match) => {
     published = true
 
@@ -192,7 +184,6 @@ describe('the dialog that makes the file of an asset public', () => {
         return { status: 200, data: routeOf(match[2]) }
       })
       const ui = await openDialog(of)
-      // Offered as the slug of the title of the asset; the user types their own.
       expect(slug()?.value).toBe(ASSET)
       const typedInto = await typeSlug('a-slug-of-my-own')
 
@@ -212,7 +203,6 @@ describe('the dialog that makes the file of an asset public', () => {
       ])
       expect(dialogButton('Confirm')!.classList.contains('v-btn--loading')).toBe(false)
 
-      // Tried again, as it is: the dialog goes once the change went through.
       refuse = false
       await confirm()
       await eventually(() => expect(dialog()).toBeNull())
@@ -226,7 +216,6 @@ describe('the dialog that makes the file of an asset public', () => {
     }
   )
 
-  // The dialog of an image only asks: it has no slug, and nothing of it is checked. It stays for another try as well.
   it('asks for no slug of an image, and stays open after a refusal as the others do', async () => {
     let refuse = true
     server.on('PATCH', MAKE_PUBLIC, (_request, match) => {
@@ -253,8 +242,10 @@ describe('the dialog that makes the file of an asset public', () => {
     expect(route()).toBe(PUBLIC)
   })
 
-  /* Three characters typed can make a slug of two, and letters the slug has no use for make none: the server refused
-   * those, and the user was told only that something went wrong. */
+  /*
+   * Three typed characters can make a slug of two, and letters the slug does not allow can make none.
+   * The server refused those, and the user was told only that something went wrong.
+   */
   it.each<[string, string, string]>([
     ['of two characters, made of three typed', 'ab!', TOO_SHORT],
     ['empty, made of letters it has no use for', 'Заголовок', REQUIRED],
@@ -267,7 +258,6 @@ describe('the dialog that makes the file of an asset public', () => {
     await confirm()
 
     expect([sentSlugs(), said(), ui.alerts()]).toEqual([[], [error], [FIX]])
-    // The dialog is there to be put right, and the field holds what was typed.
     expect([slug() === typedInto, typedInto.value, route(), server.assetReads(ASSET)]).toEqual([
       true,
       typed,
@@ -282,7 +272,7 @@ describe('the dialog that makes the file of an asset public', () => {
     expect([sentSlugs(), route()]).toEqual([['put-right'], PUBLIC])
   })
 
-  // The guard of the rule: it is the slug that is measured, so what was typed can be longer, and of other letters.
+  // The slug is what is measured, so the typed text can be longer and use other letters.
   it.each<[string, string, string]>([
     ['capitals, spaces and marks', 'Môj Podcast, #3!', 'moj-podcast-3'],
     ['more than 128 characters typed', 'a' + ' '.repeat(130) + 'b c', 'a-b-c'],
@@ -291,7 +281,6 @@ describe('the dialog that makes the file of an asset public', () => {
   ])('sends the slug made of what was typed, and leaves the field as typed: %s', async (_what, typed, sent) => {
     const ui = await openDialog('document')
     const typedInto = await typeSlug(typed)
-    // Not rewritten under the hands of the user.
     expect([typedInto.value, said()]).toEqual([typed, []])
 
     await confirm()
@@ -300,10 +289,12 @@ describe('the dialog that makes the file of an asset public', () => {
     expect([sentSlugs(), route(), ui.alerts()]).toEqual([[sent], PUBLIC, [UPDATED]])
   })
 
-  /* The form says what is wrong with its slug only once it was confirmed. It went on as confirmed after the dialog
-   * was closed: opened again, it said so of the slug it offers, before anybody confirmed that. */
+  /*
+   * The form reports a slug problem only once it was confirmed.
+   * It used to stay in the confirmed state after the dialog closed, so a
+   * reopened dialog reported it for the offered slug before any confirm.
+   */
   it('says nothing of the slug it offers as it is opened again, after a confirm it would not send', async () => {
-    // The slug of this title is too short to be sent.
     titled = 'ab'
     const ui = await openDialog('audio')
     expect([slug()?.value, said()]).toEqual(['ab', []])
@@ -315,7 +306,6 @@ describe('the dialog that makes the file of an asset public', () => {
     await pressMakePublic()
 
     expect([slug()?.value, said()]).toEqual(['ab', []])
-    // And says it as that is confirmed.
     await confirm()
     expect([sentSlugs(), said()]).toEqual([[], [TOO_SHORT]])
   })

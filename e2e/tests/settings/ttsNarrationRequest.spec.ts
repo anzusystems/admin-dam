@@ -16,15 +16,10 @@ import {
 
 /**
  * The TTS narration request log.
- *
- * Nothing here creates a request: the only write the section offers is `Syntetizovať`, and confirming
- * it bills a real provider call and leaves an audio asset behind. So the filters are asserted as
- * *properties* of whatever the environment holds — every row a state filter returns carries that
- * state — which holds regardless of which requests exist, and the synthesize form is opened and
- * cancelled with a check that nothing was queued.
- *
- * The one thing this cannot survive is an environment with no narration requests at all; the first
- * test says so plainly rather than letting the rest pass vacuously.
+ * Nothing here creates a request. Confirming `Syntetizovať` bills a real provider
+ * call and leaves an audio asset behind. So the filters are asserted as properties of
+ * whatever the environment holds, and the synthesize form is opened and cancelled.
+ * The first test fails plainly on an environment with no narration requests, so the rest cannot pass vacuously.
  */
 
 let page: Page
@@ -66,13 +61,11 @@ test.describe.serial(`${ADMIN_SUITE} - TTS narration requests`, () => {
 
     const states = await columnValues(page, COLUMN.state)
     expect(states.length, 'the environment has finished requests').toBeGreaterThan(0)
-    // Every row that came back carries the filtered state — true whatever the environment holds.
     for (const state of states) expect(state.trim()).toBe('Hotové')
   })
 
   test('filters the requests by the voice family slug', async () => {
     await resetNarrationFilters(page)
-    // Read the slug here rather than carrying it over from another test, so this one stands alone.
     const slug = (await columnValues(page, COLUMN.voiceFamily))[0].trim()
     expect(slug, 'a voice family slug to filter by').not.toBe('')
 
@@ -91,7 +84,6 @@ test.describe.serial(`${ADMIN_SUITE} - TTS narration requests`, () => {
       await expect(dialog.locator(`[data-cy="${field}"]`), field).toBeVisible()
     }
 
-    // Cancelling must not reach the API.
     await expectNoWrite(page, async () => {
       await cancelSynthesizeDialog(page)
     })

@@ -4,8 +4,9 @@ import type { AxiosError } from 'axios'
 import { AUTH_PATH_PREFIX } from '@/domains/system/auth/authPath'
 import { logoutUser } from '@/domains/system/composables/currentUser'
 
-// A 401 of the auth endpoints is not a request of a lost session: the token refresh's is the refresh interceptor's
-// to answer (it logs out, once), a refused sign-in the sign-in form's.
+// A 401 from the auth endpoints does not mean a lost session.
+// The refresh interceptor handles the token refresh's 401 and
+// logs out once. The sign-in form handles a refused sign-in.
 const isAuthRequest = (errorResponse: AxiosError) => errorResponse.config?.url?.startsWith(AUTH_PATH_PREFIX) === true
 
 const logoutUserResponseInterceptor = (errorResponse: AxiosError) => {

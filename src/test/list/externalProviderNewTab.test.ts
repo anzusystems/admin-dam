@@ -6,16 +6,15 @@ import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/te
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The edit of a row of the upload queue and "Create empty asset" open the detail of their asset over the list of
- * DAM. Both are drawn on the page of the list of an external provider too, which draws only the detail of the
- * provider: there the asset is opened on its own page, in a new tab of the browser, and the page stays as it is. The
- * row knows its asset and opens the tab at its address. The create button has no asset until the server made one: it
- * opens an empty tab as it is pressed, cut off from the page at once, and sends that tab on once there is an asset,
- * or closes it when there is none - while the tab is still the empty one it opened. Until then the tab goes with
- * the page, and the dialog cannot be closed.
- * The real pages of the two lists with the real menu, create dialog and upload queue, the application around them as
- * it starts; the server is a fake, and so are the address the page asks about a new version of the application and
- * the tabs of the browser - what a browser does with a tab is not seen here. */
+/*
+ * The row edit of the upload queue and "Create empty asset" open the asset detail over the DAM list.
+ * The external provider page draws only the provider detail, so there
+ * the asset opens at its own address in a new tab and the page stays.
+ * The create button has no asset until the server makes one. It opens an empty tab on press, cut off from the page,
+ * then sends it on when there is an asset or closes it when there is none, only while the tab is still the empty one.
+ * Until then the tab goes with the page and the dialog cannot be closed.
+ * Real pages, menu, dialog and queue; fake server, new-version address and browser tabs.
+ */
 
 let server: FakeDam
 
@@ -34,12 +33,9 @@ const UNSAVED = 'Unsaved changes'
 
 const LIST = '/assets'
 const PROVIDED = '/external-providers/' + PROVIDER
-/** The asset of the row of the upload queue: an image the list does not hold. */
 const UPLOADED = 'asset-9'
-/** The asset the server makes. */
 const NEW = 'asset-new'
 
-/** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
   keywords: [],
@@ -48,29 +44,24 @@ const onServer = (id: string, over: Record<string, unknown> = {}) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The open detail of an asset of DAM, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** The asset the open detail holds, as the file panel of its form says it. */
 const held = () => detail()?.querySelector('.anzu-copy-text > span')?.textContent?.trim() ?? null
 
-/** The questions about changes that were not saved that are open. */
 const questions = () =>
   Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
     dialog.textContent?.includes(UNSAVED)
   )
 
-/** The dialog of "Create empty asset", or null while it is not open. */
 const createDialog = () => document.body.querySelector<HTMLElement>('[data-cy="create-panel"]')
 
-/** Where a tab is that the user took to another site: such a tab does not say. */
+/**
+ * A tab the user took to another site does not report its address.
+ */
 const ANOTHER_SITE = null
-/** A page of the application the user took a tab to. */
 const OF_THE_APPLICATION = 'http://localhost:3000/assets'
 
-/** A tab of the browser, as the page that opened it holds it: opened empty. */
 const newTab = () => {
-  /** Where the tab was sent, each time with whether it could reach the page that opened it by then. */
   const sentTo: Array<{ address: string; reachesOpener: boolean }> = []
   let address: string | null = 'about:blank'
   const tab = {
@@ -91,7 +82,6 @@ const newTab = () => {
       replace: (to: string) => void sentTo.push({ address: to, reachesOpener: tab.opener !== null }),
     },
     sentTo,
-    /** The user takes the tab elsewhere, by its address bar. */
     takenTo: (to: string | null) => {
       address = to
     },
@@ -102,7 +92,6 @@ const newTab = () => {
 
 type Tab = ReturnType<typeof newTab>
 
-/** The browser opens tabs from now on: what it was asked for each, and the tabs it gave. */
 const browserOpensTabs = (give: () => Tab | null = newTab) => {
   const given: Array<Tab | null> = []
   const open = vi.fn<(...asked: unknown[]) => Tab | null>(() => {
@@ -115,7 +104,6 @@ const browserOpensTabs = (give: () => Tab | null = newTab) => {
   return { asked: () => open.mock.calls, given }
 }
 
-/** The two ways a dialog of Vuetify is dismissed by, beside its own buttons: Escape, and a press outside it. */
 const dismiss = async (dialog: Element) => {
   window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
   await settled()
@@ -125,8 +113,6 @@ const dismiss = async (dialog: Element) => {
   await settled()
 }
 
-/** The request that makes the asset is held from now on: answered, with the asset or with a refusal, by what this
- * gives back. */
 const holdCreate = (answered: 'made' | 'refused' = 'made') => {
   let answer: () => void = () => undefined
   server.on(
@@ -144,19 +130,15 @@ const holdCreate = (answered: 'made' | 'refused' = 'made') => {
   }
 }
 
-/** The page is on its way out - closed, or reloaded - as the browser tells it. */
 const pageGoesAway = () => window.dispatchEvent(new Event('pagehide'))
 
-/** The two buttons that close the dialog of "Create empty asset": the cross of its bar, and "Cancel". */
 const closeButtons = () => ({
   cross: createDialog()!.querySelector('.v-toolbar .mdi-close')!.closest('button')!,
   cancel: createDialog()!.querySelector<HTMLButtonElement>('button[data-cy="button-cancel"]')!,
 })
 
-/** An asset with no file yet, as the server makes one. */
 const created = () => onServer(NEW, { attributes: { assetType: 'image', assetStatus: 'draft' }, mainFile: null })
 
-/** What the detail of DAM holds in its store: the asset, and whether it is open. */
 const inDetailStore = async () => {
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
   const store = useAssetDetailStore()
@@ -164,7 +146,6 @@ const inDetailStore = async () => {
   return [store.asset?.id ?? null, store.detail]
 }
 
-/** One of the two pages, as the router draws it, with one uploaded asset in the upload queue. */
 const openPage = async (address: typeof LIST | typeof PROVIDED) => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' }),
@@ -175,11 +156,9 @@ const openPage = async (address: typeof LIST | typeof PROVIDED) => {
     customForm: { video: [customField('title')], image: [customField('title')] },
     queues: { global: uploaded },
   })
-  // The provider, as the config of the ext system names it.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider' } }
-  // The user as the bar of the page draws them, with the provider on their account.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -208,21 +187,17 @@ const openPage = async (address: typeof LIST | typeof PROVIDED) => {
   })
   await ui.router.push(address)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  // The list of the page has answered: three assets of DAM, none of the provider.
   await eventually(() =>
     address === LIST
       ? expect(page.querySelectorAll('.dam-image-grid__item')).toHaveLength(3)
       : expect(page.textContent).toContain('No matching assets found')
   )
-  /** The queue drawn over the whole page, or null while none is. */
   const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 
   return {
     ...ui,
     queue,
-    /** Where the router is: the address of the page it draws. */
     at: () => ui.router.currentRoute.value.path,
-    /** The edit of the row of the upload queue, from the queue drawn over the whole page: pressed. */
     editUploaded: async () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
       const edit = await eventually(() => {
@@ -234,7 +209,6 @@ const openPage = async (address: typeof LIST | typeof PROVIDED) => {
       edit.click()
       await settled()
     },
-    /** "Create empty asset" of the menu of the page: the "Create" button of the dialog that asks which kind. */
     openCreate: async () => {
       page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
       const item = await eventually(() => {
@@ -284,7 +258,8 @@ afterEach(() => {
 })
 
 describe('the edit of a row of the upload queue on the page of an external provider', () => {
-  // Without `noopener`, which gives no tab back either way: the tab is cut off as it is given.
+  // `noopener` is not used because it returns no tab either way.
+  // The tab is cut off as it is given.
   it('opens the page of the asset of the row in a new tab that has no way back, and reads nothing here', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -292,7 +267,6 @@ describe('the edit of a row of the upload queue on the page of an external provi
     await page.editUploaded()
 
     expect([tabs.asked(), tabs.given[0]!.opener]).toEqual([[['/assets/' + UPLOADED, '_blank']], null])
-    // The page is as it was: its queue drawn, nothing read for a detail it does not draw, and nothing written into it.
     expect([page.at(), page.queue() !== null, server.assetReads(UPLOADED), await inDetailStore()]).toEqual([
       PROVIDED,
       true,
@@ -301,9 +275,10 @@ describe('the edit of a row of the upload queue on the page of an external provi
     ])
   })
 
-  /* The detail of DAM is emptied as the page of the list of DAM is left, so nothing of it is held here. Were it held,
-   * there would still be nothing of this page the asset of the row could replace: the question is not asked, and on
-   * this page nothing would draw it. */
+  /*
+   * The DAM detail is emptied when the DAM list page is left, so nothing of it is held here.
+   * Even if it were held, nothing on this page could be replaced by the asset of the row, so no question is asked.
+   */
   it('asks nothing about metadata that were not saved', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs(() => null)
@@ -341,7 +316,6 @@ describe('"Create empty asset" on the page of an external provider', () => {
       [CREATED],
       null,
     ])
-    // The page is as it was: nothing is written into a detail it does not draw.
     expect([page.at(), await inDetailStore()]).toEqual([PROVIDED, [null, false]])
   })
 
@@ -392,8 +366,10 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([tabs.asked().length, server.sent('POST', CREATE).length, tabs.given[0]!.sentTo.length]).toEqual([1, 1, 1])
   })
 
-  /* Taken to another site while the asset is being made, a tab that could still reach the page that opened it
-   * would keep that way for good: it is cut off while it is still the empty page it was opened as. */
+  /*
+   * A tab taken to another site while the asset is made, if it could still reach the opener, would keep that for good.
+   * It is cut off while it is still the empty page it was opened as.
+   */
   it('cuts the tab off from this page as it opens it, with nothing waited for', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -405,7 +381,8 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([tabs.asked().length, tabs.given[0]!.opener]).toEqual([1, null])
   })
 
-  // Made, it would have nothing to be shown in: the editor is told why, and the dialog stays for another try.
+  // An asset made without a tab would have nowhere to be shown.
+  // The editor is told why and the dialog stays for another try.
   it('makes no asset when the browser gives no tab, and says so', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs(() => null)
@@ -418,8 +395,11 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect(createDialog()).not.toBeNull()
   })
 
-  /* A tab that is no more the empty one the page opened is the user's: whatever they closed it for, or took it to,
-   * it is neither sent on nor closed. */
+  /*
+   * A tab that is no longer the empty one the page opened belongs
+   * to the user, whether they closed it or took it elsewhere.
+   * It is neither sent on nor closed.
+   */
   const meanwhile: Array<[string, (tab: Tab) => void]> = [
     ['closed', (tab) => tab.close()],
     ['took to another site', (tab) => tab.takenTo(ANOTHER_SITE)],
@@ -443,7 +423,7 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([tabs.asked().length, tab.sentTo, tab.closed]).toEqual([1, [], wasClosed])
   })
 
-  // A refusal closed whatever the tab was by then: a page of the user's.
+  // A refusal used to close the tab even when it had become a page of the user's.
   it.each(meanwhile.slice(1))('does not close a tab the user %s when the asset is not made', async (_what, did) => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -458,8 +438,11 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([page.alerts(), tabs.given[0]!.sentTo, tabs.given[0]!.closed]).toEqual([[SYSTEM_ERROR], [], false])
   })
 
-  /* A page closed or reloaded while the asset is being made has nothing left that would send the tab on or close it:
-   * the tab would stay empty for good. It goes with the page until the request is answered. */
+  /*
+   * A page closed or reloaded while the asset is made leaves nothing
+   * to send the tab on or close it, so the tab would stay empty.
+   * The tab goes with the page until the request is answered.
+   */
   it('closes the tab that is still empty when the page goes away before the asset is made', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -474,7 +457,6 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([tabs.given[0]!.closed, tabs.given[0]!.sentTo]).toEqual([true, []])
   })
 
-  // The guard of the case above: only the empty tab goes with the page.
   it('does not close with the page a tab the user took elsewhere', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -503,9 +485,11 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect(tabs.given[0]!.closed).toBe(false)
   })
 
-  /* What holds a second confirm back lives in the dialog, and the dialog in a menu that is drawn anew each time it is
-   * opened: closed while the asset was being made and opened again, it made a second asset - and the tab showed an
-   * asset the user had called off. */
+  /*
+   * The guard against a second confirm lives in the dialog, which lives in a menu drawn anew each time it opens.
+   * Closed while the asset was being made and opened again, it made a
+   * second asset, and the tab showed an asset the user had called off.
+   */
   it('cannot be closed while the asset is being made, and can be once the request is answered', async () => {
     const page = await openPage(PROVIDED)
     browserOpensTabs()
@@ -527,8 +511,10 @@ describe('"Create empty asset" on the page of an external provider', () => {
     await eventually(() => expect(createDialog()).toBeNull())
   })
 
-  /* Nor by the two ways a dialog is dismissed without its buttons: the dialogs of the application are persistent, as
-   * the library sets every dialog up, and neither Escape nor a press outside closes one - at any time. */
+  /*
+   * Escape and a press outside do not close it either.
+   * The library sets every dialog up as persistent, so neither ever closes one.
+   */
   it('is not closed by Escape nor by a press outside it while the asset is being made', async () => {
     const page = await openPage(PROVIDED)
     browserOpensTabs()
@@ -546,7 +532,6 @@ describe('"Create empty asset" on the page of an external provider', () => {
     expect([createDialog(), page.alerts()]).toEqual([null, [CREATED]])
   })
 
-  // The same as for the row of the queue: nothing of this page is replaced, and nothing here would draw the question.
   it('asks nothing about metadata that were not saved', async () => {
     const page = await openPage(PROVIDED)
     const tabs = browserOpensTabs()
@@ -562,7 +547,6 @@ describe('"Create empty asset" on the page of an external provider', () => {
   })
 })
 
-/* The page of the list of DAM draws the detail of an asset: there both open it, as they did. */
 describe('on the page of the list of DAM', () => {
   it('the edit of a row of the upload queue opens the detail of its asset over the list, and no tab', async () => {
     const page = await openPage(LIST)

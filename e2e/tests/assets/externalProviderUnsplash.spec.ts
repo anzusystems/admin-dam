@@ -18,26 +18,19 @@ import {
 } from '@pages/assets/externalProviderPage'
 
 /**
- * Importing photos from Unsplash into the current licence.
- *
- * **The provider's search is broken (DAM-B1)** — it answers 500 on every environment and for every
- * query, which is what the second test documents. Everything reachable only through a result tile
- * would be untestable if the spec stopped there, so the import tests stand the search's response in
- * locally. That stub is the *only* thing faked: its payload is fetched live from the provider's
- * working single-photo endpoint, and the import it feeds really imports those photos into DAM.
+ * The provider's search is broken (DAM-B1): it answers 500 for every query on every environment.
+ * The import tests stub only the search response. The payload is fetched live from the
+ * provider's single-photo endpoint, and the import really imports those photos into DAM.
  * Delete `stubProviderSearch` and this note once the search is fixed.
  */
 
 let page: Page
-/** Photos fetched once and reused as the stubbed search results. */
 let photos: ProviderPhoto[] = []
-/** Everything imported into DAM, deleted in `afterAll`. */
 const importedIds: string[] = []
 
 /**
- * Unsplash photo ids that resolved through the provider. They are real, so a photo taken down at
- * Unsplash would make `fetchProviderPhotos` fail on that id — which is the right failure, and is fixed
- * by swapping the id rather than by loosening the test.
+ * Real Unsplash photo ids. If a photo is taken down, `fetchProviderPhotos` fails on that id.
+ * Fix it by swapping the id, not by loosening the test.
  */
 const PHOTO_IDS = ['zNN6ubHmruI', 'jFCViYFYcus', 'CQl3Y5bV6FA']
 
@@ -80,7 +73,6 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     importedIds.push(assetId)
     await finishUpload(page)
 
-    // The import is real even though the search was not: DAM fetched the photo and stored it.
     const asset = await waitForAssetProcessed(page, assetId)
     expect(asset.attributes.assetType).toBe('image')
     expect(asset.texts.displayTitle).toBe(photos[0].texts.displayTitle)

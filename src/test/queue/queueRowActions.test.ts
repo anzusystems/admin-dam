@@ -7,10 +7,6 @@ import type { FakeDam, FakeDamRequest } from '@/test/support/fakeDam'
 import { buttonsNamed, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* What the buttons of a row of the editable queue do when pressed - cancel, refresh, delete and edit - and what the
- * list around the rows does of its own. The real list, rows and stores, with the application around them as it
- * starts; the server is a fake. Which button a row offers in which state is in `queueRowStates.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -22,12 +18,10 @@ const DELETE = 'Delete'
 const EDIT = 'Edit more'
 
 const failed = (): UploadQueueItem['error'] => ({ hasError: true, message: '', assetFileFailReason: 'unknown' })
-// A warning on a settled row: the refresh button is there at once.
 const warned = (): UploadQueueItem['error'] => ({ hasError: true, message: 'warned', assetFileFailReason: 'none' })
 const editable = (over: Partial<UploadQueueItem> = {}) =>
   queueRow({ status: 'uploaded', canEditMetadata: true, ...over })
 
-/** Mounts the editable list of the queue over the rows and answers the cards it draws and their buttons. */
 const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}) => {
   const ui = await startUploadUi({ server, queues: { [QUEUE]: rows }, ...setup })
   const list = await ui.mount(() => import('@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'), {
@@ -42,7 +36,6 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
     found.click()
     await nextTick()
   }
-  /** The titles of the rows the queue holds, as the store has them and as the list draws them. */
   const held = () => ui.store.getQueueItems(QUEUE).map((row) => row.displayTitle)
 
   return { ...ui, rows: ui.rows[QUEUE], list, cards, button, press, held }
@@ -52,7 +45,6 @@ const sentTo = (requests: FakeDamRequest[]) => requests.map((request) => request
 
 beforeEach(() => {
   server = createFakeDam()
-  // The names of the keywords and the authors the rows hold: none is known here.
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, () => ({ status: 200, data: { data: [] } }))
 })
 
@@ -74,7 +66,7 @@ describe('the cancel button of a row', () => {
     expect(held()).toEqual(['first.jpg', 'third.jpg'])
     expect(rows[1].status).toBe('stop')
 
-    // A failed row is taken out the same way: the asset a failed upload may have made is left as it is.
+    // A failed row is taken out the same way. An asset its upload may have made is left as it is.
     await press(1, CANCEL)
     await eventually(() => expect(cards()).toHaveLength(1))
 
@@ -151,7 +143,6 @@ describe('the refresh button of a row', () => {
     await eventually(() => expect(rows[0].canEditMetadata).toBe(true))
     await nextTick()
 
-    // The first row has what it asked for; the second can ask now.
     expect([button(0, REFRESH), button(1, REFRESH)?.disabled]).toEqual([null, false])
   })
 
@@ -217,7 +208,7 @@ describe('the delete button of a row', () => {
     await eventually(() => expect(alerts()).toEqual(['Record was removed']))
   })
 
-  // The delete is awaited, and the place of the row can change meanwhile.
+  // The delete is awaited, and the position of the row can change meanwhile.
   it('takes out the row of the deleted asset, not whatever row has moved to its place meanwhile', async () => {
     let deleted: () => void = () => undefined
     server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, async () => {
@@ -266,7 +257,7 @@ describe('the delete button of a row', () => {
     expect(held()).toEqual(['first.jpg', 'third.jpg'])
   })
 
-  // Rows can share an asset: the asset is gone, and every row of it goes with it - this one too, not merely the first.
+  // Rows can share an asset. When the asset is gone, every row of it goes, not only the first.
   it('takes out its own row and every other row of its asset, where two rows are of one asset', async () => {
     server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, () => ({ status: 204 }))
     const { press, held, cards } = await mountQueue([
@@ -296,7 +287,7 @@ describe('the delete button of a row', () => {
     expect(held()).toEqual(['photo.jpg'])
   })
 
-  // The row of a duplicate stays the row of the asset its own upload made; the original is only linked.
+  // The row of a duplicate stays the row of the asset its own upload made. The original is only linked.
   it('deletes the asset the upload of a duplicate made, never the original it is a duplicate of', async () => {
     server.on('DELETE', /^\/adm\/v1\/asset\/([^/]+)$/, () => ({ status: 204 }))
     const { press, cards, rows, button } = await mountQueue([queueRow({ status: 'uploaded', error: warned() })])
@@ -310,7 +301,7 @@ describe('the delete button of a row', () => {
     await eventually(() => expect(rows[0].isDuplicate).toBe(true))
     await nextTick()
     expect([rows[0].assetId, rows[0].duplicateAssetId]).toEqual(['asset-1', 'asset-original'])
-    // The library notes the asset the upload made on every duplicate; here the row keeps it as its asset too.
+    // The library notes the asset made by the upload on every duplicate. The row keeps it as its asset too.
     expect(rows[0].uploadedAssetId).toBe('asset-1')
     expect(button(0, DELETE)?.disabled).toBe(false)
 
@@ -339,7 +330,6 @@ describe('the edit button of a row', () => {
 
     await press(1, EDIT)
 
-    // The dialog is open and waits, and the arrow keys no longer walk the list behind it.
     expect([detail.detail, detail.loader, detail.view, detail.asset]).toEqual([true, true, 'queue', null])
     expect(assetList.keyboardNavigation).toBe(false)
 
@@ -391,7 +381,6 @@ describe('the editable list of a queue', () => {
 
     expect(titles()).toEqual(['first.jpg', 'second.jpg'])
 
-    // A row that comes later is drawn as well.
     ui.store.addQueueItem(QUEUE, queueRow({ displayTitle: 'third.jpg', assetId: 'asset-4' }))
     await nextTick()
 
@@ -417,7 +406,7 @@ describe('the editable list of a queue', () => {
     expect(sidebar(list)).toBeNull()
   })
 
-  // The list of the library can scroll by them; in admin-dam they walk the assets behind the overlay.
+  // The list of the library scrolls with these keys. In admin-dam they walk the assets behind the overlay.
   it.each(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'])('leaves the %s key alone', async (key) => {
     await mountQueue([queueRow({ status: 'processing' })])
     const pressed = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true })
@@ -427,7 +416,6 @@ describe('the editable list of a queue', () => {
     expect(pressed.defaultPrevented).toBe(false)
   })
 
-  // The names behind the ids: the rows draw them as chips.
   it('asks the server once for the names of all the keywords and all the authors its rows hold', async () => {
     const { asked } = await mountQueue([
       editable({ keywords: ['keyword-1', 'keyword-2'], authors: ['author-1'] }),

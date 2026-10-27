@@ -47,7 +47,7 @@ export const useJobDetailActions = () => {
   const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      // The library's job request takes no signal: a page left meanwhile ignores the answer instead.
+      // The library's job request takes no signal, so an answer for a left page is ignored here.
       const job = await fetchJob(id)
       if (options.signal?.aborted) return undefined
       jobOneStore.setJob(job)
@@ -56,7 +56,7 @@ export const useJobDetailActions = () => {
       if (options.signal?.aborted) return undefined
       return handleRecordLoadError(error) ? false : undefined
     } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
       if (!options.signal?.aborted) detailLoading.value = false
     }
   }

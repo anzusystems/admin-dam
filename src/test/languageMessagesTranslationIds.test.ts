@@ -4,8 +4,9 @@ import { describe, expect, it } from 'vitest'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 
-// `xx` is for administrators: every text shows its translation key, so they can tell which one to change. It
-// loads no messages. Left unmarked, the guard ran the loader again on every navigation.
+// `xx` is for administrators: every text shows its translation
+// key so they can tell which one to change. It loads no messages.
+// Left unmarked, the guard ran the loader again on every navigation.
 describe('language messages in the translation-id mode', () => {
   it('count as loaded, and the texts still show their keys', async () => {
     modifyLanguageSettings(AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n).setLanguage('xx')

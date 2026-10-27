@@ -13,12 +13,6 @@ import {
   stopUploadUi,
 } from '@/test/support/uploadUi'
 
-/* The bin of a row of the mass-edit queue deletes the asset of the row. The list behind the queue and the panel beside
- * it are told, as a delete in the detail tells them: the tile of the asset is marked as being deleted, the panel that
- * holds the asset says so and offers no "Save" of it, and what was typed into it is no longer asked about. The real
- * page of the list with its panel, its detail and the mass-edit queue, the application around it as it starts; the
- * server is a fake, and so is the address the page asks about a new version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -32,7 +26,6 @@ const DELETE = 'Delete'
 const BEING_DELETED = 'Asset will be removed soon'
 const UNSAVED = 'Unsaved changes'
 
-/** An asset the server has: a processed image, its title is its id. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -46,19 +39,15 @@ const onServer = (id: string) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The detail open over the list, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** The page of the list with three assets, the second of them in the panel with something typed into it, and picked
- * for the mass edit. */
 const openList = async () => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_asset_delete', 'dam_image_update'],
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -81,7 +70,6 @@ const openList = async () => {
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
   await eventually(() => expect(tiles()).toHaveLength(3))
 
-  // The second asset in the panel, typed into.
   tiles()[1].click()
   const title = () => panel().querySelector<HTMLTextAreaElement>('textarea')
   await eventually(() => expect(title()).not.toBeNull())
@@ -92,40 +80,32 @@ const openList = async () => {
   return {
     ...ui,
     tiles,
-    /** Which tiles are drawn as of an asset being deleted. */
     deleting: () => tiles().map((tile) => !!tile.querySelector('.mdi-trash-can')),
-    /** What the panel shows: whether it says its asset is being deleted, and whether its "Save" is disabled. */
     panelShows: () => ({
       beingDeleted: !!panel().textContent?.includes(BEING_DELETED),
       saveDisabled: buttonsNamed(panel(), 'Save')[0]?.disabled,
     }),
-    /** The tile toggled for the mass edit, and the mass-edit queue drawn over the whole page. */
     pickAndEdit: async (index: number) => {
       tiles()[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[0].click()
       await settled()
       buttonsNamed(document.body, 'Edit')[0].click()
       await eventually(() => expect(rows()).toHaveLength(1))
     },
-    /** The bin of the row, pressed and its question answered. */
     deleteRow: async (index: number) => {
       buttonsNamed(rows()[index], DELETE)[0].click()
       await eventually(() => expect(dialogButton(DELETE)).not.toBeNull())
       dialogButton(DELETE)!.click()
       await settled()
     },
-    /** The mass-edit queue put away into its strip under the list. */
     putQueueAway: async () => {
       queue()!.querySelector('.mdi-chevron-down')!.closest('button')!.click()
       await eventually(() => expect(queue()).toBeNull())
     },
-    /** The ids of the assets the mass-edit queue holds. */
     queued: () => ui.store.getQueueItems('edit').map((row) => row.assetId),
-    /** Whether the page asks about the unsaved metadata. */
     asks: () => !!document.body.querySelector('.v-dialog')?.textContent?.includes(UNSAVED),
   }
 }
 
-/** The mass-edit queue drawn over the whole page, or null while it is not, and its rows. */
 const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 const rows = () => Array.from(queue()?.querySelectorAll<HTMLElement>('.dam-upload-queue__item') ?? [])
 
@@ -150,8 +130,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The bin deleted the asset and told nobody: the tile stood as before, and the panel held the deleted asset with what
- * was typed into it and "Save" enabled. */
+/*
+ * Regression: the bin deleted the asset without any sign. The tile looked unchanged.
+ * The panel kept the deleted asset, with the typed text and "Save" enabled.
+ */
 describe('the bin of a row of the mass-edit queue', () => {
   it('marks the tile of the asset it deleted, and the panel that holds it offers no "Save" and asks nothing', async () => {
     server.on('DELETE', DELETE_ASSET, () => ({ status: 204 }))
@@ -166,14 +148,15 @@ describe('the bin of a row of the mass-edit queue', () => {
       [false, true, false],
       { beingDeleted: true, saveDisabled: true },
     ])
-    // What was typed has nowhere to be saved: another tile is read without a question.
+    // The typed text can no longer be saved, so reading another tile asks no question.
     await list.putQueueAway()
     list.tiles()[0].click()
     await settled()
     expect([list.asks(), list.panelShows()]).toEqual([false, { beingDeleted: false, saveDisabled: false }])
   })
 
-  // The queue can be put away while the delete is on its way: what the row did after it was lost with the row.
+  // The queue can be put away while the delete is in flight.
+  // What the row did after the delete was lost with the row.
   it('does all that, and takes its row out, when the queue was put away before the delete was answered', async () => {
     let answer: () => void = () => undefined
     server.on('DELETE', DELETE_ASSET, () => new Promise((resolve) => (answer = () => resolve({ status: 204 }))))
@@ -192,7 +175,6 @@ describe('the bin of a row of the mass-edit queue', () => {
     ])
   })
 
-  // The guard: a delete that failed changes nothing.
   it('leaves the tile, the panel and its row as they were when the delete fails', async () => {
     server.on('DELETE', DELETE_ASSET, () => {
       throw httpError(500)
@@ -211,7 +193,10 @@ describe('the bin of a row of the mass-edit queue', () => {
   })
 })
 
-/* The panel offered "Save" of an asset deleted in the detail too: it is the same panel, holding the same asset. */
+/*
+ * Regression: the panel also offered "Save" for an asset deleted in the detail.
+ * It is the same panel holding the same asset.
+ */
 describe('the panel beside the list, once the detail has deleted its asset', () => {
   it('says the asset is being deleted and offers no "Save" of it', async () => {
     server.on('DELETE', DELETE_ASSET, () => ({ status: 204 }))

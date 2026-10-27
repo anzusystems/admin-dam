@@ -148,7 +148,6 @@ const ASSET_TYPE_ACL: Record<DamAssetTypeType, Record<AssetTypeAction, AclValue>
   document: { create: ACL.DAM_DOCUMENT_CREATE, update: ACL.DAM_DOCUMENT_UPDATE, delete: ACL.DAM_DOCUMENT_DELETE },
 }
 
-/** The file permission of an asset type: `dam_image_update`, `dam_video_delete`, ... */
 export const assetTypeAcl = (type: DamAssetTypeType, action: AssetTypeAction): AclValue => ASSET_TYPE_ACL[type][action]
 
 export function useAuth() {

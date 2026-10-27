@@ -21,36 +21,48 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
     return data
   })
 
-  /* The asset the rows of the list are of. Every part of a detail that reads them - its Slots tab, the select of a
-   * slot of its cards and dialogs - is of the asset the detail holds, and the list is one for them all: rows of
-   * another asset left in it would be drawn there, and act on the files of that asset. */
+  /*
+   * The asset the rows belong to. The list is shared by all detail
+   * parts that read it (Slots tab, slot selects in cards and dialogs).
+   * Rows of another asset left in it would be drawn there and act on that asset's files.
+   */
   let listOf: DocId | null = null
 
-  /** The list is of the asset from now on: the rows of another one are dropped at once, before anything draws them. */
+  /**
+   * Switches the list to this asset. Rows of another asset are dropped at once, before anything draws them.
+   */
   function holdListOf(assetId: DocId) {
     if (listOf === assetId) return
     listOf = assetId
     list.value = []
   }
 
-  /* The list and its loader are one for the slots of every asset, and what is asked about the slots of one asset can
-   * be answered once the detail is of another, or after the answer to what was asked later. So each time the loader
-   * goes up is counted: what it went up for last is all the list waits for. */
+  /*
+   * The list and loader are shared across assets. A slots request can be
+   * answered after the detail switched assets, or after a later request.
+   * So each loader raise is counted, and only the latest raise is awaited.
+   */
   let loaderRaised = 0
 
-  /** Answers the count the loader went up at: what `isAwaited` and `hideLoader` are asked with. */
+  /**
+   * Returns the raise count, to pass to `isAwaited` and `hideLoader`.
+   */
   function showLoader() {
     loader.value = true
 
     return ++loaderRaised
   }
 
-  /** Whether the loader has not gone up for anything else since it went up at `raised`. */
+  /**
+   * Whether the loader has not gone up for anything else since it went up at `raised`.
+   */
   function isAwaited(raised: number) {
     return raised === loaderRaised
   }
 
-  /** Down only for what it went up for last: under something asked since, the rows would be drawn before its answer. */
+  /**
+   * Lowered only for the latest raise. Otherwise rows would be drawn before a newer request's answer.
+   */
   function hideLoader(raised: number) {
     if (isAwaited(raised)) loader.value = false
   }

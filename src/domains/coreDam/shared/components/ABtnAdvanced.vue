@@ -11,8 +11,7 @@ const toggle = () => {
 </script>
 
 <template>
-  <!-- A button that shows and hides what follows it: pressed by Enter as it goes down and by Space as it comes up, as
-       a button is. -->
+  <!-- Acts as a button: Enter triggers on keydown, Space on keyup, like a native button. -->
   <div
     class="cursor-pointer"
     role="button"

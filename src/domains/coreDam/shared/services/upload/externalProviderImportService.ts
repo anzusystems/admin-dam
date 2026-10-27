@@ -9,29 +9,28 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
       queueItem.status = UploadQueueItemStatus.Uploading
       externalProviderUpload(queueItem)
         .then((res) => {
-          // Stopped or cleared while the request was on the wire: the row is discarded and takes nothing of the
-          // answer, whatever it says.
+          // Stopped or cleared while the request was in flight: the row is discarded and ignores the response.
           if (queueItem.status === UploadQueueItemStatus.Stop) {
             resolve(queueItem)
 
             return
           }
-          // As with the start of an upload: without both, the poll would ask about an asset it has no id of.
-          // Thrown, to end where a refused import ends.
+          // Without both ids, the poll would ask about an unknown asset.
+          // Thrown so it ends the same way as a refused import.
           if (!res?.id || !res?.asset) {
             throw new Error('externalProviderImportService: the import answer names no file or no asset')
           }
           queueItem.assetId = res.asset
           queueItem.fileId = res.id
-          // Until this response the item had no ids, so an early notification matched nothing: from here the poll
-          // of its queue asks about it.
+          // The item had no ids until this response, so earlier notifications matched nothing.
+          // From here the queue poll checks it.
           if (queueItem.status === UploadQueueItemStatus.Uploading) {
             queueItem.status = UploadQueueItemStatus.Processing
           }
           resolve(queueItem)
         })
         .catch((error) => {
-          // Stopped or cleared meanwhile: a refusal of the discarded row is not written into it, nor said.
+          // Stopped or cleared meanwhile: a refusal is neither written into the discarded row nor shown.
           if (queueItem.status === UploadQueueItemStatus.Stop) return resolve(queueItem)
           const { showUnknownError } = useAlerts()
           if (axiosErrorResponseHasValidationData(error)) {
@@ -43,7 +42,7 @@ export function externalProviderImport(queueItem: UploadQueueItem) {
               return resolve(queueItem)
             }
           }
-          // Failed, not left `Uploading`, which holds one of the two slots for good.
+          // Marked failed: staying `Uploading` would hold one of the two upload slots forever.
           queueItem.status = UploadQueueItemStatus.Failed
           queueItem.error.hasError = true
           showUnknownError()

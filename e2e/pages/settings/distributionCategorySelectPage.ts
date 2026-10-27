@@ -7,19 +7,19 @@ export interface SelectOption {
   value: string
 }
 
-/** The detail view's list item for option `name` — the detail renders options as a plain list, not the list editor. */
+/**
+ * The detail renders options as a plain list, not the list editor.
+ */
 function detailOption(page: Page, name: string): Locator {
   return page
     .locator('main .v-list-item')
     .filter({ has: page.locator('.v-list-item-title').getByText(name, { exact: true }) })
 }
 
-/** The list-editor row whose title is `name`. */
 function optionRow(page: Page, name: string): Locator {
   return page.locator('.a-le-row-wrapper').filter({ has: page.locator('.a-le-title').getByText(name, { exact: true }) })
 }
 
-/** Open the first distribution category select from the settings section and return its id. */
 export async function openFirstCategorySelect(page: Page): Promise<string> {
   await openSettingsSection(
     page,
@@ -33,7 +33,6 @@ export async function openFirstCategorySelect(page: Page): Promise<string> {
   return detailId(page)
 }
 
-/** Add an assignable option to the select open in its detail view, and save. */
 export async function addCategorySelectOption(page: Page, option: SelectOption): Promise<void> {
   await visibleCy(page, 'button-edit').click()
   await page.getByRole('button', { name: 'Pridať položku' }).click()
@@ -46,7 +45,6 @@ export async function addCategorySelectOption(page: Page, option: SelectOption):
   await saveEdit(page)
 }
 
-/** Check the select's detail lists the option with its value. */
 export async function expectCategorySelectOption(page: Page, selectId: string, option: SelectOption): Promise<void> {
   await page.goto(`/distribution-category-selects/${selectId}`)
   await cardLoad(page)
@@ -55,7 +53,6 @@ export async function expectCategorySelectOption(page: Page, selectId: string, o
   await expect(item.locator('.v-list-item-subtitle')).toHaveText(option.value)
 }
 
-/** Remove the option from the select, confirming the row deletion dialog, and save. */
 export async function removeCategorySelectOption(page: Page, selectId: string, name: string): Promise<void> {
   await page.goto(`/distribution-category-selects/${selectId}`)
   await cardLoad(page)

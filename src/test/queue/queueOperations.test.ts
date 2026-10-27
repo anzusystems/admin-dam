@@ -15,10 +15,6 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamRequest } from '@/test/support/fakeDam'
 
-/* What the buttons around a queue do to it: stop everything, clear it, stop one row, take one row out, and write a
- * saved detail back into its rows - and how the queue runs an import next to its uploads. The real store, upload
- * service and API modules over a fake server. */
-
 let server: FakeDam
 const showUnknownError = vi.fn()
 const showError = vi.fn()
@@ -49,7 +45,7 @@ const load = async () => {
   vi.resetModules()
   setActivePinia(createPinia())
   const { useDamConfigStore } = await import('@anzusystems/common-admin')
-  // Two chunks to a file of 2000 bytes.
+  // The chunk size is 1024, so a 2000-byte file is sent in two chunks.
   seedDamConfig(useDamConfigStore(), 1024)
   const { useUploadQueuesStore } = await import('@/domains/coreDam/asset/store/uploadQueuesStore')
 
@@ -77,7 +73,6 @@ const waitingImport = (id: string) =>
     externalProviderName: 'unsplash',
   })
 
-/** Three files in the queue: two with their first chunk on the wire, the third waiting for a place. */
 const uploadsUnderWay = async (store: Store) => {
   const chunksOnTheWire: FakeDamRequest[] = []
   const heldAnswers: Array<() => void> = []
@@ -93,7 +88,6 @@ const uploadsUnderWay = async (store: Store) => {
   await vi.advanceTimersByTimeAsync(0)
   expect(rows.map((row) => row.status)).toEqual(['uploading', 'uploading', 'waiting'])
   expect(chunksOnTheWire).toHaveLength(2)
-  /** The server answers the chunks it was holding, and every chunk from now on. */
   const answerChunks = () => {
     hold = false
     heldAnswers.splice(0).forEach((answer) => answer())
@@ -124,7 +118,6 @@ describe('stopping a queue', () => {
     const requestsBefore = server.requests.length
 
     store.stopUpload(QUEUE)
-    // The server did get the two chunks and answers them; nobody is waiting for that any more.
     answerChunks()
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
@@ -132,9 +125,8 @@ describe('stopping a queue', () => {
     expect(aborted(chunksOnTheWire)).toEqual([true, true])
     expect(store.getQueueItems(QUEUE)).toEqual([])
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([0, 0])
-    // The file input is made anew, so that the same files can be picked again.
+    // The file input is recreated so that the same files can be picked again.
     expect(store.getQueueFileInputKey(QUEUE)).toBe(keyBefore + 2)
-    // Nothing more is sent: no further chunk, no finish, and the third file never starts.
     expect(server.requests).toHaveLength(requestsBefore)
     expect(showError).not.toHaveBeenCalled()
   })
@@ -164,7 +156,6 @@ describe('stopping a queue', () => {
 })
 
 describe('clearing a queue', () => {
-  // What the mass-edit selection is emptied with: there is nothing in it to stop.
   it('empties it and makes its file input anew, without stopping anything', async () => {
     const store = await load()
     const rows = seedQueue(store, 'edit', [
@@ -204,7 +195,8 @@ describe('clearing a queue', () => {
     expect(store.queues.edit.suggestions.newAuthorNames.size).toBe(0)
   })
 
-  // An upload the queue held does not go on behind it: left going, it was sent to its end unseen and its asset stayed.
+  // An upload the queue held must not go on after the queue is stopped.
+  // Left running, it was sent to its end unseen and its asset stayed.
   it('stops the uploads it holds: their chunks are aborted, and nothing more is sent', async () => {
     const store = await load()
     const { rows, chunksOnTheWire, answerChunks } = await uploadsUnderWay(store)
@@ -212,7 +204,6 @@ describe('clearing a queue', () => {
     const requestsBefore = server.requests.length
 
     store.clearQueue(QUEUE)
-    // The server did get the two chunks and answers them; nobody is waiting for that any more.
     answerChunks()
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
@@ -220,21 +211,18 @@ describe('clearing a queue', () => {
     expect(rows.map((row) => row.status)).toEqual(['stop', 'stop', 'stop'])
     expect(store.getQueueItems(QUEUE)).toEqual([])
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([0, 0])
-    // Cleared, not stopped: the file input is made anew once.
     expect(store.getQueueFileInputKey(QUEUE)).toBe(keyBefore + 1)
-    // No further chunk, no finish, and the third file never starts.
     expect(server.requests).toHaveLength(requestsBefore)
     expect(showError).not.toHaveBeenCalled()
   })
 
-  // A notification can fail a row before its file has been sent whole: its upload is stopped then and there, and
-  // clearing the queue finds only the others to stop.
+  // A notification can fail a row before its file has been sent whole.
+  // Its upload is stopped right then, so clearing the queue finds only the other uploads to stop.
   it('stops an upload whose row a notification has failed while its file is still being sent', async () => {
     const store = await load()
     const { rows, chunksOnTheWire, answerChunks } = await uploadsUnderWay(store)
     store.queueItemFailed('asset-1', AssetFileFailReason.Unknown, 'file-1')
     await vi.advanceTimersByTimeAsync(0)
-    // The chunk of the failed row is aborted at once, and the third file has started in its place.
     expect(rows.map((row) => row.status)).toEqual(['failed', 'uploading', 'uploading'])
     expect(chunksOnTheWire).toHaveLength(3)
     expect(aborted(chunksOnTheWire)).toEqual([true, false, false])
@@ -245,9 +233,7 @@ describe('clearing a queue', () => {
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
     expect(aborted(chunksOnTheWire)).toEqual([true, true, true])
-    // The failed row stays as the server left it: it had no upload left to stop.
     expect(rows.map((row) => row.status)).toEqual(['failed', 'stop', 'stop'])
-    // No second chunk of the failed row's file, and no finish.
     expect(server.requests).toHaveLength(requestsBefore)
   })
 
@@ -291,10 +277,10 @@ describe('clearing a queue', () => {
     answerImport()
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // The import was made on the server, and its row is gone: it takes nothing of the answer.
     expect(imported.status).toBe('stop')
     expect([imported.assetId, imported.fileId]).toEqual([null, null])
-    // Nor is its asset read; it was not before the queue stopped its rows either, a row of no queue being asked about by nobody.
+    // The asset is not read either. It was not read before the queue
+    // stopped its rows, because a row in no queue is asked about by nobody.
     expect(server.assetReads('asset-9')).toBe(0)
     expect(aborted(chunksOnTheWire)).toEqual([false, false])
     expect(store.getQueueItems(QUEUE).map((row) => row.status)).toEqual(['uploading', 'uploading', 'waiting'])
@@ -335,7 +321,7 @@ describe('an import whose answer comes after its queue was stopped or cleared', 
     }
   )
 
-  // Nor when the server refuses it: the row was discarded before the refusal came, and nobody sees it any more.
+  // Same when the server refuses it: the row was discarded before the refusal came and nobody sees it.
   const refusals: Array<[string, () => Error]> = [
     ['an error of the server', () => httpError(500)],
     ['the provider asset is in the licence already', () => validationError({ id: ['error_field_not_unique'] })],
@@ -382,11 +368,9 @@ describe('stopping one row', () => {
     expect(rows.map((row) => row.status)).toEqual(['stop', 'uploading', 'uploading'])
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([0, 2])
 
-    // The server answers every chunk, the one of the stopped file too.
     answerChunks()
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // Its upload is not taken up again: no second chunk of its file, no finish - while the other two go through.
     expect(server.sent('POST', /\/image\/file-1\/chunk$/)).toHaveLength(1)
     expect(server.sent('PATCH', /\/image\/file-1\/uploaded$/)).toEqual([])
     expect(rows.map((row) => row.status)).toEqual(['stop', 'processing', 'processing'])
@@ -394,7 +378,6 @@ describe('stopping one row', () => {
     expect(showError).not.toHaveBeenCalled()
   })
 
-  // Its Cancel, while its request is on the wire: the row is gone, and the refusal that comes after says nothing.
   it('takes out an import whose request is on the wire, and says nothing of a refusal that comes after', async () => {
     const store = await load()
     const [imported] = seedQueue(store, QUEUE, [waitingImport('photo-9')])
@@ -423,7 +406,6 @@ describe('stopping one row', () => {
     const { rows, answerChunks } = await uploadsUnderWay(store)
 
     await store.stopItemUpload(QUEUE, rows[2])
-    // Both places free: the two files that were being sent go through, and the queue looks for what waits.
     answerChunks()
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
@@ -434,9 +416,11 @@ describe('stopping one row', () => {
   })
 })
 
-/* A stop that comes while a request of the upload is on the wire, or between two of them. The abort signal reaches
- * only a chunk on the wire - and the server may answer that chunk all the same; the start request carries no signal,
- * and between two chunks there is nothing to abort. */
+/*
+ * A stop can come while a request is in flight, or between two requests.
+ * The abort signal reaches only a chunk on the wire, and the server may still answer that chunk.
+ * The start request carries no signal, and between two chunks there is nothing to abort.
+ */
 describe('a stop that comes in the middle of an upload', () => {
   it('sends no further chunk and no finish although the server answers the chunk that was on the wire', async () => {
     const store = await load()
@@ -455,7 +439,6 @@ describe('a stop that comes in the middle of an upload', () => {
     expect(abortedByTheStop).toBe(true)
     expect(server.sent('POST', /\/image\/file-1\/chunk$/)).toHaveLength(1)
     expect(server.sent('PATCH', /\/image\/file-1\/uploaded$/)).toEqual([])
-    // The other two files, the one that waited among them, are sent whole.
     expect(rows.map((row) => row.status)).toEqual(['stop', 'processing', 'processing'])
     expect(store.getQueueItems(QUEUE)).toEqual([rows[1], rows[2]])
     expect(server.sent('PATCH', /\/uploaded$/)).toHaveLength(2)
@@ -477,7 +460,6 @@ describe('a stop that comes in the middle of an upload', () => {
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
     expect(sentByTheStop).toBeGreaterThan(0)
-    // Not a chunk of the second file either, wherever between its requests the stop found it.
     expect(server.requests).toHaveLength(sentByTheStop)
     expect(server.sent('PATCH')).toEqual([])
     expect(rows.map((row) => row.status)).toEqual(['stop', 'stop', 'stop'])
@@ -485,7 +467,8 @@ describe('a stop that comes in the middle of an upload', () => {
     expect(showError).not.toHaveBeenCalled()
   })
 
-  // Too late to abort: the answer is in, and only the stop itself can keep the next request from going out.
+  // Too late to abort: the answer is already in.
+  // Only the stop itself keeps the next request from going out.
   it('sends no further chunk when it comes just as the answer to a chunk arrives', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload()])
@@ -498,7 +481,6 @@ describe('a stop that comes in the middle of an upload', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // The first of its two chunks was sent and answered; the second never goes out.
     expect(server.sent('POST', /\/image\/file-1\/chunk$/)).toHaveLength(1)
     expect(server.sent('PATCH')).toEqual([])
     expect(row.status).toBe('stop')
@@ -519,7 +501,6 @@ describe('a stop that comes in the middle of an upload', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // Every byte is on the server, and the file is never declared complete.
     expect(server.sent('POST', /\/image\/file-1\/chunk$/)).toHaveLength(2)
     expect(server.sent('PATCH')).toEqual([])
     expect(row.status).toBe('stop')
@@ -527,7 +508,8 @@ describe('a stop that comes in the middle of an upload', () => {
     expect(showError).not.toHaveBeenCalled()
   })
 
-  // The start request carries no signal: the server makes the asset and answers, and only then is the stop seen.
+  // The start request carries no signal.
+  // The server makes the asset and answers, and only then is the stop seen.
   it('sends no chunk and no finish when it comes while the start request is on the wire', async () => {
     const store = await load()
     const rows = seedQueue(store, QUEUE, [waitingUpload(), waitingUpload(), waitingUpload()])
@@ -545,7 +527,7 @@ describe('a stop that comes in the middle of an upload', () => {
 
     expect(server.sent('POST', /\/image\/file-1\/chunk$/)).toEqual([])
     expect(server.sent('PATCH', /\/image\/file-1\/uploaded$/)).toEqual([])
-    // The asset the request made stays on the server: the row has its ids, and nothing is taken back.
+    // The asset made by the request stays on the server. The row keeps its ids and nothing is taken back.
     expect([rows[0].status, rows[0].assetId, rows[0].fileId]).toEqual(['stop', 'asset-1', 'file-1'])
     expect(server.sent('DELETE')).toEqual([])
     expect(rows.map((row) => row.status)).toEqual(['stop', 'processing', 'processing'])
@@ -558,7 +540,7 @@ describe('a stop that comes in the middle of an upload', () => {
     const [row] = seedQueue(store, QUEUE, [waitingUpload()])
     let reads = 0
     stubFileReader(() => {
-      // The first chunk has been answered; the second is only being read, with nothing on the wire.
+      // The first chunk is answered. The second is only being read, so nothing is on the wire.
       if (++reads === 2) void store.stopItemUpload(QUEUE, row)
     })
 
@@ -575,7 +557,7 @@ describe('a stop that comes in the middle of an upload', () => {
 })
 
 describe('taking a row out by its asset', () => {
-  // The trash button of a row: the asset is deleted first, and the row may still be uploading into it.
+  // The trash button deletes the asset first, and the row may still be uploading into it.
   it('stops its upload as a cancel would, and starts the row that waited', async () => {
     const store = await load()
     const { rows, chunksOnTheWire } = await uploadsUnderWay(store)
@@ -602,7 +584,6 @@ describe('taking a row out by its asset', () => {
 
     expect(store.getQueueItems(QUEUE)).toEqual([rows[1]])
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 1])
-    // Nothing is asked of the server: the row is only a row.
     expect(server.requests).toEqual([])
   })
 
@@ -643,11 +624,9 @@ describe('a detail of an asset that was saved', () => {
         ['saved-author'],
         { title: 'saved' },
       ])
-      // The switch too: it is a field of the detail and of the row alike.
       expect(row.mainFileSingleUse).toBe(true)
     }
     expect(another.keywords).toEqual(['other'])
-    // The rest of the row is not the detail's to say.
     expect([upload.status, upload.canEditMetadata, picked.canEditMetadata]).toEqual(['uploaded', true, false])
     expect(server.requests).toEqual([])
   })
@@ -678,7 +657,7 @@ describe('an import from an external provider in the queue', () => {
     answerImport()
     await vi.advanceTimersByTimeAsync(0)
 
-    // No start, no chunk and no finish of its own: the server fetches the file from the provider.
+    // No start, chunk or finish request: the server fetches the file from the provider.
     expect([imported.status, imported.assetId, imported.fileId]).toEqual(['processing', 'asset-import', 'file-import'])
     expect(server.requests.filter((request) => request.url.includes('file-import'))).toEqual([])
     expect(second.status).toBe('uploading')
@@ -738,7 +717,6 @@ describe('an import from an external provider in the queue', () => {
 
       expect([imported.status, imported.isDuplicate]).toEqual(['failed', false])
       expect(imported.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'none' })
-      // Nothing of the answer is taken for the row.
       expect([imported.assetId, imported.fileId]).toEqual([null, null])
       expect(showUnknownError).toHaveBeenCalledTimes(1)
       expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 1])
@@ -746,13 +724,14 @@ describe('an import from an external provider in the queue', () => {
 
       await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-      // Not handed over to the poll, which would ask about an asset it has no id of.
+      // The row is not handed to the poll, which would ask about an asset it has no id for.
       expect(server.requests).toHaveLength(1)
       expect(showUnknownError).toHaveBeenCalledTimes(1)
     }
   )
 
-  // Its place was free either way, an import being one request: what is new is that it fails, and says so once.
+  // The place was free either way, since an import is one request.
+  // What is new is that the import fails and says so once.
   it('fails only the import answered without its ids, and the imports that wait go on', async () => {
     const store = await load()
     server.on('POST', /\/external-provider$/, (request) => {

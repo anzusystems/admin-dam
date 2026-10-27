@@ -3,7 +3,6 @@ import { ALERT_UPDATE, CORE_DAM_API } from '@pages/shared/constants'
 import { alertMessage, filterBy } from '@pages/shared/admin'
 import { confirmCreate, createDialog, openSettingsSection, visibleCy } from '@pages/shared/crud'
 
-/** Create a keyword through the create dialog of the keywords list and return its id. */
 export async function createKeyword(page: Page, name: string): Promise<string> {
   await openSettingsSection(page, 'keyword-settings', 'keywords', 'Kľúčové slová')
   await visibleCy(page, 'button-create').click()
@@ -15,7 +14,6 @@ export async function createKeyword(page: Page, name: string): Promise<string> {
   return confirmCreate(page, createDialog(page), '/keyword')
 }
 
-/** Edit a keyword found by id in the list: rename it and toggle "reviewed". */
 export async function updateKeyword(page: Page, id: string, name: string): Promise<void> {
   await page.goto('/keywords')
   await filterBy(page, 'ID', id)
@@ -32,7 +30,6 @@ export async function updateKeyword(page: Page, id: string, name: string): Promi
   await expect(page).not.toHaveURL(/\/edit$/)
 }
 
-/** Best-effort API delete for the keyword a run created. */
 export async function deleteKeywordViaApi(page: Page, id: string): Promise<void> {
   await page.request.delete(`${CORE_DAM_API}/keyword/${id}`).catch(() => {})
 }

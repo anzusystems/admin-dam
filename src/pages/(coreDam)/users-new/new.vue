@@ -54,7 +54,7 @@ const breadcrumbs = defineBreadcrumbs(() => [
 ])
 
 onMounted(() => {
-  // The library factory decides what a new account starts as: no roles, switched off.
+  // The library factory sets the defaults for a new account: no roles, disabled.
   resetAnzuUserStore('dam')
 })
 
@@ -92,9 +92,9 @@ onBeforeUnmount(() => {
         random-color
       />
       <!--
-        No dam fields here, only on edit. `POST /adm/users` takes a plain `UserDto` and
-        `createAnzuUser` writes nothing else, so licences and ext systems typed in at this point were
-        dropped without a word. The page this replaces never offered them either.
+        No dam fields here, only on edit.
+        `POST /adm/users` takes a plain `UserDto` and `createAnzuUser` writes nothing else.
+        Licences and ext systems entered here would be dropped silently.
       -->
     </VCardText>
   </ACard>

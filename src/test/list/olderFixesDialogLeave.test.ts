@@ -5,11 +5,12 @@ import { assetDetail, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The dialog that changes the licence and the one of "Create empty asset", in the menu of the page: while their
- * request is on its way they cannot be closed - what holds a second confirm back goes with the dialog. A way out of
- * the page took them away all the same: the back button of the browser onto an entry where ADAM was loaded or
- * reloaded gets past Vuetify, which otherwise only closes a dialog. The real menu with its real dialogs on a page of
- * the router, the application around them as it starts; the server is a fake, and so is the reload of the window. */
+/*
+ * The licence dialog and the "Create empty asset" dialog cannot be closed while their
+ * request is on its way, because the guard against a second confirm goes with the dialog.
+ * A way out of the page still removed them: the browser back button onto an entry where
+ * ADAM was loaded or reloaded gets past Vuetify, which otherwise only closes a dialog.
+ */
 
 let server: FakeDam
 
@@ -33,10 +34,8 @@ const dialogSaying = (text: string) =>
     found.textContent?.includes(text)
   ) ?? null
 
-/** The page with the menu, opened. */
 const openMenu = async () => {
   const ui = await startUploadUi({ server, grants: ['dam_asset_create', 'dam_asset_update'] })
-  // The licences a user picks from.
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = {
     ...config.damPrvConfig,
@@ -62,7 +61,6 @@ const openMenu = async () => {
   return {
     ...ui,
     at: () => ui.router.currentRoute.value.path,
-    /** A link of the application to another page followed, as Vuetify lets it past an open dialog. */
     leave: async () => {
       void ui.router.push(ELSEWHERE)
       await settled()
@@ -131,7 +129,6 @@ describe('a dialog of the menu of the page while its request is on its way', () 
     answer()
     await eventually(() => expect(window.location.reload).toHaveBeenCalledTimes(1))
     expect(menu.alerts()).toEqual([UPDATED])
-    // Answered, the dialog holds nothing back: the page can be left.
     await menu.leave()
     expect(menu.at()).toBe(ELSEWHERE)
   })

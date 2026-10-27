@@ -42,8 +42,8 @@ const { anzuUser, loadingAnzuUser, loadingUpdateAnzuUser, fetchAnzuUser, updateA
     endPoint: damUserSystemDescriptor.endpoints.list,
   })
 
-// The store's record is typed as the library's `AnzuUser`; in dam the very same row also carries
-// the licence and ext-system fields, which `DamUserDto` adds on the backend. One cast, here.
+// The store types the record as the library's `AnzuUser`. In dam the same row also
+// has the licence and ext-system fields that `DamUserDto` adds on the backend.
 const damUser = anzuUser as unknown as Ref<DamUser>
 
 const { t } = useI18n()
@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
         random-color
       >
         <template #systemFields="{ readonly: fieldsReadonly }">
-          <!-- The dam half of the same record; one save writes both. -->
+          <!-- The dam part of the same record. One save writes both. -->
           <DamUserFields
             v-model:user="damUser"
             :readonly="fieldsReadonly"

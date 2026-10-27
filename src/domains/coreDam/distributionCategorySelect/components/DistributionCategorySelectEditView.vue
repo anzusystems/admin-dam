@@ -29,7 +29,7 @@ const {
   distributionCategorySelect,
 } = useDistributionCategorySelectEditActions()
 
-// Asks before leaving with unsaved rows in the list editor, which registers itself by its label.
+// Empty sources: the list editor registers itself with the guard by its label.
 const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof DistributionCategorySelectEditForm> | null>(null)

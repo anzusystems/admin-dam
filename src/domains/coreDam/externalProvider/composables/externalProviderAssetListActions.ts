@@ -34,7 +34,9 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
-/** Marks the dialog of the detail among the open ones: every other one is open over it. */
+/**
+ * Marks the detail dialog among open dialogs. Every other dialog opens over it.
+ */
 export const EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS = 'dam-external-provider-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
@@ -44,16 +46,22 @@ const { filterData, filterConfig } = useExternalProviderAssetListFilter()
 const { pagination } = usePagination(null)
 const { activeExternalProvider } = useExternalProviders()
 
-/* Bumped whenever the list starts again from page one, so a request already on the wire can tell
- * that its list is gone. From one, so the 'nothing postponed' marker cannot pass for a generation. */
+/*
+ * Bumped whenever the list restarts from page one, so an in-flight request can tell its list is gone.
+ * Starts at 1 so it cannot equal the 0 'nothing in flight' marker.
+ */
 let listGeneration = 1
 
-/* The generation whose next page is on the wire, or 0 for none - one at a time within a generation,
- * for the same reason as the core list; one left over from a replaced list holds nothing back. */
+/*
+ * Generation whose next page is in flight, or 0 for none. One at a time per generation, as in the core list.
+ * A leftover from a replaced list blocks nothing.
+ */
 let nextPageInFlightGeneration = 0
 let firstPageInFlight = false
-/* The generation the postponed scroll was asked in, or 0 for none: one asked of a list since
- * replaced is not the same ask, and one served too early fetches page two before page one. */
+/*
+ * Generation the postponed scroll was requested in, or 0 for none.
+ * A request from a replaced list is stale, and serving it too early fetches page two before page one.
+ */
 let nextPageAskedInGeneration = 0
 
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
@@ -75,11 +83,15 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
-  /** The asset the panel beside the list shows: none while it is behind its loader, or holds none. */
+  /**
+   * Asset shown in the side panel, or null while it is loading or empty.
+   */
   const shownInPanel = () => (assetDetailStore.loader ? null : (assetDetailStore.asset?.id ?? null))
 
-  /* The library replaces the value of the ref it is handed, so each request gets its own and only
-   * the answer that still owns the list is copied back. */
+  /*
+   * The library replaces the ref's value, so each request gets its own ref.
+   * Only the answer that still owns the list is copied back.
+   */
   const paginationForRequest = () => ref({ ...pagination.value })
   const acceptPaginationAnswer = (answered: Ref<Pagination>) => {
     pagination.value.hasNextPage = answered.value.hasNextPage
@@ -99,7 +111,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       const firstPage = await execute(answered, filterData, filterConfig, {
         urlParams: { externalProvider: activeExternalProvider.value },
       })
-      // Two filter changes answer in whatever order they like; the older one used to win.
+      // Two filter changes can answer in any order. Without this check the older one wins.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         externalProviderAssetListStore.setList(
@@ -109,13 +121,13 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
         )
       }
     } catch (error) {
-      // And the scroll made while this was loading: its page two would land on a page one that is not there.
+      // Also drop a scroll made while this was loading. Its page two would land on a missing page one.
       if (generation === listGeneration) nextPageAskedInGeneration = 0
       showErrorsDefault(error)
     } finally {
       if (generation === listGeneration) {
         firstPageInFlight = false
-        // Only the newest: an older answer taking it down shows the rows from before both changes.
+        // Only the newest request hides it. An older answer hiding it would show rows from before both changes.
         externalProviderAssetListStore.hideLoader('hard')
       }
       await servePostponedScroll()
@@ -127,11 +139,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     resetFilter(pagination, fetchAssetList)
   }
 
-  /* Kept waiting while this generation still has something on the wire - whatever finishes last
-   * serves it - and dropped when the list it was asked of is gone, or an answer since said there is
-   * no next page. */
+  /*
+   * Kept waiting while this generation still has a request in flight; whichever finishes last serves it.
+   * Dropped when its list is replaced, or when an answer says there is no next page.
+   */
   const servePostponedScroll = async () => {
-    // First: while a request is out, `hasNextPage` is still the previous answer's.
+    // Checked first: while a request is out, `hasNextPage` still holds the previous answer.
     if (firstPageInFlight || nextPageInFlightGeneration === listGeneration) return
     if (nextPageAskedInGeneration !== listGeneration || pagination.value.hasNextPage === false) {
       nextPageAskedInGeneration = 0
@@ -166,7 +179,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       const nextPage = await execute(answered, filterData, filterConfig, {
         urlParams: { externalProvider: activeExternalProvider.value },
       })
-      // Only onto the list that asked for it, not the one a filter change has put in its place.
+      // Apply only to the list that requested it, not one a filter change has put in its place.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         externalProviderAssetListStore.appendList(
@@ -176,15 +189,18 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
         )
       }
     } catch (error) {
-      // Or the failed page is skipped by the next scroll.
+      // Otherwise the next scroll skips the failed page.
       if (generation === listGeneration) {
         pagination.value.page = requestedPage - 1
       }
       showErrorsDefault(error)
     } finally {
-      /* Tied to owning the flag, not to the generation: only a newer next-page request takes it and
-       * it raised the spinner itself, while a generation that moved on without one leaves nobody to
-       * lower `soft` - `fetchAssetList` raises only `hard`. */
+      /*
+       * Tied to owning the flag, not to the generation. Only a newer
+       * next-page request takes it, and it raised the spinner itself.
+       * A generation that moved on without one leaves nobody to
+       * lower `soft`, because `fetchAssetList` raises only `hard`.
+       */
       if (nextPageInFlightGeneration === generation) {
         externalProviderAssetListStore.hideLoader('soft')
         nextPageInFlightGeneration = 0
@@ -200,7 +216,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     assetDetailStore.showLoader()
     assetDetailStore.showDetail()
     const detailRequest = assetDetailStore.startDetailRequest()
-    // Without the finally a failed fetch leaves the panel spinning, with no close button either.
+    // Without the finally a failed fetch leaves the panel spinning with no close button.
     try {
       const res = await fetchExternalProviderAsset({
         urlParams: { externalProvider: activeExternalProvider.value, id: data.assetId },
@@ -210,10 +226,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the panel renders the same asset, and the Import button reads
-       * the active list item - a stale one would be imported as the newly selected one. */
+      /*
+       * Reset, not just closed: the panel renders the same asset, and Import reads the active list item.
+       * A stale one would be imported as the newly selected one.
+       */
       assetDetailStore.reset()
-      // If the dialog has gone in the meantime, the user has stopped waiting for this answer.
+      // If the dialog closed meanwhile, the user no longer waits for this answer.
       if (!dialogWasOpen) return
       showErrorsDefault(error)
     } finally {
@@ -235,7 +253,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       assetDetailStore.setAsset(res)
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      // The sidebar keeps its last asset, and Import reads the active list item.
+      // Reset because the sidebar keeps its last asset and Import reads the active list item.
       assetDetailStore.reset()
       showErrorsDefault(error)
     } finally {
@@ -243,13 +261,15 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
   }
 
-  /* As in the asset list: the bin in the selection dialog and the import, which clears the whole queue, cannot reach
-   * this list and left tiles highlighted for assets already imported. */
+  /*
+   * As in the asset list: the selection dialog bin and the import, which clears the queue, cannot reach this list.
+   * Without this, tiles stay highlighted for already imported assets.
+   */
   watch(
     () =>
       uploadQueuesStore
         .getQueueItems(QUEUE_ID_MASS_EDIT)
-        // By type as well, the same as `setList`.
+        // Filter by type too, as `setList` does.
         .filter((item) => item.type === UploadQueueItemType.ExternalProviderAsset)
         .map((item) => item.externalProviderAssetId),
     (assetIds) => {
@@ -305,18 +325,18 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   }
 
   /**
-   * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
-   * With no tile active the next one is the first, and there is no previous one, as the store steps.
+   * Target of `nextItem` (1) or `prevItem` (-1): the active item's neighbour, or none at a list end.
+   * With no active tile, next is the first and there is no previous, matching the store.
    */
   const neighbourOfActive = (step: 1 | -1): ExternalProviderAssetListItem | undefined =>
     externalProviderAssetListStore.list[(externalProviderAssetListStore.activeItemIndex ?? -1) + step]
 
   const nextItem = async () => {
-    // Found first: at the end of the list there is nowhere to go, so nothing to show or to read.
+    // Checked first: at the end of the list there is nothing to show or read.
     if (isUndefined(neighbourOfActive(1))) return
     externalProviderAssetListStore.setActiveNext()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
-    // Before the loader goes up: the active index outlives the list, and this threw with it up.
+    // Checked before the loader goes up. The active index can outlive the list, and this threw with the loader up.
     if (isUndefined(externalProviderAssetListStore.list[externalProviderAssetListStore.activeItemIndex])) return
     assetDetailStore.showLoader()
     const detailRequest = assetDetailStore.startDetailRequest()
@@ -332,10 +352,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the panel renders the same asset, and the Import button reads
-       * the active list item - a stale one would be imported as the newly selected one. */
+      /*
+       * Reset, not just closed: the panel renders the same asset, and Import reads the active list item.
+       * A stale one would be imported as the newly selected one.
+       */
       assetDetailStore.reset()
-      // If the dialog has gone in the meantime, the user has stopped waiting for this answer.
+      // If the dialog closed meanwhile, the user no longer waits for this answer.
       if (!dialogWasOpen) return
       showErrorsDefault(error)
     } finally {
@@ -344,7 +366,6 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   }
 
   const prevItem = async () => {
-    // The same as `nextItem`: nowhere to go from the first one.
     if (isUndefined(neighbourOfActive(-1))) return
     externalProviderAssetListStore.setActivePrev()
     if (isNull(externalProviderAssetListStore.activeItemIndex) || !activeExternalProvider.value) return
@@ -364,10 +385,12 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the panel renders the same asset, and the Import button reads
-       * the active list item - a stale one would be imported as the newly selected one. */
+      /*
+       * Reset, not just closed: the panel renders the same asset, and Import reads the active list item.
+       * A stale one would be imported as the newly selected one.
+       */
       assetDetailStore.reset()
-      // If the dialog has gone in the meantime, the user has stopped waiting for this answer.
+      // If the dialog closed meanwhile, the user no longer waits for this answer.
       if (!dialogWasOpen) return
       showErrorsDefault(error)
     } finally {
@@ -375,13 +398,17 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     }
   }
 
-  /* As in the asset list: a queue drawn over the whole page - the upload, the selection to import - covers the list,
-   * and the keys would walk tiles nobody sees and read their assets into the panel. The upload queue turns off the
-   * keys of the asset list, not of this one. */
+  /*
+   * As in the asset list: a full-page queue (upload or import selection) covers the list.
+   * The keys would walk hidden tiles and load their assets into the panel.
+   * The upload queue disables keys only for the asset list, not this one.
+   */
   const listIsUnderQueue = () => customDialog.value
 
-  /* As in the asset list: not under a dialog or a menu open over the detail, or over the list with the detail closed -
-   * the read of the next asset would take away what is open over the detail, and the list is not what is in use. */
+  /*
+   * As in the asset list: not under a dialog or menu over the detail, or over the list with the detail closed.
+   * Reading the next asset would close what is open over the detail, and the list is not in use.
+   */
   const underDialogOrMenu = () =>
     assetDetailStore.detail
       ? anotherDialogOrMenuIsOpen('.' + EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS)
@@ -413,7 +440,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const listMounted = async () => {
     await validateRouteProvider()
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
-    // A new start: the asset of a tile active on an earlier visit is not one to come back to.
+    // Fresh start: the asset of a tile active on an earlier visit should not be restored.
     externalProviderAssetListStore.reset()
     assetDetailStore.reset()
     await fetchAssetList()
@@ -422,7 +449,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
 
   const listUnmounted = () => {
     externalProviderAssetListStore.keyboardNavigationDisable()
-    // The list is going; a detail it asked for must not answer onto whatever replaces it.
+    // The list is leaving; a pending detail request must not write into what replaces it.
     assetDetailStore.abandonDetailRequests()
   }
 

@@ -6,11 +6,6 @@ import { createApp } from 'vue'
 import { createFakeDam, httpError, queueRow, seedDamConfig, seedQueue, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* What the settlement of the library asks of admin-dam since the library of block 13: the text a row fails with when
- * the asset of an uploaded row without its form is gone, and which failures of its reads were written down - a streak
- * of failures begins only with one that was. The poll of the upload queue as the application wires it, with the
- * real store and upload; the server is a fake, and so is the socket of the notifications. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -53,7 +48,6 @@ class FakeSocket {
     this.onopen?.()
   }
 
-  /** A notification as the service sends it: the data as a text inside the message. */
   says(eventName: string, data: Record<string, unknown>) {
     this.onmessage?.({ data: JSON.stringify({ eventName, data: JSON.stringify(data) }) })
   }
@@ -64,7 +58,6 @@ const SLOTS = 'slots'
 const MINUTE = 60_000
 const SOCKET_URL = 'wss://notifications.test/ws'
 
-/** The application started, with the notification service on when asked. */
 const start = async (notifications = false) => {
   vi.resetModules()
   setActivePinia(createPinia())
@@ -100,7 +93,6 @@ const waitingUpload = (over: Partial<UploadQueueItem> = {}) =>
     ...over,
   })
 
-/** The rows are sent whole: each waits for the server from this moment, the first as `asset-1` with `file-1`. */
 const sent = async (store: Store, queueId: string, rows: UploadQueueItem[]) => {
   const seeded = seedQueue(store, queueId, rows)
   store.processUpload(queueId)
@@ -110,7 +102,6 @@ const sent = async (store: Store, queueId: string, rows: UploadQueueItem[]) => {
   return seeded
 }
 
-/** What the api error logger of the application is handed from now on: the address and the status of each. */
 const loggedFailures = async () => {
   const { setApiErrorLogger } = await import('@anzusystems/common-admin')
   const logged: Array<{ url: string | undefined; status: number | undefined }> = []
@@ -136,7 +127,6 @@ afterEach(() => {
 })
 
 describe('an uploaded row without its form, whose asset is gone', () => {
-  // Settled by its processed notification, it waits for its metadata: three reads that find no asset give it up.
   it('fails after three reads that miss its asset, and says the asset no longer exists', async () => {
     const store = await start(true)
     sockets[0].opens()
@@ -156,9 +146,11 @@ describe('an uploaded row without its form, whose asset is gone', () => {
   })
 })
 
-/* The read of the slots of an asset keeps quiet what it wrote down already: the 404 of an asset that is gone, for
- * the rows it was written down for. A failure of such a quiet read was taken for one written down, and began a
- * streak: nothing was written down for as long as the reads failed, also for an upload into the asset after it. */
+/*
+ * A quiet read of the slots of an asset must not start a failure streak.
+ * Previously a failed quiet read was counted as a written-down failure, so nothing was written down while reads failed,
+ * also for a later upload into the same asset.
+ */
 describe('the reads of the slots of an asset that fail after its 404 was written down', () => {
   it('begin no streak: a failure of a read for an upload not written down for is written down', async () => {
     const store = await start()

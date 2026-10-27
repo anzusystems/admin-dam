@@ -46,6 +46,6 @@ export const makePublic = (documentId: DocId, slug: string) =>
     ROUTE_VALIDATION_ENTITY
   )
 
-// As for an image: 204 with no body today, a body documented. Either is the change gone through.
+// Same as image: 204 with no body today, a body is documented. Both mean success.
 export const makePrivate = (documentId: DocId) =>
   fileCommand('PATCH', END_POINT + '/' + documentId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

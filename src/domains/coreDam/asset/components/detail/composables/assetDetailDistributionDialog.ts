@@ -71,7 +71,9 @@ export function useAssetDetailDistributionDialog() {
   }
 }
 
-/** A super admin distributes to any service, anyone else to the ones on their account, as `DistributionVoter` checks. */
+/**
+ * A super admin distributes to any service, anyone else to the ones on their account, as `DistributionVoter` checks.
+ */
 export function useDistributionServiceAllowed() {
   const { useCurrentUser } = useAuth()
   const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)

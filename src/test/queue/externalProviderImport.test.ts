@@ -7,7 +7,6 @@ const showUnknownError = vi.fn()
 vi.mock('@/domains/coreDam/asset/api/fileApi', () => ({
   externalProviderUpload: () => externalProviderUpload(),
 }))
-// The library decides what counts as validation data; this is about what the service does with it.
 let hasValidationData = false
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
@@ -50,16 +49,17 @@ describe('importing from an external provider', () => {
 
     expect(item.assetId).toBe('asset-1')
     expect(item.fileId).toBe('file-1')
-    // Until this response the item had no ids at all, so a notification that arrived first matched nothing and was
-    // gone - and there is no upload here whose finish would hand it over: from here the poll of its queue asks.
+    // Before this response the item has no ids, so a notification that arrives first matches nothing and is lost.
+    // No upload finish hands it over here, so the queue poll asks for it.
     expect(item.status).toBe(UploadQueueItemStatus.Processing)
   })
 
   it('leaves an item the notification has already settled alone', async () => {
     const { externalProviderImport } = await load()
     const item = queueItem()
-    // Contrived on purpose: today the ids and the status are written in the same `.then`, so nothing can settle the
-    // item in between - the guard is what keeps that true if anything is ever awaited between them.
+    // Contrived on purpose. Today the ids and the status are written
+    // in the same `.then`, so nothing can settle the item in between.
+    // The guard keeps this true if something is awaited between them.
     externalProviderUpload.mockImplementation(async () => {
       item.status = UploadQueueItemStatus.Uploaded
 
@@ -78,8 +78,8 @@ describe('importing from an external provider', () => {
 
     await externalProviderImport(item as never).importInit()
 
-    // Left uploading, the item holds one of the two parallel slots for the rest of the session - two failures and the
-    // queue stops moving.
+    // An item left uploading holds one of the two parallel slots for the rest of the session.
+    // After two failures the queue stops moving.
     expect(item.status).toBe(UploadQueueItemStatus.Failed)
     expect(item.error.hasError).toBe(true)
     expect(showUnknownError).toHaveBeenCalledTimes(1)
@@ -94,7 +94,6 @@ describe('importing from an external provider', () => {
 
     expect(item.status).toBe(UploadQueueItemStatus.Failed)
     expect(item.isDuplicate).toBe(true)
-    // A duplicate is an ordinary answer, not something to alert about.
     expect(showUnknownError).not.toHaveBeenCalled()
   })
 

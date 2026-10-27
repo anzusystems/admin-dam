@@ -1,8 +1,6 @@
 import { useFormatAndSizeCheck } from '@anzusystems/common-admin'
 import { describe, expect, it } from 'vitest'
 
-// The library's check, the one `FileUpload.vue` runs on what is picked or dropped.
-
 const file = (name: string, size: number, type = 'image/jpeg') => ({ name, size, type }) as File
 
 const takes = (picked: File, accept: string | undefined, maxSizes: Record<string, number> | undefined) =>
@@ -10,8 +8,8 @@ const takes = (picked: File, accept: string | undefined, maxSizes: Record<string
 
 describe('the size limit', () => {
   it('takes a file that is exactly the limit', () => {
-    // The backend does - `AbstractAssetFileFacade` asks `size <= sizeLimit` - so refusing it here turned a legal
-    // upload into an error message.
+    // The backend accepts it: `AbstractAssetFileFacade` checks `size <=
+    // sizeLimit`. Refusing it here turned a legal upload into an error message.
     expect(takes(file('photo.jpg', 100), undefined, { 'image/jpeg': 100 })).toBe(true)
     expect(takes(file('photo.jpg', 100), undefined, { 'image/*': 100 })).toBe(true)
     expect(takes(file('photo.jpg', 100), undefined, { '*': 100 })).toBe(true)
@@ -19,8 +17,7 @@ describe('the size limit', () => {
   })
 
   it('refuses a file over the limit through every form of the key', () => {
-    // The first two used to pass: the wildcard and extension keys compared the limit the other
-    // way about.
+    // Regression: the wildcard and extension keys compared the limit the wrong way round, so these two passed.
     expect(takes(file('photo.jpg', 101), undefined, { '*': 100 })).toBe(false)
     expect(takes(file('photo.jpg', 101), undefined, { '.jpg': 100 })).toBe(false)
     expect(takes(file('photo.jpg', 101), undefined, { 'image/*': 100 })).toBe(false)
@@ -28,7 +25,7 @@ describe('the size limit', () => {
   })
 
   it('takes a file under the limit through every form of the key', () => {
-    // And the first two of these were refused.
+    // Regression: the first two of these were refused.
     expect(takes(file('photo.jpg', 99), undefined, { '*': 100 })).toBe(true)
     expect(takes(file('photo.jpg', 99), undefined, { '.jpg': 100 })).toBe(true)
     expect(takes(file('photo.jpg', 99), undefined, { 'image/*': 100 })).toBe(true)
@@ -36,7 +33,7 @@ describe('the size limit', () => {
   })
 
   it('reads an extension key off the file name', () => {
-    // Without that it matched any file at all, whatever the key said.
+    // Regression: without this check, an extension key matched any file.
     expect(takes(file('clip.mp4', 99, 'video/mp4'), undefined, { '.jpg': 100 })).toBe(false)
   })
 

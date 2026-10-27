@@ -11,8 +11,7 @@ export interface ImportedEpisode {
 }
 
 /**
- * The newest episode of `podcastId` in web order that the synchronizer imported from the RSS feed and that still
- * has its asset — the one the web lists first.
+ * Newest imported episode is the one the web lists first.
  */
 export async function newestImportedEpisode(page: Page, podcastId: string): Promise<ImportedEpisode> {
   const response = await page.request.get(
@@ -30,7 +29,6 @@ export async function newestImportedEpisode(page: Page, podcastId: string): Prom
   return { episodeId: episode!.id, assetId: episode!.asset!, title: episode!.texts.title }
 }
 
-/** Delete an asset from its detail view. */
 export async function deleteAssetFromDetail(page: Page, assetId: string): Promise<void> {
   await page.goto(`/assets/${assetId}`)
   await cardLoad(page)
@@ -41,7 +39,6 @@ export async function deleteAssetFromDetail(page: Page, assetId: string): Promis
     .toBe(404)
 }
 
-/** Id of the podcast titled exactly `title` in the ext system of the current licence. */
 export async function podcastIdByTitle(page: Page, title: string): Promise<string> {
   const response = await page.request.get(
     `${CORE_DAM_API}/podcast/ext-system/1?limit=5&offset=0&filter_eq[texts.title]=${encodeURIComponent(title)}`
@@ -54,7 +51,6 @@ export async function podcastIdByTitle(page: Page, title: string): Promise<strin
   return podcast!.id
 }
 
-/** Create a podcast synchronizer job with "Plná synchronizácia" on, and wait until it is done. */
 export async function runFullPodcastSync(page: Page, podcastId: string): Promise<void> {
   await page.goto('/jobs')
   await cardLoad(page)

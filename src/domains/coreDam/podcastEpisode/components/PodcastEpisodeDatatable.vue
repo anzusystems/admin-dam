@@ -179,7 +179,7 @@ onMounted(() => {
                 :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]'"
               />
             </Acl>
-            <!-- An episode with an asset also asks the backend for the asset's update. -->
+            <!-- For an episode with an asset, the backend also checks update on the asset. -->
             <Acl
               :permission="
                 item.asset ? [ACL.DAM_PODCAST_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE] : ACL.DAM_PODCAST_EPISODE_UPDATE

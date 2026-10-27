@@ -44,11 +44,16 @@ const assetDetailStore = useAssetDetailStore()
 const uploadQueueStore = useUploadQueuesStore()
 
 const saveButtonLoading = ref(false)
-/* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
- * the asset got another main file under what was typed: the form is still the one read before that. */
+/*
+ * "Save" is blocked while the server may still fill metadata from
+ * the file, or after the main file changed under what was typed.
+ * Saving then would overwrite what the server fills in, because the form is older.
+ */
 const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
-/* Held back for a main file that failed or is processed, nothing is left to be processed: the asset read whole - opened
- * again, once what was typed is left - frees "Save". The line under it says which. */
+/*
+ * Held back for a main file that is processed or failed: reading the asset whole frees "Save".
+ * That happens when the asset is opened again or nothing typed is left. The line below says which case applies.
+ */
 const heldBackLine = computed(() => {
   switch (asset.value?.mainFile?.fileAttributes.status) {
     case AssetFileProcessStatus.Failed:
@@ -60,16 +65,17 @@ const heldBackLine = computed(() => {
   }
 })
 
-// An asset being deleted - by this detail, by the bin of a queue row, elsewhere - has nothing to be saved into, nor to
-// be deleted.
+// An asset being deleted, from here, a queue row or elsewhere, cannot be saved or deleted again.
 const isDeleting = computed(() => assetDetailStore.isDeleting)
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
-/* The button only spins while a save is on its way, so another can start, as in the panel beside the list. What a save
- * takes of what was typed, and what it leaves unsaved when it fails, the store keeps for both (`saveSent`). */
+/*
+ * The button spins only while a save is in flight, so another save can start, as in the side panel.
+ * The store tracks what each save took and what stays unsaved on failure (`saveSent`).
+ */
 const onSave = async () => {
   if (isNull(asset.value)) return
   saveButtonLoading.value = true
@@ -79,11 +85,13 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
-  // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
-  // wire. The switch is the detail's own, not the value the asset was opened with.
+  // Snapshot taken at start: another asset can be opened, or this one edited, while the save is in flight.
+  // `mainFileSingleUse` is the detail's own switch, not the value the asset was opened with.
   const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
-  /* Before the request, not after it: what is typed while it is on the wire is not in it. Known to a read of the asset
-   * that nobody here started too: its answer can be from before this save. */
+  /*
+   * Called before the request so edits made during it are not counted as sent.
+   * Other asset reads also see it, since their answer can predate this save.
+   */
   const saveAnswered = assetDetailStore.saveSent(asset.value)
   let failed = false
   try {
@@ -94,7 +102,7 @@ const onSave = async () => {
       mainFileInternal.value,
       ttsAudio.value
     )
-    // Into a row of the asset in a queue too, wherever this detail was opened from: a later bulk save sends that row.
+    // Also update the asset's queue row: a later bulk save sends that row.
     uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
@@ -108,10 +116,13 @@ const onSave = async () => {
 
 const assetDeleted = useAssetDeleted()
 
-/* The asset deleted is the one the delete was sent for: by its answer the detail can hold the next one, or this part
- * of it be gone with its tab. The page is told by its function; the event closes the dialog over the list, and only
- * while that is still drawn. One delete of the asset at a time, as the bin of a queue row. Its rows go from the queues
- * on every page the detail is drawn on: the upload queue outlives the page. */
+/*
+ * Uses the asset the delete was sent for, since the detail can
+ * hold the next asset or this tab can be gone by the answer.
+ * The page is told through its provided function. The event closes the list dialog only while it is still drawn.
+ * One delete per asset at a time, as with the queue row bin.
+ * Rows are removed from the queues on every page, because the upload queue outlives the page.
+ */
 const onDelete = async () => {
   if (isNull(asset.value)) return
   const assetId = asset.value.id
@@ -150,8 +161,8 @@ const onDelete = async () => {
       </ABtnPrimary>
     </Acl>
   </AssetDetailSidebarActionsWrapper>
-  <!-- In the sidebar, not in the bar of the actions above: that one has a fixed height. -->
-  <!-- Not for an asset being deleted: "Save" is off for that, and neither line would come true. -->
+  <!-- In the sidebar, not the actions bar above, because that bar has a fixed height. -->
+  <!-- Hidden for an asset being deleted: "Save" is off, so neither line applies. -->
   <Acl :permission="ACL.DAM_ASSET_UPDATE">
     <div
       v-if="isActive && saveBlocked && !isDeleting"

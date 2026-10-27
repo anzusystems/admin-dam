@@ -42,8 +42,11 @@ watch(queueTotalCount, (newValue, oldValue) => {
   }
 })
 
-/* Drawn anew after the count dropped to 0 while a queue drawn over the whole page stood in its place - its row of an
- * asset deleted - the watch was not there to see it: no strip of nothing picked. */
+/*
+ * The count can drop to 0 while a full-page queue replaces this
+ * component, for example when an asset row is deleted there.
+ * The watch was not mounted then, so hide an empty strip on mount.
+ */
 onMounted(() => {
   if (queueTotalCount.value === 0 && footerViewSelected.value !== FooterViewSelected.Hidden) hideSelected()
 })

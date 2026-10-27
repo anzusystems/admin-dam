@@ -9,17 +9,20 @@ import * as components from 'vuetify/components'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 
-/* The distribution tab of an asset without the notification server: while a listed distribution is under way,
- * the tab reads its list again on its own. The real tab over the real store and the real request, a fake server
- * and a fake clock; the rows and the dialogs of the tab are replaced by stand-ins. What a notification does to
- * the list is in `appInitialize/notificationEvents.test.ts`. */
+/*
+ * Distribution tab of an asset without the notification server: while a
+ * listed distribution is under way, the tab rereads its list on its own.
+ * Real tab, store and request over a fake server and clock. Rows and dialogs are stand-ins.
+ * Effects of notifications are tested in `appInitialize/notificationEvents.test.ts`.
+ */
 
 let server: FakeDam
 // Every GET with its query and the moment it was sent: the fake server keeps neither.
 const asked: Array<{ url: string; at: number; signal: AbortSignal | undefined }> = []
 const alerts = vi.hoisted(() => ({ showErrorsDefault: vi.fn() }))
-// The fake server refuses a request once its signal is aborted, as axios does. A case can have the next request
-// sent without its signal: its answer then comes although the read was given up, as one already on its way back.
+// The fake server refuses a request once its signal is aborted, as axios does.
+// A case can send the next request without its signal. Its answer then
+// arrives although the read was given up, like one already on its way back.
 let nextAnswersAfterAbort = false
 
 vi.mock('@/shared/apiClients/damClient', () => ({
@@ -117,22 +120,21 @@ const LIST = /^\/adm\/v1\/distribution\/asset\/asset-1$/
 const LIST_OF_THE_NEXT_ASSET = /^\/adm\/v1\/distribution\/asset\/asset-2$/
 const SECOND = 1000
 const MINUTE = 60 * SECOND
-/** Longer than any distance between two reads. */
 const LONG = 60 * MINUTE
 const FIRST_STEP = DISTRIBUTION_LIST_POLL.early.every / SECOND
 const LAST_STEP = DISTRIBUTION_LIST_POLL.late.every / SECOND
-/** The longest wait after a failed read. */
 const LAST_FAILURE_STEP = Math.max(...DISTRIBUTION_LIST_POLL.afterFailure) / SECOND
 
 const distribution = (id: string, status: string) => ({ id, status, distributionService: 'youtube_main', extId: '' })
 
-/** What becomes of a request the poll gave up: `true` for one whose answer comes all the same. */
+/**
+ * Second value: `true` if the answer still arrives after the poll gave up the request.
+ */
 const GIVEN_UP: Array<[string, boolean]> = [
   ['is refused at once, as in a browser', false],
   ['is answered all the same', true],
 ]
 
-/** What the server lists for the asset; a case changes it as the distributions move on. */
 let listed: ReturnType<typeof distribution>[] = []
 const listAnswer = (): FakeDamAnswer => ({ status: 200, data: { data: listed } })
 
@@ -145,7 +147,9 @@ const settle = async () => {
   await nextTick()
 }
 
-/** The store of the list belongs to the app, not to a tab: the tab of the next asset is mounted over the same one. */
+/**
+ * The store of the list belongs to the app, not to a tab: the tab of the next asset is mounted over the same one.
+ */
 const mountTab = async (assetId = 'asset-1', pinia = createPinia()) => {
   setActivePinia(pinia)
   const root = document.createElement('div')
@@ -168,13 +172,10 @@ const mountTab = async (assetId = 'asset-1', pinia = createPinia()) => {
     store: useDistributionListStore(),
     rows: () => Array.from(root.querySelectorAll('[data-row]')).map((row) => row.textContent),
     spinning: () => root.querySelector('.v-progress-circular') !== null,
-    /** What the tab does after a distribution was created, cancelled or managed. */
     reload: () => root.querySelector<HTMLButtonElement>('[data-reload]')?.click(),
     nextPage: () => root.querySelector<HTMLButtonElement>('[data-next-page]')?.click(),
-    /** Whether the tab draws its paging under the list. */
     offersNextPage: () => root.querySelector('[data-next-page]') !== null,
     text: () => root.textContent ?? '',
-    /** The button under the line that says the list could not be loaded. */
     tryAgain: () => root.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
   }
 }
@@ -185,7 +186,6 @@ const NOT_LOADED = 'coreDam.distribution.common.loadFailed'
 const TRY_AGAIN = 'common.button.retry'
 
 const reads = () => asked.filter((request) => LIST.test(request.url.split('?')[0]))
-/** When the list was read, in seconds since the tab was mounted. */
 const readAt = () => reads().map((request) => (request.at - mountedAt) / SECOND)
 
 const becomes = async (state: 'visible' | 'hidden') => {
@@ -196,7 +196,6 @@ const becomes = async (state: 'visible' | 'hidden') => {
 
 const now = () => (Date.now() - mountedAt) / SECOND
 
-/** Lets time pass until the list is asked for once more. The cases wait for a read, not for a delay. */
 const untilNextRead = async () => {
   const before = reads().length
   for (let waited = 0; waited < 10 * MINUTE && reads().length === before; waited += SECOND) {
@@ -206,7 +205,6 @@ const untilNextRead = async () => {
   expect(reads()).toHaveLength(before + 1)
 }
 
-/** Holds the next read of the list open until the case lets it go. */
 const holdNextRead = (answersAfterAbort = false, list = LIST) => {
   let release: (answer?: FakeDamAnswer) => void = () => undefined
   let held = false
@@ -231,8 +229,8 @@ const holdNextRead = (answersAfterAbort = false, list = LIST) => {
 const POLL_FILE = '/composables/distributionListPoll.ts'
 
 /**
- * Stands in front of `target[name]` for one case and keeps the calls made from the poll's own file, with what they
- * were answered. Vuetify and the library set timers and listen on the document too: theirs are not kept.
+ * Wraps `target[name]` for one case and records the calls made from the poll's own file, with their results.
+ * Vuetify and the library also set timers and listen on the document. Those calls are not recorded.
  */
 const callsFromThePoll = (target: object, name: string) => {
   const original = Reflect.get(target, name) as (...args: unknown[]) => unknown
@@ -293,7 +291,6 @@ describe('the rhythm of reading the distribution list again', () => {
       [0, 1, 2, 3, 4, 5, 6, 50].map((failures) => distributionListPollDelay(age * SECOND, failures) / SECOND)
 
     expect(afterFailures(0)).toEqual([15, 15, 30, 60, 120, 300, 300, 300])
-    // Never shorter than the rhythm itself.
     expect(afterFailures(3600)).toEqual([60, 60, 60, 60, 120, 300, 300, 300])
   })
 
@@ -387,10 +384,8 @@ describe('the distribution tab, while a listed distribution is under way', () =>
     const read = holdNextRead()
     await untilNextRead()
 
-    // The window comes back.
     await becomes('hidden')
     await becomes('visible')
-    // A notification finishes the distribution and another one puts it under way again.
     await store.listItemMessageUpdate('dist-1', 'failed')
     await store.listItemMessageUpdate('dist-1', 'distributing')
     await vi.advanceTimersByTimeAsync(LONG)
@@ -413,7 +408,7 @@ describe('the distribution tab, while a listed distribution is under way', () =>
     expect(rows()).toEqual(['dist-1:waiting'])
   })
 
-  // The reads that fail after the first say the same again: the poll asks for them not to be written down.
+  // Later failures repeat the first one, so the poll asks for them not to be logged.
   it('has the first of its reads that fail in a row written down, and none after it until one succeeds', async () => {
     const written = vi.fn()
     setApiErrorLogger(written)
@@ -567,7 +562,6 @@ describe('the distribution tab, when no listed distribution is under way', () =>
       data: distribution('dist-1', 'failed'),
     }))
 
-    // What the listener of the notifications calls.
     await store.listItemMessageUpdate('dist-1', 'failed')
     await vi.advanceTimersByTimeAsync(LONG)
     expect(store.list[0].status).toBe('failed')
@@ -617,7 +611,6 @@ describe('the distribution tab, once it is closed', () => {
     await vi.advanceTimersByTimeAsync(LONG)
     expect(reads()).toHaveLength(2)
 
-    // Coming back to the window does not wake it up either.
     await becomes('hidden')
     await becomes('visible')
     expect(reads()).toHaveLength(2)
@@ -680,7 +673,7 @@ describe('the distribution tab, once it is closed', () => {
 })
 
 describe('the distribution tab, when a read the user asked for fails', () => {
-  // The list is this asset's own: emptied, it would also end the reading behind it, for good.
+  // The list belongs to this asset. Emptying it would also end the background reading for good.
   it.each([
     ['a reload', (tab: Awaited<ReturnType<typeof mountTab>>) => tab.reload()],
     ['the next page', (tab: Awaited<ReturnType<typeof mountTab>>) => tab.nextPage()],
@@ -709,8 +702,8 @@ describe('the distribution tab, when a read the user asked for fails', () => {
     expect(tab.rows()[0]).toBe('dist-0:distributed')
   })
 
-  // Two reads of the tab's own on the wire at once: how the older one ends says nothing of what the newer one read.
-  // The older one is given up as the newer one starts, so its failure is not even shown: it raised an alert before.
+  // Two reads of the tab can be on the wire at once. How the older one ends says nothing about what the newer one read.
+  // The older one is given up when the newer starts, so its failure is not shown. It used to raise an alert.
   it.each(GIVEN_UP)(
     'says nothing of a read that failed after a read started later had answered with an empty list (it %s)',
     async (_how, answered) => {
@@ -743,7 +736,7 @@ describe('the distribution tab, when a read the user asked for fails', () => {
     }
   )
 
-  // The reading behind the list answers after it, and its answer is the newer word: the asset has none any more.
+  // The background reading answers after the list, and its answer is newer: the asset has no distributions any more.
   it('says there is nothing to show when the reading behind the list it kept then finds it empty', async () => {
     listed = [distribution('dist-1', 'distributing')]
     const tab = await mountTab()
@@ -764,9 +757,12 @@ describe('the distribution tab, when a read the user asked for fails', () => {
   })
 })
 
-/* Two reads of the tab's own can be on the wire at once: one after a distribution was added, deleted or edited,
- * one for another page. What the tab shows is the answer of the one it started last; the one before it is given
- * up, and whatever becomes of it changes nothing. */
+/*
+ * Two reads of the tab can be on the wire at once: one after a
+ * distribution is added, deleted or edited, one for another page.
+ * The tab shows the answer of the one it started last. The earlier
+ * one is given up and whatever becomes of it changes nothing.
+ */
 describe('the distribution tab, when it reads its list while a read of its own is still on its way', () => {
   const two = [distribution('dist-1', 'distributed'), distribution('dist-2', 'distributed')]
 
@@ -794,7 +790,6 @@ describe('the distribution tab, when it reads its list while a read of its own i
       const older = holdNextRead(answered)
       tab.reload()
       await settle()
-      // A distribution is deleted meanwhile, and the tab reads again.
       listed = [two[1]]
       tab.reload()
       await settle()
@@ -844,7 +839,6 @@ describe('the distribution tab, when it reads its list while a read of its own i
     const older = holdNextRead(true)
     tab.reload()
     await settle()
-    // All but one are deleted meanwhile: one page is left.
     server.on('GET', LIST, () => ({ status: 200, data: { data: [page[0]], hasNextPage: false } }))
     tab.reload()
     await settle()
@@ -855,7 +849,6 @@ describe('the distribution tab, when it reads its list while a read of its own i
     expect([tab.rows(), tab.offersNextPage()]).toEqual([['dist-0:distributed'], false])
   })
 
-  // The read given up is silent; the one the tab shows is not.
   it.each(GIVEN_UP)(
     'says that the later read failed, once, and keeps its list, when the older one %s',
     async (_how, answered) => {
@@ -931,8 +924,10 @@ describe('the distribution tab, when it reads its list while a read of its own i
   })
 })
 
-/* An empty list after a read that failed says nothing of the asset, and nothing reads it again by itself: no
- * distribution under way is listed, so the tab does not read behind it. */
+/*
+ * An empty list after a failed read says nothing about the asset, and nothing rereads it
+ * on its own. No distribution under way is listed, so the tab does not read behind it.
+ */
 describe('the distribution tab, when the read of its opening fails', () => {
   const opened = async () => {
     server.on('GET', LIST, () => {
@@ -951,7 +946,6 @@ describe('the distribution tab, when the read of its opening fails', () => {
     expect(tab.text()).toContain(NOT_LOADED)
     expect(tab.text()).not.toContain(NOTHING_TO_SHOW)
     expect(tab.tryAgain()?.textContent).toContain(TRY_AGAIN)
-    // Nothing else reads it.
     await vi.advanceTimersByTimeAsync(LONG)
     expect(reads()).toHaveLength(1)
   })
@@ -1016,16 +1010,18 @@ describe('the distribution tab of the next asset, when the read of its opening f
 
     expect(alerts.showErrorsDefault).toHaveBeenCalledTimes(1)
     expect([next.rows(), next.store.list, next.spinning()]).toEqual([[], [], false])
-    // The empty list is not what the server said of this asset: the tab says the read failed and offers another.
-    // It said "nothing to show" before, which this case did not look at.
+    // The empty list is not what the server said of this asset. The tab says the read failed and offers another.
+    // It used to say "nothing to show".
     expect(next.text()).toContain(NOT_LOADED)
     expect(next.text()).not.toContain(NOTHING_TO_SHOW)
     expect(next.tryAgain()).not.toBeNull()
   })
 })
 
-/* The tab of an asset is closed and opened again: the user went to another tab of the detail and back, or closed
- * the detail and opened it anew. The store still holds the list the opening before read. */
+/*
+ * The tab of an asset is closed and opened again: the user went to another detail tab and
+ * back, or reopened the detail. The store still holds the list from the earlier opening.
+ */
 describe('the distribution tab of the same asset opened again', () => {
   const openedBefore = async () => {
     listed = [distribution('dist-1', 'distributed')]
@@ -1075,7 +1071,6 @@ describe('the distribution tab of the same asset opened again', () => {
     expect([again.spinning(), again.rows()]).toEqual([false, ['dist-1:distributed', 'dist-2:waiting']])
   })
 
-  // Nothing listed is under way after the opening that failed, as far as the tab knows.
   it('reads nothing behind the list its opening before left, once the read of its opening failed', async () => {
     listed = [distribution('dist-1', 'distributing')]
     const before = await mountTab()
@@ -1144,7 +1139,6 @@ describe('the distribution tab closed while its own read is on its way, and the 
       expect(next.store.list.map((item) => item.id)).toEqual(['next-1'])
       expect(next.spinning()).toBe(false)
       expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
-      // Nothing under way was put into the next tab, so it has nothing to read again.
       await vi.advanceTimersByTimeAsync(LONG)
       expect(readsOfTheNextAsset()).toHaveLength(1)
     }
@@ -1208,7 +1202,6 @@ describe('what the poll of the distribution tab leaves behind', () => {
       await becomes('hidden')
       expect(clearedNow(beforeHiding)).toBe(true)
 
-      // Back in the window the list is read at once, and the next read gets a timer of its own.
       await becomes('visible')
       const beforeClosing = timers.last()?.result
       expect(beforeClosing).not.toBe(beforeHiding)
@@ -1372,10 +1365,8 @@ describe('the distribution tab, when the user makes it read its list', () => {
     await settle()
     expect(reads()).toHaveLength(2)
 
-    // The window comes back.
     await becomes('hidden')
     await becomes('visible')
-    // A notification finishes the distribution and another one puts it under way again.
     await store.listItemMessageUpdate('dist-1', 'failed')
     await store.listItemMessageUpdate('dist-1', 'distributing')
     await vi.advanceTimersByTimeAsync(LONG)

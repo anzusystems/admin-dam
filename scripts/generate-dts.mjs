@@ -1,9 +1,8 @@
 /**
- * Generates the typed-router declaration file by briefly running a Vite build (triggers plugin hooks).
- *
- * Used in CI before type-checking and linting. It also deletes what unplugin-auto-import generated
- * while this admin still used it: both files are gitignored, so a clone keeps them after the pull, and
- * the stale globals in `src/auto-imports.d.ts` would hide every missing import from vue-tsc.
+ * Generates the typed-router declaration file by briefly running a Vite build, which triggers the plugin hooks.
+ * Used in CI before type-checking and linting.
+ * It also deletes old unplugin-auto-import output. Those files are gitignored, so an existing clone
+ * keeps them, and the stale globals in `src/auto-imports.d.ts` would hide missing imports from vue-tsc.
  */
 import { existsSync, rmSync } from 'node:fs'
 

@@ -5,12 +5,11 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* "Download" of the menu of a row of the Slots tab asks the server for the signed address of the file of the row, and
- * opens it in a tab of its own. A browser opens a tab at a press and can drop one opened after a request without a
- * word: the tab is opened at the press, empty, cut off from the page at once, and sent to the address once it is had -
- * or closed when it is not. The real page of the list with its real detail, the application around it as it starts;
- * the server is a fake, and so are the tabs of the browser and the address the page asks about a new version of the
- * application. */
+/*
+ * A browser opens a tab at a press and can silently drop one opened after a request.
+ * So the tab is opened empty at the press and cut off from the page at once.
+ * It is sent to the address once the address is had, or closed when it is not.
+ */
 
 let server: FakeDam
 
@@ -25,7 +24,9 @@ const SIGNED = 'https://storage.test/file-3?signature=1'
 const LIST = '/assets'
 const IMAGE = 'asset-1'
 
-/** Where a tab is that the user took to another site: such a tab does not say. */
+/**
+ * A tab the user took to another site does not report its address.
+ */
 const ANOTHER_SITE = null
 
 const fileOnServer = (fileId: string) => ({
@@ -45,9 +46,7 @@ const onServer = () => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** A tab of the browser, as the page that opened it holds it: opened empty. */
 const newTab = () => {
-  /** Where the tab was sent, each time with whether it could reach the page that opened it by then. */
   const sentTo: Array<{ address: string; reachesOpener: boolean }> = []
   let address: string | null = 'about:blank'
   const tab = {
@@ -67,7 +66,6 @@ const newTab = () => {
       replace: (to: string) => void sentTo.push({ address: to, reachesOpener: tab.opener !== null }),
     },
     sentTo,
-    /** The user takes the tab elsewhere, by its address bar. */
     takenTo: (to: string | null) => {
       address = to
     },
@@ -78,7 +76,6 @@ const newTab = () => {
 
 type Tab = ReturnType<typeof newTab>
 
-/** The browser opens tabs from now on: what it was asked for each, and the tabs it gave. */
 const browserOpensTabs = () => {
   const given: Tab[] = []
   const open = vi.fn<(...asked: unknown[]) => Tab>(() => {
@@ -91,7 +88,6 @@ const browserOpensTabs = () => {
   return { asked: () => open.mock.calls, given }
 }
 
-/** The address of the file is asked for from now on and held: answered, or refused, by what this gives back. */
 const holdLink = () => {
   let answer: (had: boolean) => void = () => undefined
   server.on(
@@ -112,7 +108,6 @@ const holdLink = () => {
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** The Slots tab of the detail of the image, and the "Download" of the menu of the row of its main slot. */
 const openDownload = async () => {
   const ui = await startUploadUi({
     server,
@@ -120,7 +115,6 @@ const openDownload = async () => {
     extSystem: { image: { slots: ['default'] } },
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -192,8 +186,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The window was opened only once the address was answered - which a browser blocking such windows dropped without a
- * word - and could reach the page that opened it. */
+/*
+ * Regression: the window was opened only after the address was answered.
+ * A browser blocking such windows dropped it silently, and it could reach the opener page.
+ */
 describe('"Download" of the menu of a row of the Slots tab', () => {
   it('opens its tab at the press, cut off from the page at once, and sends it to the file once its address is had', async () => {
     const answer = holdLink()
@@ -202,7 +198,6 @@ describe('"Download" of the menu of a row of the Slots tab', () => {
 
     ui.download.click()
 
-    // At the press, with nothing answered yet.
     expect([browser.asked(), browser.given[0]?.opener]).toEqual([[['', '_blank']], null])
     await settled()
     expect([server.sent('GET', DOWNLOAD_LINK).map((request) => request.url), browser.given[0].sentTo]).toEqual([
@@ -231,7 +226,6 @@ describe('"Download" of the menu of a row of the Slots tab', () => {
     expect([browser.given[0].sentTo, browser.given[0].closed, ui.alerts()]).toEqual([[], true, [SYSTEM_ERROR]])
   })
 
-  // The guard: a tab the user has taken elsewhere meanwhile is theirs.
   it('neither sends nor closes a tab the user took to another site while the address was asked for', async () => {
     const answer = holdLink()
     const ui = await openDownload()

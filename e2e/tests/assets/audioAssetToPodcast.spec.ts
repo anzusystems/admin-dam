@@ -50,7 +50,6 @@ test.describe.serial(`${ADMIN_SUITE} - Audio asset to podcast episode`, () => {
     EPISODE_ID = await addAssetToNewPodcastEpisode(page, {
       title: `${TITLE}-edit`,
       description: `${DESCRIPTION}-edit`,
-      // Season and episode numbers are integers, so keep them short.
       seasonNumber: RAND_NUM.slice(-4),
       episodeNumber: RAND_NUM.slice(-4),
     })

@@ -6,7 +6,6 @@ import { confirmCreate, createDialog, openSettingsSection, visibleCy } from '@pa
 export interface AuthorData {
   name: string
   identifier: string
-  /** "Interný" | "Externý" */
   type: string
 }
 
@@ -15,7 +14,6 @@ async function pickType(page: Page, type: string): Promise<void> {
   await page.locator('.v-overlay--active .v-list-item-title').getByText(type, { exact: true }).click()
 }
 
-/** Create an author through the create dialog of the authors list and return its id. */
 export async function createAuthor(page: Page, data: AuthorData): Promise<string> {
   await openSettingsSection(page, 'author-settings', 'authors', 'Autori')
   await visibleCy(page, 'button-create').click()
@@ -29,7 +27,6 @@ export async function createAuthor(page: Page, data: AuthorData): Promise<string
   return confirmCreate(page, createDialog(page), '/author')
 }
 
-/** Edit an author found by id in the list: rename it, toggle "reviewed" and change its type. */
 export async function updateAuthor(page: Page, id: string, data: AuthorData): Promise<void> {
   await page.goto('/authors')
   await filterBy(page, 'ID', id)
@@ -47,7 +44,6 @@ export async function updateAuthor(page: Page, id: string, data: AuthorData): Pr
   await expect(page).not.toHaveURL(/\/edit$/)
 }
 
-/** Best-effort API delete for records a failed run left behind. */
 export async function deleteAuthorViaApi(page: Page, id: string): Promise<void> {
   await page.request.delete(`${CORE_DAM_API}/author/${id}`).catch(() => {})
 }

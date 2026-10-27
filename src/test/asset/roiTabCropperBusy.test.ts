@@ -6,11 +6,11 @@ import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUi } from '@/test/support/uploadUi'
 
-/* The tab of the region of interest of an image while the frame of the library beside it saves a region dragged there,
- * and reads the file the DAM draws anew two seconds after: the frame is busy (`cropperBusy` of the store) until that
- * read is over, and draws the previews of the panel anew after it (`timestampRoiPreviews`). "Refresh previews" drew
- * them anew meanwhile, from before the DAM drew them anew. The real page with the application around it as it starts,
- * in English; the server is a fake. */
+/*
+ * Region tab while the library frame saves a dragged region and then reads the file the DAM redraws two seconds later.
+ * The frame is busy (`cropperBusy`) until that read ends, then the previews are redrawn (`timestampRoiPreviews`).
+ * Bug: "Refresh previews" redrew them meanwhile, from before the DAM redrew. Real page, English, fake server.
+ */
 
 let server: FakeDam
 
@@ -23,8 +23,10 @@ const ROI_LIST = /^\/adm\/v1\/image\/(file-\d)\/roi$/
 const READ_FILE_1 = /^\/adm\/v1\/image\/file-1$/
 const ROTATE = /^\/adm\/v1\/image\/file-1\/rotate\/(90|270)$/
 
-/** How many times the server turned each file by 90°, and when it last changed its image: a rotation changes it.
- * `sameSecond`: rotations of one second, which the server marks with the same time. */
+/**
+ * Number of 90° turns per file, and when the server last changed its image (a rotation changes it).
+ * `sameSecond`: rotations within one second get the same time mark from the server.
+ */
 let rotations: Record<string, number> = {}
 let manipulated: Record<string, string> = {}
 let sameSecond = false
@@ -49,7 +51,6 @@ const imageFile = (id: string) => {
   }
 }
 
-/** The main file turned by the server, which answers with the file turned. */
 const rotateOnServer = (): FakeDamAnswer => {
   rotations['file-1'] = (rotations['file-1'] ?? 0) + 1
   manipulated['file-1'] = sameSecond ? 'm2' : 'm' + (rotations['file-1'] + 1)
@@ -62,18 +63,17 @@ const settled = () => vi.advanceTimersByTimeAsync(100)
 type Frame = Element & {
   __vueParentComponent?: { props: { src?: string }; emit: (event: string, ...args: unknown[]) => void }
 }
-/** The frame of the region, the library's `ACropper`: what it builds of the image in the page happy-dom does not draw,
- * so it is read and moved by its component. */
+/**
+ * The library frame `ACropper`. happy-dom does not draw what it builds
+ * from the image, so it is read and driven through its component.
+ */
 const frame = () => document.body.querySelector<Frame>('.dam-image-detail__left .a-cropper')
 
-/** The image the frame is given to draw, by its address, or nothing while there is no frame. */
 const framed = () => frame()?.__vueParentComponent?.props.src ?? null
 
-/** The region dragged in the frame to the place and size it gives as parts of the image, as the frame commits it. */
 const drag = (crop: { x: number; y: number; width: number; height: number }) =>
   frame()!.__vueParentComponent!.emit('commit', crop)
 
-/** The previews of the region, by their addresses. */
 const previews = () =>
   Array.from(document.body.querySelectorAll<HTMLImageElement>('.crop-preview img'), (image) =>
     image.getAttribute('src')
@@ -83,7 +83,6 @@ const detailOf = (file: string) => `https://dam.test/${file}/detail.jpg?manipula
 const previewOf = (file: string) =>
   expect.stringMatching(new RegExp(`^https://dam\\.test/roi-of-${file}/preview\\.jpg\\?timestamp=\\d+$`))
 
-/** The tab of the region opened, in the sidebar of the detail. */
 const openFocus = async () => {
   const tab = await eventually(() => {
     const found = document.body.querySelector<HTMLElement>('[data-cy="button-focus"]')
@@ -94,7 +93,6 @@ const openFocus = async () => {
   tab.click()
 }
 
-/** The page of the asset, its tab of the region open, the frame drawing the main file. */
 const openTab = async () => {
   const ui = await startUploadUi({
     server,
@@ -112,14 +110,12 @@ const openTab = async () => {
   return { ui, held: () => heldBy(ui) }
 }
 
-/** What the store of the frame holds: the file, its region, and whether it loads. */
 const heldBy = (ui: UploadUi) => {
   const store = ui.library.useDamImageRoiStore()
 
   return { file: store.imageFile?.id ?? null, roi: store.roi?.id ?? null, loading: store.loader }
 }
 
-/** Answers of the server to the reads the pattern matches, held from now on until released one by one. */
 const hold = (method: 'GET' | 'PATCH' | 'PUT', pattern: RegExp, answer: (match: RegExpMatchArray) => FakeDamAnswer) => {
   const held: Array<() => void> = []
   server.on(
@@ -162,7 +158,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  // The one region of each file, with its one preview.
   server.on('GET', ROI_LIST, (_request, match) => regionsOf(match[1]))
   server.on('GET', ROI, (_request, match) => ({
     status: 200,
@@ -205,7 +200,6 @@ describe('the tab of the region of interest while the frame saves a region', () 
     expect(refreshButton()).toBeNull()
     expect(previews()).toEqual(before)
 
-    // The file read two seconds after the save: the frame is done, and the previews are drawn anew.
     await vi.advanceTimersByTimeAsync(2000)
     await eventually(() => expect(refreshButton()).not.toBeNull())
     expect(server.sent('GET', READ_FILE_1)).toHaveLength(1)
@@ -213,7 +207,6 @@ describe('the tab of the region of interest while the frame saves a region', () 
     expect(previews()).not.toEqual(before)
   })
 
-  // Pressed as the save starts, before the button is gone: its press does nothing then.
   it('draws nothing anew for a press of refresh that comes as the frame starts its save', async () => {
     await openTab()
     hold('PUT', ROI, () => ({ status: 200, data: {} }))
@@ -228,7 +221,6 @@ describe('the tab of the region of interest while the frame saves a region', () 
     expect(previews()).toEqual(before)
   })
 
-  // The guard: with the frame idle the button draws the previews anew, as ever.
   it('draws the previews anew for a press of refresh with the frame idle', async () => {
     await openTab()
     const before = previews()

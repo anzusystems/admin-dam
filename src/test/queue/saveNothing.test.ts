@@ -34,7 +34,6 @@ vi.mock('@/domains/coreDam/asset/composables/assetFooterUpload', () => ({
 vi.mock('@/domains/coreDam/asset/composables/assetFooterSelected', () => ({
   useAssetFooterSelectedView: () => ({ footerViewSelected: 'full', showMinimalSelected: false }),
 }))
-// The parts of the overlays that have no say in the save.
 vi.mock('@/domains/coreDam/asset/components/AssetUpload.vue', () => ({ default: { render: () => null } }))
 vi.mock('@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue', () => ({
   default: { render: () => null },
@@ -61,7 +60,6 @@ afterEach(() => {
   document.body.innerHTML = ''
 })
 
-/** Mounts the overlay over the given queue and answers whether "save and close" and "save" can be pressed. */
 const saveButtons = async (overlay: Component, items: unknown[]) => {
   queue.items = items
   const root = document.createElement('div')
@@ -82,13 +80,12 @@ const saveButtons = async (overlay: Component, items: unknown[]) => {
   return [!saveAndClose?.disabled, !save?.disabled]
 }
 
-// What the bulk save sends is an item with an asset whose metadata can be edited.
 const failed = { assetId: 'asset-1', canEditMetadata: false }
 const withoutAsset = { assetId: null, canEditMetadata: true }
 const editable = { assetId: 'asset-2', canEditMetadata: true }
 
 describe.each(overlays)('%s', (_name, overlay) => {
-  // The save would send nothing, and the request-less answer was reported as an error.
+  // Saving would send nothing, and the request-less answer used to be reported as an error.
   it('cannot be saved while no item of the queue would be sent', async () => {
     expect(await saveButtons(overlay, [failed, withoutAsset])).toEqual([false, false])
   })

@@ -63,7 +63,7 @@ const serviceRequirements = computed(
 )
 
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
-// Only the tabs: a redistribution opens on its own service.
+// Filters only the tabs. A redistribution opens on its own service.
 const offeredServiceRequirements = computed(() =>
   Object.fromEntries(Object.entries(serviceRequirements.value).filter(([name]) => isDistributionServiceAllowed(name)))
 )

@@ -6,12 +6,6 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The panel beside the list of assets shows the asset picked in the list, with the form of its metadata and a "Save"
- * of its own. While no detail is open, what was typed into it and not saved is replaced by the next read of an
- * asset: a click on another tile, an arrow key, the detail of another asset opened from the list. The real page of
- * the list with its real panel and detail, the application around it as it starts; the server is a fake, and so is
- * the address the page asks about a new version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -33,14 +27,12 @@ const LEFT = 'ArrowLeft'
 
 const LIST = '/assets'
 
-/** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
   keywords: [],
   authors: [],
 })
 
-/** What the server has, in the order of the list: three videos, unless a case puts another asset in the place of one. */
 let assets: ReturnType<typeof onServer>[] = []
 const inThePlaceOfItsVideo = (asset: ReturnType<typeof onServer>) => {
   assets = assets.map((known) => (known.id === asset.id ? asset : known))
@@ -49,32 +41,29 @@ const inThePlaceOfItsVideo = (asset: ReturnType<typeof onServer>) => {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** Past the few seconds in which an asset read a moment ago is not read again. */
+/**
+ * Moves past the few seconds in which an asset read a moment ago is not read again.
+ */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
-/** An arrow key let go over the element, as the window hears it: over the page itself unless told otherwise. */
 const arrow = async (key: typeof RIGHT | typeof LEFT, over: Element = document.body) => {
   over.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }))
   await settled()
 }
 
-/** How many times the server was asked for each of the three assets. */
 const reads = () => ['asset-1', 'asset-2', 'asset-3'].map((assetId) => server.assetReads(assetId))
 
-/** The assets the server was asked for one at a time, as the panel and the detail read theirs. */
 const readAlone = () =>
   server.sent('GET', /^\/adm\/v1\/asset\/asset-\d$/).map((request) => request.url.split('/').pop())
 
 const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
 
-/** The page of the list with its three assets, none of them picked: as tiles, or as the rows of a table. */
 const openList = async (view: 'tiles' | 'table' = 'tiles') => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_asset_delete', 'dam_image_update'],
     customForm: { video: [customField('title')], image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -94,8 +83,10 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     useGridView().setGridView(GridView.Table)
   }
 
-  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
-   * other page the bar of the list links to. Under a host that can take the page down whatever the router says. */
+  /*
+   * The page is drawn by the router at its own address, because it asks the router about the way out of it.
+   * The other pages linked from the list bar are added too.
+   */
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
   ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
@@ -106,7 +97,6 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
   }))
   const TILE = view === 'table' ? '.a-table__row' : '.dam-image-grid__item'
   const ACTIVE = view === 'table' ? 'a-table__row--active' : 'dam-image-grid__item--active'
-  /** The tiles as they are drawn now: a list read anew draws new ones. */
   const drawn = () => Array.from(page.querySelectorAll<HTMLElement>(TILE))
   const tiles = await eventually(() => {
     const found = drawn()
@@ -115,7 +105,6 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     return found
   })
   const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
-  /** The questions about changes that were not saved that are open: one at most, whoever draws it. */
   const questions = () =>
     Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
       dialog.textContent?.includes(UNSAVED)
@@ -127,24 +116,18 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     tiles,
     panel,
     questions,
-    /** Which of the tiles is the active one. */
     active: () => drawn().map((tile) => tile.classList.contains(ACTIVE)),
-    /** The assets of the tiles, in the order they are drawn in. */
     order: () => drawn().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim()),
-    /** Which of the three are picked for the mass edit. */
     selected: () => tiles.map((tile) => tile.classList.contains('dam-image-grid__item--selected')),
-    /** The page of the list is taken down under whatever is open, with no way out of it asked about. */
     leavePage: async () => {
       onThePage.value = false
       await nextTick()
     },
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles[index].click()
       await settled()
     },
     pencil: (index: number) => tiles[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1],
-    /** The title in the form of the panel. */
     title: () => panel().querySelector<HTMLTextAreaElement>('textarea')!,
     typeTitle: async (value: string) => {
       const title = panel().querySelector<HTMLTextAreaElement>('textarea')!
@@ -153,12 +136,10 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
       await nextTick()
     },
     save: () => buttonsNamed(panel(), 'Save')[0],
-    /** The button of the open question. */
     answer: async (name: typeof STAY | typeof LEAVE) => {
       buttonsNamed(questions()[0], name)[0].click()
       await settled()
     },
-    /** What the bar of the open detail says, the place of the asset in the list and its title: null with none open. */
     detail: () => {
       const dialog = document.body.querySelector('.dam-image-detail-dialog.v-overlay--active')
       if (!dialog) return null
@@ -167,7 +148,6 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
         .map((part) => part.textContent?.trim())
         .join(' ')
     },
-    /** The title in the form of the open detail. */
     detailTitle: () => document.body.querySelector<HTMLTextAreaElement>('.dam-image-detail textarea')!,
     address: () => window.location.pathname,
   }
@@ -175,7 +155,6 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
 
 type List = Awaited<ReturnType<typeof openList>>
 
-/** The second of the three assets picked, and its title typed into the panel: the element typed into. */
 const typedIntoTheSecond = async (list: List) => {
   await list.pick(1)
   await list.typeTitle(TYPED)
@@ -205,15 +184,12 @@ afterEach(() => {
 })
 
 describe('metadata typed into the panel beside the list and not saved, while no detail is open', () => {
-  /** Where the page is: the active tile, the open detail, the address, and how many times each asset was read. */
   type Place = { active: boolean[]; detail: string | null; address: string; reads: number[] }
-  /** A way to another asset, and where it ends once it is let go. */
   type Way = [string, (list: List) => Promise<void>, Place]
   const second: Place = { active: [false, true, false], detail: null, address: LIST, reads: [0, 1, 0] }
   const third: Place = { active: [false, false, true], detail: null, address: LIST, reads: [0, 1, 1] }
   const ways: Way[] = [
     ['a click on another tile', (list) => list.pick(2), third],
-    // No detail is open, so the address stays the one of the list: only the detail of an asset has its own.
     ['the right arrow key', () => arrow(RIGHT), third],
     [
       'the left arrow key',
@@ -245,17 +221,14 @@ describe('metadata typed into the panel beside the list and not saved, while no 
 
     expect(list.questions()).toHaveLength(1)
     expect(list.questions()[0].textContent).toContain('You have unsaved changes. Are you sure you want to leave?')
-    // Nothing has moved and nothing was asked of the server: the panel is not even behind its loader.
     expect([place(), server.requests.length - asked, typedInto.isConnected]).toEqual([second, 0, true])
 
     await list.answer(STAY)
 
     expect([list.questions(), place(), server.requests.length - asked]).toEqual([[], second, 0])
-    // The very field that was typed into, and its "Save" still to be pressed.
     expect([list.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
     expect(standsOut(list.save())).toBe(true)
 
-    // They are still not saved: the next try asks again.
     await go(list)
     expect([list.questions().length, server.requests.length - asked]).toEqual([1, 0])
 
@@ -263,7 +236,6 @@ describe('metadata typed into the panel beside the list and not saved, while no 
 
     expect([list.questions(), place()]).toEqual([[], end])
     expect([list.title().value, standsOut(list.save())]).toEqual([FROM_SERVER, false])
-    // Neither answer saves: what was typed is kept in the form, or given up.
     expect(server.sent('PATCH', BULK)).toHaveLength(0)
   })
 
@@ -274,7 +246,6 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     await list.pick(2)
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
 
-    // The keys walk the list under its own address; the detail of an asset then has the address of the asset.
     await arrow(LEFT)
     expect([list.questions(), list.active(), reads(), list.address()]).toEqual([
       [],
@@ -321,7 +292,8 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     expect([list.questions().length, list.active(), reads()]).toEqual([1, [false, true, false], [0, 1, 0]])
   })
 
-  // "Leave anyway" was said, and the panel is behind its loader: the form is not there to be asked about.
+  // After "Leave anyway" the panel is behind its loader.
+  // The form is not there to be asked about.
   it('are not asked about again while the asset they were left for is being read', async () => {
     const list = await openList()
     let answer: () => void = () => undefined
@@ -339,7 +311,8 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     expect([list.questions(), list.active(), standsOut(list.save())]).toEqual([[], [true, false, false], false])
   })
 
-  // The detail closes over the asset it deleted, and the panel still shows it: nothing of it is left to save.
+  // The detail closes over the asset it deleted while the panel still shows it.
+  // Nothing is left to save.
   it('are not asked about once their asset was deleted in the detail', async () => {
     server.on('DELETE', /^\/adm\/v1\/asset\/asset-2$/, () => ({ status: 204, data: '' }))
     const list = await openList()
@@ -367,7 +340,6 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
   })
 
-  // The switches of the form go out with the same "Save" as its fields.
   it('are asked about when it was a switch of the form that was changed', async () => {
     const list = await openList()
     await list.pick(1)
@@ -383,7 +355,8 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     expect([singleUse.isConnected, singleUse.checked, standsOut(list.save())]).toEqual([true, true, true])
   })
 
-  // The panel can be put away with what was typed in it; the next read replaces that all the same.
+  // The panel can be put away with typed text in it.
+  // The next read replaces that text anyway.
   it('are asked about while the panel is put away, and "Stay" leaves it put away', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -399,15 +372,16 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     await list.answer(STAY)
     expect([inView(), list.title().value, reads()]).toEqual([false, TYPED, [0, 1, 0]])
 
-    // A picked tile brings the panel back, as it always did.
     await list.pick(2)
     await list.answer(LEAVE)
     expect([inView(), list.title().value, reads()]).toEqual([true, FROM_SERVER, [0, 1, 1]])
   })
 
-  /* A double click is two clicks and then itself; the first click asks. In a browser the rest of it lands on the
-   * question, here on the tile: either way the question is one, and "Leave anyway" opens the detail of the tile, as the
-   * double click would have. */
+  /*
+   * A double click is two clicks and then the double click itself. The first click asks.
+   * In a browser the rest lands on the question, here on the tile. Either way there is one question.
+   * "Leave anyway" opens the detail of the tile, as the double click would.
+   */
   it('are asked about once by a double click on another tile, which then opens its detail', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -432,7 +406,8 @@ describe('metadata typed into the panel beside the list and not saved, while no 
     ])
   })
 
-  // The picks for the mass edit read their assets for its queue, among others: the panel keeps the one it has.
+  // Picks for the mass edit read their assets for its queue.
+  // The panel keeps the asset it already has.
   it.each<[string, MouseEventInit, boolean[]]>([
     ['Ctrl', { ctrlKey: true }, [false, false, true]],
     ['Shift', { shiftKey: true }, [false, true, true]],
@@ -453,9 +428,11 @@ describe('metadata typed into the panel beside the list and not saved, while no 
   })
 })
 
-/* An asset read a moment ago is not read again: a click on its tile and its pencil then leave the panel as it is.
- * Later they read the asset anew, and what was typed is replaced. An arrow key at an end of the list leads to no
- * asset at all. */
+/*
+ * An asset read a moment ago is not read again, so a click on its tile or its pencil leaves the panel as it is.
+ * Later they read the asset anew and replace the typed text.
+ * An arrow key at an end of the list leads to no asset.
+ */
 describe('metadata typed into the panel and not saved, when the way leads to the asset the panel holds', () => {
   it('are not asked about by a click on its tile a moment after it was read: nothing is read', async () => {
     const list = await openList()
@@ -467,7 +444,7 @@ describe('metadata typed into the panel and not saved, when the way leads to the
     expect([list.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
   })
 
-  // The detail then shows what was typed, and asks about it itself when it is switched to the neighbour.
+  // The detail shows the typed text and asks about it itself when switched to the neighbour.
   it('are not asked about by its pencil a moment after it was read: the detail opens over them', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -480,7 +457,6 @@ describe('metadata typed into the panel and not saved, when the way leads to the
 
     await arrow(RIGHT)
 
-    // One question, the one of the detail: the detail and it are the two dialogs open.
     expect([list.questions().length, list.detail(), reads()]).toEqual([1, '2 / 3 asset-2', [0, 1, 0]])
     expect(document.body.querySelectorAll('.v-dialog.v-overlay--active')).toHaveLength(2)
     await list.answer(LEAVE)
@@ -516,8 +492,10 @@ describe('metadata typed into the panel and not saved, when the way leads to the
     expect(list.title().value).toBe(FROM_SERVER)
   })
 
-  /* At an end of the list the arrow key that leads out of it leads nowhere: the active asset is not read again,
-   * however long after its read, so there is nothing to ask about. */
+  /*
+   * At an end of the list the arrow key leads nowhere.
+   * The active asset is not read again, however long after its read, so there is nothing to ask about.
+   */
   it.each<[string, typeof RIGHT | typeof LEFT, number, boolean[], number[]]>([
     ['the right arrow key on the last tile', RIGHT, 2, [false, false, true], [0, 0, 1]],
     ['the left arrow key on the first tile', LEFT, 0, [true, false, false], [1, 0, 0]],
@@ -526,7 +504,6 @@ describe('metadata typed into the panel and not saved, when the way leads to the
     await list.pick(index)
     const untouched = list.title()
 
-    // With nothing typed: the panel does not go behind its loader to show the same asset again.
     await arrow(key)
     await later()
     await arrow(key)
@@ -545,7 +522,7 @@ describe('metadata typed into the panel and not saved, when the way leads to the
 })
 
 describe('the question about metadata typed into the panel and not saved', () => {
-  // Nothing in the page is reached under the question but through the keys, which the list hears on the window.
+  // Under the question the page is reachable only through the keys, which the list hears on the window.
   it('is one: the arrow keys and a click under it do nothing, and its answer is for the way that asked', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -568,8 +545,11 @@ describe('the question about metadata typed into the panel and not saved', () =>
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
   })
 
-  /* The way to the asset the panel holds is not asked about a moment after it was read, and would go on: under an
-   * open question it stays as every other. Its first step puts the panel behind its loader, which answers "stay". */
+  /*
+   * A way to the asset the panel holds is not asked about a moment after its read.
+   * Under an open question it stays open like every other way.
+   * Its first step puts the panel behind its loader, which answers "stay".
+   */
   it('stays open over a way that would not be asked about by itself', async () => {
     const list = await openList()
     await list.pick(2)
@@ -590,8 +570,10 @@ describe('the question about metadata typed into the panel and not saved', () =>
     expect([list.questions(), list.active(), reads()]).toEqual([[], [true, false, false], [1, 0, 1]])
   })
 
-  /* Closing the detail asks nothing: what was typed into it stays, in the panel. The detail takes a moment to go,
-   * and its own question is drawn in it. */
+  /*
+   * Closing the detail asks nothing. The typed text stays in the panel.
+   * The detail takes a moment to go, and its own question is drawn in it.
+   */
   it('is one also while a detail that was typed into is closing', async () => {
     const list = await openList()
     await list.pick(1)
@@ -614,10 +596,12 @@ describe('the question about metadata typed into the panel and not saved', () =>
     expect([list.questions(), list.detail(), reads()]).toEqual([[], null, [0, 1, 1]])
   })
 
-  /* The panel reads its asset anew when the address of the file changes. The answer that tells it so can come while
-   * the question is open: the request was sent before the question, here the one that makes the file of an image
-   * private. Of that read only the file is taken while what was typed is not saved: the form the question is about
-   * stays as it is, and so does the question. */
+  /*
+   * The panel reads its asset anew when the file address changes.
+   * That answer can arrive while the question is open, for a
+   * request sent before it (here, making an image file private).
+   * Only the file is taken from that read. The form and the question stay.
+   */
   it('stays while the panel takes the file of its asset read anew under it, and its answer still counts', async () => {
     const published = { id: 'route-1', publicUrl: 'https://dam.test/public/file-1' }
     const image = (mainRoute: typeof published | null) =>
@@ -630,11 +614,10 @@ describe('the question about metadata typed into the panel and not saved', () =>
     server.on(
       'PATCH',
       MAKE_PRIVATE,
-      // As core-dam answers it for an image: 204, with no body.
+      // core-dam answers this for an image with 204 and no body.
       () => new Promise<FakeDamAnswer>((resolve) => (madePrivate = () => resolve({ status: 204 })))
     )
     const list = await openList()
-    /** What the card of the file in the panel says of it. */
     const route = () =>
       Array.from(list.panel().querySelectorAll('.v-chip'))
         .map((chip) => chip.textContent?.trim())
@@ -652,7 +635,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
     })
     makePrivate.click()
     await eventually(() => expect(server.sent('PATCH', MAKE_PRIVATE)).toHaveLength(1))
-    // The menu stays open over the request: it is closed as Esc closes it.
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await eventually(() => expect(menu()).toBeNull())
     await list.typeTitle(TYPED)
@@ -665,7 +647,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
     madePrivate()
     await settled()
 
-    // The read has begun, with no loader over the form: the question is still there, about the same field.
     expect([list.questions().length, reads(), route()]).toEqual([1, [0, 2, 0], ['File is public']])
     expect([list.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
 
@@ -679,7 +660,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
       ['File is private'],
     ])
     expect([list.title() === typedInto, typedInto.value, standsOut(list.save())]).toEqual([true, TYPED, true])
-    // And it is answered as it was asked: the click that asked goes on.
     await list.answer(LEAVE)
     expect([list.questions(), list.active(), list.title().value, reads()]).toEqual([
       [],
@@ -689,7 +669,8 @@ describe('the question about metadata typed into the panel and not saved', () =>
     ])
   })
 
-  // An asset can be listed twice: the tile that was clicked is the one that is picked, not the first of the two.
+  // An asset can be listed twice.
+  // The clicked tile is the one picked, not the first of the two.
   it('lets a click go on to the very tile that was clicked when its asset is listed twice', async () => {
     assets = ['asset-3', 'asset-2', 'asset-3'].map((id) => onServer(id))
     const list = await openList()
@@ -706,17 +687,17 @@ describe('the question about metadata typed into the panel and not saved', () =>
     ])
   })
 
-  /* The list can be read anew while the question is open, as the save of the upload queue reads it on its answer:
-   * the asset that was clicked is then at another place in it, or in it no more. */
+  /*
+   * The list can be read anew while the question is open, as the save of the upload queue does on its answer.
+   * The clicked asset is then at another place in it, or gone.
+   */
   describe('over a list read anew meanwhile', () => {
     const readAnew = async (list: List, now: string[]) => {
       assets = now.map((id) => onServer(id))
       list.page.querySelector('.mdi-refresh')!.closest('button')!.click()
       await settled()
-      // The question is still there, over the new list, and nothing was read for it.
       expect([list.order(), list.questions().length, reads()]).toEqual([now, 1, [0, 1, 0]])
     }
-    /** A way to the third asset, and what the bar of the detail says once it has opened it at its new place. */
     const toTheThird: Array<[string, (list: List) => Promise<void>, string | null]> = [
       ['a click on a tile', (list) => list.pick(2), null],
       [
@@ -753,7 +734,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
 
       await list.answer(LEAVE)
 
-      // The active tile is still the one of the asset that was typed into, where that is in the new list.
       expect([list.questions(), list.active(), list.detail(), list.address(), reads()]).toEqual([
         [],
         [false, true],
@@ -761,12 +741,12 @@ describe('the question about metadata typed into the panel and not saved', () =>
         LIST,
         [0, 1, 0],
       ])
-      // And what was typed is where it was, still to be saved.
       expect([list.title() === typedInto, typedInto.value, standsOut(list.save())]).toEqual([true, TYPED, true])
     })
   })
 
-  // Nothing is left to draw the question, and the way that asked would wait for its answer for ever.
+  // Nothing is left to draw the question.
+  // The way that asked would wait for its answer forever.
   it('is answered "stay" when the page of the list goes under it: the next ask is a question again', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -785,9 +765,12 @@ describe('the question about metadata typed into the panel and not saved', () =>
     expect([store.leaveUnsavedQuestion, told.mock.calls]).toEqual([true, []])
   })
 
-  /* Emptied as a read that failed empties it, written into as the start of the application writes an asset, put
-   * behind its loader as the read of its asset after a bulk save puts it. Behind that loader what was typed is not
-   * given up, as it is by "Leave anyway": the next way to another asset asks again. */
+  /*
+   * The store is emptied as a failed read empties it, written as the app start
+   * writes an asset, and put behind its loader as the read after a bulk save does.
+   * Behind that loader the typed text is not given up, unlike after
+   * "Leave anyway". The next way to another asset asks again.
+   */
   type StoreChange = (store: { reset: () => void; setAsset: (asset: never) => void; showLoader: () => void }) => void
   it.each<[string, StoreChange, boolean]>([
     ['is emptied', (store) => store.reset(), false],
@@ -804,7 +787,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
     await settled()
 
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, true, false], [0, 1, 0]])
-    // Nothing is left to ask about, or what was typed is still there.
     await list.pick(2)
     expect([list.questions().length, list.active(), reads()]).toEqual(
       asksAgain ? [1, [false, true, false], [0, 1, 0]] : [0, [false, false, true], [0, 1, 1]]
@@ -813,7 +795,6 @@ describe('the question about metadata typed into the panel and not saved', () =>
 })
 
 describe('the rows of the list drawn as a table, with metadata typed into the panel and not saved', () => {
-  // A row draws more of its asset than a tile does.
   beforeEach(() => {
     const assetFileProperties = { distributesInServices: [], slotNames: [], fromRss: false, width: 0, height: 0 }
     assets.forEach((asset) => inThePlaceOfItsVideo(onServer(asset.id, { assetFileProperties, podcasts: [] })))
@@ -834,8 +815,10 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.questions(), list.active(), reads()]).toEqual([[], [false, false, true], [0, 1, 1]])
   })
 
-  /* The edit button of a row is a link to the page of the detail, and its plain click is the router's alone: the
-   * list opens no detail of its own for it and reads nothing. Seen while the page it leads to is still on its way. */
+  /*
+   * The edit button of a row is a link to the detail page. Its plain click belongs to the router alone.
+   * The list opens no detail of its own and reads nothing.
+   */
   it('do nothing of their own for a plain click on the edit button of a row: its link is followed', async () => {
     const list = await openList('table')
     let arrive: () => void = () => undefined
@@ -856,7 +839,6 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.router.currentRoute.value.path, reads()]).toEqual(['/assets/asset-3', [0, 0, 0]])
   })
 
-  // That click is a way out of the page: asked about as every other, and it reads nothing whatever the answer.
   it('ask for a plain click on the edit button of a row, a link that leaves the list', async () => {
     const list = await openList('table')
     const typedInto = await typedIntoTheSecond(list)
@@ -887,8 +869,10 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 0]])
   })
 
-  /* A double click on the edit button is two of its clicks, and nothing of the double click of the row it is in,
-   * which opens the detail of the list. */
+  /*
+   * A double click on the edit button is two clicks of the button.
+   * It is not a double click of the row, which would open the detail of the list.
+   */
   const doubleClick = (on: HTMLElement, held: MouseEventInit = {}) => {
     on.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 1, ...held }))
     on.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 2, ...held }))
@@ -928,11 +912,11 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
       [0, 1, 0],
     ])
     await list.answer(LEAVE)
-    // The page of the detail, not the detail of the list: nothing is read by the list.
     expect([list.questions(), list.router.currentRoute.value.path, reads()]).toEqual([[], '/assets/asset-3', [0, 1, 0]])
   })
 
-  // With a key held the browser opens the link elsewhere, each of the two clicks: the list does nothing of its own.
+  // With a key held, the browser opens the link elsewhere on each of the two clicks.
+  // The list does nothing of its own.
   it('do nothing of their own for a double click on the edit button of a row with Ctrl held', async () => {
     const list = await openList('table')
 
@@ -942,7 +926,6 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     expect([list.detail(), list.router.currentRoute.value.path, reads()]).toEqual([null, LIST, [0, 0, 0]])
   })
 
-  // The guard: a double click on the row itself is the one that opens the detail of the list.
   it('open the detail of the list for a double click on a row, as they always did', async () => {
     const list = await openList('table')
 
@@ -956,8 +939,10 @@ describe('the rows of the list drawn as a table, with metadata typed into the pa
     ])
   })
 
-  /* With a key held, or another button, the router leaves the link to the browser, which opens it elsewhere: the
-   * list stays as it is, with what was typed, and opens no detail of its own beside the tab - nor asks about it. */
+  /*
+   * With a key held or another button, the router leaves the link to the browser, which opens it elsewhere.
+   * The list stays as it is with the typed text. It opens no detail beside the tab and asks nothing.
+   */
   it.each<[string, MouseEventInit]>([
     ['Ctrl held', { ctrlKey: true }],
     ['Cmd held', { metaKey: true }],

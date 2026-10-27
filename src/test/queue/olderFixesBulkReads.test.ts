@@ -5,11 +5,11 @@ import { assetDetail, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* A mass-edit row is read in a batch as its asset is picked. A batch sent while a save of the asset was on its way is
- * answered from before that save or from after it, and which of the two is not known: the row took it, or kept what it
- * had, by the order of the answers alone - picked again during a bulk save of it, it held what the asset had before the
- * save; read during a save of the panel, it held what the panel saved and nothing another editor saved since. The real
- * store and the real requests over a fake server, which holds what the saves write. */
+/*
+ * A batch sent while a save of the asset is in flight may be
+ * answered from before or after that save, and the order is unknown.
+ * The row must not take or keep data by answer order alone.
+ */
 
 let server: FakeDam
 
@@ -19,7 +19,6 @@ const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const BATCH_READ = /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/
 const EDIT = 'edit'
 
-/** The asset the server has, with its keywords. */
 const onServer = (keywords: string[]) =>
   assetDetail('asset-1', {
     keywords,
@@ -27,7 +26,6 @@ const onServer = (keywords: string[]) =>
     metadata: { customData: { title: 'from the server' }, authorSuggestions: {}, keywordSuggestions: {} },
   })
 
-/** The asset as the list of assets hands it to the mass edit. */
 const listed = {
   id: 'asset-1',
   attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -41,7 +39,6 @@ const start = async () => {
   const api = await import('@/domains/coreDam/asset/api/assetApi')
   const { queueRowBaseline } = await import('@/domains/coreDam/shared/services/upload/queueRowBaseline')
   const row = () => ui.store.getQueueItems(EDIT)[0]
-  /** The asset picked for the mass edit, and its batch answered: its row has its form. */
   const pick = async () => {
     await ui.store.addByAssets(EDIT, [listed] as never)
     await eventually(() => expect([row()?.status, row()?.canEditMetadata]).toEqual(['uploaded', true]))
@@ -52,7 +49,6 @@ const start = async () => {
     row,
     pick,
     save: () => api.bulkUpdateAssetsMetadata(ui.store.getQueueItems(EDIT)),
-    /** The keywords of the row, and those the application takes for the server's. */
     held: () => [row().keywords, queueRowBaseline(row() as UploadQueueItem)?.keywords],
   }
 }
@@ -81,7 +77,6 @@ describe('a mass-edit row whose asset is saved while its batch is on its way', (
       (request) =>
         new Promise<FakeDamAnswer>((resolve) => {
           answerSave = () => {
-            // What the server has once the save is done.
             server.asset(onServer(['typed']))
             resolve({ status: 200, data: JSON.parse(request.data as string) })
           }
@@ -117,7 +112,6 @@ describe('a mass-edit row whose asset is saved while its batch is on its way', (
         (resolve) => (answerBatch = () => resolve({ status: 200, data: { data: [onServer(['of the panel'])] } }))
       )
     })
-    // What the panel does around its request: the save is sent, then answered with what it sent.
     const saveAnswered = detail.saveSent(detail.asset!)
     await ui.store.addByAssets(EDIT, [listed] as never)
     await eventually(() => expect(batches).toBe(1))
@@ -130,7 +124,6 @@ describe('a mass-edit row whose asset is saved while its batch is on its way', (
     expect(batches).toBe(2)
   })
 
-  // The guard: a batch sent with no save of the asset on its way is answered after anything saved before it.
   it('read with no save on its way: is read once', async () => {
     const ui = await start()
 

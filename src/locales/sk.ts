@@ -70,8 +70,8 @@ export default {
   breadcrumb,
   system,
   error: {
-    // Spread first so namespaces this admin never overrides still arrive — the
-    // package's own alerts.ts calls error.apiTimedOut.message, for one.
+    // Spread first so namespaces this admin does not override still exist.
+    // For example, the package's alerts.ts uses error.apiTimedOut.message.
     ...messagesSk.error,
     apiValidation: {
       ...messagesSk.error.apiValidation,

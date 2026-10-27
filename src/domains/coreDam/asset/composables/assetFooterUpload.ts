@@ -30,9 +30,10 @@ export function useAssetFooterUploadView() {
     }
   }
 
-  /* The view over the whole page, and the keys of the list under it, are the upload's to give back only while it holds
-   * them: the answer of its "save and finish" can come once it was put away, and a selection may be drawn over the
-   * page by then. */
+  /*
+   * The upload gives back the full-page view and list keys only while it holds them. Its
+   * "save and finish" answer can come after it closed, when a selection may cover the page.
+   */
   const hideUpload = () => {
     if (footerViewUpload.value === FooterViewUpload.Full) {
       assetListStore.keyboardNavigationEnable()

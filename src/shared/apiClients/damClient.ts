@@ -20,8 +20,8 @@ const damClient = defineApiClient(() => ({
   request: [
     {
       onFulfilled: userRefreshRequestInterceptor,
-      // Off the two prefixes that must not recurse into it: `/auth`, which performs the refresh
-      // itself, and `/pub`, which is unauthenticated configuration.
+      // Skipped for prefixes that must not recurse: `/auth` performs
+      // the refresh itself, and `/pub` is unauthenticated config.
       options: { runWhen: skipUrlPrefixes(AUTH_PATH_PREFIX, PUB_END_POINT_PREFIX) },
     },
   ],

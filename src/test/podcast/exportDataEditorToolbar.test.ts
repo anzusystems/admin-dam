@@ -6,16 +6,15 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The toolbar of the editor of podcast export data: which buttons it offers as the cursor moves through the text.
- * The real editor of the dialog, which builds its own tiptap editor, with the application around it as it starts.
- * The cursor is put where a click would put it, by the command of the editor: the page here has no layout to click
- * into. What the buttons say when pointed at is in `a11y/editorToolbarTooltips.test.ts`. */
+/*
+ * The cursor is placed with the editor command, as a click would, because the page here has no layout to click into.
+ * Tooltips of the buttons are tested in `a11y/editorToolbarTooltips.test.ts`.
+ */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-// The buttons by their icons, in the order of the toolbar.
 const ALWAYS = ['mdi-format-bold', 'mdi-format-italic', 'mdi-format-underline', 'mdi-link']
 const REMOVE_LINK = 'mdi-link-off'
 
@@ -35,7 +34,6 @@ const LINK_IN_THE_MIDDLE = paragraphOf(plain('plain '), linked('linked'), plain(
 const IN_PLAIN = 3
 const IN_LINKED = 10
 const IN_TAIL = 16
-// "linked tail"
 const LINK_AT_THE_START = paragraphOf(linked('linked'), plain(' tail'))
 const AFTER_THE_LINK = 10
 
@@ -61,7 +59,9 @@ const openEditor = async (content: JSONContent) => {
   return {
     editor,
     buttons,
-    /** The cursor before the letter at that place. The editor tells of its new state two frames later. */
+    /**
+     * The editor reports its new state two frames later.
+     */
     cursorAt: async (position: number) => {
       editor.commands.setTextSelection(position)
       await vi.advanceTimersByTimeAsync(100)
@@ -70,7 +70,6 @@ const openEditor = async (content: JSONContent) => {
       element.querySelectorAll<HTMLElement>('.anzutap-toolbar__item--button')[buttons().indexOf(icon)].click()
       await vi.advanceTimersByTimeAsync(100)
     },
-    /** The texts of the paragraph, each with whether it is a link. */
     texts: () => {
       const paragraph: JSONContent | undefined = editor.getJSON().content?.[0]
 
@@ -115,7 +114,6 @@ describe('the toolbar of the editor of podcast export data', () => {
     expect(buttons()).toEqual(ALWAYS)
   })
 
-  // The editor opens with its cursor at the start: in the link, when the text starts with one.
   it('offers the removal at once in a text that starts with a link, and no longer once the cursor left the link', async () => {
     const { buttons, cursorAt } = await openEditor(LINK_AT_THE_START)
     expect(buttons()).toEqual([...ALWAYS, REMOVE_LINK])

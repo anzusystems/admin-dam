@@ -4,9 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The notifications that are not about an upload: today they are the only thing that moves a distribution along,
- * confirms a sign-in to a distribution service or re-reads the user. The real listener over the real stores, a
- * fake server and a fake connection. The upload ones are in `queue/notificationSettlesQueue.test.ts`. */
+/*
+ * Notifications not about uploads. They are currently the only thing that advances a
+ * distribution, confirms a sign-in to a distribution service or re-reads the user.
+ * Uses the real listener over the real stores, a fake server and a fake connection.
+ * Upload notifications are tested in `queue/notificationSettlesQueue.test.ts`.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -94,7 +97,7 @@ describe('a notification about a distribution', () => {
     notify(name, { id: 'dist-1' })
     await vi.waitFor(() => expect(store.list[0].status).toBe(status))
 
-    // The whole record, not only its status: the finished one carries what the service answered with.
+    // The whole record is stored, not only its status: a finished one carries what the service answered with.
     expect(store.list[0].extId).toBe('remote-7')
     expect(store.list.map((item) => item.id)).toEqual(['dist-1', 'dist-2'])
     expect(server.sent('GET', /\/distribution\/dist-1$/)).toHaveLength(1)

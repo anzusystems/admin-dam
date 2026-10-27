@@ -11,7 +11,9 @@ export interface ToolbarItemButton {
   show: () => boolean
   active: () => boolean | undefined
   titleT: string
-  /** A mark it switches on and off: the button says whether it is on. */
+  /**
+   * A toggled mark: the button shows whether it is active.
+   */
   toggle?: boolean
 }
 

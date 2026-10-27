@@ -22,9 +22,6 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The refresh button of a queue row: the one way out the user has for a row nothing else settles. The list is
- * mounted over the real store, the row itself is a stand-in with only the button, and the server is a fake. */
-
 let server: FakeDam
 const showWarningT = vi.fn()
 
@@ -46,7 +43,6 @@ vi.mock('@/domains/coreDam/author/composables/cachedAuthors', () => ({
 vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
   useCachedKeywords: () => ({ addToCachedKeywords: vi.fn(), fetchCachedKeywords: vi.fn() }),
 }))
-// What the row is to the list here: the button that asks for a refresh, disabled while the list says so.
 vi.mock('@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue', async () => {
   const { defineComponent, h } = await import('vue')
 
@@ -84,7 +80,6 @@ const ASSET_GONE = 'common.damImage.queueItem.assetGone'
 
 let app: App | undefined
 
-/** Mounts the list over a queue holding the rows and answers the rows and the refresh button of each. */
 const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, UploadQueueItem[]> = {}) => {
   const pinia = createPinia()
   setActivePinia(pinia)
@@ -108,7 +103,6 @@ const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, U
   return { store, rows: seeded, others, button }
 }
 
-/** Presses the button and waits until the list lets it be pressed again. */
 const refresh = async (button: HTMLButtonElement) => {
   button.click()
   await nextTick()
@@ -167,7 +161,6 @@ describe('the refresh of a row whose asset has its file', () => {
     expect(rows[0].canEditMetadata).toBe(true)
     expect(rows[0].keywords).toEqual(['typed'])
     expect(rows[0].customData).toEqual({ title: 'typed' })
-    // The switch is a field of the form too.
     expect(rows[0].mainFileSingleUse).toBe(true)
   })
 
@@ -182,7 +175,6 @@ describe('the refresh of a row whose asset has its file', () => {
 
     await refresh(button(rows[0]))
 
-    // The text told the user to press the button, and they did.
     expect(rows[0].status).toBe('uploaded')
     expect(rows[0].error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
     expect(rows[0].canEditMetadata).toBe(true)
@@ -209,14 +201,13 @@ describe('the refresh of a row whose asset has its file', () => {
     await refresh(button(rows[0]))
 
     expect(rows[0].status).toBe('uploaded')
-    // The row of the same asset picked for mass edit is brought up to date, and keeps what was typed.
     expect([others[0][0].assetStatus, others[0][0].keywords]).toEqual(['with_file', ['typed']])
-    // The asset says nothing about which of its slots finished.
+    // The asset does not say which of its slots finished.
     expect(others[1][0].status).toBe('processing')
   })
 
-  // The state of the file decides, not the state of the asset: this asset says it has its file, and the file is a
-  // duplicate.
+  // The state of the file decides, not the state of the asset.
+  // Here the asset says it has its file, and the file is a duplicate.
   it('settles the row as a duplicate when the asset has its file and that file is a duplicate', async () => {
     const { rows, button } = await mountQueue([queueRow({ status: 'processing' })])
     server.asset(
@@ -264,7 +255,6 @@ describe('the refresh of a row whose asset has no file yet', () => {
 
     expect(rows[0].status).toBe('failed')
     expect(rows[0].error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_checksum' })
-    // A failed row has no form, whatever it had before.
     expect(rows[0].canEditMetadata).toBe(false)
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 1])
     expect(showWarningT).not.toHaveBeenCalled()
@@ -291,8 +281,8 @@ describe('the refresh of a row whose asset has no file yet', () => {
 })
 
 describe('the refresh of one of two rows of an asset', () => {
-  // It asks about the file of the row it was pressed on: a row of the same asset that holds another file hears
-  // nothing of it, whatever the asset says about its main file.
+  // The refresh asks about the file of the pressed row.
+  // A row of the same asset with another file is not affected, whatever the asset says about its main file.
   it('settles the row that holds the main file, and leaves alone the row of another file', async () => {
     const { rows, button } = await mountQueue([
       queueRow({ status: 'processing' }),
@@ -308,7 +298,7 @@ describe('the refresh of one of two rows of an asset', () => {
     expect(showWarningT).not.toHaveBeenCalled()
   })
 
-  // The asset speaks of its main file alone, so about another file it has nothing to tell the row.
+  // The asset speaks only of its main file, so it has nothing to tell a row of another file.
   it('changes neither row when pressed on the one whose file is not the main file', async () => {
     const { rows, button } = await mountQueue([
       queueRow({ status: 'processing' }),
@@ -328,8 +318,9 @@ describe('the refresh of one of two rows of an asset', () => {
 })
 
 describe('the refresh pressed while the list moves under it', () => {
-  // A row before them has just left the queue, and the rows drawn still carry the positions they had: the one
-  // pressed is told by itself. By its position it was the row after it, by its asset the first row of that asset.
+  // A row before them has just left the queue, but the drawn rows keep their old positions.
+  // The pressed row must identify itself: by position it would
+  // be the next row, by asset it is the first row of that asset.
   const pressed: Array<[string, number, string]> = [
     ['the first', 1, 'file-1'],
     ['the second', 2, 'file-2'],
@@ -374,15 +365,17 @@ describe('the refresh pressed while the list moves under it', () => {
     expect(button(rows[1]).disabled).toBe(false)
   })
 
-  /* Taken out while its read is on the wire - the trash comes on with its form, which a metadata read queued before
-   * the refresh can bring. The row keeps its state when it leaves, so nothing about it has ended; but it is no longer
-   * there, and a word about a refresh it no longer offers would be about nothing. */
+  /*
+   * The row is taken out while its read is in flight. The trash button appears
+   * with the form, which a metadata read queued before the refresh can bring.
+   * The row keeps its state when it leaves. It is no longer offering
+   * a refresh, so a message about one would be meaningless.
+   */
   it.each(['uploaded', 'failed'] as const)(
     'says nothing of a read that failed for a row taken out of the queue while it was asked about: %s',
     async (status) => {
       const { store, rows, button } = await mountQueue([
         queueRow({ status, assetStatus: 'with_file' }),
-        // Its button is the list's: enabled again once the refresh has ended.
         queueRow({ status: 'processing', assetId: 'asset-2', fileId: 'file-2' }),
       ])
       let failRead: () => void = () => undefined
@@ -412,7 +405,6 @@ describe('the refresh button of the queue', () => {
     button(rows[0]).click()
     await nextTick()
 
-    // One flag for the whole list.
     expect([button(rows[0]).disabled, button(rows[1]).disabled]).toEqual([true, true])
     expect(rows[0].status).toBe('processing')
 
@@ -443,13 +435,13 @@ describe('the refresh button of the queue', () => {
 
     expect(rows[0].status).toBe('uploaded')
     expect(rows[0].canEditMetadata).toBe(true)
-    // Nothing more is said once the read has answered.
     expect(showWarningT).toHaveBeenCalledTimes(1)
   })
 })
 
 describe('the refresh of a row whose file is still being sent', () => {
-  // Offered after twenty seconds of sending. The row moves on meanwhile, and that is no answer to what was asked.
+  // The button is offered after twenty seconds of sending.
+  // The row can move on meanwhile, and that does not answer what was asked.
   it('says that it could not find out when its read fails, though the file went over to processing meanwhile', async () => {
     vi.useFakeTimers()
     stubFileReader()
@@ -477,7 +469,6 @@ describe('the refresh of a row whose file is still being sent', () => {
     button(rows[0]).click()
     await vi.advanceTimersByTimeAsync(0)
     expect(server.assetReads('asset-1')).toBe(1)
-    // The chunk and the finish request are answered while the read waits.
     answerChunk()
     await vi.advanceTimersByTimeAsync(0)
     expect(rows[0].status).toBe('processing')
@@ -490,7 +481,6 @@ describe('the refresh of a row whose file is still being sent', () => {
 })
 
 describe('the refresh of a row whose state cannot be read', () => {
-  // The asset is not there: said as such, not as a read that failed and could be tried again.
   it('says the asset no longer exists when the server answers the read with 404, and leaves the row as it is', async () => {
     const { rows, button } = await mountQueue([queueRow({ status: 'processing' })])
     server.assetBy('asset-1', () => {
@@ -518,7 +508,6 @@ describe('the refresh of a row whose state cannot be read', () => {
     }
   )
 
-  // Picked at an external provider and not imported: there is no asset to ask about.
   it('says so for a row that has no asset, without asking the server', async () => {
     const { rows, button } = await mountQueue([
       queueRow({ type: 'externalProviderAsset', status: 'uploaded', assetId: null, fileId: null }),
@@ -530,9 +519,10 @@ describe('the refresh of a row whose state cannot be read', () => {
     expect(server.requests).toEqual([])
   })
 
-  // The text is the library's, beside the one for a file still on its way: the application has it with its messages.
+  // The text belongs to the library, next to the one for a file still in progress.
+  // The application supplies it with its messages.
   it('has its text in both languages of the application', () => {
-    // Typed by hand: the messages of the whole application are more than the compiler follows through vue-i18n.
+    // Typed by hand: the compiler cannot follow the messages of the whole application through `vue-i18n`.
     const texts = createI18n({ legacy: false, locale: 'en', messages: { en, sk } } as never) as unknown as {
       global: { t: (key: string, named: object, options: { locale: string }) => string }
     }
@@ -547,8 +537,9 @@ describe('the refresh of a row whose state cannot be read', () => {
 })
 
 describe('the refresh of a row that has come to its end by the time it answers', () => {
-  // A row the queue asks about: an asset not found counts against it, whoever asked, and the third time fails it.
-  // The library answers that read as settled, so nothing is said for that alone.
+  // For a row the queue asks about, a not-found asset counts
+  // against it whoever asked, and the third time fails the row.
+  // The library treats that read as settled, so nothing is said for that alone.
   it('does not tell the user to try again when its own read was the one to fail the row', async () => {
     vi.useFakeTimers()
     stubFileReader()
@@ -565,7 +556,6 @@ describe('the refresh of a row that has come to its end by the time it answers',
     await vi.advanceTimersByTimeAsync(0)
     expect([rows[0].status, rows[0].assetId]).toEqual(['processing', 'asset-1'])
     server.assetDeleted('asset-1')
-    // The poll of the queue finds no asset after five seconds, and after ten.
     await vi.advanceTimersByTimeAsync(10_000)
     expect([server.assetReads('asset-1'), rows[0].status]).toEqual([2, 'processing'])
 
@@ -576,7 +566,7 @@ describe('the refresh of a row that has come to its end by the time it answers',
     expect(showWarningT).not.toHaveBeenCalled()
   })
 
-  // The read failed, which by itself is a reason to try again - but not for a row the server has failed meanwhile.
+  // A failed read alone is a reason to try again, but not for a row the server has failed meanwhile.
   it('does not tell the user to try again when a notification failed the row while its read was failing', async () => {
     const { store, rows, button } = await mountQueue([queueRow({ status: 'processing' })])
     let failRead: () => void = () => undefined
@@ -611,7 +601,8 @@ describe('the refresh of a row that has come to its end by the time it answers',
         queueRow({ status: 'processing' }),
         queueRow({ status: 'processing', assetId: 'asset-2', fileId: 'file-2' }),
       ])
-      // The one flag of the list: the button of the other row tells when the refresh is over, whatever became of the first.
+      // The list has one flag. The button of the other row shows
+      // when the refresh is over, whatever became of the first.
       const other = button(rows[1])
       let failRead: () => void = () => undefined
       server.assetBy('asset-1', () => new Promise((_resolve, reject) => (failRead = () => reject(httpError(500)))))

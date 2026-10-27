@@ -33,14 +33,10 @@ import {
 } from '@pages/assets/assetSlotsPage'
 
 /**
- * The slot actions the audio slots spec leaves alone: making another slot's file the main one, downloading
- * a single slot's file, the two distinct answers of the remove dialog, and the sidebar's download dialog —
- * which is a slot picker too.
- *
- * It runs on audio because audio is the only type with more than one slot (image, video and document have
- * a single `default` one — see `assetDefaultSlot.spec.ts`), and it fills a second slot with a *different*
- * file: a file duplicated into another slot carries the main flag into both rows, so a duplicate can never
- * show what "make this the main file" does.
+ * Slot actions the audio slots spec leaves alone: making another slot's file the main one, downloading one
+ * slot's file, the two answers of the remove dialog, and the sidebar download dialog (also a slot picker).
+ * It runs on audio because only audio has several slots. It fills a second slot with a different file: a duplicated
+ * file carries the main flag into both rows, so a duplicate cannot show what "make this the main file" does.
  */
 
 let page: Page
@@ -63,8 +59,8 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
     await page.goto('/assets')
     await listLoaded
     ASSET_ID = await uploadFile(page, uniqueFixtureCopy('audio/sample.mp3'))
-    // Single audio uploads regularly exceed the default 90s on devel, and the upload overlay is not what
-    // this spec works with — the API is the one that knows when the file is really there.
+    // Single audio uploads often exceed the default 90s on devel. The API knows
+    // when the file is really there, so it is used instead of the upload overlay.
     await waitForAssetProcessed(page, ASSET_ID, { timeout: 180000 })
 
     await openSlots(page, ASSET_ID)
@@ -77,14 +73,12 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
 
   test('"Spraviť ako hlavný súbor" moves the main file to another slot', async () => {
     await openSlots(page, ASSET_ID)
-    // The slot that already holds the main file has nothing to offer here.
     expect(await offersMakeMainFile(page, 'free'), 'the main slot offers making its file the main one').toBe(false)
     expect(await offersMakeMainFile(page, 'premium')).toBe(true)
 
     await makeSlotMainFile(page, 'premium')
     await expect(slotRow(page, 'free')).not.toContainText(MAIN_FILE)
 
-    // The flag has to come back from the API, not just from the row the click updated.
     await reloadSlots(page)
     await expect(slotRow(page, 'premium')).toContainText(MAIN_FILE)
     await expect(slotRow(page, 'free')).not.toContainText(MAIN_FILE)
@@ -109,15 +103,14 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
   })
 
   test('the download dialog offers every filled slot and serves the chosen one', async () => {
-    // Opened on a freshly loaded detail: the dialog starts from the asset as the detail store holds it, so
-    // one that has been open across a main-file switch would offer the file the asset no longer points at.
+    // Open on a freshly loaded detail: the dialog starts from the asset as the detail store holds it,
+    // so one kept open across a main-file switch would offer the file the asset no longer points at.
     await openAssetDetail(page, ASSET_ID)
     const slots = await slotFiles(page, ASSET_ID)
 
     const { file: offered } = await openDownloadDialog(page)
     expect(offered.id, 'the dialog starts at the main file').toBe(slots.premium.fileId)
 
-    // Empty slots are not offered — there would be nothing to download.
     expect((await downloadDialogSlots(page)).sort()).toEqual(['free', 'premium'])
 
     const chosen = await chooseDownloadSlot(page, 'free')
@@ -153,7 +146,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
     await cancelSlotRemove(page, dialog)
   })
 
-  // DAM-B7, fixed: the title asked for the undefined `common.modal.system.confirmDelete` and showed the raw key.
   test('the remove dialog is titled in Slovak', async () => {
     await openSlots(page, ASSET_ID)
     const dialog = await openSlotRemove(page, 'bonus')
@@ -168,7 +160,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset slot actions`, () => {
 
     await deleteSlotFile(page, 'free')
 
-    // The second slot holding the same file is emptied too, which is what makes this different from unlinking.
     await reloadSlots(page)
     await expect(slotRow(page, 'bonus')).toContainText(NO_FILE)
 

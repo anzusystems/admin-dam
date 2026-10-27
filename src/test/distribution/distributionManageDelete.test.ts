@@ -4,11 +4,14 @@ import { createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* Deleting a distribution in the advanced settings of the distributions tab. The real tab with its real settings
- * and the list editor of the library, the application around them as it starts; the server is a fake. The tab and
- * its settings draw the same list under one loader: the delete turns it on, and after a delete that went through it
- * stays on until the tab has read the list again. The tab reads it when the settings tell it of the delete; the
- * deleted distribution is out of the list before that, whatever becomes of the read. */
+/*
+ * Deleting a distribution in the advanced settings of the distributions
+ * tab. Real tab, settings and library list editor over a fake server.
+ * The tab and the settings draw the same list under one loader. The delete turns it on
+ * and, after a successful delete, it stays on until the tab has read the list again.
+ * The tab reads when the settings tell it of the delete. The deleted
+ * distribution leaves the list before that, whatever the read does.
+ */
 
 let server: FakeDam
 
@@ -26,7 +29,6 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const LOAD_FAILED = 'The distributions could not be loaded.'
 const NOTHING_TO_SHOW = 'Nothing to show'
 
-/** A distribution as the list of an asset answers it; the tab and its settings both show its remote id. */
 const distribution = (id: string, status = 'distributed') => ({
   id,
   assetId: 'asset-1',
@@ -42,7 +44,6 @@ const distribution = (id: string, status = 'distributed') => ({
   _resourceName: 'distribution',
 })
 
-/** What the server lists for the asset; a case changes it as a distribution is deleted. */
 let listed: ReturnType<typeof distribution>[] = []
 const listAnswer = (): FakeDamAnswer => ({ status: 200, data: { data: structuredClone(listed) } })
 
@@ -71,7 +72,7 @@ const openSettings = async () => {
       },
     },
   }
-  // The services of the account: a distribution to one of them may be redistributed and managed.
+  // Services of the account. Only distributions to these services can be redistributed and managed.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({ ...currentUser.value, allowedDistributionServices: [SERVICE] } as never)
@@ -81,7 +82,6 @@ const openSettings = async () => {
       import('@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue'),
     { isActive: true, assetType: 'video', assetId: 'asset-1', assetMainFileStatus: 'processed' }
   )
-  /** The rows of the settings, each by the remote id of its distribution. */
   const managed = () =>
     Array.from(tab.querySelectorAll('.a-le-row')).map((row) => row.textContent?.match(/remote-[\w-]+/)?.[0])
   await eventually(() => expect(tab.textContent).toContain('remote-dist-1'))
@@ -91,17 +91,12 @@ const openSettings = async () => {
   return {
     ...ui,
     managed,
-    /** Whether the distribution shows anywhere in the tab: in its list or in its settings. */
     shows: (id: string) => tab.textContent?.includes('remote-' + id) ?? false,
-    /** Whether the tab says that. */
     says: (text: string) => tab.textContent?.includes(text) ?? false,
-    /** The button under the line that says the list could not be loaded. */
     tryAgain: () => tab.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
     spinners: () => tab.querySelectorAll('.v-progress-circular').length,
-    /** The buttons a distribution can be deleted by; none while the settings are behind their loader. */
     bins: () => tab.querySelectorAll('.a-le-action--delete').length,
     hide: () => buttonsNamed(tab, HIDE_SETTINGS)[0].click(),
-    /** The bin of the row, and "Delete" of the question it asks. */
     remove: async (id: string) => {
       const row = Array.from(tab.querySelectorAll('.a-le-row')).find((found) =>
         found.textContent?.includes('remote-' + id)
@@ -140,7 +135,6 @@ describe('a distribution deleted in the advanced settings of the distributions t
 
     expect(server.sent('DELETE', ONE).map((request) => request.url)).toEqual(['/adm/v1/distribution/dist-1'])
     await eventually(() => expect(settings.alerts()).toEqual([REMOVED]))
-    // The read is on its way: neither the list of the tab nor the settings draw anything but their loader.
     expect([settings.spinners(), settings.managed(), settings.bins()]).toEqual([2, [], 0])
     expect([settings.shows('dist-1'), settings.shows('dist-2')]).toEqual([false, false])
 
@@ -164,7 +158,6 @@ describe('a distribution deleted in the advanced settings of the distributions t
     await eventually(() => expect(settings.managed()).toEqual(['remote-dist-2']))
     expect([settings.spinners(), settings.bins()]).toEqual([0, 1])
     expect([settings.shows('dist-1'), settings.shows('dist-2')]).toEqual([false, true])
-    // The list is not empty: it is the one the tab has, less what was deleted, and not a list that failed to load.
     expect([settings.says(LOAD_FAILED), settings.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 2])
   })
 
@@ -193,7 +186,6 @@ describe('a distribution deleted in the advanced settings of the distributions t
     expect([settings.says(LOAD_FAILED), settings.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 3])
   })
 
-  // The settings are gone when the delete is answered: nobody hears of it, so nobody reads the list again.
   it('leaves no loader on, and is gone, when the settings were hidden while the delete was on its way', async () => {
     const settings = await openSettings()
     let answer: (deleted: FakeDamAnswer) => void = () => undefined
@@ -202,13 +194,11 @@ describe('a distribution deleted in the advanced settings of the distributions t
     await eventually(() => expect(server.sent('DELETE', ONE)).toHaveLength(1))
 
     settings.hide()
-    // The list of the tab is still behind its loader; the settings and theirs are gone.
     await eventually(() => expect(settings.spinners()).toBe(1))
     answer({ status: 204 })
 
     await eventually(() => expect(settings.alerts()).toEqual([REMOVED]))
     expect(settings.spinners()).toBe(0)
-    // Nothing was read again: the list is the one read before the delete, less what was deleted.
     expect([server.sent('GET', LIST).length, settings.shows('dist-1'), settings.shows('dist-2')]).toEqual([
       1,
       false,
@@ -216,8 +206,11 @@ describe('a distribution deleted in the advanced settings of the distributions t
     ])
   })
 
-  /* The tab reads behind its list while a distribution is under way, the delete or not. A read of that kind sent
-   * before the server deleted answers with the deleted distribution; with the settings hidden nothing gives it up. */
+  /*
+   * The tab reads behind its list while a distribution is in progress, deleted or not.
+   * A read sent before the server deleted answers with the deleted distribution.
+   * With the settings hidden, nothing discards that answer.
+   */
   it('is not put back by a read behind the list that was on its way when it was deleted', async () => {
     listed = [distribution('dist-1'), distribution('dist-2', 'distributing')]
     const settings = await openSettings()
@@ -239,7 +232,6 @@ describe('a distribution deleted in the advanced settings of the distributions t
 
     expect([settings.spinners(), settings.shows('dist-1'), settings.shows('dist-2')]).toEqual([0, false, true])
 
-    // The next read behind the list is taken as it comes.
     listed = [distribution('dist-2', 'distributing'), distribution('dist-3')]
     server.on('GET', LIST, listAnswer)
     await vi.advanceTimersByTimeAsync(30_000)
@@ -259,7 +251,6 @@ describe('a distribution deleted in the advanced settings of the distributions t
     await eventually(() => expect(settings.alerts()).toEqual([SYSTEM_ERROR]))
     await eventually(() => expect(settings.managed()).toEqual(['remote-dist-1', 'remote-dist-2']))
     expect([settings.spinners(), settings.bins()]).toEqual([0, 2])
-    // Nothing was deleted, so nothing is read again.
     expect(server.sent('GET', LIST)).toHaveLength(1)
   })
 })

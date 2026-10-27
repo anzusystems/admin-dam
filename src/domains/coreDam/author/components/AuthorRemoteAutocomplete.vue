@@ -5,8 +5,7 @@ import type { PropType } from 'vue'
 import { useAuthorSelectActions } from '@/domains/coreDam/author/composables/authorActions'
 import { useAuthorInnerFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 
-// `canBeCurrentAuthor` only narrows the list; its callers pass it as a constant, so nothing is reset (the
-// hand-written version set the model to null at mount, even for a multiple field).
+// `canBeCurrentAuthor` only narrows the list. Callers pass a constant, so the model is never reset.
 export default createRemoteAutocomplete({
   name: 'AuthorRemoteAutocomplete',
   props: { canBeCurrentAuthor: { type: Boolean as PropType<boolean | null | undefined>, default: null } },

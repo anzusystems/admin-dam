@@ -7,7 +7,6 @@ export interface PermissionGroupData {
   description: string
 }
 
-/** Create a permission group from the list's create dialog and return its id. */
 export async function createPermissionGroup(page: Page, data: PermissionGroupData): Promise<string> {
   await visibleCy(page, 'button-create').click()
   const dialog = createDialog(page, 'Vytvorenie skupiny oprávnení')
@@ -18,7 +17,6 @@ export async function createPermissionGroup(page: Page, data: PermissionGroupDat
   return confirmCreate(page, dialog, '/permission-group')
 }
 
-/** Find the group by title in the list, open its detail and check the rendered id. */
 export async function openPermissionGroupByTitle(page: Page, title: string, id: string): Promise<void> {
   await filterBy(page, 'Nadpis', title)
   await rowWithCell(page, title).first().click()
@@ -27,7 +25,6 @@ export async function openPermissionGroupByTitle(page: Page, title: string, id: 
   await expect(visibleCy(page, 'copy-text')).toHaveText(id)
 }
 
-/** Overwrite the title and description of the group on its edit page and save. */
 export async function editPermissionGroup(page: Page, id: string, data: PermissionGroupData): Promise<void> {
   await page.goto(`/permission-groups/${id}/edit`)
   await cardLoad(page)

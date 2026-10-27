@@ -116,11 +116,9 @@ const { theme } = useTheme()
     <!--    <VAppBar-->
     <!--      :height="46"-->
     <!--      elevation="0"-->
-    <!--      class="border-b"-->
     <!--    >-->
     <!--      <div class="d-flex flex-column w-100 px-1 align-center">-->
     <!--        <KeepAlive>-->
-    <!--          <AActionbarTarget />-->
     <!--        </KeepAlive>-->
     <!--      </div>-->
     <!--    </VAppBar>-->

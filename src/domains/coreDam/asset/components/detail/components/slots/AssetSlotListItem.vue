@@ -1,6 +1,8 @@
 <script lang="ts">
-/* The files whose address is asked for, by their id: a row drawn anew - another tab of the detail and back - is another
- * row, and a press in it opened a second tab and asked again. */
+/*
+ * File ids whose address is being requested. Module-level because a redrawn row is a new instance.
+ * Per-row state let a press in the new row open a second tab and request again.
+ */
 const downloadsOnTheirWay = new Set<string>()
 </script>
 
@@ -105,8 +107,10 @@ const removeAssetFile = () => {
 const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
 const { showSuccess, showErrorsDefault, showUnknownError } = useAlerts()
 
-/* The address of the file is read anew at each press, and is signed for a while. The tab is opened at the press, as a
- * browser can drop one opened after the request without a word, and has no way back to this page. */
+/*
+ * The address is fetched on each press because it is signed for a limited time.
+ * The tab is opened at the press: browsers may silently block a tab opened after the request.
+ */
 // While the address is asked for, a second press opens no second tab and asks nothing.
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
@@ -120,7 +124,7 @@ const downloadFile = async () => {
     tab.show(res.link)
   } catch (e) {
     tab.close()
-    // Why the server refused it; anything else as an unknown error.
+    // Shows the server's refusal reason, otherwise an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
   } finally {
     downloadsOnTheirWay.delete(fileId)
@@ -255,8 +259,10 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   data-cy="button-slot-download"
                   @click.stop="downloadFile"
                 />
-                <!-- Only a processed file: the server would take any, and the asset would be left with a main file
-                     that has no picture, or one it still waits for. -->
+                <!--
+                  Only for a processed file. The server accepts any file, which
+                  could leave a main file with no image or one still processing.
+                -->
                 <VListItem
                   v-if="
                     totalSlotCount > 1 &&

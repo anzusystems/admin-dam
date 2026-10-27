@@ -11,8 +11,8 @@ import { envConfig } from '@/shared/EnvConfigService'
 const route = useRoute()
 const { initGlobalDragState } = useDropzoneGlobalDragState()
 
-// The environment's own name in front of the title, so a tab that is not production says so before
-// anything on the page does. Production sets no label, and the title is then what it always was.
+// Prefixes the title with the environment name, so a non-production tab shows it at once.
+// Production sets no label and keeps the plain title.
 const title = useTitle()
 
 onMounted(async () => {

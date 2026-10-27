@@ -6,11 +6,11 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The two pages that draw the detail of one asset - the page of an asset, the page of the asset of a file - read the
- * asset as they open, and again once its file was changed in the detail: whole while nothing typed into the form
- * waits to be saved, for its file alone while something does. A read that fails says so. The real pages, and the
- * application around them as it starts; the server is a fake, and so is the address the page asks about a new
- * version of the application. */
+/*
+ * The asset page and the asset-of-a-file page read the asset on open, and again after its file changes in the detail.
+ * The second read is whole while nothing typed waits to be saved,
+ * and for the file alone otherwise. A failed read says so.
+ */
 
 let server: FakeDam
 
@@ -27,10 +27,8 @@ const PRIVATE = 'File is private'
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
 
-/** Whether the server holds the file of the asset as public. */
 let published = true
 
-/** The asset as the server holds it now: an image of the licence of the user. */
 const onServer = () => ({
   ...assetDetail(ASSET, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -49,7 +47,6 @@ const onServer = () => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** How a read of the asset is answered: with what the server holds, unless a case makes it fail. */
 let answerRead: () => unknown = onServer
 const failReads = () => {
   answerRead = () => {
@@ -57,20 +54,17 @@ const failReads = () => {
   }
 }
 
-/** How many times the server was asked for the asset, by its own id or by the id of its file. */
 const reads = () =>
   server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + ASSET || BY_FILE.test(request.url)).length
 
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** The page of a detail, as the router draws it at the address: answers the element it is drawn in. */
 const openPage = async (name: string, path: string, load: () => Promise<{ default: unknown }>, address: string) => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_image_update'],
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -93,7 +87,6 @@ const openPage = async (name: string, path: string, load: () => Promise<{ defaul
   return {
     ui,
     title,
-    /** What the page draws of the asset: its name in the bar, the route of its file, and whether "Save" is there. */
     drawn: () => ({
       name: page.querySelector('.v-toolbar .text-label-large')?.textContent?.trim() ?? null,
       route:
@@ -110,7 +103,6 @@ const openPage = async (name: string, path: string, load: () => Promise<{ defaul
 
       return field
     },
-    /** "Make private" of the menu of the file card: the change goes through, and the asset is read again. */
     makePrivate: async () => {
       page.querySelector('.mdi-dots-vertical')!.closest('button')!.click()
       const item = await eventually(() => {
@@ -181,8 +173,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The page went on drawing the asset as it was before the change, under an error and a working "Save" - which would
- * have written the form of before the change over what the change did. The list closes its detail then. */
+/*
+ * The page used to keep drawing the asset as before the change, with an error and a working "Save".
+ * That "Save" would write the pre-change form over what the change did. The list closes its detail in this case.
+ */
 describe('a page of a detail, when the read of the asset that follows a change of its file fails', () => {
   it.each(pages)('draws the asset no more on %s, and says so once', async (_where, open) => {
     const page = await open()
@@ -195,7 +189,6 @@ describe('a page of a detail, when the read of the asset that follows a change o
     expect([page.drawn(), reads(), server.sent('PATCH', MAKE_PRIVATE).length]).toEqual([NOTHING, 2, 1])
   })
 
-  // The guard: what was typed is read under, with no loader, and stays when that read fails.
   it.each(pages)('keeps the form on %s with what was typed into it, and says so once', async (_where, open) => {
     const page = await open()
     await eventually(() => expect(page.drawn().save).toBe(1))
@@ -206,12 +199,10 @@ describe('a page of a detail, when the read of the asset that follows a change o
     await eventually(() => expect(page.ui.alerts()).toEqual([SYSTEM_ERROR]))
 
     expect([page.title() === typedInto, typedInto.isConnected, typedInto.value]).toEqual([true, true, TYPED])
-    // The card is as old as the form: the change went through, and the read that would show it did not.
     expect([page.drawn(), reads()]).toEqual([{ name: 'The asset', route: PUBLIC, save: 1 }, 2])
   })
 })
 
-// The guard: the first read of a page has no asset to leave drawn.
 describe('a page of a detail, when the read of the asset it opens with fails', () => {
   it.each(pages)('draws no asset on %s, and says so once', async (_where, open) => {
     failReads()

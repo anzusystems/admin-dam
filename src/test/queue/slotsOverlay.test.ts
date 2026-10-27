@@ -6,10 +6,6 @@ import { createFakeDam, queueRow, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamRequest } from '@/test/support/fakeDam'
 import { buttonsNamed, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The floating panel of the uploads into the slots of an asset: its title and counter, the list of the uploads,
- * and the two ways to be rid of them - "clear" once they are all settled, and the close button, which asks first
- * while one is still under way. The real panel, list and rows over the real store; the server is a fake. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -17,7 +13,6 @@ vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client
 const SLOTS = 'slots'
 const CLEAR = 'Clear'
 const CLOSE = 'Close'
-// The answer "yes" of the question the close button asks while something uploads.
 const STOP = 'Stop'
 const QUESTION = 'Do you want to stop the upload?'
 
@@ -26,7 +21,6 @@ const slotUpload = (status: UploadQueueItem['status'], over: Partial<UploadQueue
 
 const shown = (button: HTMLElement | null | undefined) => !!button && button.style.display !== 'none'
 
-/** Mounts the panel over the slots queue holding the rows, and over whatever the other queues hold. */
 const mountPanel = async (rows: UploadQueueItem[], others: Record<string, UploadQueueItem[]> = {}) => {
   const ui = await startUploadUi({ server, queues: { [SLOTS]: rows, ...others } })
   const { useAssetFooterUploadSlotsView } = await import('@/domains/coreDam/asset/composables/assetFooterUploadSlots')
@@ -131,7 +125,6 @@ describe('the "clear" button of the panel', () => {
 
     expect([held(), view.footerViewUploadSlots.value]).toEqual([0, 'hidden'])
     expect(dialogButton(STOP)).toBeNull()
-    // The other queues are not its business.
     expect(store.getQueueItems('global')).toHaveLength(1)
     expect(server.requests).toEqual([])
   })
@@ -182,7 +175,6 @@ describe('the close button of the panel', () => {
 
     expect([held(), view.footerViewUploadSlots.value, chunks[0].config.signal?.aborted]).toEqual([0, 'hidden', true])
     expect(rows[0].status).toBe('stop')
-    // The upload of a new asset in the other queue goes on.
     expect(store.getQueueItems('global').map((row) => row.status)).toEqual(['processing'])
     expect(server.sent('PATCH')).toEqual([])
   })

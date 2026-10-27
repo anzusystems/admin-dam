@@ -168,8 +168,7 @@ const rules = computed(() => ({
 }))
 const v$ = useVuelidate(rules, { distribution })
 
-// What the dialog is still asking when it closes is given up: the sign-in state is shared, and a late answer
-// would land in a dialog opened next.
+// Pending requests are aborted on close: the sign-in state is shared, and a late answer would land in the next dialog.
 const closed = new AbortController()
 
 const checkAuthorized = async () => {
@@ -196,9 +195,8 @@ const isWaitingForLogin = () =>
   distributionListStore.getDistributionAuth(props.distributionServiceName)?.status ===
   DistributionAuthStatus.WaitingForLogin
 
-// The user signs in in another tab. The notification that it happened may never arrive, so the server is asked
-// again when they come back. Only whether they are signed in: every login link asked for is one more pending
-// sign-in on the server.
+// The user signs in in another tab, and the notification may never arrive, so we recheck when they return.
+// Only the signed-in state is checked: each login link request creates another pending sign-in on the server.
 let recheckingAuthorized = false
 const recheckAuthorized = async () => {
   if (recheckingAuthorized || document.visibilityState === 'hidden' || !isWaitingForLogin()) return
@@ -209,7 +207,7 @@ const recheckAuthorized = async () => {
       distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
     }
   } catch {
-    // Asked again the next time the user comes back.
+    // Rechecked again the next time the user returns.
   } finally {
     recheckingAuthorized = false
   }

@@ -5,16 +5,16 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The question the stop button of the uploads asks while something is uploading: what it says, and the ways to
- * answer it with "no". The library's button, which both overlays of the uploads draw, under the application as it
- * starts; that the button stops at once when nothing is uploading, stops on "yes" and takes Esc for "no" is in
- * `uploadStopConfirm.test.ts`. */
+/*
+ * Tests the question the stop button asks while something is uploading: its text and the ways to answer "no".
+ * Stopping at once when nothing is uploading, stopping on "yes"
+ * and Esc as "no" are covered in `uploadStopConfirm.test.ts`.
+ */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-// The button that asks, and the answer "yes" of its question.
 const CLOSE = 'Close'
 const STOP = 'Stop'
 const QUESTION = 'Do you want to stop the upload?'
@@ -106,7 +106,6 @@ describe('the question of the button that stops the uploads', () => {
     expect(confirmed).toHaveBeenCalledTimes(1)
   })
 
-  // The uploads can end while the question stands: "yes" still means what it said.
   it('stops on "yes" also when the last upload has ended meanwhile', async () => {
     const { question, press, confirmed, isUploading } = await mountButton()
     await press()
@@ -121,7 +120,7 @@ describe('the question of the button that stops the uploads', () => {
     expect(confirmed).toHaveBeenCalledTimes(1)
   })
 
-  // The end-to-end tests of the application find the button by this.
+  // The end-to-end tests of the application find the button by `button-stop`.
   it('is found by `button-stop`, or by the name its panel gives it', async () => {
     const plain = await mountButton()
     expect(plain.button.getAttribute('data-cy')).toBe('button-stop')

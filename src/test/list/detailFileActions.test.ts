@@ -13,12 +13,11 @@ import {
   stopUploadUi,
 } from '@/test/support/uploadUi'
 
-/* What the detail of an asset does with the files of the asset: the slots of the asset (which file is the main one,
- * a file put into another slot, taken out of one, deleted), an image turned, the preview image of a video, a file
- * downloaded. Each is a request of its own, and one that fails says so: most of them reject with what axios threw,
- * which the alerts do not know for an error, and said nothing. The real page of the list with its real detail, the
- * application around it as it starts; the server is a fake, and so is the address the page asks about a new version
- * of the application. */
+/*
+ * Each file action is a request of its own, and one that fails has to say so.
+ * Most reject with what axios threw, which the alerts do not recognize as an error, so nothing was said.
+ * Real list page, detail and app startup are used. The server and the new-version address are fakes.
+ */
 
 let server: FakeDam
 
@@ -42,15 +41,10 @@ const AUDIO = 'asset-2'
 const IMAGE = 'asset-3'
 const KIND: Record<string, string> = { [VIDEO]: 'video', [AUDIO]: 'audio', [IMAGE]: 'image' }
 
-/* What the server holds of each asset: the file of each of its slots by the name of the slot, and which of its
- * files is the main one. The audio has one file alone in a slot and another in two; the image and the video have
- * one file each. */
 let slots: Record<string, Record<string, string | null>> = {}
 let main: Record<string, string> = {}
-/** The preview image the server holds for the file of the video. */
 let preview: { imageFile: string; position: number } | null = null
 
-/** What core-dam says of a file by its kind, as far as the detail reads it. */
 const ofKind = (): Record<string, Record<string, unknown>> => ({
   video: {
     _resourceName: 'videoFile',
@@ -69,7 +63,6 @@ const fileOf = (assetId: string, fileId: string) => ({
   ...ofKind()[KIND[assetId]],
 })
 
-/** An asset as the server holds it now. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: KIND[id], assetStatus: 'with_file' },
@@ -79,7 +72,6 @@ const onServer = (id: string) => ({
   authors: [],
 })
 
-/** The slots of an asset as the server lists them: those that hold a file. */
 const slotsOnServer = (assetId: string) => {
   const data = Object.entries(slots[assetId])
     .filter(([, fileId]) => fileId)
@@ -96,8 +88,9 @@ const slotsOnServer = (assetId: string) => {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** In the place of the watcher of the browser: whatever is watched for coming into view is in view at once, so a
- * picture is drawn with its address. */
+/**
+ * Replaces the browser's `IntersectionObserver`: anything watched is in view at once, so pictures get their address.
+ */
 class InView {
   private readonly seen: IntersectionObserverCallback
 
@@ -114,21 +107,20 @@ class InView {
   disconnect() {}
 }
 
-/** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** The asset the open detail holds, as the file panel of its form says it. */
 const held = () => detail()?.querySelector('.anzu-copy-text > span')?.textContent?.trim() ?? null
 
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** What a row of the Slots tab says first: the name of its slot, and its file or that it has none. */
 const said = (row: HTMLElement) =>
   Array.from(row.querySelectorAll('.v-col:first-child > div'))
     .slice(0, 2)
     .map((line) => line.textContent?.replace(/\s+/g, ' ').trim())
     .join(': ')
-/** The rows of the slots; the tab of an audio and of a video has one more above them, of the sibling of the asset. */
+/**
+ * The tab of an audio and of a video has one extra row above the slots, for the sibling of the asset.
+ */
 const slotRows = () =>
   Array.from(detail()?.querySelectorAll<HTMLElement>('.sidebar-info__content .pa-4.pb-8') ?? []).filter(
     (row) => !said(row).startsWith('Sibling')
@@ -136,7 +128,6 @@ const slotRows = () =>
 const slotsShown = () => slotRows().map(said)
 const slotRow = (name: string) => slotRows().find((row) => said(row).startsWith(name))!
 
-/** The item of the menu of the row of the slot, by what it says. */
 const slotMenuItem = async (slotName: string, name: string) => {
   slotRow(slotName).querySelector('[data-cy="button-slot-actions"]')!.closest('button')!.click()
 
@@ -150,7 +141,6 @@ const slotMenuItem = async (slotName: string, name: string) => {
   })
 }
 
-/** The page of the list with its three assets, and the detail of one of them opened by the pencil of its tile. */
 const openDetail = async (assetId: string) => {
   const ui = await startUploadUi({
     server,
@@ -169,7 +159,6 @@ const openDetail = async (assetId: string) => {
     },
     customForm: { video: [customField('title')], audio: [customField('title')], image: [customField('title')] },
   })
-  // The user as the bar of the page draws them, and as the picker of images of the library asks about them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -203,7 +192,6 @@ const openDetail = async (assetId: string) => {
 
   return {
     ...ui,
-    /** The tab of the detail, by its mark: opened, and what it reads answered. */
     openTab: async (mark: string) => {
       detail()!.querySelector<HTMLElement>(`[data-cy="${mark}"]`)!.click()
       await settled()
@@ -234,9 +222,11 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  /* The four changes of a slot, as core-dam answers them: 200 with the file for a file made the main one and for a
-   * file put into a slot, 204 for a file taken out of a slot and for a file deleted. A file is not taken out of a
-   * slot that does not hold it. */
+  /*
+   * core-dam answers: 200 with the file for a new main file and for a file put
+   * into a slot, 204 for a file taken out of a slot and for a deleted file.
+   * A file is not taken out of a slot that does not hold it.
+   */
   server.on('PATCH', MAIN, (_request, match) => {
     main[match[3]] = match[2]
 
@@ -260,12 +250,9 @@ beforeEach(() => {
 
     return { status: 204 }
   })
-  // The region of interest of the image, as its tab reads it: none set.
   server.on('GET', /^\/adm\/v1\/image\/[^/]+\/roi$/, empty)
-  // The file of the video with its preview image, as the tab of the preview reads them, and the save of another.
   server.fileBy('video', 'file-1', () => fileOf(VIDEO, 'file-1'))
   server.file('image', { ...assetFile('image-saved'), ...ofKind().image } as never)
-  // The file of the image, as the row of its slot reads it to draw it.
   server.fileBy('image', 'file-3', () => fileOf(IMAGE, 'file-3'))
   server.on('PUT', /^\/adm\/v1\/video\/([^/]+)$/, (request, match) => {
     preview = JSON.parse(request.data as string).imagePreview
@@ -280,20 +267,16 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/** A change of a slot of the audio, as the Slots tab of its detail offers it. */
 interface SlotChange {
-  /** Brings what sends the change into view - an item of the menu of a row, or a button of the dialog it opens. */
   toSend: () => Promise<HTMLElement>
   method: FakeDamMethod
   pattern: RegExp
   url: string
-  /** What the rows of the tab say once it went through. */
   after: string[]
 }
 
 const BEFORE = ['default (Main file): file-a', 'free: file-b', 'bonus: file-b', 'spare: No file']
 
-/** The button of the dialog the item "Remove" of the row opens. */
 const removeButton = async (slotName: string, mark: 'button-unset' | 'button-remove') => {
   ;(await slotMenuItem(slotName, 'Remove')).click()
 
@@ -369,7 +352,6 @@ const slotChanges: Array<[string, SlotChange]> = [
   ],
 ]
 
-/** The Slots tab of the detail of the audio, its rows drawn. */
 const openSlots = async (assetId = AUDIO) => {
   const ui = await openDetail(assetId)
   await ui.openTab('button-slots')
@@ -394,9 +376,11 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
     expect([ui.alerts(), slotsShown(), server.slotReads(AUDIO) - slotsRead]).toEqual([[SYSTEM_ERROR], BEFORE, 1])
   })
 
-  /* The loader of the tab takes the rows away, with their menus and their dialogs, as the change is sent - but only
-   * once the tab is drawn again: pressed twice before that, the change was sent twice, and the second of them
-   * refused over the first that went through. */
+  /*
+   * The tab loader removes the rows, with their menus and dialogs,
+   * when the change is sent, but only once the tab is redrawn.
+   * Regression: pressed twice before that, the change was sent twice and the second was refused.
+   */
   it.each(slotChanges)(
     'sends %s once however fast it is pressed again, and says nothing of an error once it went through',
     async (_what, change) => {
@@ -412,7 +396,7 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
     }
   )
 
-  // The requests take one answer for done, and reject with nothing at all when another comes.
+  // The requests accept one answer as done and reject with nothing when another comes.
   it('says once that a change did not go through when its answer is not the one it is known by', async () => {
     server.on('PATCH', MAIN, () => ({ status: 202, data: {} }))
     const ui = await openSlots()
@@ -423,9 +407,12 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
     expect([ui.alerts(), slotsShown()]).toEqual([[SYSTEM_ERROR], BEFORE])
   })
 
-  /* Nor is every failure an answer of the status 500: a request the server did not answer at all rejects with an
-   * error that carries no answer, and a refusal of an operation comes as a 422 with a body of its own, which is said:
-   * here an operation the application has no words for. */
+  /*
+   * Not every failure is a 500.
+   * A request with no server answer rejects with an error that carries no response.
+   * A refusal comes as a 422 with its own body, which is shown.
+   * Here the operation is one the application has no words for.
+   */
   it.each<[string, () => unknown, string]>([
     ['the server did not answer at all', () => new AxiosError('Network Error', 'ERR_NETWORK'), SYSTEM_ERROR],
     [
@@ -446,8 +433,10 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
     expect([ui.alerts(), slotsShown(), server.slotReads(AUDIO) - slotsRead]).toEqual([[said], BEFORE, 1])
   })
 
-  /* The file of an image is deleted by a request of the library, whose errors the alerts know: a refusal is said in
-   * its own words, and is not followed by the general message. */
+  /*
+   * The file of an image is deleted by a library request whose errors the alerts know.
+   * A refusal is shown in its own words, without the general message after it.
+   */
   it('says a refused delete of the file of an image once, in the words of the refusal', async () => {
     server.on('DELETE', FILE, () => {
       throw httpError(403)
@@ -466,8 +455,10 @@ describe('a change of a slot of an asset, from the Slots tab of its detail', () 
 describe('a file downloaded from the detail of its asset', () => {
   const SIGNED = 'https://storage.test/file?signature=1'
 
-  /* "Download" of the menu of a slot asks for the address of the file and opens it in a tab of its own: opened at the
-   * press, empty, and sent to the address once it is had, or closed when it is not. */
+  /*
+   * "Download" in the slot menu asks for the file address and opens it in a new tab.
+   * The tab is opened empty at the press, then sent to the address when it arrives, or closed on failure.
+   */
   it('says that the address of the file of a slot could not be had, and opens the file once it can', async () => {
     const tabs: Array<{ opener: unknown; closed: boolean; sentTo: string[] }> = []
     const opened = vi.spyOn(window, 'open').mockImplementation(() => {
@@ -515,8 +506,11 @@ describe('a file downloaded from the detail of its asset', () => {
     ])
   })
 
-  /* The download button of the Info tab opens a dialog that asks for the address of the main file, and shows a link
-   * to it: while it asks, a spinner. A request that failed left the spinner turning for good. */
+  /*
+   * The Info tab download button opens a dialog that asks for the
+   * main file address and shows a link, with a spinner while it asks.
+   * Regression: a failed request left the spinner turning forever.
+   */
   it('stops waiting for the address of the main file that could not be had, and says so', async () => {
     let refuse = true
     server.on('GET', DOWNLOAD_LINK, () => {
@@ -539,7 +533,6 @@ describe('a file downloaded from the detail of its asset', () => {
     ])
     expect(shows()).toEqual({ waiting: false, link: null })
 
-    // Closed and opened again once the server answers: the link, and nothing more said.
     refuse = false
     dialogButton('Close')!.click()
     await eventually(() => expect(dialog()).toBeNull())
@@ -566,7 +559,6 @@ describe('an image turned, from the Focus tab of its detail', () => {
     await settled()
 
     expect(server.sent('PATCH', ROTATE).map((request) => request.url)).toEqual(['/adm/v1/image/file-3/rotate/90'])
-    // The two buttons are back in the place of the spinner.
     expect([ui.alerts(), turn() === null]).toEqual([[SYSTEM_ERROR], false])
 
     refuse = false
@@ -577,32 +569,29 @@ describe('an image turned, from the Focus tab of its detail', () => {
   })
 })
 
-/* The card of the preview image shows an image as soon as it is picked or taken away, and saves it then: after a save
- * that failed it went on showing what was not saved, until the detail was opened again. An image is taken away by a
- * button of the card, and picked in the dialog of the library, from the list of the assets of the licence. */
+/*
+ * The preview image card shows an image as soon as it is picked or removed, and saves it then.
+ * Regression: after a failed save it kept showing the unsaved image until the detail was reopened.
+ * An image is removed by a card button and picked in the library dialog, from the assets of the licence.
+ */
 describe('the preview image of a video, from the Image preview tab of its detail', () => {
   const PREVIEW = /^\/adm\/v1\/video\/file-1$/
   const SAVED = /^\/adm\/v1\/image\/image-saved$/
   const PICKED = { imageFile: 'file-3', position: 0 }
 
-  /** The card: whether it has an image to take away, and how many times it asked for the saved image. */
   const card = () => ({
     image: buttonsNamed(detail()!, 'Unassign image').length === 1,
     asked: server.sent('GET', SAVED).length,
   })
 
-  /** Whether the picture the card draws is the one of the file of the third asset: drawn by its address. */
   const pictureOfPicked = () =>
     !!detail()!.querySelector('.sidebar-info__content .v-img__img')?.getAttribute('src')?.includes('file-3')
 
-  /** Whether the picture the card draws is the one of the saved image: drawn by its address. */
   const pictureOfSaved = () =>
     !!detail()!.querySelector('.sidebar-info__content .v-img__img')?.getAttribute('src')?.includes('image-saved')
 
-  /** What the server was asked to save as the preview image, save by save. */
   const saved = () => server.sent('PUT', PREVIEW).map((request) => JSON.parse(request.data as string).imagePreview)
 
-  /** The tab of the video, its card drawn; a picture is drawn with its address as soon as it would come into view. */
   const openPreview = async () => {
     vi.stubGlobal('IntersectionObserver', InView)
     const ui = await openDetail(VIDEO)
@@ -614,7 +603,6 @@ describe('the preview image of a video, from the Image preview tab of its detail
 
   const takeAway = () => buttonsNamed(detail()!, 'Unassign image')[0].click()
 
-  /** The file of the third asset of the list, an image, picked in the dialog of the library: the card shows it. */
   const pickThird = async () => {
     buttonsNamed(detail()!, 'Select image')[0].click()
     const picker = () => document.body.querySelector<HTMLElement>('.subject-select.v-overlay--active')
@@ -643,12 +631,10 @@ describe('the preview image of a video, from the Image preview tab of its detail
     expect(server.sent('PUT', PREVIEW).map((request) => JSON.parse(request.data as string))).toEqual([
       { id: 'file-1', imagePreview: null },
     ])
-    // The image is there to be taken away again, with its picture: the one the card had read, not asked for anew.
     await eventually(() => expect([card(), pictureOfSaved()]).toEqual([{ image: true, asked: 1 }, true]))
   })
 
-  /* The same for an image picked for a file that had none: the card shows the picture of an image only while it
-   * holds one. */
+  /* Same for an image picked for a file that had none: the card shows an image only while it holds one. */
   it('goes back to no image after the save of a picked one failed', async () => {
     preview = null
     let refuse: () => void = () => undefined
@@ -662,7 +648,6 @@ describe('the preview image of a video, from the Image preview tab of its detail
 
     await pickThird()
 
-    // Shown as picked while it is being saved.
     expect([saved(), card().image]).toEqual([[PICKED], true])
 
     refuse()
@@ -680,7 +665,7 @@ describe('the preview image of a video, from the Image preview tab of its detail
     expect([card(), preview]).toEqual([{ image: false, asked: 1 }, null])
   })
 
-  // What is saved is what the last save that went through sent, not what the tab was opened with.
+  // The saved state is what the last successful save sent, not what the tab was opened with.
   it('goes back to the image saved last: to none, once the image the tab opened with was taken away', async () => {
     const ui = await openPreview()
     takeAway()
@@ -699,8 +684,11 @@ describe('the preview image of a video, from the Image preview tab of its detail
     expect([saved(), card(), pictureOfPicked()]).toEqual([[null, PICKED], { image: false, asked: 1 }, false])
   })
 
-  /* The card can be changed again while a save is on its way. The saves go one after the other, in the order of the
-   * changes, and a save that failed does not put the card back over a change made since: that one is saved next. */
+  /*
+   * The card can change while a save is in flight.
+   * Saves run one after another, in change order.
+   * A failed save does not put the card back over a later change. That change is saved next.
+   */
   it('saves a second change after the first, and keeps it when the first of them failed', async () => {
     const answers: Array<(went: boolean) => void> = []
     server.on(
@@ -722,7 +710,6 @@ describe('the preview image of a video, from the Image preview tab of its detail
     await pickThird()
     await settled()
 
-    // The second waits for the first.
     expect(saved()).toEqual([null])
 
     answers[0](false)

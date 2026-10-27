@@ -4,12 +4,13 @@ import { createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The licence the user works in is changed in a dialog of the menu of the page: the licence is read, the change is
- * sent, and the page is reloaded. While that is on its way the button that confirmed it spins, and a second confirm
- * does nothing: the same change was read, sent and reloaded for twice. Nor can the dialog be closed meanwhile: what
- * holds the second confirm back goes with the dialog, and one opened again would send the change once more. The real
- * menu with its real dialog, the application around it as it starts; the server is a fake, and so is the reload of
- * the window. */
+/*
+ * The licence is changed in a menu dialog: the licence is read, the change is sent, and the page is reloaded.
+ * While that runs, the confirm button spins and a second confirm does
+ * nothing. Before, the same change was read, sent and reloaded twice.
+ * The dialog also cannot be closed meanwhile: the guard against a second
+ * confirm goes with the dialog, and a reopened one would send the change again.
+ */
 
 let server: FakeDam
 
@@ -24,7 +25,6 @@ const CHANGE_LICENCE = 'Switch Media Library ext system and asset licence'
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The two ways a dialog of Vuetify is dismissed by, beside its own buttons: Escape, and a press outside it. */
 const dismiss = async (dialog: Element) => {
   window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))
   await settled()
@@ -34,15 +34,12 @@ const dismiss = async (dialog: Element) => {
   await settled()
 }
 
-/** What the server was asked on the way of the change: the licence, and the change of the user. */
 const sent = () => [server.sent('GET', OTHER_LICENCE).length, server.sent('PATCH', CURRENT_USER).length]
 
 const spins = (button: HTMLButtonElement) => button.classList.contains('v-btn--loading')
 
-/** The dialog that changes the licence, opened from the menu, with the other licence picked: its confirm button. */
 const withTheOtherLicencePicked = async () => {
   const ui = await startUploadUi({ server, grants: ['dam_asset_update'] })
-  // The licences a user picks from.
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = {
     ...config.damPrvConfig,
@@ -58,7 +55,6 @@ const withTheOtherLicencePicked = async () => {
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
   } as never)
-  // The pages the menu links to.
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
   const menu = await ui.mount(() => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'))
@@ -94,12 +90,9 @@ const withTheOtherLicencePicked = async () => {
   return {
     ...ui,
     confirm: dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!,
-    /** The two buttons that close the dialog: the cross of its bar, and "Cancel". */
     cross: dialog.querySelector('.v-toolbar .mdi-close')!.closest('button')!,
     cancel: dialog.querySelector<HTMLButtonElement>('button[data-cy="button-cancel"]')!,
-    /** Whether the dialog is still the open one. */
     isOpen: () => dialog.isConnected && dialog.classList.contains('v-overlay--active'),
-    /** Escape, and a press outside the dialog. */
     dismiss: () => dismiss(dialog),
   }
 }
@@ -112,7 +105,6 @@ beforeEach(() => {
   server.on('GET', OTHER_LICENCE, () => ({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } }))
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
-  // The window is not to be reloaded under the cases.
   reload = vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
 })
 
@@ -150,7 +142,6 @@ describe('the dialog that changes the licence', () => {
     expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({ selectedLicence: 2 })
   })
 
-  // The guard of the case above: a confirm is held back only while one is on its way.
   it('can be confirmed again after a change the server refused: its button spins no more', async () => {
     let refuse = true
     server.on('PATCH', CURRENT_USER, () => {
@@ -171,8 +162,11 @@ describe('the dialog that changes the licence', () => {
     expect(sent()).toEqual([2, 2])
   })
 
-  /* "Cancel" closed the dialog while the change was on its way, and the dialog opened again from the menu knew
-   * nothing of it: confirmed, it sent the change a second time, under the reload of the first. */
+  /*
+   * "Cancel" used to close the dialog while the change was on its way.
+   * A dialog reopened from the menu knew nothing of it, and confirming
+   * sent the change a second time under the reload of the first.
+   */
   it('cannot be closed while the change is on its way, and can be after a change the server refused', async () => {
     let refuseLicence: () => void = () => undefined
     server.on(
@@ -198,8 +192,10 @@ describe('the dialog that changes the licence', () => {
     await eventually(() => expect(dialog.isOpen()).toBe(false))
   })
 
-  /* Nor by the two ways a dialog is dismissed without its buttons: the dialogs of the application are persistent, as
-   * the library sets every dialog up, and neither Escape nor a press outside closes one - at any time. */
+  /*
+   * Escape and a press outside do not close it either.
+   * The library sets every dialog up as persistent, so neither ever closes one.
+   */
   it('is not closed by Escape nor by a press outside it while the change is on its way', async () => {
     let answerLicence: () => void = () => undefined
     server.on(

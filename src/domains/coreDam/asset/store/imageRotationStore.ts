@@ -6,17 +6,21 @@ import { ref, shallowRef } from 'vue'
 import { rotateImage } from '@/domains/coreDam/asset/api/imageApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 
-/* The rotations of image files, whichever tab of the detail pressed them, and whatever became of it since: a file turns
- * once at a time, from the press until its result is put where it goes. The result is the file the server answers the
- * rotation with: the main file of the asset the detail holds, when it is that, and `rotated`, which the tab of the
- * region open by then draws when it shows that file. */
+/*
+ * Image file rotations, independent of which detail tab started them or whether
+ * it still exists. One rotation per file at a time, until its result is applied.
+ * The result is the file returned by the server. It updates the held asset's main
+ * file if it is that, and `rotated`, which the open region tab draws for that file.
+ */
 export const useImageRotationStore = defineStore('damImageRotationStore', () => {
   const rotating = ref<DocId[]>([])
   const rotated = shallowRef<AssetFileImage | null>(null)
 
   const isRotating = (imageId: DocId) => rotating.value.includes(imageId)
 
-  /** Whether the file was turned; not when a rotation of it runs already. */
+  /**
+   * Returns whether the file was rotated. False when a rotation of it is already running.
+   */
   async function rotate(imageId: DocId, angle: 90 | 270) {
     if (isRotating(imageId)) return false
     rotating.value = [...rotating.value, imageId]

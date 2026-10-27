@@ -5,12 +5,10 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The Slots tab of the detail of an asset lists the slots of the asset, each with its file, and the menu of a row
- * changes that file: deletes it, takes it out of the slot, puts it into another, makes it the main file of the asset.
- * The list is kept in one store, for whichever asset the detail holds, and what is asked about the slots of one asset
- * can be answered once the detail holds the next. The real page of the list with its real detail, the application
- * around it as it starts; the server is a fake, and so is the address the page asks about a new version of the
- * application. */
+/*
+ * The slots list is kept in one store for whichever asset the detail holds.
+ * An answer about the slots of one asset can arrive once the detail holds the next.
+ */
 
 let server: FakeDam
 
@@ -21,15 +19,12 @@ const SLOT = /^\/adm\/v1\/audio\/([^/]+)\/asset\/([^/]+)\/slot-name\/([^/]+)$/
 const FILE = /^\/adm\/v1\/audio\/([^/]+)$/
 
 const LIST = '/assets'
-/** The two assets of the list, both audio: the detail goes from the first on to the second. */
 const FIRST = 'asset-1'
 const SECOND = 'asset-2'
 const SLOT_NAMES = ['default', 'free', 'bonus', 'spare', 'extra']
 
 type FileStatus = 'stored' | 'duplicate' | 'processed' | 'failed'
 
-/* What the server holds of each asset: the file of each of its slots by the name of the slot, which of its files is
- * the main one, and how far each file is - processed, unless said otherwise. */
 let slots: Record<string, Record<string, string | null>> = {}
 let main: Record<string, string> = {}
 let fileIs: Record<string, FileStatus> = {}
@@ -40,7 +35,6 @@ const fileOf = (assetId: string, fileId: string) => ({
   audioAttributes: { duration: 1000, bitrate: 1000, codecName: 'mp3' },
 })
 
-/** An asset as the server holds it now. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'audio', assetStatus: 'with_file' },
@@ -50,7 +44,6 @@ const onServer = (id: string) => ({
   authors: [],
 })
 
-/** The slots of an asset as the server lists them: those that hold a file. */
 const slotsOnServer = (assetId: string) => {
   const data = Object.entries(slots[assetId])
     .filter(([, fileId]) => fileId)
@@ -67,10 +60,8 @@ const slotsOnServer = (assetId: string) => {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** What the bar of the open detail says: the place of its asset in the list, and the title of the asset. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
@@ -78,13 +69,14 @@ const shown = () =>
 
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** What a row of the Slots tab says first: the name of its slot, and its file or that it has none. */
 const said = (row: HTMLElement) =>
   Array.from(row.querySelectorAll('.v-col:first-child > div'))
     .slice(0, 2)
     .map((line) => line.textContent?.replace(/\s+/g, ' ').trim())
     .join(': ')
-/** The rows of the slots; the tab of an audio has one more above them, of the sibling of the asset. */
+/**
+ * The tab of an audio has one more row above the slot rows, for the sibling of the asset.
+ */
 const slotRows = () =>
   Array.from(detail()?.querySelectorAll<HTMLElement>('.sidebar-info__content .pa-4.pb-8') ?? []).filter(
     (row) => !said(row).startsWith('Sibling')
@@ -92,11 +84,9 @@ const slotRows = () =>
 const slotsShown = () => slotRows().map(said)
 const slotRow = (name: string) => slotRows().find((row) => said(row).startsWith(name))!
 
-/** The button that opens the menu of the row of the slot. */
 const slotMenuButton = (slotName: string) =>
   slotRow(slotName).querySelector('[data-cy="button-slot-actions"]')!.closest('button')!
 
-/** The item of the menu of the row of the slot, by what it says. */
 const slotMenuItem = async (slotName: string, name: string) => {
   slotMenuButton(slotName).click()
 
@@ -110,7 +100,6 @@ const slotMenuItem = async (slotName: string, name: string) => {
   })
 }
 
-/** The button of the dialog the item "Remove" of the row opens. */
 const removeButton = async (slotName: string, mark: 'button-unset' | 'button-remove') => {
   ;(await slotMenuItem(slotName, 'Remove')).click()
 
@@ -122,17 +111,17 @@ const removeButton = async (slotName: string, mark: 'button-unset' | 'button-rem
   })
 }
 
-/** "Refresh asset slots" of the tab: it only spins while the slots are read, and can be pressed all the same. */
+/**
+ * The button only spins while the slots are read, and can be pressed anyway.
+ */
 const refresh = () => buttonsNamed(detail()!, 'Refresh asset slots')[0]
 
-/** The detail goes on to the second asset of the list, by the button of its bar: its Slots tab is drawn with it. */
 const goOnToSecond = async () => {
   detail()!.querySelector('.v-toolbar .mdi-chevron-right')!.closest('button')!.click()
   await eventually(() => expect(shown()).toBe('2 / 2 ' + SECOND))
   await eventually(() => expect(slotsShown()).toEqual(OF_SECOND))
 }
 
-/* The file is taken out of a slot only once this is let go: the change is sent, and done and answered then. */
 const holdUnset = () => {
   let letGo: () => void = () => undefined
   server.on(
@@ -154,8 +143,6 @@ const holdUnset = () => {
   }
 }
 
-/* Every read of the slots of the first asset is held from now on. Let go by the order they were asked in, each
- * answers what the server held as it was asked. */
 const holdSlotReads = () => {
   const answers: Array<() => void> = []
   server.slotsBy(FIRST, () => {
@@ -171,8 +158,6 @@ const holdSlotReads = () => {
   }
 }
 
-/** The page of the list with its two assets, the detail of the first opened by the pencil of its tile, on its Slots
- * tab with the rows drawn. */
 const openSlots = async () => {
   const ui = await startUploadUi({
     server,
@@ -180,7 +165,6 @@ const openSlots = async () => {
     extSystem: { audio: { slots: SLOT_NAMES } },
     customForm: { audio: [customField('title')] },
   })
-  // The user as the bar of the page draws them, and as the picker of the sibling of an audio asks about them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -210,7 +194,6 @@ const openSlots = async () => {
   })
   tiles[0].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
   await eventually(() => expect(shown()).toBe('1 / 2 ' + FIRST))
-  /** The tab of the detail, by its mark: opened, and what it reads answered. */
   const openTab = async (mark: string) => {
     detail()!.querySelector<HTMLElement>(`[data-cy="${mark}"]`)!.click()
     await settled()
@@ -223,7 +206,6 @@ const openSlots = async () => {
 
 const OF_FIRST = ['default (Main file): a-main', 'free: a-two', 'bonus: a-two', 'spare: No file', 'extra: No file']
 const OF_SECOND = ['default (Main file): b-main', 'free: No file', 'bonus: b-other', 'spare: No file', 'extra: No file']
-/** The first asset once its second file is taken out of the slot "free". */
 const FIRST_AFTER = ['default (Main file): a-main', 'free: No file', 'bonus: a-two', 'spare: No file', 'extra: No file']
 
 beforeEach(() => {
@@ -270,9 +252,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* A change of a slot ends in a read of the slots, and so does "Refresh asset slots". Answered once the detail had
- * gone on to the next asset of the list, the read was written all the same: the Slots tab of that asset listed the
- * slots of the one before, and the menu of a row deleted a file of the asset before. */
+/*
+ * A slot change and "Refresh asset slots" both end in a read of the slots.
+ * When answered after the detail moved to the next asset, the read was still written.
+ * That asset's tab listed the previous asset's slots, and a row menu deleted a file of the previous asset.
+ */
 describe('the Slots tab of an asset the detail went on to, while the slots of the one before were asked about', () => {
   it('keeps its own rows when a change of a slot of the asset before is answered only now', async () => {
     const answerChange = holdUnset()
@@ -288,10 +272,8 @@ describe('the Slots tab of an asset the detail went on to, while the slots of th
     const slotsReadOfFirst = server.slotReads(FIRST)
     await answerChange()
 
-    // Nor is the tab left spinning: what was asked for the asset before waits for nothing here.
     expect([slotsShown(), server.slotReads(FIRST) - slotsReadOfFirst, ui.alerts()]).toEqual([OF_SECOND, 0, []])
 
-    // The menu of a row is of the file the row shows: a file of this asset.
     ;(await removeButton('bonus', 'button-remove')).click()
     await eventually(() => expect(slotsShown()[2]).toBe('bonus: No file'))
     expect(server.sent('DELETE', FILE).map((request) => request.url)).toEqual(['/adm/v1/audio/b-other'])
@@ -310,8 +292,10 @@ describe('the Slots tab of an asset the detail went on to, while the slots of th
   })
 })
 
-/* "Refresh asset slots" only spins while the slots are read, and a key pressed on it reads them again: two reads of
- * the slots of one asset, answered in whatever order. */
+/*
+ * "Refresh asset slots" only spins while the slots are read, and a key press reads them again.
+ * This gives two reads of one asset's slots, answered in any order.
+ */
 describe('two reads of the slots of one asset', () => {
   it('shows what the later of them brought when the older is answered last', async () => {
     await openSlots()
@@ -320,7 +304,6 @@ describe('two reads of the slots of one asset', () => {
 
     button.click()
     await settled()
-    // Changed meanwhile, from elsewhere: the second read is of the slots as they are now.
     slots[FIRST].free = null
     button.click()
     await settled()
@@ -343,16 +326,17 @@ describe('two reads of the slots of one asset', () => {
     await settled()
     await answerRead(0)
 
-    // Still read: no rows are drawn of an answer something was asked after.
     expect(slotsShown()).toEqual([])
     await answerRead(1)
     expect(slotsShown()).toEqual(FIRST_AFTER)
   })
 })
 
-/* The guard: the tab can be left and come back to while a change is on its way. The tab drawn then has read the
- * slots as they were before the change, and the read that follows the change is the one that brings them as they
- * are after it. */
+/*
+ * The tab can be left and reopened while a change is on its way.
+ * The reopened tab has read the slots from before the change.
+ * The read that follows the change brings them as they are after it.
+ */
 describe('a change of a slot answered once its tab was left and opened again', () => {
   it('shows the slots as they are after the change', async () => {
     const answerChange = holdUnset()
@@ -370,9 +354,11 @@ describe('a change of a slot answered once its tab was left and opened again', (
   })
 })
 
-/* The server makes any file of an asset its main one. One that failed, is a duplicate or is still on its way has no
- * picture to show, and with a main file not yet processed the form of an asset that is not described cannot be
- * saved. */
+/*
+ * The server makes any file of an asset its main one.
+ * A file that failed, is a duplicate or is still in progress has no picture to show.
+ * With an unprocessed main file, the form of an undescribed asset cannot be saved.
+ */
 describe('"Make main file" in the menu of a row of the Slots tab', () => {
   it('is offered only for a file the server has processed', async () => {
     slots[FIRST] = { default: 'a-main', free: 'a-two', bonus: 'a-stored', spare: 'a-failed', extra: 'a-duplicate' }
@@ -388,7 +374,6 @@ describe('"Make main file" in the menu of a row of the Slots tab', () => {
         const listed = Array.from(menu()?.querySelectorAll<HTMLElement>('.v-list-item') ?? []).map((item) =>
           item.textContent?.trim()
         )
-        // The menu of every row has "Download".
         expect(listed).toContain('Download')
 
         return listed
@@ -398,7 +383,6 @@ describe('"Make main file" in the menu of a row of the Slots tab', () => {
       await eventually(() => expect(menu()).toBeNull())
     }
 
-    // Not for the main file itself either, as ever.
     expect(offered).toEqual({ default: false, free: true, bonus: false, spare: false, extra: false })
   })
 })

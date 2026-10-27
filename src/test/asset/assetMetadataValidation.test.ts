@@ -10,12 +10,13 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { customField, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The asset detail and the asset list sidebar save through a collector of the asset metadata scope:
- * `v$.$touch(); if (v$.$invalid) return`. Everything they validate sits in or under the custom metadata form: the
- * form of the library, handed the scope of admin-dam as the sidebars and the rows of the queue hand it, over the
- * config store of the library as the application fills it.
- *
- * The real sidebar of the detail over the same scope is in `assetDetailMetadataScope.test.ts`. */
+/*
+ * The asset detail and the list sidebar save through a collector of the asset metadata scope: `v$.$touch();
+ * if (v$.$invalid) return`. Everything they validate is in or under the custom metadata form.
+ * Uses the library form with the admin-dam scope as the sidebars and
+ * queue rows pass it, over the library config store as the app fills it.
+ * The real detail sidebar over the same scope is tested in `assetDetailMetadataScope.test.ts`.
+ */
 
 let server: FakeDam
 
@@ -26,7 +27,6 @@ const requiredText = (property: string, position: number): CustomDataFormElement
   position,
 })
 
-// What the keyword and author inputs are to the sidebar: a field of the asset metadata scope in the form's slot.
 const ScopedField = defineComponent({
   setup() {
     useVuelidate({ keywords: { required } }, { keywords: ref('') }, { $scope: AssetMetadataValidationScopeSymbol })
@@ -34,7 +34,6 @@ const ScopedField = defineComponent({
   },
 })
 
-/** Mounts what `page` makes of the form, over a config of these custom fields of an image with this many pinned. */
 const mountUnder = async (elements: CustomDataFormElement[], pinned: number, page: (Form: Component) => Component) => {
   const ui = await startUploadUi({
     server,
@@ -46,7 +45,6 @@ const mountUnder = async (elements: CustomDataFormElement[], pinned: number, pag
   await nextTick()
 }
 
-/** Mounts the form under a collector as the sidebars have it, and answers whether a save would be stopped. */
 const saveIsStopped = async (
   elements: CustomDataFormElement[],
   pinned: number,
@@ -115,7 +113,6 @@ describe('saving the queue in the overlays', () => {
         },
       })
     )
-    // The pinned field, the one behind "show all", and the field in the slot.
     expect(failing()).toBe(3)
   })
 })
@@ -133,7 +130,8 @@ describe('saving asset metadata in the sidebars', () => {
     expect(await saveIsStopped([], 1, {}, true)).toBe(true)
   })
 
-  // With none pinned every custom field is behind "show all". Said so: a configuration that says nothing pins two.
+  // With none pinned, every custom field is behind "show all". Stated
+  // explicitly because a configuration that says nothing pins two.
   it('is stopped by a required custom field behind "show all"', async () => {
     expect(await saveIsStopped([requiredText('title', 1)], 0, { title: '' })).toBe(true)
   })

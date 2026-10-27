@@ -71,7 +71,7 @@ watch(
   selectedExtSystemId,
   (newValue, oldValue) => {
     if (newValue === oldValue) return
-    // Not at mount, where there is nothing stale to clear; it set even a multiple model to null there.
+    // Not at mount: there is nothing stale to clear, and it would null even a multiple model.
     if (oldValue !== undefined) modelValueComputed.value = null
     if (newValue) {
       filterData.extSystem = newValue

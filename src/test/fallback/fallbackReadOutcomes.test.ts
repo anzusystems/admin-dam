@@ -13,10 +13,6 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* What one read of the poll does to a row, by what the server says about the file. As in
- * `fallbackSettlesQueue.test.ts`: the real upload, the real poll, the real store, a fake server and no
- * notification. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -35,7 +31,6 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 }))
 
 const QUEUE = 'global'
-// Far enough for one read of the poll, whatever its rhythm.
 const ONE_READ = 20_000
 const A_LONG_TIME = 30 * 60_000
 
@@ -60,7 +55,6 @@ const waitingUpload = (over: Partial<UploadQueueItem> = {}) =>
     ...over,
   })
 
-/** An upload of one file, taken as far as the server's answer to its finish request. */
 const processingUpload = async (over: Partial<UploadQueueItem> = {}) => {
   const store = await load()
   const [row] = seedQueue(store, QUEUE, [waitingUpload(over)])
@@ -97,7 +91,6 @@ describe('a read that finds the file failed', () => {
     expect(row.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' })
     expect(row.canEditMetadata).toBe(false)
     expect(row.isDuplicate).toBe(false)
-    // A failed row is a finished one for the counter of the overlay.
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 1])
     const readsToSettle = server.assetReads('asset-1')
     expect(readsToSettle).toBeGreaterThan(0)
@@ -117,7 +110,6 @@ describe('a read that finds the file a duplicate', () => {
     ['document', 'application/pdf'],
   ]
 
-  // The asset says which file it duplicates, and the file is read from the address of its own type.
   it.each(types)('settles the %s row read-only and links it to the original', async (assetType, mimeType) => {
     const { store, row } = await processingUpload({
       assetType,
@@ -145,12 +137,9 @@ describe('a read that finds the file a duplicate', () => {
     expect(row.canEditMetadata).toBe(false)
     expect(row.keywords).toEqual([])
     expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
-    // The file was asked for where files of this type live, and nowhere else.
     expect(server.sent('GET', /\/file-origin$/).map((request) => request.url)).toEqual([
       `/adm/v1/${assetType}/file-origin`,
     ])
-    // What the original gives the row: the link to it, its file, its single-use switch and its preview. The row
-    // keeps the asset the upload created.
     expect(row.assetId).toBe('asset-1')
     expect(row.duplicateAssetId).toBe('asset-original')
     expect(row.fileId).toBe('file-origin')
@@ -173,7 +162,6 @@ describe('a read that finds the file a duplicate', () => {
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
     expect([row.status, row.isDuplicate, row.canEditMetadata]).toEqual(['uploaded', true, false])
-    // Nothing to link it with: the row keeps its own file.
     expect([row.fileId, row.duplicateAssetId]).toEqual(['file-1', null])
   })
 })
@@ -184,7 +172,6 @@ describe('a read that finds the file not finished yet', () => {
     ['a file uploaded', { mainFile: assetFile('file-1', 'uploaded') }],
     ['a file stored', { mainFile: assetFile('file-1', 'stored') }],
     ['an asset with no main file', { mainFile: null }],
-    // The main file of the asset is another one: its news is not this row's.
     ['another file as the main one', { mainFile: assetFile('file-other', 'processed') }],
   ]
 
@@ -200,7 +187,6 @@ describe('a read that finds the file not finished yet', () => {
     expect(row.canEditMetadata).toBe(false)
     expect(row.assetStatus).toBe('draft')
 
-    // The server finishes; a later read finds it.
     server.asset(assetDetail('asset-1'))
     await vi.advanceTimersByTimeAsync(5 * 60_000)
 
@@ -222,9 +208,7 @@ describe('a read that finds the file not finished yet', () => {
     expect(server.assetReads('asset-1')).toBeGreaterThan(1)
     expect(row.status).toBe('processing')
     expect(row.error.hasError).toBe(true)
-    // The wording of an ordinary upload: it sends the user to the refresh button of the row.
     expect(row.error.message).toBe('system.uploadErrors.processingTooLong')
-    // Not a finished row: the overlay goes on counting it as unfinished.
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([0, 1])
   })
 })
@@ -243,7 +227,7 @@ describe('an upload stopped while its finish request is on the wire', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // `Processing` written over it would have left a row nobody watches being asked about for minutes.
+    // Writing `Processing` over it would leave a row nobody watches being polled for minutes.
     expect(row.status).toBe('stop')
     expect(store.getQueueItems(QUEUE)).toEqual([])
     expect(server.assetReads('asset-1')).toBe(0)

@@ -5,9 +5,10 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* "Create" on the page of the authors: its dialog, what it sends, the list read again, and the user left on the
- * page. The real page with the actionbar its button is moved into, over the application as it starts; the server is
- * a fake that keeps the authors it is sent. */
+/*
+ * Real page with the actionbar its button is moved into, over the
+ * app as it starts. The fake server keeps the authors it is sent.
+ */
 
 let server: FakeDam
 
@@ -35,15 +36,13 @@ const author = (id: string, name: string) => ({
   _system: 'dam',
 })
 
-// The pages of an author, under their real names, which the rows of the list link to.
+// Real route names, which the list rows link to.
 const AUTHOR_PAGES = [
   { path: '/authors', name: '/(coreDam)/authors' },
   { path: '/authors/:id', name: '/(coreDam)/authors/[id]' },
   { path: '/authors/:id/edit', name: '/(coreDam)/authors/[id]/edit' },
 ]
 
-/** Takes the user to the page of the authors and mounts it under the actionbar of the layout; answers where the user
- * is. */
 const mountPage = async () => {
   const ui = await startUploadUi({ server })
   const { defineComponent, h, ref } = await import('vue')
@@ -56,7 +55,7 @@ const mountPage = async () => {
         const router = useRouter()
         AUTHOR_PAGES.forEach((route) => router.addRoute({ ...route, component: { render: () => null } }))
         path = () => router.currentRoute.value.fullPath
-        // The page is drawn once the user is on it, as the router view of the application draws it.
+        // The page is drawn only once the user has arrived, as the application's router view does.
         const arrived = ref(false)
         void router.push({ name: '/(coreDam)/authors' }).then(() => (arrived.value = true))
         return () => [h(ui.library.AActionbarTarget), arrived.value ? h(AuthorListView) : null]
@@ -116,11 +115,9 @@ describe('the create button of the page of the authors', () => {
     expect(server.sent('POST', AUTHOR).map((request) => JSON.parse(request.data as string))).toEqual([
       expect.objectContaining({ name: 'Ann Reporter', extSystem: 1 }),
     ])
-    // The dialog is closed, the list is read again and shows the new author.
     await eventually(() => expect(document.body.querySelector('.v-dialog [data-cy="create-panel"]')).toBeNull())
     await eventually(() => expect(server.sent('GET', LIST).length).toBeGreaterThan(readsBefore))
     await eventually(() => expect(names().some((name) => name.includes('Ann Reporter'))).toBe(true))
-    // Not taken to the detail of the new author.
     expect(path()).toBe('/authors')
   })
 

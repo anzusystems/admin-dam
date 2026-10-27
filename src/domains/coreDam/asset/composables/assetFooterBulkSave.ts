@@ -4,22 +4,27 @@ import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { fetchAsset, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 
-/* A bulk save of a queue drawn in a footer - the mass edit, the upload queue - and the asset of the detail store, which
- * the panel beside the list shows: what was typed there for a saved asset is asked about before the save, and the asset
- * is read again after it. */
+/*
+ * Bulk save of a footer queue (mass edit, upload queue) coordinated with the detail store asset shown in the panel.
+ * Unsaved panel input for a saved asset is confirmed before the save, and the asset is read again after it.
+ */
 export function useAssetFooterBulkSave() {
   const assetDetailStore = useAssetDetailStore()
 
-  /* The asset of the detail store still has what it had before the save: it is read again, by its id, when it was among
-   * the saved - also under a closed panel, whose toggle opens it on the store without a read. Not the active row of
-   * the list, which the panel need not show. */
+  /*
+   * The detail store asset is stale after the save, so it is read again by id when it was saved.
+   * Also under a closed panel, whose toggle opens it from the store without
+   * a read. Not the active list row, which the panel need not show.
+   */
   const readAgainIfSaved = async (savedAssetIds: string[]) => {
     assetDetailStore.forgetLastFetched(savedAssetIds)
     const shown = assetDetailStore.asset
     if (isNull(shown) || !savedAssetIds.includes(shown.id)) return
-    /* Read already, behind the loader: by what a change of a file of the asset set off, which waited for the same read as
-     * this one. Started once the save was answered, that read brings the asset as saved, and says so when it fails -
-     * read here again, it would be called off unseen. */
+    /*
+     * Already being read behind the loader, by a file change that waited for the same read. That read
+     * started after the save answered, so it returns the saved asset and reports its own failure.
+     * Reading again here would cancel it silently.
+     */
     if (assetDetailStore.loader && assetDetailStore.shownOrReadAssetId() === shown.id) return
     assetDetailStore.showLoader()
     const detailRequest = assetDetailStore.startDetailRequest(shown.id)
@@ -27,29 +32,33 @@ export function useAssetFooterBulkSave() {
       const res = await fetchAsset(shown.id)
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.setAsset(res, detailRequest)
     } catch (error) {
-      // The save itself went through: the detail keeps what it had, as before.
+      // The save itself succeeded, so the detail keeps its previous data.
       console.error('assetFooterBulkSave: the asset of the detail could not be read again', error)
     } finally {
       if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
     }
   }
 
-  /* A read of the detail on its way when the save answers may bring an asset as it was before the save: the read again
-   * waits for it to land, so that it neither throws that answer away nor leaves its loader up. A read that starts
-   * later is answered after the save, and the shortcut that would skip the read of a saved asset is not taken. */
+  /*
+   * A detail read in progress when the save answers may return the pre-save asset. The re-read
+   * waits for it to land, so it neither discards that answer nor leaves its loader up.
+   * A later read is answered after the save, and the shortcut that skips reading a saved asset is disabled.
+   */
   const refreshDetailAsset = (savedAssetIds: string[]) => {
     assetDetailStore.forgetLastFetched(savedAssetIds)
     assetDetailStore.readAfterCurrentRead(() => void readAgainIfSaved(savedAssetIds))
   }
 
-  // What the bulk save sends, taken before it: the queue can change while it is on the wire.
+  // Taken before the save because the queue can change while the request is in flight.
   const assetIdsToSave = (items: UploadQueueItem[]) => items.filter(hasMetadataToSave).map((item) => item.assetId)
 
-  /* The read after the save puts the asset as saved into the panel beside the list, over what was typed into it and not
-   * saved: asked about first, as every other way that throws that away. "Stay" sends nothing (`null`); "Leave anyway"
-   * saves, and the read replaces what was typed (the id of the asset). With nothing typed, or another asset in the panel,
-   * nothing is asked (`false`). Let go, the form takes no typing while the save is on its way: the queue can be put
-   * away meanwhile, and what was typed then would be replaced without a word. */
+  /*
+   * The post-save read overwrites unsaved panel input, so ask first, like every other path that discards it.
+   * "Stay" returns `null` and sends nothing. "Leave anyway" returns the asset id, saves, and the
+   * read replaces the input. No input or another asset in the panel returns `false` without asking.
+   * After "Leave anyway" the form blocks typing during the save: the
+   * queue can close meanwhile, and that input would be silently replaced.
+   */
   const leaveTypedOfPanel = async (savedAssetIds: string[]) => {
     const held = assetDetailStore.asset
     if (!assetDetailStore.panelHoldsUnsavedMetadata || isNull(held) || !savedAssetIds.includes(held.id)) return false
@@ -59,14 +68,18 @@ export function useAssetFooterBulkSave() {
     return held.id
   }
 
-  /* Answered: the read after the save has started by now, behind the loader, or there is none to come (another asset in
-   * the panel). Failed: the form is given back as it was. */
+  /*
+   * On success the post-save read has started behind the loader, or none
+   * comes (another asset in the panel). On failure the form is restored.
+   */
   const panelTakesTypingAgain = (left: string | false) => {
     if (left && assetDetailStore.leftForMassSave === left) assetDetailStore.leftForMassSave = null
   }
 
-  /* A save that failed after "Leave anyway" reads nothing: what was typed stays in the panel, unsaved, and is asked
-   * about again - also behind the loader of a read that comes later. */
+  /*
+   * After a failed save following "Leave anyway" nothing is read. The input
+   * stays unsaved and is asked about again, also behind a later read's loader.
+   */
   const typedKeptAfterFailure = (left: string | false) => {
     if (left) assetDetailStore.typedLeft = false
   }

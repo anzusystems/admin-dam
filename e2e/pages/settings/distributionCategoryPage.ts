@@ -10,7 +10,6 @@ import {
   visibleCy,
 } from '@pages/shared/crud'
 
-/** Create a distribution category of the given asset type and return its id. */
 export async function createDistributionCategory(page: Page, type: string, name: string): Promise<string> {
   await openSettingsSection(page, 'distribution-category-settings', '/distribution-categories', 'Kategórie distribúcie')
   await visibleCy(page, 'button-create').click()
@@ -22,7 +21,6 @@ export async function createDistributionCategory(page: Page, type: string, name:
   return confirmCreate(page, dialog, '/distribution/category')
 }
 
-/** Open a distribution category detail and check it renders its id. */
 export async function verifyDistributionCategoryDetail(page: Page, categoryId: string, name: string): Promise<void> {
   await page.goto(`/distribution-categories/${categoryId}`)
   await cardLoad(page)
@@ -32,7 +30,9 @@ export async function verifyDistributionCategoryDetail(page: Page, categoryId: s
   await expect(page).toHaveURL(/\/distribution-categories/)
 }
 
-/** Narrow the category list to one asset type and a name. The list shows only Video categories by default. */
+/**
+ * The list shows only Video categories by default.
+ */
 export async function filterDistributionCategories(page: Page, type: string, name: string): Promise<void> {
   await page.goto('/distribution-categories')
   await cardLoad(page)
@@ -44,7 +44,6 @@ export async function filterDistributionCategories(page: Page, type: string, nam
   await cardLoad(page)
 }
 
-/** Rename a distribution category found through the list filters. */
 export async function updateDistributionCategory(
   page: Page,
   type: string,
@@ -60,7 +59,6 @@ export async function updateDistributionCategory(
   await closeDetail(page, '/edit')
 }
 
-/** Check the list finds a category by its name within the asset type. */
 export async function expectDistributionCategoryListed(page: Page, type: string, name: string): Promise<void> {
   await filterDistributionCategories(page, type, name)
   await expect(page.locator('td').filter({ hasText: name }).first()).toBeVisible()

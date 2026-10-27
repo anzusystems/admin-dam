@@ -16,15 +16,18 @@ export interface AssetListItem {
 export const useAssetListStore = defineStore('damAssetListStore', () => {
   const list = ref<AssetListItem[]>([])
   const activeItemIndex = ref<null | number>(null)
-  /* The asset of the active tile. The tile is active for its asset, not for its place: in a list read anew the place
-   * is another asset's. Not the asset the panel beside the list holds, which can be one of a queue row, or the one
-   * before while a read is on its way. */
+  /*
+   * Asset of the active tile. Tracked by asset, not position,
+   * because a re-read list puts another asset at that position.
+   * Not the asset in the side panel, which can come from a queue row or be the previous one while a read is pending.
+   */
   let activeAssetId: DocId | null = null
-  /* Which of its tiles it was, counted from the first, for an asset the list holds more than once: the pages of a list
-   * can bring it twice. */
+  /* Index of the active tile among that asset's tiles. List pages can bring the same asset twice. */
   let activeAssetTile = 0
-  /* Of that asset, once a list came without it: no tile is active then, and the asset is only waited for, in a
-   * further page or in the list read next. */
+  /*
+   * Set once a list came without that asset. No tile is active, and
+   * the asset is awaited in a later page or the next list read.
+   */
   let activeAssetIsAwaited = false
   const keyboardNavigation = ref(false)
   const loader = ref<{ soft: boolean; hard: boolean }>({
@@ -40,9 +43,11 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     loader.value[type] = false
   }
 
-  /* With no tile active: the tile of the asset that was active is the active one again, at the place it has now. An
-   * asset waited for is waited for only while the panel beside the list still shows it (`shownAssetId`): the panel
-   * can lose it or take another meanwhile, and a tile made active for it then would be one nobody picked. */
+  /*
+   * With no tile active, reactivate the previously active asset's tile at its new position.
+   * An awaited asset is restored only while the side panel still shows it
+   * (`shownAssetId`). Otherwise the restored tile would be one nobody picked.
+   */
   function restoreActive(shownAssetId: DocId | null) {
     if (!isNull(activeItemIndex.value) || isNull(activeAssetId)) return
     if (activeAssetIsAwaited && shownAssetId !== activeAssetId) {
@@ -54,8 +59,10 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     setActiveByIndex(tiles[activeAssetTile] ?? tiles[0] ?? -1)
   }
 
-  /* A tile of an asset deleted here is drawn as being deleted whenever the list takes it: a read sent before the delete
-   * and answered after it - a further page, or the first one of a list read anew - brings the status from before. */
+  /*
+   * Keep a tile of an asset deleted here drawn as deleting.
+   * A read sent before the delete and answered after it (later page or re-read first page) brings the old status.
+   */
   const markedIfDeletedHere = (asset: AssetSearchListItemDto) => {
     if (assetDeletedHere(asset.id)) asset.attributes.assetStatus = DamAssetStatus.Deleting
 
@@ -79,7 +86,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
       selected: selectedIds.includes(asset.id),
     }))
     list.value = list.value.concat(items)
-    // The asset the first page of a list read anew did not bring can be in a further one.
+    // An asset missing from the first page of a re-read list can be on a later page.
     restoreActive(shownAssetId)
   }
 
@@ -99,13 +106,13 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
       active: false,
       selected: selectedIds.includes(asset.id),
     }))
-    // The place the active tile had is another asset's in these rows, or nobody's.
+    // The old active position now belongs to another asset or to none.
     activeItemIndex.value = null
     restoreActive(shownAssetId)
     activeAssetIsAwaited = isNull(activeItemIndex.value) && !isNull(activeAssetId)
   }
 
-  // Every tile of the asset: a page read after another one can bring the same asset again.
+  // Update every tile of the asset: a later page can bring the same asset again.
   function setDeletingById(id: DocId) {
     list.value.forEach((item) => {
       if (item.asset.id === id) item.asset.attributes.assetStatus = DamAssetStatus.Deleting
@@ -156,7 +163,6 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
   }
 
   function setActiveNext() {
-    // With no tile active the next one is the first.
     const wantedIndex = isNull(activeItemIndex.value) ? 0 : activeItemIndex.value + 1
     if (wantedIndex >= list.value.length) return
     setActiveByIndex(wantedIndex)
@@ -186,7 +192,9 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     keyboardNavigation.value = false
   }
 
-  /** The list is emptied to be read anew: no tile is left to be active, and the asset that was is remembered. */
+  /**
+   * Empties the list before a re-read. No tile stays active, but the active asset is remembered.
+   */
   function resetList() {
     list.value = []
     activeItemIndex.value = null

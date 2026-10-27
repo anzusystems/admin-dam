@@ -50,8 +50,8 @@ const { signal, leave } = useRecordPage({
   loading: detailLoading,
 })
 
-// The episode list fetches by the route's id as well: only once the podcast is there, or a failed
-// load would raise a second alert.
+// The episode list also fetches by the route id. Mount it only after the podcast loads,
+// or a failed load raises a second alert.
 const podcastLoaded = ref(false)
 
 onMounted(async () => {

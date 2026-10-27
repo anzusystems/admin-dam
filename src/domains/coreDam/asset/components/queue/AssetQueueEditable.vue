@@ -28,12 +28,12 @@ const { showWarningT } = useAlerts()
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
-// The list of the library over the store, the alerts and the name caches of admin-dam.
+// Binds the library's list to admin-dam's store, alerts and name caches.
 const queue: UploadQueueListBinding = {
   items: () => uploadQueuesStore.getQueueItems(props.queueId),
-  // In the queue the row's event names, as before.
+  // Uses the row's event names inside the queue.
   cancel: (item, _index, queueId) => uploadQueuesStore.stopItemUpload(queueId, item),
-  // A row is taken out by its own delete, which removes it from the store.
+  // A row is removed by its own delete, which removes it from the store.
   remove: () => undefined,
   refresh: (item) => uploadQueuesStore.refreshQueueItem(item),
   refreshMayHelp: () => false,
@@ -49,7 +49,7 @@ const queue: UploadQueueListBinding = {
   mainFileSingleUseEnabled: true,
 }
 
-// The name chips mark what the queue suggested as new: the queues are those of admin-dam's store.
+// The name chips mark queue suggestions as new. The queues come from admin-dam's store.
 provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queueKey)?.suggestions)
 </script>
 
@@ -79,8 +79,10 @@ provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queu
       />
     </template>
     <template #sidebar>
-      <!-- Closed, the panel is only slid out of view by the library: what it holds is left out for the keyboard and
-           the screen reader as well. -->
+      <!--
+        When closed, the library only slides the panel out of view.
+        Its content is also hidden from the keyboard and the screen reader.
+      -->
       <div
         class="d-flex w-100 h-100"
         :inert="!massOperations"

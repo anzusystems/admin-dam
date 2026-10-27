@@ -1,8 +1,7 @@
 import App from '@/App.vue'
-// Vuetify's stylesheets (with the MDI icons) before common-admin's. Between Vuetify's layers and
-// common-admin's `anzu-common` the `@layer` statements in index.html decide; the order still matters for the
-// unlayered rules among them (the icons, the admin's own). The comment after this block keeps the import
-// sorting out of it.
+// Vuetify's stylesheets (with MDI icons) load before common-admin's.
+// The `@layer` statements in index.html order the layers, but import order still matters for unlayered rules.
+// The comment after this block keeps import sorting out of it.
 import { AnzuSystemsCommonAdmin, loadCommonFonts } from '@anzusystems/common-admin'
 import type { PluginOptions } from '@anzusystems/common-admin'
 

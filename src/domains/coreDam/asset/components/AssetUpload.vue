@@ -52,8 +52,8 @@ const uploadDialogLoader = ref(false)
 const uploadQueuesStore = useUploadQueuesStore()
 const { maxUploadItems } = useBetaTestFeatures()
 
-// Where the files of this entry go: into the slot of the asset, or into the queue as new assets. The files picked
-// at once and the ones confirmed in the limit dialog alike.
+// Routes files to the asset slot or to the queue as new assets.
+// Used both for picked files and for files confirmed in the limit dialog.
 const addToQueue = async (files: File[]) => {
   if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
     await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)

@@ -2,7 +2,7 @@ import { AxiosError, AxiosHeaders } from 'axios'
 import { createPinia, defineStore, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
-// The real classes `useApiRequest` throws: the status is on `cause`, never on the error itself.
+// These are the real classes `useApiRequest` throws. The status is on `cause`, never on the error itself.
 import { AnzuApiAxiosError, AnzuApiForbiddenError } from '@anzusystems/common-admin'
 
 const fetchAsset = vi.fn()
@@ -89,8 +89,7 @@ describe('a deep link into a licence the user may not read', () => {
     fetchAsset.mockResolvedValue({ id: 'asset-1', licence: 1 })
     fetchAssetLicence.mockRejectedValue(new AnzuApiForbiddenError())
 
-    // Inside the same classification as the asset: a licence this user may not read is a link they cannot follow, not
-    // an outage.
+    // Same classification as the asset: a licence this user may not read is a link they cannot follow, not an outage.
     await expect(
       initCurrentExtSystemAndLicence({ type: 'assetId', id: '0192f7bc-7ab4-700c-9f3a-0b1c2d3e4f56' })
     ).resolves.toBe(false)

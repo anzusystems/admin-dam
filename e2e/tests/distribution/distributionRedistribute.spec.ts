@@ -25,22 +25,13 @@ import {
 } from '@pages/distribution/distributionPage'
 
 /**
- * The distribution lifecycle past the happy path: the failed state, `Znovu distribuovať`, and the advanced
- * management panel that creates, edits and deletes distribution records directly.
- *
- * **Redistribute is only offered from `failed`.** Both services on devel declare
- * `allowedRedistributeStatuses: ["failed"]`, and nothing in the admin can make a real distribution fail on
- * demand. The advanced panel is the way in: `PATCH /distribution` writes the record as given, status
- * included, without calling the provider — so this spec distributes for real, then flips the stored status
- * to `Chyba` and redistributes from there. That also puts the advanced panel itself under test.
- *
- * **Two distribution UI states are not reachable on devel and are deliberately not covered:**
- *
- * - `DistributionCancelDialog` (`Zastaviť distribúciu`) is rendered for a **custom** distribution service
- *   waiting to go out, and `cancelCustomDistribution` refuses anything else. Devel configures only
- *   `jw_cms` (jwDistribution) and `youtube_cms_main` (youtubeDistribution), so no custom service exists.
- * - `Blokované distribúciou` renders only when a service declares `blockedBy`, and every service on devel
- *   declares `blockedBy: []`. `distributionYoutubeForm.spec.ts` asserts that absence against the config.
+ * Distribution lifecycle past the happy path: the failed state, `Znovu distribuovať`, and the advanced panel.
+ * Redistribute is offered only from `failed`, and nothing in the admin can make a distribution
+ * fail on demand. `PATCH /distribution` writes the record as given without calling the provider,
+ * so the spec distributes for real, then sets the status to `Chyba` and redistributes.
+ * Not covered, because devel cannot reach them: `DistributionCancelDialog` (needs a
+ * custom distribution service, devel has only `jw_cms` and `youtube_cms_main`) and
+ * `Blokované distribúciou` (needs a service with non-empty `blockedBy`, all are `[]`).
  */
 
 let page: Page
@@ -69,9 +60,9 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
     const listLoaded = waitForAssetList(page)
     await page.goto('/assets')
     await listLoaded
-    // A unique copy, so the main file is processed rather than matched as a duplicate of an earlier upload.
-    // Waited through the API rather than the upload overlay, which can sit on "Nahrávanie 1/1" for ever
-    // when the server's notification is lost — nothing here needs the overlay itself.
+    // A unique copy, so the main file is processed and not matched as a duplicate of an earlier upload.
+    // Wait through the API, not the upload overlay. The overlay can stay
+    // on "Nahrávanie 1/1" forever when the server's notification is lost.
     ASSET_ID = await uploadFile(page, uniqueFixtureCopy('video/sample.mp4'))
     await waitForAssetProcessed(page, ASSET_ID)
   })
@@ -85,8 +76,8 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
   })
 
   test('a distributed distribution offers no "Znovu distribuovať"', async () => {
-    // Not a hardcoded expectation: the environment says which statuses may be redistributed, and it says
-    // only "failed" — so the button belongs to the failed state alone.
+    // The environment declares which statuses may be redistributed. Only
+    // "failed" is allowed, so the button belongs to the failed state alone.
     expect(await redistributeStatuses(page, 'jw_cms')).toEqual(['failed'])
 
     await openDistributionTab(page, ASSET_ID)
@@ -98,7 +89,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
     const dialog = await openAddDistribution(page)
     await dialog.getByRole('tab', { name: SERVICE, exact: true }).click()
 
-    // The tab shows the existing distribution instead of an empty form, and drops the submit button with it.
     await expect(dialog.getByText('Distribuovaný')).toBeVisible()
     await expect(dialog.getByRole('button', { name: 'Pridať', exact: true })).toHaveCount(0)
     await closeDistributionDialog(page, dialog)
@@ -106,13 +96,11 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
 
   test('the advanced management panel opens and closes', async () => {
     await openDistributionTab(page, ASSET_ID)
-    // It is collapsed on every load — the toggle is the only way to the manage list.
     await expect(page.locator('[data-cy="button-add-distribution"]')).toHaveCount(0)
 
     await openAdvancedDistributions(page)
     const distributions = await assetDistributions(page, ASSET_ID)
     expect(distributions).toHaveLength(1)
-    // The row is captioned with the service title and the external id the provider assigned.
     await expect(page.locator('.sidebar-info')).toContainText(distributions[0].extId)
 
     await closeAdvancedDistributions(page)
@@ -126,11 +114,9 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
 
     const [distribution] = await assetDistributions(page, ASSET_ID)
     expect(distribution.status).toBe('failed')
-    // The edit writes the record as given and leaves the distributed texts alone.
     expect(distribution.texts?.title).toBe(TITLE)
 
     await expectDistributionStatus(page, SERVICE, 'failed')
-    // A failed distribution names its reason and offers the way back.
     await expect(distributionEntry(page, SERVICE)).toContainText('Dôvod zlyhania:')
     await expect(redistributeButton(page, SERVICE)).toBeVisible()
   })
@@ -185,7 +171,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
     const dialog = page.getByRole('dialog').filter({ hasText: 'Znovu distribuovať' }).first()
     await expect(dialog).toBeVisible()
 
-    // Filling every required field must be enough to re-send it.
     const response = await submitRedistribute(page, dialog, {
       title: TITLE,
       description: DESCRIPTION,

@@ -19,9 +19,6 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* A slot of the asset detail while a file is being uploaded into it: the slot draws the upload in place of its
- * file, and asks for the slot list to be read again when the upload leaves. Mounted over the real store. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -43,7 +40,6 @@ vi.mock('@/domains/system/auth/auth', () => ({
   assetTypeAcl: () => 'acl',
   useAuth: () => ({ can: () => true, canForAll: () => true }),
 }))
-// The parts of the slot that draw its file or offer an upload into it: here only marks of which one is shown.
 const part = async (name: string) => {
   const { h } = await import('vue')
 
@@ -78,7 +74,6 @@ const slotUpload = (over: Partial<UploadQueueItem> = {}) =>
 
 let app: App | undefined
 
-/** Mounts the slot `extra` of `asset-1` over a slots queue holding the rows. */
 const mountSlot = async (rows: UploadQueueItem[], slotHasFile = false, file = assetFile('file-old')) => {
   const pinia = createPinia()
   setActivePinia(pinia)
@@ -173,11 +168,9 @@ describe('the upload into a slot leaving', () => {
     await nextTick()
 
     expect(refreshList).toHaveBeenCalledTimes(1)
-    // Until that list answers, the slot is drawn as it was before the upload.
     expect(shows()).toEqual({ upload: false, file: false, picker: true })
   })
 
-  // With no notification it is the poll of the queue that finds the file of the slot processed.
   it('asks for the slot list once when a read of the poll settles the upload', async () => {
     vi.useFakeTimers()
     stubFileReader()
@@ -209,7 +202,6 @@ describe('the upload into a slot leaving', () => {
     }
 
     expect(refreshList).not.toHaveBeenCalled()
-    // A failed upload stays over the slot until it is cancelled.
     expect(shows().upload).toBe(true)
   })
 
@@ -254,7 +246,7 @@ describe('a slot whose file failed', () => {
     failed.fileAttributes.failReason = 'invalid_mime_type'
     const { root } = await mountSlot([], true, failed)
 
-    // No messages are loaded here, so the chip shows the key of the library's text for the reason.
+    // No messages are loaded here, so the chip shows the message key for the reason.
     expect(root.textContent).toContain('common.damImage.asset.assetFileFailReason.invalidMimeType')
   })
 })

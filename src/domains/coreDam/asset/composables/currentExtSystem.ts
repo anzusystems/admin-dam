@@ -22,7 +22,7 @@ const currentExtSystemId = ref(0)
 
 const currentAssetLicenceId = ref(0)
 
-// The name caches of the library ask under their own ext system: the current one, written with it wherever it is.
+// The library name caches read their own ext system id, so it is written along with the current one.
 const { cachedExtSystemId } = useExtSystemIdForCached()
 
 export const initCurrentExtSystemAndLicence = async (
@@ -69,9 +69,11 @@ export const initCurrentExtSystemAndLicence = async (
         assetRes = await fetchAssetByFileId(loadConfig.id)
       }
     } catch (e) {
-      /* Only "it is not there" answers `false`, which becomes the not-found page; an outage has to
-       * reach the caller, or it would tell the user their asset was deleted. The status is on
-       * `cause` - `useApiRequest` wraps every failure, and no wrapper is an axios error. */
+      /*
+       * Only "not found" returns `false`, which shows the not-found page. An outage
+       * must reach the caller, or the user would be told the asset was deleted.
+       * The status is on `cause` because `useApiRequest` wraps every failure, and the wrapper is not an axios error.
+       */
       if (isAnzuApiForbiddenError(e)) return false
       const cause = (e as { cause?: unknown })?.cause
       if (isAxiosError(cause) && cause.response?.status === HTTP_STATUS_NOT_FOUND) return false

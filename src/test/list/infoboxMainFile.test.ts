@@ -6,13 +6,13 @@ import { assetDetail, assetFile, createFakeDam, queueRow } from '@/test/support/
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The server holds an asset as a draft until it has processed a file of it: also while its main file is on its way,
- * or failed, or is a duplicate; and a detail that took the main file under what was typed keeps the state of the asset
- * it was read with, a draft, once the file is processed. The box above the form says the asset has no file only while
- * it has no main file: with one, what it says is of the main file. The real pages - the list with its dialog, its panel
- * and its upload queue, the page of an asset - the real listener of the notifications, and the application around them
- * as it starts; the server is a fake, and so are the connection its notifications come by and the address the page
- * asks about a new version of the application. */
+/*
+ * The server holds an asset as a draft until it has processed a file of
+ * it, also while the main file is on its way, failed or a duplicate.
+ * A detail that took the main file under typed text keeps the asset
+ * state it was read with (draft), even once the file is processed.
+ * The box above the form says the asset has no file only while it has no main file.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -39,17 +39,13 @@ const FAILED = 'Asset file processing failed'
 const DUPLICATE = 'Asset main file is duplicate'
 
 const LIST = '/assets'
-/** The asset, and the file put into its slot. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
-/** Another asset of the list, with a file of its own. */
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
 type FileStatus = 'stored' | 'processed' | 'failed' | 'duplicate'
 
-/** How far the server is with the main file of the asset: null while the asset has none. */
 let fileIs: FileStatus | null = null
-/** Whether the upload queue holds the upload of the file into the slot of the asset. */
 let inQueue = true
 
 const fileOnServer = (fileId: string, status: FileStatus, assetId: string) => ({
@@ -59,8 +55,6 @@ const fileOnServer = (fileId: string, status: FileStatus, assetId: string) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described; a draft until a file of
- * it is processed. */
 const onServer = (id: string) => {
   const status = id === ASSET ? fileIs : 'processed'
 
@@ -76,7 +70,6 @@ const onServer = (id: string) => {
   }
 }
 
-/** Its one slot, empty until a file is put into it. */
 const slotsOnServer = () => ({
   data: [
     {
@@ -91,10 +84,8 @@ const slotsOnServer = () => ({
 })
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
-/** Long enough for whatever the news sets off to have answered. */
 const answered = () => vi.advanceTimersByTimeAsync(1_000)
 
-/** The server says by its notification that it has processed the file, having done so. */
 const processed = async () => {
   fileIs = 'processed'
   listeners.forEach((listener) => listener({ name: 'asset_file_processed', data: { asset: ASSET, id: FILE } }))
@@ -110,7 +101,6 @@ const start = async () => {
     grants: ['dam_asset_update', 'dam_image_update', 'dam_image_delete'],
     extSystem: { image: { slots: ['default'] } },
     customForm: { image: [customField('title')] },
-    // The upload of a file into the slot of the asset: its file is with the server, which processes it.
     queues: inQueue
       ? {
           slots: [
@@ -119,7 +109,6 @@ const start = async () => {
         }
       : {},
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -134,7 +123,6 @@ const start = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
@@ -145,7 +133,6 @@ const start = async () => {
 
 type Ui = Awaited<ReturnType<typeof start>>
 
-/** A place the form of the asset is drawn in: opened, it answers the element the form is drawn in. */
 type Place = () => Promise<{ ui: Ui; form: () => HTMLElement | null }>
 
 const listOpened = async () => {
@@ -188,7 +175,6 @@ const ofTheList: Array<[string, Place]> = [
 ]
 const everywhere: Array<[string, Place]> = [...ofTheList, ['the page of the asset', onThePageOfTheAsset]]
 
-/** The form of the asset, opened in the place and drawn: what a case reads of it. */
 const openForm = async (place: Place) => {
   const { ui, form } = await place()
   const title = () => form()?.querySelector<HTMLTextAreaElement>('textarea') ?? null
@@ -205,9 +191,7 @@ const openForm = async (place: Place) => {
 
       return field
     },
-    /** Whether "Save" of the form is held back. */
     saveHeldBack: () => buttonsNamed(form()!, 'Save')[0]?.disabled,
-    /** Whether the form says the text. */
     says: (text: string) => !!form()!.textContent?.includes(text),
   }
 }
@@ -233,7 +217,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
   server.fileBy('image', FILE, () => fileOnServer(FILE, fileIs ?? 'stored', ASSET))
-  // The file deleted for good: the asset has none any more, and is a draft again.
   server.on('DELETE', /^\/adm\/v1\/image\/([^/]+)$/, () => {
     fileIs = null
 
@@ -251,8 +234,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The box said "Asset is without file" of every draft: under what was typed once the first file was processed, and of
- * a main file on its way or a duplicate, while the card of the file showed it. */
+/*
+ * The box said "Asset is without file" for every draft.
+ * That was wrong once the first file was processed under typed text, and
+ * for a main file on its way or a duplicate, while the file card showed it.
+ */
 describe('the box above the form of an asset with a main file', () => {
   it.each(ofTheList)(
     'says nothing of an asset without a file in %s once its first file is processed under what was typed',
@@ -266,7 +252,6 @@ describe('the box above the form of an asset with a main file', () => {
       await eventually(() => expect(server.assetReads(ASSET)).toBe(before + 1))
       await answered()
 
-      // Only the main file was taken: what was typed stays, "Save" held back.
       expect([form.title() === typedInto, typedInto.value, form.saveHeldBack()]).toEqual([true, TYPED, true])
       expect([form.says(WITHOUT_FILE), form.ui.alerts()]).toEqual([false, []])
     }
@@ -302,7 +287,6 @@ describe('the box above the form of an asset with a main file', () => {
     expect([form.says(DUPLICATE), form.says(WITHOUT_FILE)]).toEqual([true, false])
   })
 
-  // The guard: a failed main file had its say before already.
   it('says only that the main file failed', async () => {
     fileIs = 'failed'
 
@@ -312,9 +296,11 @@ describe('the box above the form of an asset with a main file', () => {
   })
 })
 
-/* Under what was typed the detail took the main file the server has by now, and kept the state of the asset as it was
- * read: the picture of a first file processed was not drawn (it is, only for an asset with a file), and an asset whose
- * only file was deleted was not said to have none. */
+/*
+ * Under typed text the detail took the main file the server has by now, but kept the asset state as it was read.
+ * So the picture of a first processed file was not drawn, and an
+ * asset whose only file was deleted was not said to have none.
+ */
 describe('the detail of an asset whose main file changed under what was typed', () => {
   it('draws the picture of its first file once that is processed', async () => {
     const form = await openForm(inTheDetailOfTheList)
@@ -354,7 +340,6 @@ describe('the detail of an asset whose main file changed under what was typed', 
       )
     await eventually(() => expect(row()).toBeTruthy())
 
-    // "Remove" of the menu of its row, and "Remove file" of the dialog it opens.
     row()!.querySelector('[data-cy="button-slot-actions"]')!.closest('button')!.click()
     const remove = await eventually(() => {
       const item = Array.from(
@@ -382,7 +367,6 @@ describe('the detail of an asset whose main file changed under what was typed', 
   })
 })
 
-// The guard: an asset that has no file is still said to have none.
 describe('the box above the form of an asset without a main file', () => {
   it.each(everywhere)('says the asset has no file in %s', async (_where, place) => {
     const form = await openForm(place)

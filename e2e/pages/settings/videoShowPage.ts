@@ -2,7 +2,6 @@ import { type Page, expect } from '@playwright/test'
 import { cardLoad, filterById } from '@pages/shared/admin'
 import { closeDetail, confirmCreate, createDialog, openSettingsSection, saveEdit, visibleCy } from '@pages/shared/crud'
 
-/** Create a video show from the settings section and return its id. */
 export async function createVideoShow(page: Page, title: string): Promise<string> {
   await openSettingsSection(page, 'video-show-settings', '/video-shows', 'Video relácie')
   await visibleCy(page, 'button-create').click()
@@ -13,7 +12,6 @@ export async function createVideoShow(page: Page, title: string): Promise<string
   return confirmCreate(page, dialog, '/video-show')
 }
 
-/** Open the video show detail tab and check it renders the show id and title. */
 export async function verifyVideoShowDetail(page: Page, videoShowId: string, title: string): Promise<void> {
   await page.goto(`/video-shows/${videoShowId}`)
   await cardLoad(page)
@@ -24,7 +22,6 @@ export async function verifyVideoShowDetail(page: Page, videoShowId: string, tit
   await expect(page).toHaveURL(/\/video-shows/)
 }
 
-/** Rename a video show found through the list's id filter. */
 export async function updateVideoShow(page: Page, videoShowId: string, title: string): Promise<void> {
   await page.goto('/video-shows')
   await filterById(page, videoShowId)
@@ -36,7 +33,6 @@ export async function updateVideoShow(page: Page, videoShowId: string, title: st
   await closeDetail(page, '/edit')
 }
 
-/** Add an episode to a video show and return its id. */
 export async function createVideoShowEpisode(page: Page, videoShowId: string, title: string): Promise<string> {
   await page.goto(`/video-shows/${videoShowId}`)
   await visibleCy(page, 'episode-list').click()
@@ -48,7 +44,6 @@ export async function createVideoShowEpisode(page: Page, videoShowId: string, ti
   return confirmCreate(page, dialog, '/video-show-episode')
 }
 
-/** Open a video show episode detail and check it renders the episode id. */
 export async function verifyVideoShowEpisodeDetail(page: Page, videoShowId: string, episodeId: string): Promise<void> {
   await page.goto(`/video-shows/${videoShowId}/episodes/${episodeId}`)
   await cardLoad(page)
@@ -57,7 +52,6 @@ export async function verifyVideoShowEpisodeDetail(page: Page, videoShowId: stri
   await expect(page).toHaveURL(new RegExp(`/video-shows/${videoShowId}`))
 }
 
-/** Rename a video show episode found through the episode list's id filter. */
 export async function updateVideoShowEpisode(
   page: Page,
   videoShowId: string,

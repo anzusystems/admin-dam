@@ -20,26 +20,19 @@ import {
 } from '@pages/settings/authorCleanPhrasePage'
 
 /**
- * Author clean phrases — the rules that turn the free-text author line of an imported asset into DAM
- * authors.
- *
- * The rules are only worth anything if they fire, so this spec does not stop at storing one: after
- * creating a rule it runs the section's own **playground** against a line containing the phrase and
- * asserts what came out. That is the same call the import path makes, so a rule proven here is a rule
- * that works.
- *
- * Known bugs: DAM-B4 (the delete reports `Záznam bol upravený.`) and DAM-B5 (a rule switched to
- * `Nahradenie` stores its author but never applies it).
+ * Author clean phrases: rules that turn the free-text author line of an imported asset into DAM authors.
+ * After creating a rule, the spec runs the section's playground,
+ * which is the same call the import makes, and asserts the result.
+ * Known bugs: DAM-B4 (delete reports `Záznam bol upravený.`) and DAM-B5 (a
+ * rule switched to `Nahradenie` stores its author but never applies it).
  */
 
 let page: Page
 let PHRASE_ID = ''
-/** Recorded by the delete test and asserted by the DAM-B4 test that follows it. */
 let DELETE_ALERT = ''
 
 const PHRASE = `E2E${RAND_NUM}`
 const AUTHOR_LINE = `${PHRASE} Jozef Novák`
-/** An author that exists on every environment — the `Nahradenie` rule substitutes it. */
 const REPLACEMENT_AUTHOR = 'TASR'
 
 test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
@@ -94,7 +87,6 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
   test('strips the phrase out of an author line in the playground', async () => {
     const result = await runPlayground(page, AUTHOR_LINE)
 
-    // The rule removes its phrase and nothing else, leaving the one author the line names.
     expect(result.authorNames).toEqual(['Jozef Novák'])
   })
 
@@ -103,7 +95,6 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
 
     const modes = await columnValues(page, COLUMN.mode)
     expect(modes.length, 'the environment holds replacement rules').toBeGreaterThan(0)
-    // Every row that came back carries the filtered operation — true whatever the environment holds.
     for (const mode of modes) expect(mode.trim()).toBe(MODE.replace)
 
     await cleanPhraseTable(page).resetFilter()
@@ -134,9 +125,7 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
     await openCleanPhrases(page)
     const result = await runPlayground(page, AUTHOR_LINE)
 
-    // The phrase is still stripped — that much a `Odstránenie` rule does too …
     expect(result.authorNames).toEqual(['Jozef Novák'])
-    // … but the substitution the rule now asks for never reaches the author list.
     expect(result.authors.join(' ')).toContain(REPLACEMENT_AUTHOR)
   })
 

@@ -12,7 +12,6 @@ import { createdId } from '@pages/assets/assetDetailPage'
  * pole") or into all of them ("Nahradiť všade"). Nothing reaches the API until the selection is saved.
  */
 
-/** Which rows a mass operation writes to. */
 export type MassOperation = 'fill-empty' | 'replace-all'
 
 const MASS_OPERATION_ICON: Record<MassOperation, string> = {
@@ -20,12 +19,13 @@ const MASS_OPERATION_ICON: Record<MassOperation, string> = {
   'replace-all': '.mdi-file-replace-outline',
 }
 
-/** The footer holding the current selection. Present even with nothing selected, then reading "0". */
+/**
+ * The footer holding the current selection. Present even with nothing selected, then reading "0".
+ */
 export function selectedFooter(page: Page): Locator {
   return page.locator('.asset-footer__selected')
 }
 
-/** The mass operations sidebar of the expanded editor. */
 export function massSidebar(page: Page): Locator {
   return page.locator('.asset-queue-editable__sidebar')
 }
@@ -49,7 +49,6 @@ export function tiles(page: Page): Locator {
   return page.locator('.dam-image-grid__item')
 }
 
-/** Selector of the tile captioned `caption` — for waiting out the search index after an upload. */
 export function tileSelector(caption: string): string {
   return `.dam-image-grid__item:has-text("${caption}")`
 }
@@ -67,7 +66,6 @@ export async function tileWithCaption(page: Page, caption: string): Promise<Loca
   return tile
 }
 
-/** Whether a tile is currently part of the selection. */
 async function isSelected(tile: Locator): Promise<boolean> {
   return ((await tile.getAttribute('class')) ?? '').includes('dam-image-grid__item--selected')
 }
@@ -105,27 +103,26 @@ export async function expectSelectedCount(page: Page, count: number): Promise<vo
   if (count > 0) await expect(selectedFooter(page)).toContainText(`Vybrané súbory: ${count}`)
 }
 
-/** Expand the selection footer into the full editor and wait for a row per selected asset. */
 export async function openSelectionEditor(page: Page, rowCount: number): Promise<void> {
   await selectedFooter(page).getByRole('button', { name: 'Upraviť' }).first().click()
   await expect(page.locator('.asset-queue-editable')).toBeVisible()
   await expect(page.locator('.dam-upload-queue__item')).toHaveCount(rowCount)
 }
 
-/** Open the mass operations sidebar of the expanded editor. */
 export async function openMassOperations(page: Page): Promise<void> {
   if (await massSidebar(page).isVisible()) return
   await selectedFooter(page).getByRole('button', { name: 'Hromadné operácie' }).first().click()
   await expect(massSidebar(page)).toBeVisible()
 }
 
-/** Labels of the mass operations fields that carry no `data-cy` of their own. */
+/**
+ * Labels of the mass operations fields that carry no `data-cy` of their own.
+ */
 const MASS_FIELD_LABEL: Record<string, string> = {
   keywords: 'Kľúčové slová',
   authors: 'Autori',
 }
 
-/** The row of one field in the mass operations form, holding the field and its two apply buttons. */
 function massRow(page: Page, field: string): Locator {
   const rows = massSidebar(page).locator('.v-row')
   const label = MASS_FIELD_LABEL[field]
@@ -134,7 +131,9 @@ function massRow(page: Page, field: string): Locator {
     : rows.filter({ has: page.locator(`[data-cy="custom-field-${field}"]`) })
 }
 
-/** Type a value into a text field of the mass operations form. It is not applied until `applyMass`. */
+/**
+ * Type a value into a text field of the mass operations form. It is not applied until `applyMass`.
+ */
 export async function fillMassText(page: Page, field: string, value: string): Promise<void> {
   await fieldTextarea(massSidebar(page), field).fill(value)
 }
@@ -157,7 +156,6 @@ export async function addMassKeyword(page: Page, name: string): Promise<string> 
   return id
 }
 
-/** Create an author through the mass operations form's "+" and return its id. */
 export async function addMassAuthor(page: Page, name: string): Promise<string> {
   const field = massRow(page, 'authors')
   const dialog = page.getByRole('dialog').filter({ has: page.locator('[data-cy="author-name"]') })
@@ -189,18 +187,18 @@ export async function applyMass(page: Page, field: string, operation: MassOperat
   await massRow(page, field).locator(MASS_OPERATION_ICON[operation]).first().click()
 }
 
-/** Apply every filled field of the mass operations form at once, through the buttons below it. */
 export async function applyMassForm(page: Page, operation: MassOperation): Promise<void> {
   const name = operation === 'fill-empty' ? 'Vyplniť len prázdne' : 'Nahradiť všetko'
   await massSidebar(page).getByRole('button', { name }).click()
 }
 
-/** Empty the mass operations form itself. The rows keep whatever was already applied to them. */
+/**
+ * Empty the mass operations form itself. The rows keep whatever was already applied to them.
+ */
 export async function clearMassForm(page: Page): Promise<void> {
   await massSidebar(page).getByRole('button', { name: 'Vyčistiť' }).click()
 }
 
-/** The current value of a text field in each selected row, in selection order. */
 export async function rowTexts(page: Page, name: string): Promise<string[]> {
   const rows = page.locator('.dam-upload-queue__item')
   const values: string[] = []
@@ -210,13 +208,11 @@ export async function rowTexts(page: Page, name: string): Promise<string[]> {
   return values
 }
 
-/** Save every selected asset and close the editor — the selection is cleared by the save. */
 export async function saveSelection(page: Page): Promise<void> {
   await clickForAlert(page, selectedFooter(page).getByRole('button', { name: 'Uložiť a ukončiť' }), ALERT_UPDATE)
   await expectSelectedCount(page, 0)
 }
 
-/** Save every selected asset through the second save button, which leaves the selection open. */
 export async function saveSelectionKeepingOpen(page: Page, rowCount: number): Promise<void> {
   await clickForAlert(page, selectedFooter(page).locator('button .mdi-content-save'), ALERT_UPDATE)
   await expect(page.locator('.dam-upload-queue__item')).toHaveCount(rowCount)

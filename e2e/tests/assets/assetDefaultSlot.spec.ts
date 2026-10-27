@@ -17,15 +17,13 @@ import {
 } from '@pages/assets/assetSlotsPage'
 
 /**
- * The `default` slot of the three single-slot asset types. Only audio has several slots; image, video and
- * document each get exactly one, which is why their slots tab had never been exercised.
- *
- * With nowhere to move a file to, the actions menu drops "Spraviť ako hlavný súbor", "Duplikovať do iného
- * slotu" and "Vymeniť s iným slotom", and the remove dialog stops offering to unlink — the whole difference
- * this spec pins down against `assetSlotActions.spec.ts`, which covers the multi-slot audio case.
- *
- * A document's file is not offered for deletion at all: core-dam refuses `DELETE /document/{id}` to everyone, a
- * super admin included (ACL BE task #86852/2.11), so with nothing to unlink either "Odstrániť" is not in its menu.
+ * The `default` slot of the single-slot asset types. Only audio
+ * has several slots; image, video and document have exactly one.
+ * With nowhere to move a file, the actions menu drops "Spraviť ako hlavný súbor",
+ * "Duplikovať do iného slotu" and "Vymeniť s iným slotom", and the remove dialog stops
+ * offering to unlink. `assetSlotActions.spec.ts` covers the multi-slot audio case.
+ * A document's file cannot be deleted: core-dam refuses `DELETE /document/{id}` to everyone, super
+ * admin included (ACL BE task #86852/2.11). With nothing to unlink, "Odstrániť" is not in its menu.
  */
 
 const SINGLE_SLOT_ACTIONS = ['Kopírovať ID súboru', 'Stiahnuť', 'Odstrániť']
@@ -61,10 +59,9 @@ test.describe.serial(`${ADMIN_SUITE} - Asset default slot`, () => {
       await listLoaded
       const assetId = await uploadFile(page, uniqueFixtureCopy(file))
       assetIds.push(assetId)
-      // Waited for through the API, not through the upload overlay: the overlay only flips to "finished"
-      // when the server's notification reaches it, and a lost notification hangs it on a file that is
-      // long since stored. An identical file uploaded by another suite lands as a `duplicate`, which
-      // fills the slot just the same.
+      // Wait through the API, not the upload overlay: the overlay finishes only when the
+      // server notification reaches it, and a lost notification hangs it on a stored file.
+      // An identical file uploaded by another suite lands as a `duplicate`, which fills the slot just the same.
       await waitForAssetProcessed(page, assetId, { done: ['processed', 'duplicate'], timeout: 180000 })
 
       await openSlots(page, assetId, config.defaultSlotName)

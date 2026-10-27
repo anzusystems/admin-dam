@@ -25,16 +25,16 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const initialized = ref(false)
-// The ext system a start-up stopped on for want of access to it; the error page says so instead of its generic text.
+// Ext system the start-up stopped on for lack of access. The error page shows a specific message for it.
 const accessDeniedExtSystemId = ref<IntegerId | undefined>(undefined)
 
-// A start-up that could not be completed; nothing is known here about why.
+// A start-up that could not complete, for an unknown reason.
 const ERROR_PATH = '/error'
-// A deep link that could not be resolved to an asset; anything else goes to the page above.
+// A deep link that could not be resolved to an asset. Other failures go to `ERROR_PATH`.
 const NOT_FOUND_PATH = '/not-found'
 
-// Nothing answered the user read: the sign-in server (the token refresh), or core-dam itself. The session may
-// well be valid, and the sign-in form would only come back to the same failure after the SSO round trip.
+// Nothing answered the user read: neither the sign-in server (token refresh) nor core-dam.
+// The session may be valid, and the sign-in form would hit the same failure after the SSO round trip.
 const isOutage = (error: unknown): boolean =>
   isInCauseChain(
     error,
@@ -44,10 +44,10 @@ const isOutage = (error: unknown): boolean =>
       (axios.isAxiosError(cause) && (isUndefined(cause.response) || cause.response.status >= 500))
   )
 
-/* The ext system's configuration is read under dam_extSystem_read, its asset custom form elements under
- * dam_customFormElement_read and dam_assetCustomForm_read, and the backend lets only an admin or a user of that ext
- * system read either. Their loaders reject with a bare `false`, so whether it was a 403 is not known here - but when
- * one of these is missing, it was. */
+/*
+ * The ext system config and its custom form elements are readable only by an admin or a user of that ext system.
+ * Their loaders reject with a bare `false`, so a 403 is not detectable. A missing permission here implies it was one.
+ */
 const lacksExtSystemAccess = (extSystemId: IntegerId): boolean => {
   const { canSafe, useCurrentUser } = useAuth()
   const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
@@ -68,22 +68,27 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
   const { fetchCurrentUser } = useCurrentUser(SYSTEM_DAM)
   accessDeniedExtSystemId.value = undefined
 
-  /* Before anything is fetched: the private config is protected, so for a user the SSO has just
-   * refused it is the request most likely to fail, and it answered before this verdict was read. */
+  /*
+   * Checked before fetching: the private config is protected, so it most likely fails for a user the SSO just refused.
+   */
   if (isStatusUnauthorized()) {
     return '/unauthorized'
   }
 
-  /* Settled, not raced: `Promise.all` left the current-user answer unread, and a user that does
-   * load is the only thing here that rules out a sign-in problem - `loadDamPrvConfig` rejects with
-   * a bare `false`, and a failed user read says nothing either way. */
+  /*
+   * Settled, not raced: `Promise.all` left the user answer unread.
+   * Only a successful user load rules out a sign-in problem. `loadDamPrvConfig`
+   * rejects with a bare `false`, and a failed user read is inconclusive.
+   */
   const [userLoad, configLoad] = await Promise.allSettled([
     fetchCurrentUser(damClient, '/adm/users/current', undefined, 'user', { throwOnError: true }),
     loadDamPrvConfig(),
   ])
 
-  /* What this attempt read, not what the ref holds: a failed read leaves the previous user in place, and a
-   * bailed-out start-up runs all of this again on the next navigation. */
+  /*
+   * Use this attempt's result, not the ref: a failed read keeps the previous user.
+   * A bailed-out start-up reruns on the next navigation.
+   */
   if (userLoad.status === 'rejected' && isOutage(userLoad.reason)) {
     return ERROR_PATH
   }
@@ -91,7 +96,7 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return '/login'
   }
   if (configLoad.status === 'rejected') {
-    // The user is readable, so not the case above; what it is instead the rejection does not say.
+    // The user is readable, so this is not an outage. The rejection does not say what it is.
     console.error('appInitialize: private configuration failed to load', configLoad.reason)
 
     return ERROR_PATH
@@ -105,7 +110,7 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return ERROR_PATH
   }
   if (!extSystemResolved) {
-    // It answers `false` rather than throwing, and dropping that carried on with ext system `0`.
+    // It returns `false` instead of throwing. Ignoring that continued with ext system `0`.
     return isUndefined(extSystemConfig) ? ERROR_PATH : NOT_FOUND_PATH
   }
 
@@ -130,9 +135,12 @@ export async function createAppInitialize(to: RouteLocationNormalized): Promise<
     return ERROR_PATH
   }
 
-  /* Only once this is committed to succeeding: a bail-out above leaves `initialized` false and the
-   * next navigation would re-register. Notifications are optional, so a malformed `webSocketUrl` -
-   * which throws synchronously - must not block every protected navigation. */
+  /*
+   * Only once start-up will succeed: a bail-out leaves `initialized`
+   * false and the next navigation would register again.
+   * Notifications are optional. A malformed `webSocketUrl` throws
+   * synchronously and must not block protected navigation.
+   */
   try {
     initAppNotificationListeners()
   } catch (error) {

@@ -5,9 +5,6 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The row of an asset picked from an external provider, in the panel of the selection: the real component, with the
- * application around it as it starts. What becomes of the selection is in `externalProviderImport*.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -46,7 +43,6 @@ describe('the row of an asset picked from an external provider', () => {
     return {
       bin,
       removed,
-      /** What the button says of itself when the pointer is over it. */
       tooltip: async () => {
         bin.dispatchEvent(new MouseEvent('mouseenter'))
         await vi.advanceTimersByTimeAsync(1000)
@@ -56,7 +52,7 @@ describe('the row of an asset picked from an external provider', () => {
     }
   }
 
-  // Nothing is deleted: the asset stays with the provider, and only leaves the selection.
+  // Nothing is deleted. The asset stays with the provider and only leaves the selection.
   it('says of its bin that it takes the asset out of the selection, and the bin asks for just that', async () => {
     const { bin, removed, tooltip } = await mountRow()
 

@@ -12,7 +12,7 @@ const props = defineProps<{
 const uploadQueuesStore = useUploadQueuesStore()
 const { currentExtSystemId } = useCurrentExtSystem()
 
-// The store of admin-dam writes: keywords and authors only into the rows whose asset type has them on.
+// The admin-dam store writes keywords and authors only into rows whose asset type enables them.
 const operations: UploadQueueMassOperationsBinding = {
   assetTypes: () => uploadQueuesStore.getQueueItemsTypes(props.queueId),
   fillCustomDataValue: (data, forceReplace) =>

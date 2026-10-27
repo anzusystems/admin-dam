@@ -6,11 +6,6 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* Which of keywords and authors the mass operations offer, and which of them "fill all empty" and "replace all" ask
- * the store to write: those that a type in the queue has on. The library's sidebar in the real list over the real
- * store, with the application around it as it starts; the server is a fake. Which rows the store then writes them
- * into is in `massOperationsRows.test.ts` and `lazyMetadata.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -20,7 +15,6 @@ const GENERAL = 'Main'
 
 const on = (enabled: boolean) => ({ enabled, required: false })
 
-/** Mounts the list over a queue of rows of the given asset types and answers what its sidebar offers and asks for. */
 const sidebar = async (types: DamAssetTypeType[], extSystem: UploadUiSetup['extSystem']) => {
   const rows = types.map((assetType, index) =>
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: 'asset-' + index, assetType })
@@ -31,7 +25,6 @@ const sidebar = async (types: DamAssetTypeType[], extSystem: UploadUiSetup['extS
     massOperations: true,
   })
   const root = list.querySelector<HTMLElement>('.asset-queue-editable__sidebar')!
-  // What the sidebar asks of the store, in place of the writing itself.
   const asked: string[] = []
   vi.spyOn(ui.store, 'queueItemsReplaceEmptyKeywords').mockImplementation((_queueId, _value, forceReplace) => {
     asked.push(forceReplace ? 'keywords replaced' : 'keywords filled')
@@ -66,7 +59,6 @@ afterEach(() => {
   stopUploadUi()
 })
 
-// The rows of the queue show keywords and authors only where the ext system has them on for the asset type.
 describe('mass operations of the queue: keywords and authors', () => {
   const imagesKeywordsDocumentsAuthors = {
     image: { keywords: on(true), authors: on(false) },
@@ -80,14 +72,13 @@ describe('mass operations of the queue: keywords and authors', () => {
     expect(images.replaceAll()).toEqual(['keywords replaced'])
     stopUploadUi()
 
-    // Documents have authors and no keywords: "fill all" used to write both, whatever the types of the queue.
+    // Documents have authors and no keywords. "Fill all" used to write both, whatever the types in the queue.
     const documents = await sidebar(['document', 'document'], imagesKeywordsDocumentsAuthors)
     expect(documents.inputs()).toEqual(['Authors'])
     expect(documents.fillAll()).toEqual(['authors filled'])
     expect(documents.replaceAll()).toEqual(['authors replaced'])
   })
 
-  // Images have both; a queue without images is asked of its own types, and their general panel is not there.
   it('are left out altogether, with the general panel, where no type in the queue has them', async () => {
     const neither = await sidebar(['video', 'audio'], {
       image: { keywords: on(true), authors: on(true) },
@@ -100,7 +91,6 @@ describe('mass operations of the queue: keywords and authors', () => {
     expect(neither.replaceAll()).toEqual([])
   })
 
-  // Which items they are written into is the store's part (`lazyMetadata.test.ts`): only those of such a type.
   it('are both offered for a queue of types that have one each', async () => {
     const mixed = await sidebar(['image', 'document'], imagesKeywordsDocumentsAuthors)
 

@@ -2,8 +2,8 @@ import { AxiosError, AxiosHeaders } from 'axios'
 import type { AxiosResponse } from 'axios'
 import { describe, expect, it, vi } from 'vitest'
 
-// A 401 of the token refresh itself is the refresh interceptor's to answer, and it logs out; this one logged
-// out a second time.
+// A 401 of the token refresh itself is handled by the refresh interceptor, which logs out.
+// This handler used to log out a second time.
 
 const logoutUser = vi.fn()
 vi.mock('@/domains/system/composables/currentUser', async (importOriginal) => ({

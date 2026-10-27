@@ -18,7 +18,7 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFile: AssetFile & AssetFileMainRouteAware
     title: string
-    // The file is the main one of its asset: the Info tab of a detail of the asset shows it, with its route.
+    // The file is its asset's main file, shown with its route on the asset detail Info tab.
     isMainFile?: boolean
     dataCy?: string
   }>(),
@@ -37,24 +37,28 @@ const makeFilePrivateDialogFileId = ref<DocId>('')
 
 const { showErrorsDefault, showUnknownError } = useAlerts()
 const { can } = useAuth()
-// Said on the page the change was asked from, as the failure of the read after it: not on the next one.
+// Errors are shown on the page the change was made from, not on the next one.
 const whileOnPage = useWhileOnPage()
 
 const canChangeRoute = computed(() => can(assetTypeAcl(props.assetType, 'update')))
-/* The server makes public only a file it has processed, and refuses any other without saying why. A file held as
- * still on its way is held so until its asset, or the slots, are read again. */
+/*
+ * The server makes only processed files public and rejects others without a reason.
+ * A file still in progress stays so until its asset or slots are read again.
+ */
 const canMakePublic = computed(
   () => canChangeRoute.value && props.assetFile.fileAttributes.status === AssetFileProcessStatus.Processed
 )
 
 const fileChanged = useAssetFileChanged()
 
-/* The file a change of its route went through for. It is held as it was until it is read again - with its asset, with
- * the slots -, and a menu opened meanwhile would offer the change again: the server refuses it, the route is gone or
- * there by then. Off until the file is another one. */
+/*
+ * The file whose route change succeeded. It stays stale until reread with its asset or slots.
+ * A menu opened meanwhile would offer the change again, and the server would reject it.
+ * Disabled until the file changes.
+ */
 const changedFile = shallowRef<object | null>(null)
 const awaitsRead = computed(() => changedFile.value === props.assetFile)
-// Nor any change of the route of a file of an asset being deleted.
+// Also disabled while the asset is being deleted.
 const assetDetailStore = useAssetDetailStore()
 const changeOff = computed(() => awaitsRead.value || assetDetailStore.isDeleting)
 
@@ -64,12 +68,14 @@ const openMakeFilePrivateDialog = (fileId: DocId) => {
   makeFilePrivateDialog.value = true
 }
 
-/* Told only once the change went through: after one that failed there is nothing new to read. The page that draws
- * the detail of the asset is told first, when the file is the main one: with nothing typed it puts the detail behind
- * its loader, and what hears the event - the Slots tab - reads the slots only when it stays drawn. The answer can
- * find this component unmounted: its props are then as they were last, and the event is dropped. The menu goes
- * with it: the form stays mounted over a read that keeps metadata that were not saved, and the menu stayed open in
- * it, by then offering the opposite action. */
+/*
+ * Notifies only after a successful change; a failed one has nothing new to read.
+ * The page drawing the asset detail is told first for a main file. With no unsaved input it shows the loader,
+ * and the Slots tab reads slots only if it stays drawn. If the
+ * component is unmounted by the answer, the event is dropped.
+ * The menu closes too: the form stays mounted over a reread that keeps
+ * unsaved metadata, and an open menu would offer the opposite action.
+ */
 const routeChanged = () => {
   changedFile.value = props.assetFile
   menu.value = false
@@ -78,8 +84,10 @@ const routeChanged = () => {
 }
 
 const makePrivate = async () => {
-  /* One at a time: the item stays in the open menu while the request is on its way, and a second one would be
-   * refused - the route is gone by then - over a change that went through. */
+  /*
+   * One at a time: the item stays in the open menu during the request,
+   * and a second request would be rejected after the first succeeded.
+   */
   if (loading.value || changeOff.value) return
   try {
     loading.value = true
@@ -100,7 +108,7 @@ const { t } = useI18n()
 <template>
   <AssetFileRouteStatus :asset-file-route="assetFile" />
 
-  <!-- Not drawn with nothing to offer: a private file the user may not make public, or cannot yet. -->
+  <!-- Hidden when there is nothing to offer: a private file the user may not or cannot yet make public. -->
   <VMenu
     v-if="assetFile.mainRoute || canMakePublic"
     v-model="menu"

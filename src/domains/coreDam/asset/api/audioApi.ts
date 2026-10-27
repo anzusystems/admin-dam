@@ -41,6 +41,6 @@ export const makePublic = (audioId: DocId, slug: string) =>
     ROUTE_VALIDATION_ENTITY
   )
 
-// The server answers 200 with the audio file, where an image and a document get 204: either is the change gone through.
+// The server returns 200 with the audio file, while image and document return 204. Both mean success.
 export const makePrivate = (audioId: DocId) =>
   fileCommand('PATCH', END_POINT + '/' + audioId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

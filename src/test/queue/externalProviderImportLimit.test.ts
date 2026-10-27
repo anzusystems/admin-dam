@@ -5,9 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDam, queueRow, seedDamConfig, seedQueue } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* An import from an external provider goes into the upload queue next to the uploads, and counts against the same
- * fifty rows. The real import actions and the real store over a fake server. */
-
 let server: FakeDam
 const showWarning = vi.fn()
 
@@ -70,7 +67,6 @@ const provided = (id: string) => ({
 const settled = (count: number): UploadQueueItem[] =>
   Array.from({ length: count }, (_value, index) => queueRow({ status: 'uploaded', assetId: 'settled-' + index }))
 
-/** A row of the selection, as picking a provider asset in its list makes it. */
 const selectedRow = (id: string) =>
   queueRow({
     type: 'externalProviderAsset',
@@ -98,7 +94,6 @@ afterEach(() => {
 })
 
 describe('the import of the provider asset open in the detail', () => {
-  // The asset the detail shows, whatever tile of the list is active.
   it('puts it into the upload queue, which imports it, and closes the detail when asked to', async () => {
     const { store, listStore, detailStore, actions } = await load()
     seedQueue(store, GLOBAL, settled(49))
@@ -121,7 +116,6 @@ describe('the import of the provider asset open in the detail', () => {
       { id: 'photo-2', externalProvider: 'unsplash' },
     ])
     expect([row.status, row.assetId, row.fileId]).toEqual(['processing', 'asset-1', 'file-1'])
-    // What the provider said about the asset is written into the row, as the detail holds it.
     expect(row.externalProviderMetadata).toEqual({ width: 800 })
     expect(detailStore.detail).toBe(false)
     expect(showWarning).not.toHaveBeenCalled()
@@ -140,7 +134,6 @@ describe('the import of the provider asset open in the detail', () => {
     expect(store.getQueueTotalCount(GLOBAL)).toBe(50)
     expect(imports()).toEqual([])
     expect(showWarning).toHaveBeenCalledTimes(1)
-    // And the detail stays open on what could not be imported.
     expect(detailStore.detail).toBe(true)
   })
 
@@ -174,7 +167,6 @@ describe('the import of the selected provider assets', () => {
       'https://provider.test/photo-1.jpg',
       'https://provider.test/photo-2.jpg',
     ])
-    // What the provider said about the asset comes along from the selection, as an import from the detail brings it.
     expect(added.map((row) => row.externalProviderMetadata)).toEqual([{ width: 800 }, { width: 800 }])
     expect(imports().map((request) => JSON.parse(request.data as string))).toEqual([
       { id: 'photo-1', externalProvider: 'unsplash' },
@@ -196,9 +188,9 @@ describe('the import of the selected provider assets', () => {
 
     await actions.importFromSelected()
 
-    // Written into the row of the upload queue (the store), as an import from the detail writes them. Nothing shows
-    // them there - only the panel of the selection does (`ExternalProviderAssetQueueItemReadonly.vue`) - and none is
-    // sent to DAM.
+    // Nothing shows the metadata in the store row. Only the selection
+    // panel does (`ExternalProviderAssetQueueItemReadonly.vue`).
+    // None of it is sent to DAM.
     expect(
       store.getQueueItems(GLOBAL).map((row) => [row.externalProviderAssetId, row.externalProviderMetadata])
     ).toEqual([

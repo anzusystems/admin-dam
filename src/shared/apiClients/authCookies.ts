@@ -2,8 +2,11 @@ import Cookies from 'universal-cookie'
 
 import { envConfig } from '@/shared/EnvConfigService'
 
-/* Bare `universal-cookie`, not VueUse's `useCookies()`: both readers run outside a Vue effect scope, where it leaks
- * an instance plus a permanent change listener per call and its `tryOnScopeDispose` cleanup is a silent no-op. */
+/*
+ * Bare `universal-cookie`, not VueUse's `useCookies()`. Both readers run outside a Vue effect scope.
+ * There `useCookies()` leaks an instance and a permanent change
+ * listener per call, and its `tryOnScopeDispose` cleanup does nothing.
+ */
 const cookies = new Cookies()
 
 export const getAuthCookieState = () => ({

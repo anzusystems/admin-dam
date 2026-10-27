@@ -44,7 +44,7 @@ const { damPrvConfig } = storeToRefs(damConfigStore)
 
 const { t, te } = useI18n()
 
-// The name of a colour by the key the configuration gives it; a key the app has no name for is shown as it is.
+// A key without a translation is shown as is.
 const colorName = (key: string) => (te('coreDam.asset.color.' + key) ? t('coreDam.asset.color.' + key) : key)
 
 const items = computed(() =>
@@ -91,9 +91,10 @@ const label = computed(() => {
       <span v-if="label">{{ label }}</span>
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
-      <!-- A button, named by the name of its colour: pressed by Enter as it goes down and by Space as it comes up, as a
-           button is.
-           Neither key goes on to the filter form around it, which searches on Enter. -->
+      <!--
+        Acts as a button: Enter triggers on keydown, Space on keyup, like a native button.
+        Neither key propagates to the surrounding filter form, which searches on Enter.
+      -->
       <div
         v-for="(item, key) in items"
         :key="key"

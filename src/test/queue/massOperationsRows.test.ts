@@ -7,20 +7,11 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The mass operations beside the rows of an editable queue: a scratch form whose values are copied into the rows,
- * one field at a time or all at once, into the empty ones only or over what is there. The real sidebar, with its
- * real inputs, in the real list over the real store: a value is typed, a keyword is searched for and picked, a
- * button is pressed, and the rows of the store are read. The server is a fake that knows two keywords and an author.
- *
- * Which of keywords and authors the sidebar offers at all is in `massOperationsSidebar.test.ts`; that its fields
- * are not validated, in the library's `massOperationsValidation.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
 const QUEUE = 'global'
-// The two buttons beside a field are named by what they do and by the field.
 const fillOf = (field: string) => 'Fill empty field: ' + field
 const replaceOf = (field: string) => 'Replace everywhere: ' + field
 const FILL_ALL = 'Fill only empty'
@@ -43,10 +34,8 @@ const forms = {
   audio: [customField('title')],
 }
 
-/** Mounts the editable list over the rows and answers its sidebar, by what the user finds in it. */
 const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}) => {
   const ui = await startUploadUi({ server, queues: { [QUEUE]: rows }, customForm: forms, ...setup })
-  // The server finds a keyword or an author by its ids or by a text in its name.
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, (_request, match) => {
     const query = new URLSearchParams(ui.asked[ui.asked.length - 1].split('?')[1])
     const ids = query.get('id')?.split(',')
@@ -75,7 +64,6 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
     panel(title).querySelector<HTMLButtonElement>('.v-expansion-panel-title')?.click()
     await nextTick()
   }
-  /** The scratch field of the panel with that label: its input, and the two buttons that stand beside it. */
   const field = (panelTitle: string, label: string) => {
     const input = Array.from(panel(panelTitle).querySelectorAll<HTMLElement>('.v-input')).find(
       (one) => one.querySelector('label')?.textContent?.trim() === label
@@ -93,7 +81,6 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
     textarea.dispatchEvent(new Event('input'))
     await nextTick()
   }
-  /** Searches the keyword or author input of the general panel for the name, and picks what the server found. */
   const pick = async (label: string, name: string) => {
     const input = field(GENERAL, label).input.querySelector<HTMLInputElement>('input[type="text"]')!
     input.focus()
@@ -137,14 +124,12 @@ describe('the panels of the mass operations', () => {
     ])
 
     expect(panels().map(titleOf)).toEqual([GENERAL, 'Image', 'Audio'])
-    // Open: the general one and the type of the first row.
     expect(panels().map((panel) => panel.classList.contains('v-expansion-panel--active'))).toEqual([true, false, true])
   })
 
   it('hold a scratch field, with its two buttons, for each custom field of the type that can be written', async () => {
     const { panel, field } = await mountQueue([row('asset-1'), row('asset-2')], {
       customForm: { image: [customField('title'), customField('locked', { readonly: true }), customField('note')] },
-      // Fewer than the form has: the scratch form shows them all the same.
       extSystem: { image: { customMetadataPinnedAmount: 1 } },
     })
 
@@ -157,7 +142,6 @@ describe('the panels of the mass operations', () => {
       button.getAttribute('aria-label')
     )
     expect(names).toEqual([fillOf('title'), replaceOf('title'), fillOf('note'), replaceOf('note')])
-    // All of them at once, with nothing behind "show more details".
     const hidden = Array.from(panel('Image').querySelectorAll('.v-input')).filter((input) =>
       input.closest('[style*="display: none"]')
     )
@@ -179,7 +163,6 @@ describe('a custom field of the mass operations', () => {
     await press(field('Image', 'title').fill)
 
     expect(titles(rows)).toEqual(['filled', 'kept', ''])
-    // No other field of a row is touched.
     expect(rows.map((one) => one.customData.note)).toEqual(['first', 'second', undefined])
   })
 
@@ -231,7 +214,6 @@ describe('a custom field of the mass operations', () => {
     expect(asked.mock.calls).toEqual([
       [QUEUE, { assetType: 'image', elementProperty: 'title', value: undefined }, undefined],
     ])
-    // The rows that had a value keep it.
     expect(titles(rows)).toEqual([undefined, 'kept', ''])
   })
 
@@ -254,7 +236,6 @@ describe('the keywords and the authors of the mass operations', () => {
     row('asset-2', { keywords: ['keyword-kosice'], authors: ['author-other'] }),
     row('asset-3', { assetType: 'document' }),
   ]
-  // Documents have neither keywords nor authors here.
   const noneForDocuments = {
     extSystem: {
       document: { keywords: { enabled: false, required: false }, authors: { enabled: false, required: false } },
@@ -269,7 +250,6 @@ describe('the keywords and the authors of the mass operations', () => {
     await press(field(GENERAL, 'Keywords').fill)
 
     expect(rows.map((one) => one.keywords)).toEqual([['keyword-bratislava'], ['keyword-kosice'], []])
-    // Each button writes its own field.
     expect(rows.map((one) => one.authors)).toEqual([[], ['author-other'], []])
 
     await press(field(GENERAL, 'Authors').fill)
@@ -285,7 +265,6 @@ describe('the keywords and the authors of the mass operations', () => {
     await press(field(GENERAL, 'Keywords').replace)
     await press(field(GENERAL, 'Authors').replace)
 
-    // Never into a row whose asset type has them off.
     expect(rows.map((one) => one.keywords)).toEqual([['keyword-bratislava'], ['keyword-bratislava'], []])
     expect(rows.map((one) => one.authors)).toEqual([['author-jane'], ['author-jane'], []])
   })
@@ -345,11 +324,9 @@ describe('the buttons under the mass operations', () => {
       ['keyword-bratislava'],
     ])
     expect(rows.map((one) => one.authors)).toEqual([['author-jane'], ['author-jane'], ['author-jane']])
-    // A custom field nothing was typed into is left as the rows have it.
     expect(rows.map((one) => one.customData.note)).toEqual(['first', 'second', undefined])
   })
 
-  // Unlike a custom field: the keywords and the authors of the form are written also when none was picked.
   it('"replace all" takes the keywords and the authors of every row away when the form holds none', async () => {
     const { rows, type, press, all } = await mountQueue([
       row('asset-1', { keywords: ['keyword-kosice'], authors: ['author-other'], customData: { title: 'kept' } }),

@@ -7,17 +7,12 @@ import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The keyword and the author input of a row of the editable queue: what a search and a pick, a new name confirmed
- * with Enter, and a pressed author conflict write into the row - and what of that a user without the grants is
- * offered. The real inputs in the real row and list over the real store and name caches; the server is a fake that
- * knows a keyword and two authors. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
 const QUEUE = 'global'
-// The names behind the ids of a row are asked for in one request, some time after the last id was added.
+// The names behind the ids of a row are requested in one call, some time after the last id was added.
 const NAMES_READ = 5000
 const SEARCH = /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/
 
@@ -30,10 +25,8 @@ const AUTHORS = [
 const editable = (over: Partial<UploadQueueItem> = {}) =>
   queueRow({ status: 'uploaded', canEditMetadata: true, ...over })
 
-/** Mounts the editable list of the queue over the rows and answers the two inputs of its first row. */
 const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}, queueId = QUEUE) => {
   const ui = await startUploadUi({ server, queues: { [queueId]: rows }, ...setup })
-  // The server finds a keyword or an author by its ids or by a text in its name.
   server.on('GET', SEARCH, (_request, match) => {
     const query = new URLSearchParams(ui.asked[ui.asked.length - 1].split('?')[1])
     const ids = query.get('id')?.split(',')
@@ -62,7 +55,6 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
 
     return input
   }
-  /** What the open menu of an input offers: the records the server found, and the offer to add the searched name. */
   const offered = () => {
     const items = Array.from(document.body.querySelectorAll<HTMLElement>('.v-overlay-container .v-list-item'))
 
@@ -73,7 +65,6 @@ const mountQueue = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup>
   }
   const chips = (label: string) =>
     Array.from(field(label).querySelectorAll('.v-chip')).map((chip) => chip.textContent?.trim())
-  /** Whether each chip of the input carries the mark of a new name. */
   const chipIcons = (label: string) =>
     Array.from(field(label).querySelectorAll('.v-chip')).map((chip) => !!chip.querySelector('.mdi-new-box'))
 
@@ -147,7 +138,6 @@ describe('the keyword input of a row', () => {
 })
 
 describe('a name the upload suggested as new', () => {
-  // The queue of the store of admin-dam knows the names its uploads brought as new; the chips are the library's.
   it('is marked so on its chip in the row, for a keyword and for an author', async () => {
     const { store, chipIcons } = await mountQueue([
       editable({ keywords: ['keyword-bratislava'], authors: ['author-jane', 'author-john'] }),
@@ -178,7 +168,6 @@ describe('the author input of a row', () => {
     await vi.advanceTimersByTimeAsync(1000)
 
     expect(rows[0].authors).toEqual(['author-jane'])
-    // The name with the identifier of the author behind it.
     expect(chips('Authors')).toEqual(['Jane Roe (TASR)'])
   })
 
@@ -194,7 +183,6 @@ describe('the author input of a row', () => {
   it('has that button disabled while the metadata of the row cannot be edited', async () => {
     const { card, rows } = await mountQueue([queueRow({ status: 'uploaded' })])
     expect(addAuthor(card)?.disabled).toBe(true)
-    // Switched off, and there: the inputs of both are drawn as inputs, not as the chips of what they hold.
     expect(addAuthor(card)?.closest('[style*="display: none"]')).toBeNull()
     expect(card.querySelectorAll('.v-autocomplete.v-input--disabled')).toHaveLength(2)
 
@@ -205,7 +193,7 @@ describe('the author input of a row', () => {
     expect(addAuthor(card)?.disabled).toBe(false)
   })
 
-  // Two authors of one name: the server could not tell which was meant, and says so with the metadata of the asset.
+  // Two authors with one name: the server cannot tell which is meant and reports it in the asset metadata.
   const withConflicts = (assetId: string, authors: string[]) =>
     assetDetail(assetId, {
       authors,
@@ -215,14 +203,12 @@ describe('the author input of a row', () => {
         keywordSuggestions: {},
       },
     })
-  // Chips with a plus, under the input and not in it.
   const conflicts = (card: HTMLElement) =>
     Array.from(card.querySelectorAll<HTMLElement>('.v-chip')).filter(
       (chip) => chip.querySelector('.v-chip__close') && !chip.closest('.v-autocomplete')
     )
 
   it('offers the author conflicts of an upload under it, by name, and adds the one pressed to the authors of the row', async () => {
-    // A warning on a settled row: its refresh button is there, and the answer brings the metadata.
     const { rows, card, chips } = await mountQueue([
       queueRow({ status: 'uploaded', error: { hasError: true, message: 'warned', assetFileFailReason: 'none' } }),
     ])
@@ -232,7 +218,6 @@ describe('the author input of a row', () => {
     expect(rows[0].authorConflicts).toEqual(['author-john', 'author-jane'])
 
     expect(card.textContent).toContain('Author conflicts')
-    // One the row has already is not offered again.
     expect(conflicts(card).map((chip) => chip.textContent?.trim())).toEqual(['John Doe'])
 
     conflicts(card)[0].querySelector<HTMLElement>('.v-chip__close')?.click()
@@ -241,13 +226,13 @@ describe('the author input of a row', () => {
     expect(rows[0].authors).toEqual(['author-jane', 'author-john'])
     expect(chips('Authors')).toEqual(['Jane Roe (TASR)', 'John Doe'])
 
-    // Nothing is left to offer, and the heading goes with the last chip; the row still knows of the conflict.
     expect(conflicts(card)).toEqual([])
     expect(card.textContent).not.toContain('Author conflicts')
     expect(rows[0].authorConflicts).toEqual(['author-john', 'author-jane'])
   })
 
-  // The batch load of the assets picked for mass edit asks for the names of their author conflicts too, as the detail.
+  // The batch load of assets picked for mass edit also asks for
+  // the names of their author conflicts, as the detail does.
   it('offers the author conflicts of an asset picked for mass edit by name', async () => {
     const asset = withConflicts('asset-1', [])
     server.asset(asset)

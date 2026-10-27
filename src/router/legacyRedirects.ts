@@ -45,9 +45,12 @@ const RENAMED_SEGMENTS: Record<string, string> = {
   episode: 'episodes',
 }
 
-/* The logs are not a plain rename: the pre-2.0.0 `/log` and the 2.x `/logs` had the list at the root and the detail at
- * `:system/:type/:id`, where the system is now the fixed `dam` segment and the list sits under its type. Anything else
- * under them is left to the catch-all page. */
+/*
+ * The logs are not a plain rename. The pre-2.0.0 `/log` and 2.x `/logs`
+ * had the list at the root and the detail at `:system/:type/:id`.
+ * The system is now the fixed `dam` segment and the list sits
+ * under its type. Other paths under them go to the catch-all page.
+ */
 const LEGACY_LOG_ROOTS = ['/log', '/logs']
 const LOG_LIST = '/logs/dam/app'
 
@@ -78,8 +81,8 @@ export const addLegacyRedirects = (router: Router) => {
       path: legacy,
       redirect: (to) => ({ path: LOG_LIST, query: to.query, hash: to.hash }),
     })
-    // The id as the detail page declares it: a current `/logs/dam/...` address outranks this record by its static
-    // segment, and one whose id the page refuses matches neither, so the redirect never lands on itself.
+    // The id pattern matches the detail page's. A current `/logs/dam/...` address outranks this
+    // record by its static segment, and an invalid id matches neither, so the redirect never loops.
     router.addRoute({
       path: `${legacy}/:system/:type/:id([0-9a-f]{24})`,
       redirect: (to) => {

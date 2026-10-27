@@ -40,8 +40,10 @@ const { gridView } = useGridView()
 const { sidebarRight } = useMainWrapper()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
-/* Before the first render, not once mounted: the detail is drawn with the page, and another page can have left one
- * open in the store - the page of the detail of an asset, left by the back button of the browser. */
+/*
+ * Before the first render, not on mount. The detail renders with the page, and another page may have
+ * left one open in the store, for example the asset detail page left with the browser back button.
+ */
 assetDetailStore.reset()
 
 const {
@@ -60,10 +62,12 @@ const {
 } = useAssetListActions(sidebarRight)
 
 provide(DatatablePaginationKey, pagination)
-/* The detail and the panel beside the list tell of a change of the file of their asset: it is read again. Not here
- * once the page is left, which the answer of the change can outlast: the asset the detail holds by then is the next
- * page's to read, and that page is told, as the server tells it. Left, not being left: while the page asks whether to
- * leave what was typed, it is still there. */
+/*
+ * The detail and side panel report file changes of their asset, and it is read again.
+ * Not after the page is left, which the answer can outlast. The
+ * next page reads the asset itself when the server notifies it.
+ * "Left" means unmounted. While asking whether to discard typed data, the page is still here.
+ */
 let pageLeft = false
 onBeforeUnmount(() => {
   pageLeft = true
@@ -72,8 +76,10 @@ provideAssetFileChanged((byServer) => {
   if (pageLeft) assetDetailStore.tellPageOfFileChange()
   else refreshActiveItem(byServer)
 })
-/* And of an asset deleted in the detail: its tile is marked as being deleted, and so is the asset where the detail or
- * the panel holds it still - the one deleted, not the one the detail has gone on to meanwhile. */
+/*
+ * An asset deleted in the detail: mark its tile as deleting, and the asset in the detail or panel too.
+ * Use the deleted asset, not the one the detail may have moved to meanwhile.
+ */
 provideAssetDeleted((assetId) => {
   assetListStore.setDeletingById(assetId)
   if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
@@ -96,14 +102,18 @@ onKeyUp('ArrowLeft', async (e) => {
   await onArrowLeft(e)
 })
 
-/* Metadata typed into the detail or into the panel beside the list and not saved go with the page: asked about
- * before it is left. The address of an open detail is written over the address of this page, which is no way out of
- * it and is not asked about. */
+/*
+ * Unsaved metadata in the detail or side panel is lost with the page, so ask before leaving.
+ * The URL of an open detail replaces this page's URL. That is not leaving the page and is not asked about.
+ */
 const holdsUnsavedMetadata = () => assetDetailStore.showsUnsavedMetadata || assetDetailStore.panelHoldsUnsavedMetadata
 
-/* Asked as the last thing before a navigation is settled, not as the page's leave guard, which is the first: a
- * guard after that one can still call the navigation off. Vuetify has such a guard for every dialog and menu - the
- * back button of the browser over an open one only closes it - and that is then no way out of the page. */
+/*
+ * Ask as the last step before navigation settles, not in the page's leave
+ * guard, which runs first. A later guard can still cancel the navigation.
+ * Vuetify adds such a guard for every dialog and menu. Browser back
+ * over an open one only closes it, which is not leaving the page.
+ */
 const router = useRouter()
 const pageOfTheList = useRoute().matched.at(-1)
 const stopAskingOnTheWayOut = router.beforeResolve((to) => {
@@ -114,8 +124,10 @@ const stopAskingOnTheWayOut = router.beforeResolve((to) => {
 })
 onUnmounted(stopAskingOnTheWayOut)
 
-/* A reload and a closed window are not ways the page could ask about: the browser asks its own question. The
- * download of a file from the detail is none of them: its link opens in another tab. */
+/*
+ * The page cannot ask on reload or window close, so the browser shows its own prompt.
+ * Downloading a file from the detail does not trigger it, because the link opens in another tab.
+ */
 useEventListener(window, 'beforeunload', (event) => {
   if (!holdsUnsavedMetadata()) return
   event.preventDefault()
@@ -191,12 +203,14 @@ onUnmounted(() => {
       >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
-      <!-- Not of the rows: the detail is also of an asset the list does not hold, and stays while the list is read. -->
+      <!--
+        Not inside the rows: the detail can show an asset the list does not hold, and stays while the list reloads.
+      -->
       <AssetDetailDialog
         @prev-item="prevItem"
         @next-item="nextItem"
       />
-      <!-- Of the panel beside the list: with the detail open the question is the detail's, a dialog over it. -->
+      <!-- For the side panel only. With the detail open, the detail shows the question as a dialog over itself. -->
       <AUnsavedConfirmDialog
         :model-value="assetDetailStore.leaveUnsavedQuestion && !assetDetailStore.detail"
         @resolve="assetDetailStore.answerLeaveUnsaved"
@@ -272,8 +286,8 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
-// Active-filter chips for the asset grid. AFiltersSelected is rendered inside the filter sidebar
-// (where the selected-filters map + provides live) and teleported here, under the toolbar.
+// `AFiltersSelected` renders inside the filter sidebar, where the selected-filters
+// map and provides live, and is teleported here under the toolbar.
 .asset-active-filters {
   display: flex;
   align-items: center;

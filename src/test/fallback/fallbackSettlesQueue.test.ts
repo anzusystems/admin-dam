@@ -13,9 +13,11 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The poll and the store together, with nothing between them replaced: only the server is a fake, and no
- * notification is ever delivered. What is asserted is what the app asked the server and what the row holds
- * afterwards - not when it asked, nor through which function. */
+/*
+ * The poll and the store run together with nothing replaced.
+ * Only the server is a fake, and no notification is delivered.
+ * Asserts what the app asked the server and what the row holds afterwards, not when it asked or through which function.
+ */
 
 let server: FakeDam
 
@@ -35,7 +37,6 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 }))
 
 const QUEUE = 'global'
-// Far enough for one read of the poll, whatever its rhythm.
 const ONE_READ = 20_000
 const A_LONG_TIME = 30 * 60_000
 
@@ -61,7 +62,6 @@ const waitingUpload = (over: Partial<UploadQueueItem> = {}) =>
     ...over,
   })
 
-/** Starts what waits in the queue and lets the requests of the upload answer: the row is handed over to processing. */
 const uploadToProcessing = async (store: Store, rows: UploadQueueItem[]) => {
   const seeded = seedQueue(store, QUEUE, rows)
   store.processUpload(QUEUE)
@@ -107,10 +107,8 @@ describe('an upload no notification comes for', () => {
     expect(row.status).toBe('uploaded')
     expect(row.isDuplicate).toBe(false)
     expect(row.error).toEqual({ hasError: false, message: '', assetFileFailReason: 'none' })
-    // What the read gives the row: the state of the asset, the preview of its main file ...
     expect(row.assetStatus).toBe('with_file')
     expect(row.imagePreview).toEqual({ url: 'https://dam.test/file-1/detail.jpg', width: 800, height: 450 })
-    // ... and the metadata, which is what enables the form and lets the bulk save send the row.
     expect(row.canEditMetadata).toBe(true)
     expect(row.keywords).toEqual(['keyword-server'])
     expect(row.authors).toEqual(['author-server'])
@@ -119,7 +117,6 @@ describe('an upload no notification comes for', () => {
     expect(row.authorConflicts).toEqual(['author-a', 'author-b'])
     expect([...store.queues[QUEUE].suggestions.newAuthorNames]).toEqual(['New Author'])
     expect([...store.queues[QUEUE].suggestions.newKeywordNames]).toEqual(['new keyword'])
-    // The ids are the ones the start request answered with.
     expect([row.assetId, row.fileId]).toEqual(['asset-1', 'file-1'])
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 1])
   })
@@ -138,12 +135,7 @@ describe('an upload no notification comes for', () => {
 
   it('frees its place in the queue for the upload that waits', async () => {
     const store = await load()
-    const rows = seedQueue(store, QUEUE, [
-      waitingUpload(),
-      waitingUpload(),
-      // Two at a time: this one starts when one of the two is handed over to processing.
-      waitingUpload(),
-    ])
+    const rows = seedQueue(store, QUEUE, [waitingUpload(), waitingUpload(), waitingUpload()])
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(0)
 
@@ -157,7 +149,6 @@ describe('an upload no notification comes for', () => {
     let reads = 0
     server.assetBy('asset-1', () => {
       reads++
-      // The read that finds the file processed answers; the server is gone for whatever is asked after it.
       if (reads > 1) throw new Error('the asset service is down')
 
       return assetDetail('asset-1')
@@ -165,7 +156,6 @@ describe('an upload no notification comes for', () => {
 
     await vi.advanceTimersByTimeAsync(ONE_READ)
 
-    // The state and the metadata come with the same answer: nothing is left that a second read would have to bring.
     expect(row.status).toBe('uploaded')
     expect(row.canEditMetadata).toBe(true)
     expect(row.keywords).toEqual(['keyword-server'])

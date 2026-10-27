@@ -16,17 +16,19 @@ export const useSimpleLoginActions = () => {
   const { execute: login } = useLogin()
 
   const onLogin = async () => {
-    // The button binds to it: without this there is no feedback and nothing stops a second submit.
+    // The button binds to this flag: it gives feedback and blocks a second submit.
     if (loginButtonLoading.value) return
     loginButtonLoading.value = true
     try {
       await login({ body: simpleLoginForm.value })
-      /* A full load, not a router push: the current user, the ACL, the configuration and the login
-       * status live in module state a navigation carries over. In the place of the entry of the sign-in page in the
-       * history of the browser: Back from the application does not show it to a user signed in. */
+      /*
+       * A full load, not a router push: user, ACL, configuration and
+       * login status live in module state that survives navigation.
+       * Replace so Back does not show the sign-in page to a signed-in user.
+       */
       window.location.replace('/')
 
-      // And left loading: the document is on its way out, and the button would be clickable again.
+      // Left loading on purpose: the page is unloading, and resetting would make the button clickable again.
       return
     } catch (error) {
       // todo check for possible errors and display correct one

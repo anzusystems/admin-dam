@@ -13,9 +13,10 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* What a notification does to the rows of the queues: the real listener and the real store, a fake server and a
- * fake connection. The server always holds what the notification says, so a case reads the same whether the row
- * is written from the event or from the asset read after it. */
+/*
+ * The fake server always holds what the notification says.
+ * A case reads the same whether the row is written from the event or from the asset read after it.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -49,7 +50,6 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 const GLOBAL = 'global'
 const SLOTS = 'slots'
 const EDIT = 'edit'
-// Long enough for whatever a notification sets off to have answered.
 const AFTER_EVENT = 5_000
 const A_LONG_TIME = 30 * 60_000
 
@@ -119,18 +119,17 @@ describe('a notification that the file is processed', () => {
     await processed()
 
     expect(row.status).toBe('uploaded')
-    // The reason goes with the error: some rows print it in place of the message.
+    // The reason stays with the error because some rows print it instead of the message.
     expect(row.error).toEqual(NO_ERROR)
     expect(row.assetStatus).toBe('with_file')
     expect(row.imagePreview).toEqual(PREVIEW)
-    // No form yet, so the switch is still the server's to say.
     expect(row.mainFileSingleUse).toBe(true)
     expect(row.canEditMetadata).toBe(false)
     expect(row.keywords).toEqual([])
     expect([store.getQueueProcessedCount(GLOBAL), store.getQueueTotalCount(GLOBAL)]).toEqual([1, 1])
   })
 
-  // A slot answers to its own file; the main file of the asset is another one and describes another picture.
+  // A slot answers to its own file. The main file of the asset is another file with another picture.
   it('settles a slot upload without the preview and the switch of the main file', async () => {
     const { store } = await load()
     const [slot, other] = seedQueue(store, SLOTS, [
@@ -145,7 +144,6 @@ describe('a notification that the file is processed', () => {
     expect(slot.imagePreview).toBeUndefined()
     expect(slot.mainFileSingleUse).toBeNull()
     expect(slot.canEditMetadata).toBe(false)
-    // And the other slot of the same asset has heard nothing about its own file.
     expect(other.status).toBe('processing')
   })
 
@@ -172,8 +170,8 @@ describe('a notification that the file is processed', () => {
     store.processUpload(GLOBAL)
     await vi.advanceTimersByTimeAsync(0)
 
-    // Asked as soon as the finish request has answered, before any poll could have settled the row a second time:
-    // `Processing` written over it waits for a notification that has already been.
+    // Asked right after the finish request answers, before any poll could settle the row a second time.
+    // `Processing` written over it would wait for a notification that has already arrived.
     expect(row.status).toBe('uploaded')
     expect(row.error).toEqual(NO_ERROR)
     await vi.advanceTimersByTimeAsync(AFTER_EVENT)
@@ -182,7 +180,6 @@ describe('a notification that the file is processed', () => {
 
     await vi.advanceTimersByTimeAsync(A_LONG_TIME)
 
-    // And no poll was armed for it: the finish answer found the row settled and left it alone.
     expect(server.assetReads('asset-1')).toBe(readsAfterTheEvent)
     expect(row.status).toBe('uploaded')
   })
@@ -200,7 +197,6 @@ describe('a notification that the file is processed', () => {
     store.processUpload(GLOBAL)
     await vi.advanceTimersByTimeAsync(0)
     expect(row.status).toBe('processing')
-    // The server still works on the file: what is read meanwhile gives the row its form, not its end.
     server.asset(assetDetail('asset-1', { mainFile: assetFile('file-1', 'stored', { asset: 'asset-1' }) }))
     await metadata()
     expect([row.status, row.canEditMetadata]).toEqual(['processing', true])
@@ -216,7 +212,6 @@ describe('a notification that the file is processed', () => {
     expect(server.assetReads('asset-1')).toBe(readsToSettle)
   })
 
-  // Its status belongs to the batch that loaded it: the processed file gives back what the failure took, as it was.
   it('gives a mass-edit row whose file had failed its status and its form back when the file is processed after all, with what was typed', async () => {
     const { store } = await load()
     const [picked] = seedQueue(store, EDIT, [
@@ -236,7 +231,6 @@ describe('a notification that the file is processed', () => {
   })
 })
 
-// Kept from its form by its batch, the file still with the server: its file then fails, and is processed after all.
 describe('a mass-edit row whose file was still being processed when its batch answered', () => {
   it('goes back to the text about its metadata, not to an empty form, when its failed file is processed after all', async () => {
     const { store } = await load()
@@ -264,7 +258,7 @@ describe('a mass-edit row whose file was still being processed when its batch an
     server.asset(assetDetail('asset-1'))
     await processed()
 
-    // Not in the bulk save: an empty form would have been saved over the metadata of the asset.
+    // Not in the bulk save: an empty form would be saved over the metadata of the asset.
     expect([picked.status, picked.canEditMetadata, picked.keywords]).toEqual(['failed', false, []])
     expect(picked.error).toEqual({
       hasError: true,
@@ -322,7 +316,6 @@ describe('a notification that the file failed', () => {
 
     expect([row.status, row.canEditMetadata]).toEqual(['failed', false])
     expect(row.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'unknown' })
-    // What the user typed is still on the row; only the form is gone.
     expect(row.keywords).toEqual(['typed'])
   })
 
@@ -333,7 +326,6 @@ describe('a notification that the file failed', () => {
       throw new Error('the asset service is down')
     })
     await metadata()
-    // The read is tried twice more before the row says its metadata could not be loaded.
     await vi.advanceTimersByTimeAsync(60_000)
     expect(server.assetReads('asset-1')).toBe(3)
     expect([row.canEditMetadata, row.error.message]).toEqual([false, 'system.uploadErrors.metadataFailed'])
@@ -342,7 +334,6 @@ describe('a notification that the file failed', () => {
     await failed('invalid_checksum')
     expect(row.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_checksum' })
 
-    // Its metadata comes after all: a failed row has no form to put it in.
     await metadata()
 
     expect([row.status, row.canEditMetadata]).toEqual(['failed', false])
@@ -352,7 +343,7 @@ describe('a notification that the file failed', () => {
 
   it('starts the upload that waited for the place of the failed one', async () => {
     const { store } = await load()
-    // Ids of their own: the server numbers the upload it starts from one, and a row is asked about by its ids.
+    // Own ids: the server numbers the upload it starts from one, and a row is looked up by its ids.
     const [, , waiting] = seedQueue(store, GLOBAL, [
       queueRow({ status: 'uploading', assetId: 'asset-8', fileId: 'file-8' }),
       queueRow({ status: 'uploading', assetId: 'asset-9', fileId: 'file-9' }),
@@ -424,7 +415,6 @@ describe('a notification that the file is a duplicate', () => {
     expect(row.keywords).toEqual([])
   })
 
-  // Picked before it had a main file: nothing says the file of the event is this row's.
   it('does not reach a mass-edit row that has no file id', async () => {
     const { store } = await load()
     const [picked] = seedQueue(store, EDIT, [
@@ -441,7 +431,7 @@ describe('a notification that the file is a duplicate', () => {
 })
 
 describe('a notification that the metadata is processed', () => {
-  // The server reads the metadata off the first chunk, so this one comes while the file still sends.
+  // The server reads the metadata off the first chunk, so the notification arrives while the file is still sending.
   it('gives the row its metadata and its form, and leaves its status alone', async () => {
     const { store } = await load()
     const [row] = seedQueue(store, GLOBAL, [queueRow({ status: 'uploading' })])
@@ -505,8 +495,10 @@ describe('a notification that the metadata is processed', () => {
   describe('for an asset created empty and given its first file through a slot', () => {
     const emptyAsset = (id: string) => assetDetail(id, { mainFile: null }) as unknown as AssetDetailItemDto
 
-    /* The page that draws the detail reads the asset for it, as for any main file the server is done with: the file
-     * is not written into the detail here, under a form read before it. */
+    /*
+     * The page that draws the detail reads the asset itself, as for any main file the server has finished.
+     * The file is not written into the detail here, under a form read before it.
+     */
     it('tells the page of the open detail of that asset, which reads it, and gives the slot row nothing', async () => {
       const { store, detailStore } = await load()
       const [slot] = seedQueue(store, SLOTS, [
@@ -520,7 +512,6 @@ describe('a notification that the metadata is processed', () => {
       await metadata()
 
       expect([pageTold.mock.calls.length, detailStore.asset?.mainFile]).toEqual([1, null])
-      // A slot row has no metadata form.
       expect([slot.status, slot.canEditMetadata, slot.keywords]).toEqual(['uploading', false, []])
     })
 
@@ -551,12 +542,11 @@ describe('a notification that the metadata is processed', () => {
 
       await metadata()
 
-      // Not written into the detail. Its page is told, as of any file of an asset that is not described the server
-      // has processed: it may have filled in the metadata from it.
+      // Not written into the detail. Its page is told, as for any file of an undescribed
+      // asset the server processed, because processing may have filled in the metadata.
       expect([pageTold.mock.calls.length, detailStore.asset?.mainFile?.id]).toEqual([1, 'file-kept'])
     })
 
-    // Whatever row of the queues the asset was read for: the detail learns what the read brought.
     it('tells the page of the open detail when the queue holds no slot upload of the asset as well', async () => {
       const { store, detailStore } = await load()
       seedQueue(store, GLOBAL, [queueRow({ status: 'uploading' })])
@@ -598,7 +588,6 @@ describe('one asset in two queues', () => {
     await processed()
 
     expect([upload.status, upload.assetStatus]).toEqual(['uploaded', 'with_file'])
-    // The batch that loads the mass-edit row still owns it.
     expect(massEdit.status).toBe('loading')
 
     massEdit.status = 'uploaded'
@@ -606,7 +595,6 @@ describe('one asset in two queues', () => {
 
     expect([massEdit.status, massEdit.assetStatus]).toEqual(['uploaded', 'with_file'])
     expect(massEdit.imagePreview).toEqual(PREVIEW)
-    // The switch of a mass-edit row is a form field, not the server's.
     expect(massEdit.mainFileSingleUse).toBe(false)
     expect(massEdit.keywords).toEqual(['typed'])
   })
@@ -642,13 +630,10 @@ describe('one asset in two queues', () => {
 
     expect([upload.canEditMetadata, upload.keywords]).toEqual([true, ['keyword-server']])
     expect([massEdit.canEditMetadata, massEdit.keywords]).toEqual([true, ['typed']])
-    // Each queue collects the new names of its own rows.
     expect(store.queues[EDIT].suggestions.newAuthorNames.size).toBe(0)
   })
 })
 
-// Its batch load answered without the asset, so the row failed for want of its metadata - which a metadata
-// notification can still bring.
 describe('a mass-edit row its batch load left out', () => {
   const leftOut = async (store: Awaited<ReturnType<typeof load>>['store']) => {
     await store.addByAssets(EDIT, [
@@ -679,7 +664,6 @@ describe('a mass-edit row its batch load left out', () => {
     expect(picked.status).toBe('uploaded')
   })
 
-  // The text is still true: the metadata is what the row misses, whatever became of its file.
   it('keeps the text about its metadata when a notification says its file is processed', async () => {
     const { store } = await load()
     const picked = await leftOut(store)
@@ -691,7 +675,6 @@ describe('a mass-edit row its batch load left out', () => {
     expect([picked.error.hasError, picked.error.message]).toEqual([true, 'system.uploadErrors.metadataUnavailable'])
   })
 
-  // From then on the file is what is wrong with the row, and a failed row has no form.
   it('is not given them once its file has failed', async () => {
     const { store } = await load()
     const picked = await leftOut(store)
@@ -705,7 +688,7 @@ describe('a mass-edit row its batch load left out', () => {
     expect(picked.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' })
   })
 
-  // Not an empty form, which the bulk save would send over the metadata of the asset.
+  // Not an empty form: the bulk save would send it over the metadata of the asset.
   it('goes back to the text about its metadata when its failed file is processed after all, and the metadata notification still brings them', async () => {
     const { store } = await load()
     const picked = await leftOut(store)

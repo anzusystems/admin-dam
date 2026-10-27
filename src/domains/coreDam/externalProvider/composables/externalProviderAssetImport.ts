@@ -17,12 +17,14 @@ export const useExternalProviderAssetImport = () => {
   const { showWarning } = useAlerts()
   const { canForAll } = useAuth()
 
-  // The import creates the asset on the current licence, under dam_<type>_create of each type imported.
+  // Import creates the asset on the current licence, requiring dam_<type>_create for each imported type.
   const canImport = (assetTypes: DamAssetTypeType[]) =>
     canForAll([...new Set(assetTypes.map((assetType) => assetTypeAcl(assetType, 'create')))])
 
-  /* The asset the panel or the dialog shows, whatever tile of the list is active: after a list read anew the tile at
-   * the place of the active one is of another asset, or there is none, and the button stood there all the same. */
+  /*
+   * Uses the asset the panel or dialog shows, not the active tile.
+   * After a list reload the tile at that index may be another asset or missing.
+   */
   const importFromDetail = async (hideDetail = false) => {
     const detailStore = useExternalProviderAssetDetailStore()
     const shown = detailStore.asset
@@ -40,7 +42,7 @@ export const useExternalProviderAssetImport = () => {
     const uploadQueueStore = useUploadQueuesStore()
     const queueItemsSelected = uploadQueueStore.getQueueItems(QUEUE_ID_MASS_EDIT)
     const totalWantedItems = queueItemsSelected.length + uploadQueueStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-    // Exactly the maximum is allowed, as it is for an ordinary upload.
+    // Exactly the maximum is allowed, as for an ordinary upload.
     if (totalWantedItems > maxUploadItems.value) {
       showWarning(
         'Max upload limit is ' +

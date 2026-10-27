@@ -5,10 +5,10 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The icon an asset of synthesized speech carries in the list of assets, in its tile and in its row of the table,
- * with the title the end-to-end tests look for. The real list views over the real list store, with the application
- * around them as it starts; the server is a fake, and the store holds the assets as the search of the list answers
- * them. */
+/*
+ * The icon of a synthesized-speech asset in the list tile and table row, with the title the end-to-end tests look for.
+ * Real list views over the real list store. The server is a fake.
+ */
 
 let server: FakeDam
 
@@ -16,7 +16,6 @@ vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client
 
 const TTS = 'Syntetické (TTS)'
 
-/** An asset as the search of the list answers it; nothing about it draws an icon unless told. */
 const listItem = (id: string, assetFileProperties: Record<string, unknown> = {}) => ({
   id,
   texts: { displayTitle: id, description: '' },
@@ -46,13 +45,10 @@ const listItem = (id: string, assetFileProperties: Record<string, unknown> = {})
 
 const ASSETS = [
   listItem('asset-tts', { ttsAudio: true }),
-  // Another icon, so the place of the icons is there: the title of synthesized speech is not among them.
   listItem('asset-rss', { ttsAudio: false, fromRss: true }),
-  // The search may leave the flag out.
   listItem('asset-plain'),
 ]
 
-/** The titles of the icons over the asset, in the order they are drawn, and whether each is drawn and not hidden. */
 const icons = (element: Element) =>
   Array.from(element.querySelectorAll<HTMLImageElement>('.asset-image__meta-icons img')).map((icon) => ({
     title: icon.getAttribute('title'),
@@ -71,17 +67,14 @@ const mountList = async (view: 'AssetListTilesView' | 'AssetListTableView', lang
       ? await ui.mount(() => import('@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'))
       : await ui.mount(() => import('@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'))
   await nextTick()
-  // The one place that knows how a tile and a row of the table are built.
   const items = () =>
     Array.from(
       list.querySelectorAll<HTMLElement>(view === 'AssetListTilesView' ? '.dam-image-grid__item' : 'tr.a-table__row')
     )
-  /** The assets drawn, each by the title it shows, in no particular order. */
   const shown = () =>
     items()
       .map((element) => ASSETS.find((asset) => element.textContent?.includes(asset.id))?.id)
       .sort()
-  /** The tile or the row of the asset, found by its title. */
   const item = (assetId: string) => {
     const found = items().filter((element) => element.textContent?.includes(assetId))
     expect(found).toHaveLength(1)

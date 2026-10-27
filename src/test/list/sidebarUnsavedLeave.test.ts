@@ -7,16 +7,6 @@ import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/te
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The panel beside the list of assets holds what was typed into it and not saved, and so does the detail opened over
- * the list. A click on another tile and an arrow key ask before they replace it (`sidebarUnsaved.test.ts`); here are
- * the other ways it goes: the edit of a row of a queue and an asset just created, which write another asset in its
- * place, and the ways out of the page - a link, the back button of the browser, a change of the licence, a reload or
- * a closed window. A way out is asked about once nothing can call it off any more: over an open dialog or menu the
- * back button is called off by Vuetify, and is no way out. The real page of the list with its real panel,
- * detail, queues and menu, as the router draws it,
- * and the page of the list of an external provider beside it; the server is a fake, and so are the address the page
- * asks about a new version of the application and the reload of the window. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -43,10 +33,8 @@ const CHANGE_LICENCE = 'Switch Media Library ext system and asset licence'
 const LIST = '/assets'
 const SETTINGS = '/settings'
 const PROVIDED = '/external-providers/' + PROVIDER
-/** The asset of the row of the upload queue: an image the list does not hold. */
 const UPLOADED = 'asset-9'
 
-/** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
   keywords: [],
@@ -55,38 +43,31 @@ const onServer = (id: string, over: Record<string, unknown> = {}) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** How many times the server was asked for each of the three assets of the list, and for the one of the queue row. */
 const reads = () => ['asset-1', 'asset-2', 'asset-3', UPLOADED].map((assetId) => server.assetReads(assetId))
 
 const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
 
-/** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** The asset the open detail holds, as the file panel of its form says it. */
 const held = () => detail()?.querySelector('.anzu-copy-text > span')?.textContent?.trim() ?? null
 
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** The questions about changes that were not saved that are open: one at most, whoever draws it. */
 const questions = () =>
   Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
     dialog.textContent?.includes(UNSAVED)
   )
 
-/** The button of the open question. */
 const answer = async (name: typeof STAY | typeof LEAVE) => {
   buttonsNamed(questions()[0], name)[0].click()
   await settled()
 }
 
-/** The open dialog that shows the text, or null. */
 const dialogOf = (text: string) =>
   Array.from(document.body.querySelectorAll<HTMLElement>('.v-dialog.v-overlay--active')).find((dialog) =>
     dialog.textContent?.includes(text)
   ) ?? null
 
-/** What the browser is told when the window is about to go - a reload, a closed tab: true when it is to ask first. */
 const windowAsksBeforeItGoes = () => {
   const going = new Event('beforeunload', { cancelable: true })
   window.dispatchEvent(going)
@@ -94,7 +75,6 @@ const windowAsksBeforeItGoes = () => {
   return going.defaultPrevented
 }
 
-/** The page of the list with its three assets, none of them picked, and one uploaded asset in the upload queue. */
 const openList = async () => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' }),
@@ -105,7 +85,6 @@ const openList = async () => {
     customForm: { video: [customField('title')], image: [customField('title')] },
     queues: { global: uploaded },
   })
-  // The provider, as the config of the ext system names it, and the licences a user picks from.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider' } }
@@ -113,7 +92,6 @@ const openList = async () => {
     ...config.damPrvConfig,
     settings: { ...config.damPrvConfig.settings, allowSelectExtSystem: true, allowSelectLicenceId: true },
   }
-  // The user as the bar of the page draws them, with two licences of the one ext system and the provider.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -134,8 +112,10 @@ const openList = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
-   * pages the bar of the list links to, and the page of the list of the provider. */
+  /*
+   * The page is drawn by the router at its own address, because it asks the router about the way out of it.
+   * The pages linked from the list bar and the external provider list page are added too.
+   */
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
   const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
     .default
@@ -149,12 +129,9 @@ const openList = async () => {
   })
   await ui.router.push(LIST)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  /** The tiles as they are drawn now. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
   await eventually(() => expect(tiles()).toHaveLength(3))
-  /** The queue drawn over the whole page, or null while none is. */
   const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
-  /** The menu of the page, opened: the item of it that is marked so. */
   const menuItem = async (mark: string) => {
     if (!document.body.querySelector('[data-cy="' + mark + '"]')) {
       page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
@@ -173,26 +150,20 @@ const openList = async () => {
     page,
     tiles,
     queue,
-    /** Where the router is: the address of the page it draws. */
     at: () => ui.router.currentRoute.value.path,
-    /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles()[index].click()
       await settled()
     },
     pencil: (index: number) => tiles()[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1],
-    /** The title in the form of the panel. */
     title: () => panel().querySelector<HTMLTextAreaElement>('textarea')!,
     save: () => buttonsNamed(panel(), 'Save')[0],
-    /** The upload queue drawn over the whole page, as its "Add description" button draws it. */
     openUploadQueue: () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
 
       return eventually(() => expect(queue()).not.toBeNull())
     },
-    /** The mass edit of the tile drawn over the whole page: the tile is picked for it, and its queue opened. */
     openMassEdit: async (index: number) => {
       tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
       const open = await eventually(() => {
@@ -205,7 +176,6 @@ const openList = async () => {
       open.click()
       await eventually(() => expect(queue()).not.toBeNull())
     },
-    /** The edit of the first row of the queue drawn over the whole page, once the row can be edited: pressed. */
     editRow: async () => {
       const edit = await eventually(() => {
         const button = queue() ? buttonsNamed(queue()!, EDIT)[0] : undefined
@@ -216,7 +186,6 @@ const openList = async () => {
       edit.click()
       await settled()
     },
-    /** "Create empty asset" of the menu of the page: the dialog that asks which kind is open. */
     openCreate: async () => {
       ;(await menuItem('button-main-empty-asset')).click()
 
@@ -227,7 +196,6 @@ const openList = async () => {
         return dialog!
       })
     },
-    /** The dialog that changes the licence, from the menu of the page, with the other licence picked in it. */
     openLicenceChange: async () => {
       ;(await menuItem('button-switch-licence')).click()
       const dialog = await eventually(() => {
@@ -251,30 +219,28 @@ const openList = async () => {
 
       return dialog
     },
-    /** A link of the menu of the page, followed. */
     followMenuLink: async (mark: string) => {
       ;(await menuItem(mark)).click()
       await settled()
     },
-    /** The user goes where the address says, as a link of the application takes them. */
     goTo: async (address: string) => {
-      // Not awaited before the clock moves: an open dialog or menu of Vuetify holds every navigation back by a timer.
+      // Not awaited before the clock moves: an open Vuetify dialog or menu holds every navigation back by a timer.
       void ui.router.push(address)
       await settled()
     },
-    /** The way back in the history, with nothing but the router told of it. */
     goBack: async () => {
       ui.router.back()
       await settled()
     },
     /**
-     * The back button of the browser as the application hears it: the router first, then whatever else listens to
-     * `popstate` on the window - every dialog and menu of Vuetify keeps a watch of its own there. The state is the one
-     * of the entry of the history the browser goes back to.
+     * The back button as the app hears it: the router first, then
+     * everything else listening to `popstate` on the window.
+     * Every Vuetify dialog and menu keeps its own `popstate` watch. The
+     * state is the one of the history entry the browser goes back to.
      */
     goBackInTheBrowser: async (state: Record<string, unknown> = {}) => {
       ui.router.back()
-      // The guards of the router run up to the one of Vuetify that waits a moment for the event below.
+      // The router guards run up to the Vuetify guard, which waits a moment for the event below.
       for (let turn = 0; turn < 50; turn++) await Promise.resolve()
       window.dispatchEvent(new PopStateEvent('popstate', { state }))
       await settled()
@@ -290,7 +256,6 @@ const typeInto = async (field: HTMLTextAreaElement, value = TYPED) => {
   await nextTick()
 }
 
-/** The second of the three assets picked, and its title typed into the panel: the element typed into. */
 const typedIntoTheSecond = async (list: List) => {
   await list.pick(1)
   await typeInto(list.title())
@@ -298,7 +263,6 @@ const typedIntoTheSecond = async (list: List) => {
   return list.title()
 }
 
-/** What was typed is where it was typed, in the very field, and its "Save" still to be pressed. */
 const typedIsKept = (list: List, typedInto: HTMLTextAreaElement) =>
   expect([list.title() === typedInto, typedInto.isConnected, typedInto.value, standsOut(list.save())]).toEqual([
     true,
@@ -336,12 +300,12 @@ beforeEach(() => {
   server.on('GET', PROVIDER_LIST, () => ({ status: 200, data: { data: [], hasNextPage: false } }))
   server.on('PATCH', BULK, (request) => ({ status: 200, data: JSON.parse(request.data as string) }))
   server.on('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
-  // An asset with no file yet, as the server makes one.
   server.on('POST', CREATE, () => ({
     status: 201,
     data: onServer('asset-new', { attributes: { assetType: 'image', assetStatus: 'draft' }, mainFile: null }),
   }))
-  // The window is one for the whole file, and so is its address. It is not to be reloaded under the cases.
+  // The window and its address are shared by the whole file.
+  // It must not be reloaded under the cases.
   window.history.replaceState(null, '', LIST)
   reload = vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
 })
@@ -351,8 +315,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The edit of a row of a queue reads the asset of the row into the detail, which is where the panel reads from: it
- * always reads, also the asset the panel holds. */
+/*
+ * Editing a queue row reads the row's asset into the detail, which is where the panel reads from.
+ * It always reads, also when the asset is the one the panel holds.
+ */
 describe('metadata typed into the panel beside the list and not saved, when a row of a queue is edited', () => {
   it.each<[string, (list: List) => Promise<void>, string, number]>([
     ['the upload queue', (list) => list.openUploadQueue(), UPLOADED, 3],
@@ -367,7 +333,6 @@ describe('metadata typed into the panel beside the list and not saved, when a ro
 
       await list.editRow()
 
-      // Nothing was read and nothing is open: the panel is not even behind its loader.
       expect([questions().length, detail(), server.requests.length - before.asked]).toEqual([1, null, 0])
       typedIsKept(list, typedInto)
 
@@ -381,7 +346,6 @@ describe('metadata typed into the panel beside the list and not saved, when a ro
       ])
       typedIsKept(list, typedInto)
 
-      // They are still not saved: the next try asks again.
       await list.editRow()
       expect([questions().length, server.requests.length - before.asked]).toEqual([1, 0])
       await answer(LEAVE)
@@ -416,7 +380,7 @@ describe('metadata typed into the panel beside the list and not saved, when a ro
     ])
   })
 
-  // The answer can take its time, and the queue goes on under the question meanwhile.
+  // The answer can take its time. The queue goes on under the question meanwhile.
   it('are kept when the row is of another asset by the time "Leave anyway" is said: nothing is read', async () => {
     const list = await openList()
     const typedInto = await typedIntoTheSecond(list)
@@ -443,7 +407,6 @@ describe('metadata typed into the panel beside the list and not saved, when a ro
   })
 })
 
-/* The asset the server makes is written into the detail, which is where the panel reads from, and its detail opens. */
 describe('metadata typed into the panel beside the list and not saved, when an empty asset is created', () => {
   const confirm = async (dialog: HTMLElement) => {
     dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
@@ -453,7 +416,6 @@ describe('metadata typed into the panel beside the list and not saved, when an e
   it('are asked about as the dialog is confirmed: "Stay" sends nothing, "Leave anyway" creates the asset', async () => {
     const list = await openList()
     const typedInto = await typedIntoTheSecond(list)
-    // The dialog that asks for the kind of the asset asks nothing yet: it can be looked at and closed.
     const dialog = await list.openCreate()
     expect(questions()).toEqual([])
 
@@ -464,7 +426,6 @@ describe('metadata typed into the panel beside the list and not saved, when an e
 
     await answer(STAY)
 
-    // The dialog is the one that was open, as it was.
     expect([questions(), server.sent('POST', CREATE), dialog.isConnected, detail()]).toEqual([[], [], true, null])
     expect(dialog.querySelector('button[data-cy="button-confirm"]')).not.toBeNull()
     typedIsKept(list, typedInto)
@@ -489,7 +450,6 @@ describe('metadata typed into the panel beside the list and not saved, when an e
 })
 
 describe('metadata typed into the panel beside the list and not saved, when the page of the list is left', () => {
-  /** A way out of the page, the address it leads to, and what brings the user back to where the way starts from. */
   const waysOut: Array<[string, (list: List) => Promise<void>, string]> = [
     ['a link of the menu of the page', (list) => list.followMenuLink('button-settings'), SETTINGS],
     ['a link of the application', (list) => list.goTo(PROVIDED), PROVIDED],
@@ -520,7 +480,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
       ])
       typedIsKept(list, typedInto)
 
-      // They are still not saved, and the page is where it was: the same way asks again.
       await go(list)
       expect([questions().length, list.at()]).toEqual([1, LIST])
       await answer(LEAVE)
@@ -545,10 +504,12 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     expect([questions(), list.at()]).toEqual([[], SETTINGS])
   })
 
-  /* Over an open dialog or menu the back button of the browser is no way out of the page: Vuetify calls the
-   * navigation off, by a guard of its own for each of them. A dialog of this application stays as it is - the
-   * library makes every dialog persistent - and a menu closes. The page asks after those guards, so nothing is left
-   * to ask about. */
+  /*
+   * Over an open dialog or menu the back button is no way out:
+   * Vuetify calls the navigation off with a guard for each of them.
+   * Dialogs of this app stay as they are because the library makes every dialog persistent. A menu closes.
+   * The page asks after those guards, so nothing is left to ask about.
+   */
   it.each<[string, boolean]>([
     ['with metadata typed into it', true],
     ['with nothing typed', false],
@@ -567,7 +528,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
 
       expect([questions(), list.at(), held(), server.requests.length - asked]).toEqual([[], LIST, 'asset-2', 0])
       expect([title.isConnected, title.value]).toEqual([true, typed ? TYPED : FROM_SERVER])
-      // The way back is not taken later either: the router is where it was, and the next try is a try of its own.
       await list.goBackInTheBrowser()
       expect([questions(), list.at(), held()]).toEqual([[], LIST, 'asset-2'])
     }
@@ -585,14 +545,15 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     await eventually(() => expect(menu()).toBeNull())
     expect([questions(), list.at(), list.tiles().length]).toEqual([[], LIST, 3])
     typedIsKept(list, typedInto)
-    // With nothing open over the page any more, the same button is a way out, and is asked about.
     await list.goBackInTheBrowser()
     expect([questions().length, list.at()]).toEqual([1, LIST])
   })
 
-  /* Vuetify leaves the way back alone when the entry of the history it leads to was written by `replace`, as the
-   * first page of a session is: the page would be left with its detail open. The question is the one of the detail,
-   * a dialog over it. */
+  /*
+   * Vuetify leaves the way back alone when the history entry it leads
+   * to was written by `replace`, as the first page of a session is.
+   * The page would then be left with its detail open. The question is the detail's own dialog over it.
+   */
   it('are asked about by the back button over an open detail where that would leave the page', async () => {
     const list = await openList()
     list.pencil(1).click()
@@ -618,7 +579,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     expect([questions(), list.at(), list.tiles()]).toEqual([[], '/', []])
   })
 
-  // Another query or another hash of the list is the page of the list still.
   it.each([LIST + '?page=2', LIST + '#top'])(
     'are not asked about by a navigation that keeps the page: %s',
     async (to) => {
@@ -632,7 +592,8 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     }
   )
 
-  // The question is the page's: the pages that come after it ask nothing, whatever the detail is left holding.
+  // The question belongs to the list page.
+  // Pages after it ask nothing, whatever the detail is left holding.
   it('are not asked about on the pages that come after the list', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -647,8 +608,11 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     expect([list.at(), useAssetDetailStore().leaveUnsavedQuestion]).toEqual(['/', false])
   })
 
-  /* The detail has the address of its asset, and closing it gives the address of the list back: both are written
-   * over the address of the page, with no navigation of the router. Nothing is left by them. */
+  /*
+   * The detail's address and the list address given back on close
+   * are written over the page address without a router navigation.
+   * Nothing is left by them.
+   */
   it('are not asked about by the address of a detail opened over them, nor by the one it gives back', async () => {
     const list = await openList()
     const typedInto = await typedIntoTheSecond(list)
@@ -665,7 +629,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     typedIsKept(list, typedInto)
   })
 
-  // One question at a time: the way out is told to stay, and the answer is for the way that asked first.
   it('are asked about once: a way out of the page under an open question stays', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -680,8 +643,10 @@ describe('metadata typed into the panel beside the list and not saved, when the 
   })
 })
 
-/* A reload and a closed window are no navigation the page could hold: the browser can be told to ask its own
- * question, and is told while there is something to lose. */
+/*
+ * A reload or closed window is no navigation the page can hold.
+ * The browser is told to ask its own question while there is something to lose.
+ */
 describe('metadata typed and not saved, when the window is reloaded or closed', () => {
   it('make the browser ask first, from the panel beside the list and from the detail alike', async () => {
     const list = await openList()
@@ -692,7 +657,6 @@ describe('metadata typed and not saved, when the window is reloaded or closed', 
     await typeInto(list.title())
     expect(windowAsksBeforeItGoes()).toBe(true)
 
-    // In the detail opened over them, and in the detail of an asset typed into there.
     buttonsNamed(panel(), EDIT)[0].click()
     await eventually(() => expect(held()).toBe('asset-2'))
     expect(windowAsksBeforeItGoes()).toBe(true)
@@ -707,7 +671,6 @@ describe('metadata typed and not saved, when the window is reloaded or closed', 
     expect(windowAsksBeforeItGoes()).toBe(false)
   })
 
-  // What the browser is told goes with the page: another page has nothing of the list to lose.
   it('do not make it ask once the page of the list is left, whatever its detail is left holding', async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -723,14 +686,15 @@ describe('metadata typed and not saved, when the window is reloaded or closed', 
   })
 })
 
-/* The licence is changed in a dialog of the menu of the page, and the page is reloaded once the server took the
- * change: whatever the page holds goes with it. */
+/*
+ * The licence is changed in a dialog of the page menu.
+ * The page is reloaded once the server accepts the change, and everything the page holds goes with it.
+ */
 describe('metadata typed into the panel beside the list and not saved, when the licence is changed', () => {
   const confirm = async (dialog: HTMLElement) => {
     dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
     await settled()
   }
-  /** What the server was asked on the way of the change: the licence, and the change of the user. */
   const sent = () => [server.sent('GET', OTHER_LICENCE).length, server.sent('PATCH', CURRENT_USER).length]
 
   it('are asked about as the change is confirmed: "Stay" sends nothing, "Leave anyway" changes it and reloads', async () => {
@@ -738,7 +702,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     const typedInto = await typedIntoTheSecond(list)
     const dialog = await list.openLicenceChange()
     expect(questions()).toEqual([])
-    /* What the browser is told as the page is reloaded. */
     const askedOnReload: boolean[] = []
     reload.mockImplementation(() => void askedOnReload.push(windowAsksBeforeItGoes()))
 
@@ -749,7 +712,6 @@ describe('metadata typed into the panel beside the list and not saved, when the 
 
     await answer(STAY)
 
-    // The dialog is the one that was open, with the licence that was picked in it.
     expect([questions(), sent(), reload.mock.calls, dialogOf(CHANGE_LICENCE) === dialog]).toEqual([
       [],
       [0, 0],
@@ -766,7 +728,7 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
     expect([questions(), sent(), list.alerts()]).toEqual([[], [1, 1], [UPDATED]])
     expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({ selectedLicence: 2 })
-    // The answer was given to the question of the page: the browser does not ask it again over the reload.
+    // The answer was given to the page's question, so the browser does not ask again on the reload.
     expect(askedOnReload).toEqual([false])
   })
 
@@ -798,14 +760,15 @@ describe('metadata typed into the panel beside the list and not saved, when the 
   })
 })
 
-/* The upload queue, the create button and the dialog of the licence are drawn on every page with the bar of the
- * application, the page of the list of an external provider among them - and the question about what was not saved
- * only on the page of the list of DAM. The detail of DAM is emptied as that page is left: on another page there is
- * nothing of it to ask about, and nothing to draw the question that would be waited for. On the page of the provider
- * the asset of a queue row and an asset just created are shown in a new tab of the browser, which is a fake here
- * (`externalProviderNewTab.test.ts`). */
+/*
+ * The upload queue, create button and licence dialog are drawn on every
+ * page with the app bar, including the external provider list page.
+ * The unsaved-changes question exists only on the DAM list page. The DAM detail is emptied when that page is
+ * left, so elsewhere there is nothing to ask about and nothing to draw a question that would be waited for.
+ * On the provider page, a queue row asset and a newly created asset open in a
+ * new browser tab, which is a fake here (`externalProviderNewTab.test.ts`).
+ */
 describe('the page of the list of an external provider, come to from metadata typed and not saved', () => {
-  /** The page of the provider, left for with "Leave anyway". */
   const onTheProviderPage = async () => {
     const list = await openList()
     await typedIntoTheSecond(list)
@@ -819,7 +782,6 @@ describe('the page of the list of an external provider, come to from metadata ty
 
   it('creates an empty asset at once: nothing is asked, and nothing waits for an answer', async () => {
     const list = await onTheProviderPage()
-    // The browser gives the tab, which stays empty.
     vi.stubGlobal('open', () => ({
       opener: window,
       closed: false,
@@ -842,7 +804,6 @@ describe('the page of the list of an external provider, come to from metadata ty
 
     await list.editRow()
 
-    // In a new tab: nothing is read for it on this page.
     expect([questions(), reads(), open.mock.calls.length]).toEqual([[], [0, 1, 0, 0], 1])
   })
 

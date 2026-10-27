@@ -40,8 +40,7 @@ const {
 
 const { push } = usePageNavigation()
 
-// The library returns the saved record rather than navigating: it cannot know this app's typed
-// route names.
+// The library returns the saved record instead of navigating, since it does not know this app's typed route names.
 const onCreate = async (close = false) => {
   const created = await createPermissionGroup()
   if (isNull(created)) return

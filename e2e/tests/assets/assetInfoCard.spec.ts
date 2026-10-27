@@ -33,13 +33,10 @@ import {
 } from '@pages/assets/displayModesPage'
 
 /**
- * The info card and the detail lightbox — the two ways the asset list shows an asset without leaving
- * the list.
- *
- * The info card is where the custom fields that no other spec reaches live: `location`,
- * `sourceKeywords` and the four media API fields. The ext system's asset custom form marks the media
- * API four `readonly: true`, so the app renders them disabled on purpose; the test holds them to that
- * rather than trying to type into them.
+ * The info card and the detail lightbox, the two ways the asset list shows an asset without leaving the list.
+ * The info card holds the custom fields no other spec reaches: `location`, `sourceKeywords` and
+ * the four media API fields. The ext system's custom form marks the media API four `readonly:
+ * true`, so the app renders them disabled. The test checks that instead of typing into them.
  */
 
 let page: Page
@@ -50,15 +47,12 @@ const DESCRIPTION = `InfoCardDesc${RAND_NUM}`
 const LOCATION = `InfoCardLoc${RAND_NUM}`
 const SOURCE_KEYWORDS = `InfoCardSrc${RAND_NUM}`
 
-/** The custom fields the ext system's form marks read-only, so the info card only displays them. */
 const READ_ONLY_FIELDS = ['mediaApiIds', 'mediaApiPaths', 'focusX', 'focusY']
 
-/** The saved custom data of the asset under test. */
 async function savedCustomData(): Promise<Record<string, string>> {
   return (await getAsset(page, ASSET_ID)).metadata?.customData ?? {}
 }
 
-/** Put the list back in tiles mode with the info card open on the fixture. */
 async function activateFixture(): Promise<void> {
   await openAssetList(page)
   await reloadUntilVisible(page, tileSelector(TITLE))
@@ -128,7 +122,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset info card and detail lightbox`, () 
     const saved = await savedCustomData()
     expect(saved.location).toBe(LOCATION)
     expect(saved.sourceKeywords).toBe(SOURCE_KEYWORDS)
-    // The earlier edit is still there, so saving the revealed fields does not drop the collapsed ones.
     expect(saved.description).toBe(DESCRIPTION)
   })
 
@@ -141,7 +134,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset info card and detail lightbox`, () 
       await expect(infoInput(page, name), `field ${name} cannot be edited`).not.toBeEditable()
     }
 
-    // The app is following the ext system's form definition rather than deciding this itself.
     const response = await page.request.get(
       `${CORE_DAM_API}/asset-custom-form/ext-system/1/type/image/element?order[position]=asc&limit=100`
     )
@@ -182,7 +174,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset info card and detail lightbox`, () 
     const start = await lightboxPosition(page)
     const startUrl = page.url()
 
-    // Each step asserts the position it lands on, so a chevron or a key that does nothing fails there.
     expect(await stepLightbox(page, 'next'), 'the chevron moves one asset on').toBe(start.index + 1)
     expect(page.url(), 'the URL follows the lightbox').not.toBe(startUrl)
     expect(await stepLightbox(page, 'next', 'key'), 'ArrowRight does the same').toBe(start.index + 2)

@@ -15,8 +15,7 @@ const distributionListStore = useDistributionListStore()
 
 const { t } = useI18n()
 
-/* The distributions being stopped: the dialog is one for all of them, and opened for another one while the first is
- * asked about, it stops that one. */
+/* Distributions being stopped. One dialog serves all of them, so reopening it for another must not lose the first. */
 const stopping = reactive(new Set<DocId>())
 const buttonLoading = computed(
   () => !isNull(distributionIdToCancel.value) && stopping.has(distributionIdToCancel.value)
@@ -28,7 +27,7 @@ const onCancel = () => {
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  // The keyboard reaches a button that spins.
+  // The keyboard can still trigger a spinning button.
   if (buttonLoading.value) return
   if (
     isNull(distributionIdToCancel.value) ||
@@ -40,11 +39,10 @@ const onConfirm = async () => {
   stopping.add(distributionId)
   try {
     await cancelCustomDistribution(distributionId)
-    // Out of the list at once: the read asked for below can fail, and the list would keep what is stopped, with the
-    // button that stops it.
+    // Removed from the list at once: the reload below can fail and would leave the stopped item with its button.
     distributionListStore.removeListItem(distributionId)
-    // The dialog is one for every distribution, and can be closed while the server is asked and opened for another:
-    // that one was not stopped.
+    // The dialog is shared and can be reopened for another distribution
+    // during the request. Close it only if it still shows this one.
     if (distributionIdToCancel.value === distributionId) dialogCancel.value = false
     showRecordWas('deleted')
     emit('reloadList')

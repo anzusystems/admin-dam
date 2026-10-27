@@ -14,13 +14,8 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* What the queues tell the editor of rows that end without the notifications of the server: a slot upload given up on
- * as its file is no longer there, one ended failed or as a duplicate by the list of the slots, and a mass-edit row
- * left without its metadata. The real upload, poll and store over a fake server; the alerts are a stand-in. */
-
 let server: FakeDam
 const showError = vi.fn()
-// What the notifications of the server are heard by, once the application listens to them.
 const notificationListeners: Array<(event: unknown) => void> = []
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -56,9 +51,7 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 
 const SLOTS = 'slots'
 const EDIT = 'edit'
-// Far enough for one read of the poll, whatever its rhythm.
 const ONE_READ = 20_000
-// Far enough for the reads after which a file that is not there is given up on.
 const SEVERAL_READS = 60_000
 
 const waitingSlotUpload = (over: Partial<UploadQueueItem> = {}) =>
@@ -84,7 +77,6 @@ const load = async () => {
   return { store: useUploadQueuesStore(), detailStore: useAssetDetailStore() }
 }
 
-/** One file sent into the slot `extra` of `asset-1`, as far as the server's answer to its finish request. */
 const processingSlotUpload = async () => {
   const { store, detailStore } = await load()
   const [row] = seedQueue(store, SLOTS, [waitingSlotUpload()])
@@ -95,7 +87,6 @@ const processingSlotUpload = async () => {
   return { store, row, detailStore }
 }
 
-/** An asset that is not described, its main file another one than the upload's, or none. */
 const notDescribed = (mainFile: ReturnType<typeof assetFile> | null) =>
   assetDetail('asset-1', { mainFile, flags: { described: false } }) as unknown as AssetDetailItemDto
 
@@ -122,7 +113,8 @@ describe('a slot upload given up on as its file is no longer on the server', () 
     expect([row.status, row.error.message]).toEqual(['failed', 'system.uploadErrors.fileMissing'])
   })
 
-  // Its text was the one of an unknown error, which the queue tells once: the next failure of that kind was not told.
+  // The text was the unknown-error text, which the queue reports only once.
+  // The next failure of that kind was not reported.
   it('leaves the next upload of the queue that fails for an unknown error to be told of', async () => {
     const { store, row } = await processingSlotUpload()
     server.assetDeleted('asset-1')
@@ -149,9 +141,7 @@ describe('a slot upload given up on as its file is no longer on the server', () 
   })
 })
 
-/* A detail or a panel that holds the asset learns how the server ended a file put into a slot of it: from the
- * notifications, and from the queue only of a file processed. Without the notifications it went on holding a file
- * that failed or is a duplicate as still on its way. */
+/* Without notifications, a detail or panel kept treating a failed or duplicate slot file as still on its way. */
 describe('a slot upload ended by the list of the slots of its asset', () => {
   it('failed: tells the page of the detail of an asset that is not described, which reads it', async () => {
     const { row, detailStore } = await processingSlotUpload()
@@ -189,7 +179,6 @@ describe('a slot upload ended by the list of the slots of its asset', () => {
     expect(pageTold).toHaveBeenCalled()
   })
 
-  // The guard: a file given up on as no longer there was not ended by the server, and nothing is told of it.
   it('tells nothing of a file it gave up on as no longer in its slot', async () => {
     const { row, detailStore } = await processingSlotUpload()
     const other = assetFile('file-main', 'processed', { asset: 'asset-1' })
@@ -206,9 +195,10 @@ describe('a slot upload ended by the list of the slots of its asset', () => {
   })
 })
 
-/* With the notifications the end of the file is said twice: by the row of the queue the notification settles, and by
- * the listener of the application, which tells the detail of each file. The page read the asset for each of them, and
- * the first answer was given up for the second. */
+/*
+ * The end of the file is reported twice: by the queue row and by the application listener.
+ * The page read the asset for each, and the first answer was dropped for the second.
+ */
 describe('a slot upload ended by a notification of the server', () => {
   const notified: Array<[string, Record<string, unknown>, () => void]> = [
     [
@@ -230,7 +220,6 @@ describe('a slot upload ended by a notification of the server', () => {
       const { row, detailStore } = await processingSlotUpload()
       const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
       initAppNotificationListeners()
-      // The detail holds the asset with the file of the upload as its main one, still on its way.
       detailStore.asset = notDescribed(assetFile('file-1', 'stored', { asset: 'asset-1' }))
       const pageTold = vi.fn()
       detailStore.tellPageBy(pageTold)
@@ -247,8 +236,10 @@ describe('a slot upload ended by a notification of the server', () => {
 })
 
 describe('the queues emptied by their reset', () => {
-  /* A failed row gets the metadata of the notification only when it failed for want of them, as its batch left it. The
-   * reset forgot the rows, and kept which of them that was: a row of the same asset picked after it was taken for it. */
+  /*
+   * A failed row gets the notification metadata only if it failed for lack of metadata.
+   * The reset forgot the rows but kept that mark, so a row of the same asset picked later was taken for it.
+   */
   it('forget which mass-edit row its batch left without metadata', async () => {
     const { store } = await load()
     server.on('GET', /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/, () => {
@@ -268,7 +259,6 @@ describe('the queues emptied by their reset', () => {
     expect([left.status, left.error.message]).toEqual(['failed', 'system.uploadErrors.metadataUnavailable'])
 
     store.reset()
-    // A row of the same asset that failed for its file, in the place of the one before.
     const [row] = seedQueue(store, EDIT, [
       queueRow({ key: left.key, type: 'asset', status: 'failed', assetId: 'asset-1', fileId: 'file-1' }),
     ])

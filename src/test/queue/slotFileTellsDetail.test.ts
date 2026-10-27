@@ -13,12 +13,12 @@ import {
 } from '@/test/support/fakeDam'
 import type { FakeAssetFile, FakeDam } from '@/test/support/fakeDam'
 
-/* A file sent into another slot of an asset than its main one, with no notification delivered: the poll of the queue
- * reads the list of the slots of the asset and settles the row by its file. The server fills in the metadata of an
- * asset that is not described from whichever of its files it processes first, so a detail that holds the asset is
- * told of that file as of its main one, and its page reads the asset; "Save" is held back meanwhile, the form being
- * older than what the server filled in. The real upload, poll and stores over a fake server; the page is a stand-in
- * that says when it is told. */
+/*
+ * Without a notification, the poll reads the slot list and settles the row by its own file.
+ * The server fills in metadata of an undescribed asset from the first file it processes,
+ * so a detail holding the asset is told of that file as its main one and re-reads the asset.
+ * "Save" is held back meanwhile because the form is older than the filled-in metadata.
+ */
 
 let server: FakeDam
 
@@ -38,18 +38,14 @@ vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
 }))
 
 const SLOTS = 'slots'
-// Far enough for one read of the poll, whatever its rhythm.
 const ONE_READ = 20_000
 
-/** The asset as the detail holds it: its main file processed, the asset described or not. */
 const held = (described: boolean) =>
   assetDetail('asset-1', {
     mainFile: assetFile('file-main', 'processed', { asset: 'asset-1' }),
     flags: { described, visible: true },
   }) as unknown as AssetDetailItemDto
 
-/** One file sent into the slot `extra` of `asset-1`, as far as the server's answer to its finish request, with the
- * detail holding the asset and its page listening. */
 const processingSlotUpload = async (described = false) => {
   vi.resetModules()
   setActivePinia(createPinia())
@@ -80,7 +76,6 @@ const processingSlotUpload = async (described = false) => {
   return { row, detailStore, pageTold }
 }
 
-/** What the slot `extra` of `asset-1` holds: the file of the upload, in the state the server has brought it to. */
 const slotFileIs = (status: FakeAssetFile['fileAttributes']['status']) =>
   server.slotFile('asset-1', 'extra', assetFile('file-1', status, { asset: 'asset-1' }))
 
@@ -97,7 +92,6 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-/* The poll settled the row and told the detail nothing: the detail heard of its main file alone. */
 describe('a slot upload settled processed by the poll of its queue', () => {
   it('tells the page of the detail that holds its asset, and holds "Save" back until the page has read it', async () => {
     const { row, detailStore, pageTold } = await processingSlotUpload()
@@ -108,7 +102,6 @@ describe('a slot upload settled processed by the poll of its queue', () => {
     expect([row.status, pageTold.mock.calls.length, detailStore.saveHeldBack]).toEqual(['uploaded', 1, true])
   })
 
-  // The guard: the server leaves the metadata of an asset that is described alone.
   it('tells nothing to the detail of an asset that is described', async () => {
     const { row, detailStore, pageTold } = await processingSlotUpload(true)
     slotFileIs('processed')

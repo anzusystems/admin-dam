@@ -2,27 +2,28 @@ import { type Locator, type Page, expect } from '@playwright/test'
 import { cardLoad, closeAlerts } from '@pages/shared/admin'
 import { URL_DOMAIN, URL_PROTO } from '@pages/shared/constants'
 
-/** admin-cms, reachable with the session of the DAM force-login (both admins share the sso cookie). */
+/**
+ * admin-cms is reachable with the session of the DAM force-login, because both admins share the sso cookie.
+ */
 export const CMS_BASE_URL = `${URL_PROTO}://admin-cms.${URL_DOMAIN}`
 const CORE_CMS_API = `${URL_PROTO}://core-cms.${URL_DOMAIN}/api/adm/v1`
 const WEB_BASE_URL = `${URL_PROTO}://www.${URL_DOMAIN}`
 
-/** Shown on an embed, or the main media, whose DAM asset cannot be played on the web yet. */
 export const MEDIA_NOT_PLAYABLE = 'Mediálny obsah sa zatiaľ neprehrá na webe. Skontrolujte distribúciu.'
 
 export interface CmsArticle {
-  /** Numeric article id — what the `/article-kind` endpoints take. */
+  /**
+   * Numeric article id, used by the `/article-kind` endpoints.
+   */
   id: string
-  /** Document UUID — what the web redirect takes. */
+  /**
+   * Document UUID, used by the web redirect.
+   */
   docId: string
 }
 
 export type DamMediaKind = 'audio' | 'video'
 
-/**
- * Create a standard article through the admin-cms create dialog, under the "Svet" desk and rubric, and save it
- * once. Returns its ids from the create response.
- */
 export async function createCmsArticle(page: Page, title: string): Promise<CmsArticle> {
   await page.goto(`${CMS_BASE_URL}/articles`)
   await cardLoad(page)
@@ -56,24 +57,18 @@ async function pickAutocomplete(page: Page, combobox: Locator, search: string, o
   await page.getByRole('option', { name: option, exact: true }).click()
 }
 
-/** Open the edit view of an article. */
 export async function openCmsArticleEdit(page: Page, articleId: string): Promise<void> {
   await page.goto(`${CMS_BASE_URL}/articles/${articleId}/edit`)
   await cardLoad(page)
   await expect(page.locator('#anzu-actionbar').getByRole('button', { name: 'Uložiť' })).toBeVisible()
 }
 
-/**
- * Open an article on its detail view — where a published article lands — and wait until its body and main media
- * both render the DAM asset titled `assetTitle`.
- */
 export async function openCmsArticleDetail(page: Page, articleId: string, assetTitle: string): Promise<void> {
   await page.goto(`${CMS_BASE_URL}/articles/${articleId}`)
   await cardLoad(page)
   await expect(page.getByText(`Titulok: ${assetTitle}`, { exact: true })).toHaveCount(2)
 }
 
-/** Save the article from the action bar and wait for the update to be stored. */
 export async function saveCmsArticle(page: Page): Promise<void> {
   await closeAlerts(page)
   const saved = page.waitForResponse(
@@ -89,8 +84,7 @@ function isDamAssetSearch(url: string): boolean {
 }
 
 /**
- * Pick the DAM asset `assetId` in the open DAM asset picker — filtered by its id, so the pick does not depend
- * on list order — and confirm it.
+ * Filters the picker by asset id so the pick does not depend on list order.
  */
 async function pickDamAsset(page: Page, assetId: string): Promise<void> {
   const picker = page.locator('.v-overlay--active').filter({ has: page.locator('.subject-select__actions') })
@@ -107,7 +101,6 @@ async function pickDamAsset(page: Page, assetId: string): Promise<void> {
   await picker.locator('.subject-select__actions .v-btn').filter({ hasText: 'Potvrdiť' }).click()
 }
 
-/** Insert an audio or video embed of the DAM asset `assetId` into the article body through the editor toolbar. */
 export async function embedDamMedia(page: Page, kind: DamMediaKind, assetId: string): Promise<void> {
   await page
     .locator(`.anzutap .${kind === 'audio' ? 'mdi-headphones' : 'mdi-video'}`)
@@ -119,7 +112,6 @@ export async function embedDamMedia(page: Page, kind: DamMediaKind, assetId: str
     .last()
   await dialog.getByRole('button', { name: kind === 'audio' ? 'Vybrať audio' : 'Vybrať video' }).click()
   await pickDamAsset(page, assetId)
-  // The dialog now previews the picked asset; its confirm inserts the embed.
   const confirm = dialog.getByRole('button', { name: 'Potvrdiť' })
   await expect(dialog.getByText(assetId)).toBeVisible()
   await expect(async () => {
@@ -129,7 +121,6 @@ export async function embedDamMedia(page: Page, kind: DamMediaKind, assetId: str
   await expect(dialog).toBeHidden()
 }
 
-/** Set the article's main media ("Hlavný mediálny obsah") to the DAM asset `assetId`. */
 export async function setMainMediaFromDam(page: Page, kind: DamMediaKind, assetId: string): Promise<void> {
   const widget = page.locator('.article-layout__top-right .a-image-widget').first()
   await widget.hover()
@@ -149,12 +140,10 @@ export async function setMainMediaFromDam(page: Page, kind: DamMediaKind, assetI
   await expect(mediaDialog).toBeHidden()
 }
 
-/** The "not playable yet" warnings of the body embed and of the main media. */
 export function mediaWarnings(page: Page): Locator {
   return page.locator('.text-warning').filter({ hasText: MEDIA_NOT_PLAYABLE })
 }
 
-/** Publish the article from the action bar and wait until the API reports it published. */
 export async function publishCmsArticle(page: Page, articleId: string): Promise<void> {
   await closeAlerts(page)
   await page.locator('.a-button-split__main').filter({ hasText: 'Publikovať' }).click()
@@ -167,8 +156,8 @@ export async function publishCmsArticle(page: Page, articleId: string): Promise<
 }
 
 /**
- * Purge the web cache of an article from its detail view. The web renders an article once and does not re-render
- * it when an embedded DAM asset becomes playable later, so the players only appear after a purge.
+ * The web renders an article once and does not re-render it when an embedded DAM asset becomes playable later.
+ * The players only appear after a purge.
  */
 export async function purgeCmsArticleCache(page: Page, articleId: string): Promise<void> {
   await page.goto(`${CMS_BASE_URL}/articles/${articleId}`)
@@ -182,8 +171,7 @@ export async function purgeCmsArticleCache(page: Page, articleId: string): Promi
 }
 
 /**
- * Open the article on the public web and wait until it renders two media players — the body embed and the main
- * media. Reloads between checks, as the web keeps serving a cached render for a while.
+ * Reloads between checks, because the web keeps serving a cached render for a while.
  */
 export async function expectPlayableOnWeb(page: Page, article: CmsArticle): Promise<void> {
   await expect(async () => {
@@ -193,9 +181,9 @@ export async function expectPlayableOnWeb(page: Page, article: CmsArticle): Prom
 }
 
 /**
- * Delete every article titled `title`, published ones included: a published article has to go back to draft
- * before it can be deleted, and publishing leaves more than one `article-kind` record for the same document.
- * Best effort — cleanup only.
+ * A published article has to go back to draft before it can be deleted.
+ * Publishing leaves more than one `article-kind` record for the same document.
+ * Best effort, cleanup only.
  */
 export async function deleteCmsArticlesViaApi(page: Page, title: string): Promise<void> {
   const search = `${CORE_CMS_API}/article-kind/search?limit=50&offset=0&order[score_date]=desc&text=${encodeURIComponent(title)}`

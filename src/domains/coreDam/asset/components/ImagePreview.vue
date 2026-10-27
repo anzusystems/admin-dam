@@ -42,22 +42,28 @@ const { showErrorsDefault, showUnknownError } = useAlerts()
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
-/* The image read last. It stays when the card is left with no image: it is the one that comes back when what
- * holds the card puts the image back, as after a save of "none" that failed. */
+/*
+ * The last image read. It is kept when the card is cleared, so it can return
+ * when the parent restores the image, for example after a failed save of "none".
+ */
 const imageFile = ref<null | AssetFileImage>(null)
-// The reads of an image, counted: the answer for an image the card holds no more is dropped.
+// Counts image reads, so a response for an image the card no longer holds is dropped.
 let latestImageRead = 0
 
-/* The read of the image the card holds has failed: nothing is known of that image then, neither its picture nor how
- * far it is processed. The card says neither, and stays as it is for an image: with its buttons, by which the image
- * is taken away or another one picked. */
+/*
+ * The read of the current image failed, so its preview and processing state are unknown and not shown.
+ * The card keeps its buttons, so the image can still be removed or replaced.
+ */
 const readFailed = ref(false)
 
 const fetchImage = async (id: DocId) => {
   const asked = ++latestImageRead
   readFailed.value = false
-  /* Put back, the image the card has read last needs no read: with the server away that read would not end. One
-   * read as processed, that is: of an image that was still being processed, a read says how far it has got. */
+  /*
+   * A restored image that is the last read and already processed needs
+   * no new read. With the server down that read would never finish.
+   * An image still processing is read again to get its progress.
+   */
   if (imageFile.value?.id === id && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) {
     loading.value = false
 
@@ -87,11 +93,13 @@ const imagePreviewModel = computed({
   },
 })
 
-/* What the card shows of it: nothing while it holds no image, whoever took the image away, nor once the read of the
- * image it holds has failed - the image read last is another one. */
+/*
+ * Shows nothing when the card holds no image, or when the read
+ * failed, since the last read image is then a different one.
+ */
 const shownFile = computed(() => (isNull(imagePreviewModel.value) || readFailed.value ? null : imageFile.value))
 
-// The image the card holds is read again only when it changes: a read that failed is tried again by the editor.
+// The image is re-read only when it changes. The editor retries a failed read with this.
 const readAgain = () => {
   if (!isNull(imagePreviewModel.value)) fetchImage(imagePreviewModel.value.imageFile)
 }

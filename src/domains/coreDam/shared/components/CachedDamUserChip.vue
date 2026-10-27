@@ -24,8 +24,8 @@ const router = useRouter()
 
 const { getCachedUser } = useDamCachedUsers()
 
-// `useCachedItem` settles on an item the fetch could not resolve too; waiting for `_loaded` alone left
-// the chip spinning for good on a user who is not there or may not be read.
+// `useCachedItem` also settles on an item the fetch could not resolve.
+// Waiting for `_loaded` alone left the chip spinning forever on a missing or unreadable user.
 const { cached, loaded, unresolved } = useCachedItem(() => getCachedUser(props.id))
 
 const text = computed(() => {
@@ -44,7 +44,7 @@ const onClick = () => {
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id) || isUndefined(id)">-</span>
-    <!-- No avatar, link or click: there is no user to show or open, only the id the record names. -->
+    <!-- No avatar, link or click: there is no user to show or open, only the id. -->
     <VChip
       v-else-if="unresolved"
       size="small"

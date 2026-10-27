@@ -57,12 +57,12 @@ const assetListStore = useAssetListStore()
 const uploadQueuesStore = useUploadQueuesStore()
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
-// A failure that ends after the user went elsewhere has nothing to say there.
+// A failure that ends after the user navigated away is not shown.
 const whileOnPage = useWhileOnPage()
 const { opensInNewTab, openAssetInNewTab } = useAssetInNewTab()
 
-// Processing too: the server may take long over a file, and the row is asked about for as long as it stays. And
-// `Failed`: delete is no answer there - a refused import never created an asset.
+// `Processing` too: the server may take long over a file, and the row asks about it while it stays.
+// `Failed` too: delete does not help there, because a refused import never created an asset.
 const CANCEL_STATUSES: readonly UploadQueueItemStatusType[] = [
   UploadQueueItemStatus.Loading,
   UploadQueueItemStatus.Waiting,
@@ -81,17 +81,23 @@ const rowIsInItsQueue = () =>
 const showDetail = async (event?: MouseEvent) => {
   const assetId = props.item.assetId
   if (isNull(assetId)) return
-  /* On a page that draws no detail of an asset the one of the row is shown on its own page, in a new tab: nothing
-   * of this page is read, and nothing of it replaced. One tab for a double click: its second click opens none. */
+  /*
+   * On a page that draws no asset detail, the asset opens on its
+   * own page in a new tab. This page is not read or replaced.
+   * A double click opens only one tab.
+   */
   if (opensInNewTab()) {
     if ((event?.detail ?? 0) > 1) return
     openAssetInNewTab(assetId)
 
     return
   }
-  /* The read below replaces what the panel beside the list holds, also when that is the asset of this row: metadata
-   * typed into the panel and not saved go only when told to. Asked before anything changes; by the answer the row can
-   * be of another asset, or gone from its queue - its props are then as they were last. */
+  /*
+   * The read replaces the panel content, also when it shows this row's
+   * asset. Unsaved metadata are dropped only after confirmation.
+   * Asked before anything changes. By the answer the row can
+   * belong to another asset or be gone, so its props are stale.
+   */
   if (assetDetailStore.panelHoldsUnsavedMetadata) {
     if (!(await assetDetailStore.askToLeaveUnsaved())) return
     if (props.item.assetId !== assetId || !rowIsInItsQueue()) return
@@ -100,7 +106,7 @@ const showDetail = async (event?: MouseEvent) => {
   assetListStore.keyboardNavigationDisable()
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
-  // Counted in the store: this dialog and the list write to one detail.
+  // Counted in the store because this dialog and the list write to the same detail.
   const detailRequest = assetDetailStore.startDetailRequest(assetId)
   try {
     const asset = await fetchAsset(assetId)
@@ -109,27 +115,29 @@ const showDetail = async (event?: MouseEvent) => {
   } catch (error) {
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
     const dialogWasOpen = assetDetailStore.detail
-    // Cleared, not merely closed: the panel behind renders the same asset.
+    // Reset, not only closed, because the panel behind renders the same asset.
     assetDetailStore.reset()
     assetListStore.keyboardNavigationEnable()
-    // If it is already closed, the user has stopped waiting for this answer.
+    // A closed dialog means the user stopped waiting for this answer.
     if (!dialogWasOpen) return
     whileOnPage(() => showErrorsDefault(error))
   } finally {
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.hideLoader()
   }
 }
-/* The asset is deleted, and what else holds it is told, as a delete in the detail tells it: the tile of the asset in
- * the list and the detail or the panel beside the list are marked as deleting, and what was typed into the form of
- * the asset is no longer unsaved. Through the stores, not by an event: the queue can be closed while the delete is on
- * its way, and what an unmounted component emits Vue drops. One delete of the asset at a time: the bin is disabled
- * while it is on its way, and a press that comes all the same sends nothing. */
+/*
+ * Marks the asset as deleting in the list tile and the detail or
+ * panel, and clears unsaved form state, like a delete in the detail.
+ * Done through the stores, not an event: the queue can close during
+ * the delete, and Vue drops events of an unmounted component.
+ * Only one delete per asset: the bin is disabled meanwhile, and an extra press sends nothing.
+ */
 const remove = async () => {
   const assetId = props.item.assetId
   if (!assetId) return
   try {
     if (!(await deleteAssetOnce(assetId))) return
-    // By the asset, not by the place of the row, which can shift meanwhile: this row and every other row of the asset.
+    // By asset id, not row position, which can shift meanwhile. Removes every row of the asset.
     uploadQueuesStore.removeRowsOfDeletedAsset(assetId)
     assetListStore.setDeletingById(assetId)
     if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
@@ -142,7 +150,7 @@ const remove = async () => {
 const stillRunning = (status: UploadQueueItemStatusType) =>
   status === UploadQueueItemStatus.Uploading || status === UploadQueueItemStatus.Processing
 
-// When the row offers refresh is admin-dam's own rule, handed to the row of the library.
+// When the row offers refresh is admin-dam's rule, passed to the library row.
 watch(
   () => props.item.status,
   async (newValue) => {
@@ -157,17 +165,16 @@ watch(
       return
     }
     if (newValue === UploadQueueItemStatus.Uploaded) {
-      // A failure has already been reported; the button is what the user can undo it with.
+      // The failure is already reported. The button lets the user recover from it.
       if (props.item.error.hasError) {
         showRefresh.value = true
 
         return
       }
       showRefresh.value = false
-      // A duplicate is not given metadata to edit, so there is nothing for refresh to fetch.
+      // A duplicate gets no editable metadata, so refresh has nothing to fetch.
       if (props.item.canEditMetadata || props.item.isDuplicate) return
-      /* Without its metadata the form stays disabled and the bulk save skips the row; refresh is the way back
-       * the user has. */
+      /* Without metadata the form stays disabled and bulk save skips the row. Refresh is the user's only way back. */
       refreshTimer.value = setTimeout(() => {
         if (props.item.status !== UploadQueueItemStatus.Uploaded) return
         if (props.item.canEditMetadata || props.item.isDuplicate) return
@@ -176,8 +183,8 @@ watch(
 
       return
     }
-    // Failed or stopped: no refresh. A failed row whose file the server did finish comes back with its processed
-    // notification.
+    // Failed or stopped: no refresh. A failed row whose file the
+    // server finished returns with its processed notification.
     showRefresh.value = false
   },
   { immediate: true }
@@ -186,7 +193,7 @@ watch(
 watch(
   () => props.item.canEditMetadata,
   (canEdit) => {
-    // The metadata notification can arrive after the file one; the button is only for its absence.
+    // The metadata notification can arrive after the file one. The button is only for when it is missing.
     if (canEdit && props.item.status === UploadQueueItemStatus.Uploaded && !props.item.error.hasError) {
       clearTimeout(refreshTimer.value)
       refreshTimer.value = undefined

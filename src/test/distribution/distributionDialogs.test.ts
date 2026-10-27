@@ -4,10 +4,12 @@ import { assetDetail, createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, dialogButton, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* Two dialogs of the distributions tab: the one that stops a waiting distribution, and the one of the advanced
- * settings that edits the record of a distribution. The real tab with its real dialogs, the application around
- * them as it starts; the server is a fake. The start is the one of `distributionManageDelete.test.ts`, with the
- * asset in the detail store on top: the dialog of the settings reads its slots. */
+/*
+ * Two dialogs of the distributions tab: stopping a waiting distribution, and the
+ * advanced settings that edit a distribution record. Real tab and dialogs, fake server.
+ * Start as in `distributionManageDelete.test.ts`, plus the asset
+ * in the detail store: the settings dialog reads its slots.
+ */
 
 let server: FakeDam
 
@@ -28,7 +30,6 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const LOAD_FAILED = 'The distributions could not be loaded.'
 const NOTHING_TO_SHOW = 'Nothing to show'
 
-/** A distribution as the list of an asset answers it; the tab and its settings both show its remote id. */
 const distribution = (id: string, status = 'distributed') => ({
   id,
   assetId: 'asset-1',
@@ -44,7 +45,6 @@ const distribution = (id: string, status = 'distributed') => ({
   _resourceName: 'distribution',
 })
 
-/** What the server lists for the asset; a case changes it as the distributions change. */
 let listed: ReturnType<typeof distribution>[] = []
 const listAnswer = (): FakeDamAnswer => ({ status: 200, data: { data: structuredClone(listed) } })
 
@@ -73,7 +73,7 @@ const openTab = async () => {
       },
     },
   }
-  // The services of the account: a distribution to one of them may be redistributed and managed.
+  // Services of the account. Only distributions to these services can be redistributed and managed.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({ ...currentUser.value, allowedDistributionServices: [SERVICE] } as never)
@@ -87,7 +87,6 @@ const openTab = async () => {
       import('@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue'),
     { isActive: true, assetType: 'video', assetId: 'asset-1', assetMainFileStatus: 'processed' }
   )
-  /** The distributions the tab lists, each by its remote id, in the order of the list. */
   const shown = () =>
     Array.from(tab.querySelectorAll('.mx-4 > .d-flex')).map((row) => row.textContent?.match(/remote-[\w-]+/)?.[0])
   await eventually(() => expect(shown()).toEqual(listed.map((item) => item.extId)))
@@ -96,11 +95,8 @@ const openTab = async () => {
     ...ui,
     tab,
     shown,
-    /** Whether the tab says that. */
     says: (text: string) => tab.textContent?.includes(text) ?? false,
-    /** The button under the line that says the list could not be loaded. */
     tryAgain: () => tab.querySelector<HTMLButtonElement>('[data-cy="distribution-list-retry"]'),
-    /** "Confirm" of the open dialog, once the dialog has it. */
     confirm: () =>
       eventually(() => {
         const button = dialogButton(CONFIRM)
@@ -137,18 +133,17 @@ describe('the dialog that stops a waiting distribution', () => {
     ui.confirm.click()
 
     await eventually(() => expect(ui.alerts()).toEqual([REMOVED]))
-    // Nothing is left to confirm a second time: it would ask the server to stop what is gone.
     expect(dialogButton(CONFIRM)).toBeNull()
     expect(server.sent('DELETE', STOP).map((request) => request.url)).toEqual(['/adm/v1/custom-distribution/dist-1'])
-    // Read at once, because the dialog asked for it: by itself the tab reads behind its list a quarter of a minute
-    // after its last read.
+    // Read at once because the dialog asked for it. On its own the tab reads 15 seconds after its last read.
     await vi.advanceTimersByTimeAsync(100)
     expect([ui.shown(), server.sent('GET', LIST).length]).toEqual([['remote-dist-2'], 2])
   })
 
-  /* The stopped distribution is out of the list before the tab reads it again, whatever becomes of that read: left
-   * there by a read that failed, it would wait with the button that stops it, for the server to be asked to stop
-   * what is gone. */
+  /*
+   * The stopped distribution leaves the list before the tab reads again, whatever that read does. Otherwise
+   * a failed read leaves it waiting with a stop button that asks the server to stop what is gone.
+   */
   it('is gone from the list when the read after the stop fails, and the other distribution stays', async () => {
     server.on('DELETE', STOP, () => ({ status: 204 }))
     const ui = await asked()
@@ -161,7 +156,6 @@ describe('the dialog that stops a waiting distribution', () => {
     await eventually(() => expect(ui.alerts()).toEqual([REMOVED, SYSTEM_ERROR]))
     await vi.advanceTimersByTimeAsync(100)
     expect([ui.shown(), buttonsNamed(ui.tab, STOP_DISTRIBUTION).length]).toEqual([['remote-dist-2'], 0])
-    // The list is not empty: it is the one the tab has, less what was stopped, and not a list that failed to load.
     expect([ui.says(LOAD_FAILED), ui.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 2])
     expect(dialogButton(CONFIRM)).toBeNull()
   })
@@ -191,8 +185,10 @@ describe('the dialog that stops a waiting distribution', () => {
     expect([ui.says(LOAD_FAILED), ui.tryAgain(), server.sent('GET', LIST).length]).toEqual([false, null, 3])
   })
 
-  /* A press of Enter or of the space bar on a button reaches it as a click, and the spinning button takes it: only
-   * the pointer is kept off it. The page here does not turn a key into a click, so the click is sent as it is. */
+  /*
+   * Enter or space on a button arrives as a click and the spinning button accepts it. Only the pointer is kept off.
+   * The page here does not turn a key into a click, so the click is sent directly.
+   */
   it('asks the server once, however often "Confirm" is pressed while it spins', async () => {
     let answer: () => void = () => undefined
     server.on('DELETE', STOP, () => new Promise<FakeDamAnswer>((resolve) => (answer = () => resolve({ status: 204 }))))
@@ -220,8 +216,10 @@ describe('the dialog that stops a waiting distribution', () => {
     expect(dialogButton(CONFIRM)).toBeNull()
   })
 
-  /* The dialog is one for all the rows, and it can be closed while the server is still asked. "Confirm" spun for the
-   * second one as well then, and sent nothing. */
+  /*
+   * One dialog serves all rows and can be closed while the server is
+   * still asked. "Confirm" then spun for the second row and sent nothing.
+   */
   it('stops another distribution it was opened for meanwhile at once, while the first one is still asked about', async () => {
     const stopped = () => server.sent('DELETE', STOP).map((request) => request.url)
     let answerFirst: () => void = () => undefined
@@ -279,7 +277,6 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     listed = [distribution('dist-1'), distribution('dist-2')]
     const ui = await openTab()
     buttonsNamed(ui.tab, SHOW_SETTINGS)[0].click()
-    /** The pencil of the first row of the settings, once they draw their rows; answers "Confirm" of the dialog. */
     const edit = async () => {
       const pencil = await eventually(() => {
         const button = ui.tab.querySelector<HTMLButtonElement>('.a-le-row .a-le-action--edit')
@@ -295,7 +292,6 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     return { ...ui, edit, confirm: await edit() }
   }
 
-  /** The X of the toolbar of the open dialog. */
   const close = () => document.body.querySelector<HTMLButtonElement>('.v-dialog [data-cy="button-close"]')
 
   it('spins "Confirm" while the save is on its way and sends it once, however often it is pressed', async () => {
@@ -328,8 +324,10 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     expect([saved().length, ui.alerts(), server.sent('GET', LIST).length]).toEqual([1, [UPDATED], 2])
   })
 
-  /* Closed under the save, the dialog would be unmounted: the save goes through and is said, but nobody hears of it,
-   * the list is not read again and the next pencil fills the form from the row as it was. */
+  /*
+   * Closing during the save would unmount the dialog. The save goes through and is announced, but nobody
+   * hears of it, the list is not read again, and the next pencil fills the form from the old row.
+   */
   it('cannot be closed by "Cancel" or by the X while the save is on its way: the list is read once it is saved', async () => {
     let answer: () => void = () => undefined
     server.on(
@@ -385,7 +383,6 @@ describe('the dialog of the advanced settings that edits the record of a distrib
     close()?.click()
 
     await eventually(() => expect(dialogButton(CONFIRM)).toBeNull())
-    // Nothing was saved, so nothing is read again.
     expect([saved().length, server.sent('GET', LIST).length]).toEqual([1, 1])
   })
 

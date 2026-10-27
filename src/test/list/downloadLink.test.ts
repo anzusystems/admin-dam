@@ -5,11 +5,12 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The download button of the Info tab of a detail opens a dialog that asks the server for the address of a file of
- * the asset and shows a link to it: of the main file as it opens, and of the file of another slot once the select
- * of the dialog is changed. Each is a request of its own, and they are answered in whatever order. The real page of
- * the list with its real detail, the application around it as it starts; the server is a fake, and so is the address
- * the page asks about a new version of the application. */
+/*
+ * The download dialog of the Info tab of a detail asks the server for the address of a file and shows a link to it.
+ * It does this for the main file on open, and for another slot's file when the select changes.
+ * Each is a separate request and they are answered in any order.
+ * Real list page and detail; fake server and fake new-version address.
+ */
 
 let server: FakeDam
 
@@ -22,7 +23,6 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 
 const LIST = '/assets'
 const ASSET = 'asset-1'
-/** The files of the two slots of the asset: of "default", the main one, and of "free". */
 const MAIN = 'file-a'
 const OTHER = 'file-b'
 
@@ -57,15 +57,16 @@ const settled = () => vi.advanceTimersByTimeAsync(100)
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const dialog = () => document.body.querySelector<HTMLElement>('.v-dialog [data-cy="delete-panel"]')
 
-/** The dialog: the slot its select says, whether it still waits for an address, and the address of its link. */
 const shows = () => ({
   slot: dialog()?.querySelector('.v-select .v-select__selection')?.textContent?.trim() ?? null,
   waiting: !!dialog()?.querySelector('.v-progress-circular'),
   link: dialog()?.querySelector('[data-cy="button-download-file"]')?.getAttribute('href') ?? null,
 })
 
-/* Every request for the address of a file is held from now on. Let go by the order they were asked in: answered
- * with the address of the file it asked for, or failed. */
+/*
+ * Holds every address request from now on.
+ * Each is released in the order asked, answered with the address of its file or failed.
+ */
 const holdLinks = () => {
   const answers: Array<(went: boolean) => void> = []
   server.on(
@@ -85,7 +86,6 @@ const holdLinks = () => {
   }
 }
 
-/** The dialog opened from the detail of the asset, and its select then set to the slot "free": two requests. */
 const openDialogAndPickFree = async () => {
   const ui = await startUploadUi({
     server,
@@ -93,7 +93,6 @@ const openDialogAndPickFree = async () => {
     extSystem: { audio: { slots: ['default', 'free'] } },
     customForm: { audio: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -165,8 +164,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The link was set by whichever request was answered last, and the spinner stopped by whichever was answered first:
- * under a select that said one slot, the link could be to the file of another. */
+/*
+ * The link was set by the last answered request and the spinner stopped by the first.
+ * The link could point to the file of another slot than the one the select showed.
+ */
 describe('the link of the download dialog of a detail, the slot changed while the address of the main file is asked for', () => {
   it('is to the file of the slot picked when the address of the main file is answered last', async () => {
     const answer = holdLinks()
@@ -190,7 +191,7 @@ describe('the link of the download dialog of a detail, the slot changed while th
     expect(shows()).toEqual({ slot: 'free', waiting: false, link: signed(OTHER) })
   })
 
-  // The guard: a request nobody waits for any more has nothing to say, also when it failed.
+  // A request nobody waits for says nothing, also when it failed.
   it('is waited for all the same when the address of the main file could not be had, and nothing is said of that', async () => {
     const answer = holdLinks()
     const ui = await openDialogAndPickFree()
@@ -202,7 +203,6 @@ describe('the link of the download dialog of a detail, the slot changed while th
     expect([shows(), ui.alerts()]).toEqual([{ slot: 'free', waiting: false, link: signed(OTHER) }, []])
   })
 
-  // The guard: the request asked for last says when it failed, and the dialog stops waiting.
   it('says once that the address of the file of the slot picked could not be had', async () => {
     const answer = holdLinks()
     const ui = await openDialogAndPickFree()

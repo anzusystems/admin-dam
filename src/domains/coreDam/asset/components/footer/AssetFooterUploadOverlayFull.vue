@@ -55,7 +55,7 @@ const onStopConfirm = async () => {
   hideUpload()
 }
 
-// Failed uploads, duplicates, items still waiting for their metadata: the save would send nothing and say it failed.
+// Failed uploads, duplicates and items still waiting for metadata. Saving them would send nothing and report a failure.
 const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
 const { assetIdsToSave, leaveTypedOfPanel, refreshDetailAsset, panelTakesTypingAgain, typedKeptAfterFailure } =
@@ -217,7 +217,7 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
-          <!-- Under two rows there is no panel to open. -->
+          <!-- With fewer than two rows there is no panel to open. -->
           <VBtn
             v-if="list.length >= MASS_OPERATIONS_FROM"
             :aria-label="t('coreDam.asset.massOperations.title')"

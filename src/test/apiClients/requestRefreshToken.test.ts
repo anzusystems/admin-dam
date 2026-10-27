@@ -24,7 +24,6 @@ const load = async () => {
 
 const config = { url: '/adm/v1/asset' } as never
 
-// A failed refresh as the api helpers deliver it: the axios error wrapped once.
 const failing = (status: number) => {
   const error = new AxiosError('request failed')
   error.response = { status, statusText: '', data: {}, headers: {}, config: { headers: new AxiosHeaders() } }
@@ -82,7 +81,6 @@ describe('the refresh interceptor', () => {
     const request = userRefreshRequestInterceptor(config).then(() => (second = 'released'))
     await new Promise((resolve) => setTimeout(resolve, 0))
 
-    // It waits for its own refresh; the finished one is never reused.
     expect(second).toBe('pending')
     finish()
     await request
@@ -95,8 +93,8 @@ describe('the refresh interceptor', () => {
     jwtPayload = undefined
     let second = 'pending'
 
-    // The continuation of a released request runs as a microtask, before a `finally` attached after the flush would
-    // have lowered the flag.
+    // The continuation of a released request runs as a microtask,
+    // before a `finally` attached after the flush would lower the flag.
     await Promise.resolve(userRefreshRequestInterceptor(config)).then(async () => {
       await Promise.resolve(userRefreshRequestInterceptor(config))
       second = 'released'
@@ -139,10 +137,9 @@ describe('the refresh interceptor', () => {
     })
 
     await userRefreshRequestInterceptor(config)
-    // A full turn, so the whole flush has settled before the second request is made.
+    // A full macrotask turn, so the whole flush has settled before the second request.
     await new Promise((resolve) => setTimeout(resolve, 0))
 
-    // The token expires again later in the same session.
     jwtPayload = undefined
     await userRefreshRequestInterceptor(config)
 

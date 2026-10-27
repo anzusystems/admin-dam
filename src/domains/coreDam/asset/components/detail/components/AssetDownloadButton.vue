@@ -41,10 +41,11 @@ const onClick = async (event: Event) => {
   await initData()
 }
 
-/* The requests for the address of a file, counted: the slot can be changed in the select, or the dialog closed and
- * opened again, while one is on its way, and the answer of the older can come last - the link would then be of
- * another file than the select says. Only the one asked for last sets the link, and the dialog spins until that one
- * is answered. */
+/*
+ * Counts link requests: the slot can change or the dialog reopen
+ * while one is in flight, and an older answer can arrive last.
+ * Only the latest request sets the link, and the dialog spins until it is answered.
+ */
 let latestLinkRequest = 0
 
 const updateLink = async (fileId: DocId) => {
@@ -56,7 +57,7 @@ const updateLink = async (fileId: DocId) => {
     if (asked === latestLinkRequest) link.value = res.link
   } catch (e) {
     if (asked !== latestLinkRequest) return
-    // Why the server refused it; anything else as an unknown error.
+    // Shows the server's refusal reason, otherwise an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
   } finally {
     if (asked === latestLinkRequest) loading.value = false
@@ -120,8 +121,10 @@ const onCancel = () => {
           v-else-if="link"
           class="w-100 text-center mt-4"
         >
-          <!-- In another tab: the address is signed for a while only, and a storage that refuses it, or is down,
-               answers with a page of its own. That page stays in the other tab, and the application here. -->
+          <!--
+            Opens in a new tab: the address is signed for a limited time.
+            A storage that refuses it or is down shows its own page, which stays out of this app.
+          -->
           <VBtn
             color="primary"
             prepend-icon="mdi-download"

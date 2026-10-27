@@ -4,13 +4,13 @@ import { confirmCreate, createDialog, pickOption, saveEdit, visibleCy } from '@p
 
 export interface PublicExportData {
   slug: string
-  /** Licence name, picked from the licence autocomplete. */
   licence: string
-  /** Web | Appka */
   type?: string
 }
 
-/** Pick `option` from the licence autocomplete of the public export form — it only lists matches of the typed text. */
+/**
+ * The licence autocomplete only lists matches of the typed text.
+ */
 async function pickLicence(page: Page, licence: string): Promise<void> {
   const input = page.locator('[data-cy="publicExport-licence"] input').filter({ visible: true }).first()
   await input.click()
@@ -18,7 +18,6 @@ async function pickLicence(page: Page, licence: string): Promise<void> {
   await page.locator('.v-overlay--active .v-list-item').filter({ hasText: licence }).first().click()
 }
 
-/** Create a public export from the list's create dialog and return its id. */
 export async function createPublicExport(page: Page, data: PublicExportData): Promise<string> {
   await page.goto('/public-exports')
   await cardLoad(page)
@@ -29,7 +28,6 @@ export async function createPublicExport(page: Page, data: PublicExportData): Pr
   return confirmCreate(page, dialog, '/public-export')
 }
 
-/** Assert the detail of the export shows every given value. */
 export async function verifyPublicExport(page: Page, id: string, data: PublicExportData): Promise<void> {
   await page.goto(`/public-exports/${id}`)
   await cardLoad(page)
@@ -40,7 +38,6 @@ export async function verifyPublicExport(page: Page, id: string, data: PublicExp
   }
 }
 
-/** Edit the export from its detail and save; the app returns to the detail view. */
 export async function updatePublicExport(page: Page, id: string, data: PublicExportData): Promise<void> {
   await page.goto(`/public-exports/${id}`)
   await cardLoad(page)
@@ -55,7 +52,6 @@ export async function updatePublicExport(page: Page, id: string, data: PublicExp
   await expect(page).not.toHaveURL(/\/edit$/)
 }
 
-/** Delete the export from its detail. */
 export async function deletePublicExport(page: Page, id: string, alert: string): Promise<void> {
   await page.goto(`/public-exports/${id}`)
   await cardLoad(page)

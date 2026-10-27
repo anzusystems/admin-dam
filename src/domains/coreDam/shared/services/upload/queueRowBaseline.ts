@@ -2,10 +2,11 @@ import { cloneDeep, isArray, isObject } from '@anzusystems/common-admin'
 import type { AssetCustomData, AssetDetailItemDto, DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import { toRaw } from 'vue'
 
-/* The metadata of a queue row as the server has them, as far as this application knows: what the row last got from
- * the server, or what was last saved of it. The bulk save sends the fields that differ from that, so a field nobody
- * touched here does not overwrite what another editor saved meanwhile. Kept by the row and gone with it; a row
- * without one is sent whole. */
+/*
+ * The queue row metadata as last received from or saved to the server.
+ * The bulk save sends only fields that differ, so untouched fields do not overwrite another editor's changes.
+ * Stored per row and removed with it. A row without a baseline is sent whole.
+ */
 
 export interface QueueRowMetadata {
   keywords: DocId[]
@@ -14,25 +15,35 @@ export interface QueueRowMetadata {
   mainFileSingleUse: boolean | null
 }
 
-/** With whether the server has the asset marked described: not known when the answer did not say. */
+/**
+ * `described` is undefined when the response did not include it.
+ */
 export interface QueueRowBaseline extends QueueRowMetadata {
   described: boolean | undefined
 }
 
-/* The reads and the saves of metadata, in their order: an answer of the server asked for before a row got its
- * baseline is older than what the row holds, however late it comes. */
+/*
+ * Orders metadata reads and saves.
+ * A response requested before the row got its baseline is older than the row's data, however late it arrives.
+ */
 let order = 0
 
-/** The next place in that order: a read takes one as it is sent, whatever writes a baseline as it writes it. */
+/**
+ * A read takes a number when sent; a baseline writer takes one when writing.
+ */
 export const nextMetadataOrder = () => ++order
 
-/* The saves of metadata on their way, by their asset: of a queue, of the detail, of the panel. A read of the asset sent
- * meanwhile is answered from before the save or from after it, and which of the two is not known: a read sent once
- * no save of it is on its way is answered from after them. */
+/*
+ * Metadata saves in flight per asset, from the queue, detail or panel.
+ * A read sent meanwhile may reflect the state before or after the save.
+ * A read sent when no save is in flight reflects all saves.
+ */
 const savesOnTheirWay = new Map<DocId, number>()
 const afterSaves = new Map<DocId, Array<() => void>>()
 
-/** A save of the metadata of the assets is sent: what this gives back is called once it is answered, or failed. */
+/**
+ * Call when a metadata save is sent. Call the returned function once it is answered or failed.
+ */
 export const metadataSaveSent = (assetIds: DocId[]) => {
   assetIds.forEach((assetId) => savesOnTheirWay.set(assetId, (savesOnTheirWay.get(assetId) ?? 0) + 1))
   let ended = false
@@ -56,7 +67,9 @@ export const metadataSaveSent = (assetIds: DocId[]) => {
 
 export const metadataSaveOnItsWay = (assetId: DocId) => savesOnTheirWay.has(assetId)
 
-/** `then` once no save of the metadata of the asset is on its way: at once while none is. */
+/**
+ * Runs `then` once no metadata save of the asset is in flight, immediately if none is.
+ */
 export const afterMetadataSaves = (assetId: DocId, then: () => void) => {
   if (!savesOnTheirWay.has(assetId)) return then()
   afterSaves.set(assetId, [...(afterSaves.get(assetId) ?? []), then])
@@ -72,7 +85,6 @@ export const baselineOfAsset = (asset: AssetDetailItemDto): QueueRowBaseline => 
   described: asset.flags?.described,
 })
 
-/** A copy of what the row holds now. */
 export const metadataOfQueueRow = (item: UploadQueueItem): QueueRowMetadata =>
   cloneDeep({
     keywords: item.keywords,
@@ -81,16 +93,20 @@ export const metadataOfQueueRow = (item: UploadQueueItem): QueueRowMetadata =>
     mainFileSingleUse: item.mainFileSingleUse,
   })
 
-/** A copy is kept: the row, and the answer the values came with, go on being written into. `at` is the place of
- * what the baseline is from in the order of the reads and the saves. */
+/**
+ * Stores a copy because the row and the response keep being mutated.
+ * `at` is the baseline's position in the read and save order.
+ */
 export const setQueueRowBaseline = (item: UploadQueueItem, baseline: QueueRowBaseline, at: number) => {
   baselines.set(toRaw(item), { baseline: cloneDeep(baseline), at })
 }
 
 export const queueRowBaseline = (item: UploadQueueItem) => baselines.get(toRaw(item))?.baseline
 
-/** Equal as the server reads them: a list by its values in their order, an object by its keys, and a key without a
- * value as a key that is not there, which is how it is sent. */
+/**
+ * Equality as the server sees it: arrays by values in order, objects by keys.
+ * A key with no value equals a missing key, matching how it is sent.
+ */
 export const sameMetadataValue = (a: unknown, b: unknown): boolean => {
   if (a === b) return true
   if (isArray(a) || isArray(b)) {
@@ -107,14 +123,17 @@ export const sameMetadataValue = (a: unknown, b: unknown): boolean => {
   )
 }
 
-/** Whether the row was given its metadata after `sentAt`: an answer of the server asked for then is older than what
- * the row holds, form or no form. */
+/**
+ * Whether the row got its metadata after `sentAt`. If so, a response requested at `sentAt` is stale.
+ */
 export const queueRowGivenSince = (item: UploadQueueItem, sentAt: number) =>
   (baselines.get(toRaw(item))?.at ?? 0) > sentAt
 
-/** Whether a row that has its metadata may take an answer of the server that was asked for at `sentAt`: the answer
- * is newer than what the row was last given, and nobody changed the row since. Not a row without a baseline, of
- * which neither is known. */
+/**
+ * Whether a row may take a response requested at `sentAt`.
+ * True when the response is newer than the baseline and the row is unchanged since.
+ * False for a row without a baseline.
+ */
 export const queueRowTakesAnswer = (item: UploadQueueItem, sentAt: number) => {
   const known = baselines.get(toRaw(item))
 

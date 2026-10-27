@@ -23,8 +23,8 @@ const router = useRouter()
 
 const { t } = useI18n()
 
-// The two filters the shared three do not cover. `custom` and not cms's `memberOf`: the same
-// question, a different query per backend.
+// Filters the three shared ones do not cover.
+// `custom` instead of cms's `memberOf`: same question, different query per backend.
 const filterFields = [
   {
     name: 'lastName' as const,
@@ -55,7 +55,7 @@ const breadcrumbs = defineBreadcrumbs(() => [
 
   <ACard>
     <VCardText>
-      <!-- The owning system's own list, so the buttons are gated with `<Acl>` exactly as before. -->
+      <!-- This is the owning system's own list, so the buttons are gated with `<Acl>`. -->
       <AAnzuUserDatatable
         :client="damClient"
         system="dam"

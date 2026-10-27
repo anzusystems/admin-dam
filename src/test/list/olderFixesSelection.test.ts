@@ -6,12 +6,13 @@ import { assetDetail, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The mass edit of the list of DAM, drawn over the whole page. Left by the back button of the browser onto an entry
- * where ADAM was loaded or reloaded - which Vuetify lets past an open dialog -, it went back into its strip, and the
- * next list emptied it: a page that is no list kept it until one. And "Save and finish" empties it once the server
- * answers, only on its page: another query of the same list was taken for another page. The real page of the list,
- * as the application draws it, with its real strip and queue; the server is a fake, and so is the address the page
- * asks about a new version of the application. */
+/*
+ * The mass edit went back into its strip when left by the browser back button onto
+ * an entry where ADAM was loaded or reloaded. Vuetify lets that pass an open dialog.
+ * The next list then emptied it. A page that is not a list kept it until a list came.
+ * "Save and finish" empties it once the server answers, only on its
+ * own page. Another query of the same list was taken for another page.
+ */
 
 let server: FakeDam
 
@@ -38,7 +39,6 @@ const settled = () => vi.advanceTimersByTimeAsync(100)
 const FULL_SCREEN = '.v-dialog--fullscreen'
 const fullScreen = () => document.body.querySelector<HTMLElement>(FULL_SCREEN)
 
-/** The bulk save of metadata is held from now on: answered, as the server answers it, by what this gives back. */
 const holdBulkSave = () => {
   let answer: () => Promise<unknown> = async () => undefined
   server.on(
@@ -57,7 +57,6 @@ const holdBulkSave = () => {
   return () => answer()
 }
 
-/** Where the mass edit is drawn, and how many rows it holds. */
 const massEdit = async () => {
   const { useAssetFooterSelectedView } = await import('@/domains/coreDam/asset/composables/assetFooterSelected')
   const { useUploadQueuesStore } = await import('@/domains/coreDam/asset/store/uploadQueuesStore')
@@ -65,7 +64,6 @@ const massEdit = async () => {
   return [useAssetFooterSelectedView().footerViewSelected.value, useUploadQueuesStore().getQueueTotalCount('edit')]
 }
 
-/** The page of the list with its three assets, and a page that is no list beside it. */
 const openList = async () => {
   const ui = await startUploadUi({
     server,
@@ -89,7 +87,6 @@ const openList = async () => {
   ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: ELSEWHERE, component: { render: () => h('div', { class: 'elsewhere' }) } })
   await ui.router.push(ELSEWHERE)
-  // As `App.vue` draws the pages: each address its own page.
   const Pages = defineComponent({
     setup: () => {
       const route = useRoute()
@@ -111,7 +108,6 @@ const openList = async () => {
     queue,
     at: () => ui.router.currentRoute.value.fullPath,
     picked: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--selected')),
-    /** The tile picked by a click with Ctrl, and the mass edit opened over the whole page by "Edit" of its strip. */
     openMassEdit: async (index: number) => {
       tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
       await settled()
@@ -125,7 +121,6 @@ const openList = async () => {
       open.click()
       await eventually(() => expect(queue()).not.toBeNull())
     },
-    /** "Save and finish" of the mass edit, pressed once it can be: its save is sent. */
     saveAndFinish: async () => {
       const button = await eventually(() => {
         const found = buttonsNamed(queue()!, SAVE_AND_FINISH)[0]
@@ -137,8 +132,6 @@ const openList = async () => {
       await settled()
       expect(server.sent('PATCH', BULK)).toHaveLength(1)
     },
-    /** The back button of the browser onto an entry where ADAM was loaded or reloaded, as the application hears it:
-     * the router first, then whatever else listens to `popstate` on the window. */
     backToALoadedEntry: async () => {
       ui.router.back()
       for (let turn = 0; turn < 50; turn++) await Promise.resolve()

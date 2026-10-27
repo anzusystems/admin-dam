@@ -21,7 +21,7 @@ export const fetchAssetSlotList = (
   return execute(pagination, filterData, filterConfig, { urlParams: { assetId } })
 }
 
-// The answer is taken as it comes and checked by its reader below.
+// The response is not typed here. The caller below validates it.
 const useFetchAssetSlotFiles = () =>
   useApiRequest<{ data?: unknown }, null>({
     ...damApiBase,
@@ -30,14 +30,12 @@ const useFetchAssetSlotFiles = () =>
     urlTemplate: END_POINT + '/asset/:assetId',
   })
 
-/* The file of every slot of the asset, for the poll of the upload queue: the asset itself speaks only of its main
- * file.
- *
- * The poll asks again and again, and says of each request whether a failure of it is to be written down:
- * `report: false` keeps this one call from the api error logger, the failure is thrown as ever. That is why it
- * is not `useApiFetchItems`, a single call of which cannot be kept quiet, and why the list is checked here. An
- * answer without its list is refused whether it is reported or not: it is a read that failed, never an asset
- * without slots. */
+/*
+ * Fetches the file of every slot of the asset for the upload queue poll. The asset itself only includes its main file.
+ * `report: false` keeps a failed call out of the api error logger. The error is still thrown.
+ * `useApiFetchItems` cannot silence a single call, so the list is validated here.
+ * A response without the list is always rejected. It is a failed read, not an asset without slots.
+ */
 export const fetchAssetSlotFiles = async (
   assetId: DocId,
   options?: { report?: boolean }

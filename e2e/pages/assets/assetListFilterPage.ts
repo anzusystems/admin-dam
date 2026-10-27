@@ -4,18 +4,13 @@ import { exactTextMatch } from '@pages/shared/admin'
 import { tileSelector, tiles } from '@pages/assets/assetBulkEditPage'
 
 /**
- * Searching and narrowing the asset list: the left filter drawer, the quick asset type buttons above it,
- * the ordering and the list's own paging.
- *
- * All of them end in the same request — `GET /asset/licence/search` — so every helper here returns that
- * request's query string. It is the only place where a filter's effect can be read in full: the list is
- * shared data, and the assets that come back can only be asserted for fixtures the spec uploaded itself.
+ * All helpers here end in `GET /asset/licence/search` and return that request's query string.
+ * The query string is the only full view of a filter's effect. The list is shared
+ * data, so returned assets can only be asserted for fixtures the spec uploaded itself.
  */
 
-/** The asset type quick buttons of the toolbar, by the suffix of their `data-cy`. */
 export type AssetType = 'all' | 'image' | 'video' | 'audio' | 'document' | 'in-podcast'
 
-/** The orderings offered above the list, by the button that switches to them. */
 const SORTING_BUTTON = {
   relevant: 'Najrelevantnejšie',
   newest: 'Najnovšie',
@@ -25,8 +20,8 @@ const SORTING_BUTTON = {
 export type Sorting = keyof typeof SORTING_BUTTON
 
 /**
- * The filter drawer. It stays mounted while it is closed — translated off-screen to the left — so it is
- * found by a field only it has rather than by its own visibility.
+ * The drawer stays mounted while closed, translated off-screen to the left.
+ * It is found by a field only it has, not by its own visibility.
  */
 function filterDrawer(page: Page): Locator {
   return page
@@ -35,17 +30,13 @@ function filterDrawer(page: Page): Locator {
     .first()
 }
 
-/** Whether the filter drawer is slid into the viewport. */
 async function isFilterDrawerOpen(page: Page): Promise<boolean> {
   return ((await filterDrawer(page).getAttribute('class')) ?? '').includes('v-navigation-drawer--active')
 }
 
 /**
- * Open the filter drawer with the toolbar's `mdi-tune` toggle.
- *
- * A closed drawer is not a hidden one: its fields still fill and its "Hľadať" still reports itself
- * visible, only every click on them lands outside the viewport and times out. Opening it first is what
- * keeps a filter test from failing on an unreachable button.
+ * A closed drawer is not hidden: its fields still fill and "Hľadať" reports itself visible.
+ * Clicks on them land outside the viewport and time out, so the drawer is opened first.
  */
 export async function openFilterDrawer(page: Page): Promise<void> {
   if (await isFilterDrawerOpen(page)) return
@@ -54,8 +45,7 @@ export async function openFilterDrawer(page: Page): Promise<void> {
 }
 
 /**
- * The drawer field labelled exactly `label`. Exactness is what keeps the ranges apart — "Šírka od" sits
- * inside no other label, but "Text" sits inside several — and every label in the drawer is unique.
+ * Exact match keeps the ranges apart: "Text" appears inside several labels. Every label in the drawer is unique.
  */
 export function filterField(page: Page, label: string): Locator {
   return filterDrawer(page)
@@ -64,15 +54,16 @@ export function filterField(page: Page, label: string): Locator {
     .first()
 }
 
-/** Type into a text or integer filter field. Nothing is sent until the filter is submitted. */
+/**
+ * Nothing is sent until the filter is submitted.
+ */
 export async function fillFilter(page: Page, label: string, value: string): Promise<void> {
   await filterField(page, label).locator('input').first().fill(value)
 }
 
 /**
- * Pick `option` in one of the drawer's select fields — the `Typ` multi-select, a tri-state boolean or the
- * created-at interval. A multi-select keeps its menu open after a pick, and that menu would swallow the
- * caller's next click, so it is closed with Escape either way.
+ * A multi-select keeps its menu open after a pick and the menu
+ * would swallow the next click, so it is closed with Escape.
  */
 export async function chooseFilterOption(page: Page, label: string, option: string): Promise<void> {
   await filterField(page, label).click()
@@ -86,9 +77,9 @@ export async function chooseFilterOption(page: Page, label: string, option: stri
 }
 
 /**
- * Pick an existing keyword in the drawer's "Kľúčové slová" autocomplete, which queries the API for the
- * typed text. A keyword created moments earlier takes a little to become findable, so the text is typed
- * again until the suggestion is offered.
+ * The autocomplete queries the API for the typed text.
+ * A keyword created moments earlier takes a while to become
+ * findable, so the text is typed again until the suggestion appears.
  */
 export async function pickFilterKeyword(page: Page, name: string): Promise<void> {
   const field = filterField(page, 'Kľúčové slová')
@@ -106,14 +97,12 @@ export async function pickFilterKeyword(page: Page, name: string): Promise<void>
   await expect(field.locator('.v-chip')).toContainText([name])
 }
 
-/** The swatch of the "Najdominantnejšia farba" palette named `colour` — its `title`, e.g. `red`. */
 export function colourSwatch(page: Page, colour: string): Locator {
   return filterDrawer(page).locator(`.color-swatches__item[title="${colour}"]`)
 }
 
 /**
- * Pick a colour swatch and return the hex the palette holds for it, read back from the swatch itself so
- * no assertion has to hardcode the palette. A picked swatch marks itself with a check.
+ * The hex is read back from the swatch itself so no assertion hardcodes the palette.
  */
 export async function pickColourSwatch(page: Page, colour: string): Promise<string> {
   const swatch = colourSwatch(page, colour)
@@ -126,10 +115,7 @@ export async function pickColourSwatch(page: Page, colour: string): Promise<stri
 }
 
 /**
- * Run `action` and return the query of the asset search it triggers, once the list has finished loading.
- *
- * Every helper below goes through this: the query string is what says which filter a control actually
- * sent, which the rendered list cannot show on shared data.
+ * The query string shows which filter a control actually sent. The rendered list cannot show that on shared data.
  */
 export async function searchParams(page: Page, action: () => Promise<unknown>): Promise<URLSearchParams> {
   const searched = page.waitForResponse(
@@ -144,14 +130,12 @@ export async function searchParams(page: Page, action: () => Promise<unknown>): 
   return params
 }
 
-/** Submit the filter drawer with "Hľadať". */
 export async function submitFilter(page: Page): Promise<URLSearchParams> {
   return searchParams(page, () => filterDrawer(page).getByRole('button', { name: 'Hľadať' }).click())
 }
 
 /**
- * Empty every filter through the drawer's `mdi-filter-remove-outline` button and search again. It clears
- * the quick type buttons along with the drawer's own fields, but leaves the ordering alone.
+ * Also clears the quick type buttons, but leaves the ordering alone.
  */
 export async function resetFilter(page: Page): Promise<URLSearchParams> {
   return searchParams(page, () => filterDrawer(page).locator('button:has(.mdi-filter-remove-outline)').click())
@@ -167,18 +151,16 @@ const TYPE_BUTTON: Record<AssetType, string> = {
 }
 
 /**
- * Press one of the quick asset type buttons. They toggle rather than select: pressing `image` and then
- * `video` asks for both types, and `all` is what clears them again — so a press that changes nothing
- * sends no request and would time out here.
+ * The buttons toggle: `image` then `video` asks for both types, and `all` clears them.
+ * A press that changes nothing sends no request and times out.
  */
 export async function chooseAssetType(page: Page, type: AssetType): Promise<URLSearchParams> {
   return searchParams(page, () => page.locator(`[data-cy="${TYPE_BUTTON[type]}"]`).first().click())
 }
 
 /**
- * Switch the ordering of the list. It is common-admin's `ADatatableOrdering`: a "Radenie:" label beside a
- * button that names the ordering in effect and opens a menu of all of them. Picking the ordering already
- * in effect sends no request.
+ * Common-admin `ADatatableOrdering`: a "Radenie:" label beside a button that opens the menu.
+ * Picking the ordering already in effect sends no request.
  */
 export async function chooseSorting(page: Page, sorting: Sorting): Promise<URLSearchParams> {
   await page.getByText('Radenie:', { exact: true }).first().locator('xpath=following-sibling::button[1]').click()
@@ -188,24 +170,19 @@ export async function chooseSorting(page: Page, sorting: Sorting): Promise<URLSe
 }
 
 /**
- * The list's "no matching assets" placeholder. It renders only once the search has come back empty —
- * while the search is in flight the grid is replaced by a spinner instead — which is what makes it,
- * rather than a tile count of zero, the thing to wait for when no results are expected.
+ * The placeholder renders only once the search has come back empty. During the search a spinner replaces the grid.
+ * So wait for it, not for a tile count of zero, when no results are expected.
  */
 export function emptyAssetList(page: Page): Locator {
   return page.getByText('Žiadne nájdené assety')
 }
 
 /**
- * Submit the filter until the list holds exactly the tiles captioned `captions`.
- *
- * An upload reaches the search index a moment after it finishes, so the first submit can legitimately
- * come back without it — re-submitting is what waits the index out. `captions` is matched in full: a
- * filter that lets something else through has to fail here, not be read as a superset.
- *
- * Expecting *no* tiles is asserted through the placeholder: the grid is emptied for the duration of
- * every search, so a bare count of zero passes in the gap between submitting and the results painting,
- * and a filter that returns the wrong assets would be read as returning none.
+ * An upload reaches the search index a moment after it finishes, so the
+ * first submit can come back without it. Re-submitting waits the index out.
+ * `captions` is matched in full, so a filter that lets extra assets through fails.
+ * Zero tiles is asserted through the placeholder: the grid is empty during
+ * every search, so a bare count of zero passes before results paint.
  */
 export async function submitFilterForTiles(page: Page, captions: string[], timeout = 120000): Promise<void> {
   await expect(async () => {
@@ -221,12 +198,9 @@ export async function submitFilterForTiles(page: Page, captions: string[], timeo
 }
 
 /**
- * Scroll the list to its end and return the query of the page it loads next.
- *
- * The list pages by `offset` in steps of 25 and fetches the next page once the end of the grid scrolls
- * into view; one wheel step nowhere near reaches it from the top of a 25-tile masonry layout. The
- * scrolling stops as soon as a page has arrived — keeping the wheel down through the newly appended
- * tiles pulls in several more pages, which no caller asked for.
+ * The list pages by `offset` in steps of 25 and loads the next page when
+ * the end of the grid scrolls into view. One wheel step does not reach it.
+ * Scrolling stops once a page has arrived. Continuing through the appended tiles loads extra pages.
  */
 export async function loadNextPage(page: Page): Promise<URLSearchParams> {
   let arrived = false

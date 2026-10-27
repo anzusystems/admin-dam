@@ -13,12 +13,6 @@ import {
   stopUploadUi,
 } from '@/test/support/uploadUi'
 
-/* The bin of a row of the mass-edit queue deletes the asset of the row, one delete of it at a time: while its delete is
- * on its way the bin is disabled - also on the row drawn anew when the queue was put away and shown again meanwhile -
- * and once the delete has failed it works again. The real page of the list with its panel and the mass-edit queue, the
- * application around it as it starts; the server is a fake, and so is the address the page asks about a new version
- * of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -29,7 +23,6 @@ const DELETE_ASSET = /^\/adm\/v1\/asset\/([^/]+)$/
 const LIST = '/assets'
 const DELETE = 'Delete'
 
-/** An asset the server has: a processed image, its title is its id. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -43,7 +36,6 @@ const onServer = (id: string) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** Every delete of an asset is held from now on: each answered, in the order sent, by what this gives back. */
 const holdDeletes = () => {
   const waiting: Array<() => void> = []
   server.on(
@@ -59,21 +51,16 @@ const holdDeletes = () => {
   }
 }
 
-/** The mass-edit queue drawn over the whole page, or null while it is not, and its rows. */
 const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 const rows = () => Array.from(queue()?.querySelectorAll<HTMLElement>('.dam-upload-queue__item') ?? [])
-/** The bin of a row of the queue. */
 const bin = (index: number) => buttonsNamed(rows()[index], DELETE)[0]
 
-/** The page of the list with three assets, the tiles of those at the indexes picked for the mass edit, and the mass-edit
- * queue drawn over the whole page. */
 const openQueue = async (picked: number[]) => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_asset_delete', 'dam_image_update'],
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -100,7 +87,6 @@ const openQueue = async (picked: number[]) => {
     await settled()
   }
 
-  /** The mass-edit queue drawn over the whole page from the strip under the list. */
   const showQueue = async () => {
     buttonsNamed(document.body, 'Edit')[0].click()
     await eventually(() => expect(rows()).toHaveLength(picked.length))
@@ -110,26 +96,21 @@ const openQueue = async (picked: number[]) => {
   return {
     ...ui,
     showQueue,
-    /** Which tiles are drawn as of an asset being deleted. */
     deleting: () => tiles().map((tile) => !!tile.querySelector('.mdi-trash-can')),
-    /** The bin of the row pressed, and its question answered. */
     deleteRow: async (index: number) => {
       bin(index).click()
       await eventually(() => expect(dialogButton(DELETE)).not.toBeNull())
       dialogButton(DELETE)!.click()
       await settled()
     },
-    /** The mass-edit queue put away into its strip under the list. */
     putQueueAway: async () => {
       queue()!.querySelector('.mdi-chevron-down')!.closest('button')!.click()
       await eventually(() => expect(queue()).toBeNull())
     },
-    /** The ids of the assets the mass-edit queue holds. */
     queued: () => ui.store.getQueueItems('edit').map((row) => row.assetId),
   }
 }
 
-/** The deletes the server was sent, by the address. */
 const deletesSent = () => server.sent('DELETE').map((request) => request.url)
 
 beforeEach(() => {
@@ -153,8 +134,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* A second press of the bin while the delete of the row was on its way sent a second delete: the server answered it as
- * one more delete - a second "deleted" - or, the asset gone by then, with an error the page showed. */
+/*
+ * Regression: a second press of the bin during the delete sent a second delete.
+ * The server answered it as another delete (a second "deleted"),
+ * or with an error the page showed once the asset was gone.
+ */
 describe('the bin of a row of the mass-edit queue', () => {
   it('is disabled while its delete is on its way, and the asset is deleted once', async () => {
     const answer = holdDeletes()
@@ -172,7 +156,8 @@ describe('the bin of a row of the mass-edit queue', () => {
     ])
   })
 
-  // The queue put away and shown again draws its rows anew: what the row knew went with the row before.
+  // Putting the queue away and showing it again draws its rows anew.
+  // State held by the old row is lost.
   it('stays disabled on the row drawn anew when the queue was put away and shown again before the answer', async () => {
     const answer = holdDeletes()
     const queued = await openQueue([1])
@@ -204,7 +189,6 @@ describe('the bin of a row of the mass-edit queue', () => {
     expect([deletesSent().length, queued.queued(), queued.deleting()]).toEqual([2, [], [false, true, false]])
   })
 
-  // The guard: the delete of one asset leaves the bin of another as it is.
   it('leaves the bin of the row of another asset working while the delete of one is on its way', async () => {
     const answer = holdDeletes()
     const queued = await openQueue([0, 1])
@@ -219,7 +203,6 @@ describe('the bin of a row of the mass-edit queue', () => {
   })
 })
 
-/* The bin and "Delete" of the detail go by it; a press that comes while one is on its way all the same sends nothing. */
 describe('the delete of an asset once', () => {
   it('sends no second delete of the asset while one is on its way, and sends one again once that is answered', async () => {
     const answer = holdDeletes()

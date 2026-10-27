@@ -18,11 +18,10 @@ import {
 import { TTS_FILTER_LABEL, setTtsAudio, ttsTileBadge } from '@pages/assets/assetTtsPage'
 
 /**
- * The `TTS audio` flag where the asset list meets it: the switch on an audio asset's detail, the
- * `Syntetické (TTS)` filter and the badge the flag puts on a tile.
- *
- * All three read the same flag, so the spec owns one audio asset and flips it, rather than leaning on
- * whichever synthesised assets the environment happens to hold.
+ * The `TTS audio` flag in the asset list: the switch on an audio
+ * asset's detail, the `Syntetické (TTS)` filter and the tile badge.
+ * All three read the same flag, so the spec owns one audio asset and
+ * flips it instead of relying on synthesised assets in the environment.
  */
 
 let page: Page
@@ -30,7 +29,6 @@ let ASSET_ID = ''
 
 const TITLE = `TtsAudio${RAND_NUM}`
 
-/** Filter the list to this spec's asset and a value of the `Syntetické (TTS)` tri-state. */
 async function filterSynthetic(filterPage: Page, value: 'áno' | 'nie'): Promise<URLSearchParams> {
   await resetFilter(filterPage)
   await fillFilter(filterPage, 'Text', TITLE)
@@ -81,7 +79,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset TTS audio flag`, () => {
     expect((await filterSynthetic(page, 'áno')).get('ttsAudio')).toBe('true')
     await submitFilterForTiles(page, [TITLE])
 
-    // The badge is drawn from the same flag the filter matched on.
     const tile = await tileWithCaption(page, TITLE)
     await expect(ttsTileBadge(tile), 'the TTS badge on the tile').toHaveCount(1)
   })
@@ -99,7 +96,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset TTS audio flag`, () => {
     expect((await filterSynthetic(page, 'áno')).get('ttsAudio')).toBe('true')
     await submitFilterForTiles(page, [])
 
-    // And the other side of the tri-state now holds it, badge-free.
     expect((await filterSynthetic(page, 'nie')).get('ttsAudio')).toBe('false')
     await submitFilterForTiles(page, [TITLE])
     await expect(ttsTileBadge(await tileWithCaption(page, TITLE))).toHaveCount(0)

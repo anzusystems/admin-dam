@@ -67,17 +67,16 @@ const hasAllowedService = computed(() =>
   ).some(isDistributionServiceAllowed)
 )
 
-// The read of the tab's own that is on its way. It is given up when the tab closes: the list and its loader are
-// shared with the tab of the next asset, and the late answer would put this asset's distributions there and turn
-// that tab's loader off. And when the tab starts another read: answered after it, the older one would put its list
-// and its page over the newer ones, and whichever ended first would turn the loader off under the other.
+// This tab's in-flight read. Aborted on close: the list and loader are shared with the next asset's tab.
+// Also aborted on a new read: an older answer arriving later
+// would overwrite the newer list and turn off the loader early.
 let reading: AbortController | undefined = undefined
 onBeforeUnmount(() => reading?.abort())
 
-// A read of this tab failed and left it an empty list: that says nothing of the asset, and nothing reads it again
-// by itself. Of this tab only: the store is shared with the tabs of the other assets.
+// A failed read left an empty list that says nothing about the asset, and nothing rereads it automatically.
+// Per tab, because the store is shared with other assets' tabs.
 const readFailed = ref(false)
-// Until this tab has read the list, the list is what a tab opened before it left there.
+// Until this tab reads the list, the list holds what an earlier tab left.
 let opened = false
 
 const readList = async () => {
@@ -85,9 +84,8 @@ const readList = async () => {
   const current = new AbortController()
   reading = current
   const raised = distributionListStore.showLoader()
-  // The list is shared with the tabs opened before, of another asset or of this one: left there, it would show
-  // under a read of the opening that failed here. What this tab has read stays, for a reload or another page that
-  // fails.
+  // The shared list is cleared on first read, so a failed first read does not show an earlier tab's list.
+  // After that, what this tab read stays when a reload or page change fails.
   if (!opened) distributionListStore.setList([])
   opened = true
   distributionListStore.listOfAsset(props.assetId)
@@ -115,7 +113,7 @@ const getList = () => duringOwnRead(readList)
 const reloadList = () => {
   getList()
 }
-// A record of a distribution saved: read anew, also when the dialog that saved it was gone by the answer.
+// Reload after a distribution is saved, even if the dialog that saved it is already gone.
 onDistributionListChanged(reloadList)
 
 const addNew = () => {

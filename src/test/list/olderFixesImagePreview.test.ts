@@ -5,12 +5,6 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The card of the preview image of a video, in the Image preview tab of the detail of its asset, reads the image the
- * file holds - again only when the image changes. A read that failed left the card with no picture, and nothing would
- * read that image again: only another image picked, or the detail opened anew. The real page of the list with its real
- * detail, the application around it as it starts; the server is a fake, and so is the address the page asks about a
- * new version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -47,8 +41,9 @@ const onServer = () => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** In the place of the watcher of the browser: whatever is watched for coming into view is in view at once, so a
- * picture is drawn with its address. */
+/**
+ * Replaces the browser's `IntersectionObserver`: anything watched is in view at once, so pictures get their address.
+ */
 class InView {
   private readonly seen: IntersectionObserverCallback
 
@@ -68,13 +63,11 @@ class InView {
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const tabOfPreview = () => detail()!.querySelector<HTMLElement>('.sidebar-info__content')!
 
-/** The card: whether it draws the picture of the saved image, and whether it offers to read it again. */
 const card = () => ({
   picture: tabOfPreview().querySelector('.v-img__img')?.getAttribute('src')?.includes(SAVED.imageFile) ?? false,
   tryAgain: buttonsNamed(tabOfPreview(), TRY_AGAIN).length === 1,
 })
 
-/** The tab of the preview image of the video opened, its card drawn. */
 const openPreview = async () => {
   vi.stubGlobal('IntersectionObserver', InView)
   const ui = await startUploadUi({
@@ -159,7 +152,6 @@ describe('the card of the preview image of a video, when its image cannot be rea
     expect([server.sent('GET', OF_SAVED).length, ui.alerts()]).toEqual([2, [SYSTEM_ERROR]])
   })
 
-  // The guard: an image that was read is not offered again.
   it('offers nothing of the kind once the image was read', async () => {
     server.fileBy('image', SAVED.imageFile, () => imageFile(SAVED.imageFile))
     const ui = await openPreview()

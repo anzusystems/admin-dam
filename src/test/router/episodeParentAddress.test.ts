@@ -5,8 +5,9 @@ import { createApp, defineComponent, h } from 'vue'
 import { RouterView, createMemoryHistory, createRouter, useRoute } from 'vue-router'
 import { createVuetify } from 'vuetify'
 
-// An episode's address names its podcast as well. Opened under another podcast (an edited or stale link), the page
-// puts the episode's own podcast into the address, so the breadcrumb and the way back name the right one.
+// An episode address also names its podcast.
+// When opened under another podcast (edited or stale link), the page puts the episode's own podcast into the address.
+// This keeps the breadcrumb and the way back correct.
 
 const fetchEpisode = vi.hoisted(() => vi.fn())
 
@@ -60,7 +61,6 @@ const open = async (path: string) => {
   })
   trackNavigation(router)
   await router.push(path)
-  // As App.vue: the view keyed by the path.
   const app = createApp(
     defineComponent({
       setup() {

@@ -18,18 +18,20 @@ import {
 import type { FakeDam } from '@/test/support/fakeDam'
 import { recordingScheduler } from '@/test/support/recordingScheduler'
 
-/* The poll of the upload queue as the application wires it: the plugin installed with what `config.json` says
- * of the notification service, the listeners of the application added as at its start, the real store and
- * upload. The server is a fake, and so is the socket: a stand-in for the global `WebSocket`.
- *
- * The file keeps the name of what it replaced: the fallback each row once armed for itself is gone, and one poll
- * per queue asks in its place - as the only channel where the service is not configured, and beside the
- * notifications where it is. The rhythm itself is the library's, and pinned there. */
+/*
+ * The upload queue poll as the application wires it: the plugin
+ * installed with the notification service settings from `config.json`,
+ * the app listeners added as at start, and the real store and upload. The
+ * server is a fake, and the socket is a stand-in for the global `WebSocket`.
+ * The file keeps the name of the per-row fallback it replaced. One poll per queue now asks in its
+ * place: the only channel where the service is not configured, and beside notifications where it is.
+ * The poll rhythm belongs to the library and is tested there.
+ */
 
 let server: FakeDam
 
-// The library is not replaced, not even in part: a replaced library is one instance for the whole file, and the
-// plugin options, the socket and the listeners of one case would be those of the next.
+// The library is not mocked, not even in part. A mocked library is one instance for the whole file,
+// so the plugin options, socket and listeners of one case would leak into the next.
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
   useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
@@ -64,19 +66,16 @@ class FakeSocket {
     this.drops()
   }
 
-  /** The connection is made. */
   opens() {
     this.readyState = 1
     this.onopen?.()
   }
 
-  /** The connection is lost. */
   drops() {
     this.readyState = 3
     this.onclose?.({ code: 1006 })
   }
 
-  /** A notification as the service sends it: the data as a text inside the message. */
   says(eventName: string, data: Record<string, unknown>) {
     this.onmessage?.({ data: JSON.stringify({ eventName, data: JSON.stringify(data) }) })
   }
@@ -91,10 +90,8 @@ const SOCKET_URL = 'wss://notifications.test/ws'
 
 type NotificationConfig = NonNullable<CommonAdminCoreDamOptions>['notification']
 
-// The timers the queues hold, apart from every other timer of the application.
 let queueTimers: ReturnType<typeof recordingScheduler>
 
-/** The application started with this in the `notification` block of its config, or with no such block. */
 const start = async (notification?: NotificationConfig) => {
   vi.resetModules()
   setActivePinia(createPinia())
@@ -133,7 +130,6 @@ const waitingUpload = (over: Partial<UploadQueueItem> = {}) =>
     ...over,
   })
 
-/** The rows are sent whole: each waits for the server from this moment, the first as `asset-1` with `file-1`. */
 const sent = async (store: Store, queueId: string, rows: UploadQueueItem[]) => {
   const seeded = seedQueue(store, queueId, rows)
   store.processUpload(queueId)
@@ -143,7 +139,6 @@ const sent = async (store: Store, queueId: string, rows: UploadQueueItem[]) => {
   return seeded
 }
 
-/** The tab as the queues ask about it: visible, and counting who listens for it to change. Before the first row. */
 const watchedTab = async () => {
   const { uploadSettlementRuntime } = await import('@anzusystems/common-admin')
   let listeners = 0
@@ -161,7 +156,6 @@ const watchedTab = async () => {
   return { listeners: () => listeners }
 }
 
-/** What the api error logger of the application is handed from now on: the address and the status of each. */
 const loggedFailures = async () => {
   const { setApiErrorLogger } = await import('@anzusystems/common-admin')
   const logged: Array<{ url: string | undefined; status: number | undefined }> = []
@@ -206,8 +200,8 @@ describe.each(noService)('an application whose config %s', (_name, notification)
     const store = await start(notification)
     const [row] = await sent(store, GLOBAL, [waitingUpload()])
     expect(sockets).toEqual([])
-    // The file of the row is known before the poll first asks: a read names the main file of the asset, and a row
-    // without its file would not answer to it.
+    // The row's file is known before the poll first asks. A read names the
+    // main file of the asset, and a row without its file would not match it.
     expect([row.assetId, row.fileId]).toEqual(['asset-1', 'file-1'])
     server.asset(assetDetail('asset-1', { mainFileSingleUse: true }))
 
@@ -226,7 +220,6 @@ describe.each(noService)('an application whose config %s', (_name, notification)
 
     await vi.advanceTimersByTimeAsync(60 * MINUTE)
 
-    // One read was all it took, and nothing is asked once the queue has nothing waiting.
     expect(server.assetReads('asset-1')).toBe(1)
     expect(sockets).toEqual([])
   })
@@ -246,7 +239,6 @@ describe('an application without the notification service', () => {
 
     expect(server.slotReads('asset-9')).toBe(1)
     expect(row.status).toBe('uploaded')
-    // The asset is asked for right after, for what it knows about the row.
     await vi.advanceTimersByTimeAsync(SECOND)
     expect([server.assetReads('asset-9'), row.assetStatus, row.canEditMetadata]).toEqual([1, 'with_file', false])
   })
@@ -273,7 +265,6 @@ describe('an application without the notification service', () => {
     expect([row.status, row.canEditMetadata, row.keywords]).toEqual(['uploaded', true, ['keyword-server']])
   })
 
-  // Mass edit asks once, for the metadata of what was picked; the poll has nothing to do with its rows.
   it('loads the assets picked for mass edit, and never asks about them again', async () => {
     const store = await start()
     const listed = (id: string) => ({
@@ -284,12 +275,11 @@ describe('an application without the notification service', () => {
       mainFileSingleUse: null,
     })
     server.asset(assetDetail('asset-a', { mainFile: assetFile('file-of-asset-a') }))
-    // Described: what this pins is that the rows are read once and never polled, not the state of the file. A file
-    // still with the server on an asset nobody described is what the batch load keeps the form from (F-A).
+    // Described, because this test pins that rows are read once and never polled, not the file state.
+    // A file still with the server on an undescribed asset is what the batch load keeps the form from (F-A).
     server.asset(
       assetDetail('asset-b', { flags: { described: true }, mainFile: assetFile('file-of-asset-b', 'stored') })
     )
-    // An upload waits in the very same queue, so the queue is asked about all the time.
     const [upload] = await sent(store, EDIT, [waitingUpload()])
 
     await store.addByAssets(EDIT, [listed('asset-a'), listed('asset-b')] as never)
@@ -303,7 +293,6 @@ describe('an application without the notification service', () => {
 
     expect(upload.status).toBe('processing')
     expect(server.assetReads('asset-1')).toBeGreaterThan(10)
-    // Each of the two was read once, by the load of the selection.
     expect([server.assetReads('asset-a'), server.assetReads('asset-b')]).toEqual([1, 1])
     expect(second.status).toBe('uploaded')
   })
@@ -338,7 +327,6 @@ describe('the poll of a queue', () => {
     expect(inTheSecondMinute).toBeGreaterThan(0)
     expect([row.status, row.error.hasError]).toEqual(['processing', false])
 
-    // Nothing ends it but the file being done, however long that takes.
     await vi.advanceTimersByTimeAsync(3 * 60 * MINUTE)
     const before = server.assetReads('asset-1')
     server.asset(assetDetail('asset-1'))
@@ -373,8 +361,6 @@ describe('the poll of a queue', () => {
     expect(server.assetReads('asset-1')).toBe(3)
   })
 
-  // A server that does not answer says nothing about the asset: the row waits, and says so once it has waited
-  // through three reads in vain.
   it('warns on a row whose read failed three times, and takes the warning back with the read that answers', async () => {
     const store = await start()
     const [row] = await sent(store, GLOBAL, [waitingUpload()])
@@ -385,7 +371,6 @@ describe('the poll of a queue', () => {
       return assetDetail('asset-1', { mainFile: assetFile('file-1', 'stored', { asset: 'asset-1' }) })
     })
 
-    // The second read that failed, and not yet the third.
     await vi.advanceTimersByTimeAsync(30 * SECOND)
     expect(server.assetReads('asset-1')).toBe(2)
     expect([row.status, row.error.hasError]).toEqual(['processing', false])
@@ -426,7 +411,6 @@ describe('the poll of a queue', () => {
 
     await vi.advanceTimersByTimeAsync(10 * MINUTE)
 
-    // Not "none of these assets exist": nothing fails, the rows only say their data could not be loaded.
     expect(rows.map((row) => row.status)).toEqual(['processing', 'processing'])
     expect(rows.map((row) => row.error.message)).toEqual([
       'system.uploadErrors.metadataFailed',
@@ -509,7 +493,6 @@ describe('a row that leaves its queue while the server still works on its file',
     expect(queueTimers.waiting()).toBe(0)
   })
 
-  // Its poll is idle by then, and goes only with the queue.
   it('leaves a queue that, emptied row by row and then stopped, gives up its listener for the tab', async () => {
     const store = await start()
     const tab = await watchedTab()
@@ -523,14 +506,12 @@ describe('a row that leaves its queue while the server still works on its file',
     expect(tab.listeners()).toBe(0)
   })
 
-  // The read its notification asked for was still to come.
   it.each(leave)('takes the read a notification asked for on its behalf with it: %s', async (_name, act) => {
     const store = await start({ enabled: true, webSocketUrl: SOCKET_URL })
     sockets[0].opens()
     const [row] = await sent(store, GLOBAL, [waitingUpload()])
     server.asset(assetDetail('asset-1'))
     sockets[0].says('asset_metadata_processed', { asset: 'asset-1' })
-    // The timer of the queue, and the wait before the read of the notification.
     expect(queueTimers.waiting()).toBe(2)
 
     await act(store, row)
@@ -541,7 +522,6 @@ describe('a row that leaves its queue while the server still works on its file',
   })
 })
 
-// Through pinia (`$dispose()`): the queues go with their store.
 describe('an upload queue store that is disposed of', () => {
   it('leaves nothing behind: no timer, no listener for the tab, and nothing is asked any more', async () => {
     const store = await start({ enabled: true, webSocketUrl: SOCKET_URL })
@@ -554,7 +534,6 @@ describe('an upload queue store that is disposed of', () => {
     store.$dispose()
 
     expect([queueTimers.waiting(), tab.listeners()]).toEqual([0, 0])
-    // Neither a notification nor the socket going away wakes it.
     sockets[0].says('asset_file_processed', { asset: 'asset-1', id: 'file-1' })
     sockets[0].drops()
     await vi.advanceTimersByTimeAsync(MINUTE)
@@ -596,9 +575,12 @@ describe('an upload the server fails while its finish request is still on its wa
   })
 })
 
-/* The poll asks for as long as a row waits, through an outage too: the first read that fails is written down
- * (the api error logger: the console, or Sentry where an application sets it), the ones after it are not, until
- * a read has answered. The refresh button is the user asking, and is written down every time. */
+/*
+ * The poll asks as long as a row waits, also through an outage.
+ * The first failed read is logged (api error logger: console, or Sentry where
+ * an application sets it). Later failures are not, until a read answers.
+ * The refresh button is the user asking, and is logged every time.
+ */
 describe('what is written down of the reads that fail', () => {
   it('writes down the first failed read about a row, none that follow it, and one again after a read that answered', async () => {
     const store = await start()
@@ -673,7 +655,6 @@ describe('what is written down of the reads that fail', () => {
     expect(logged).toEqual([{ url: '/adm/v1/asset/asset-1', status: 404 }])
   })
 
-  // Deleted while its file was being processed: the list of its slots answers 404 at each of the three reads.
   it('writes down the deleted asset of a slot upload once, across the three reads that fail its row', async () => {
     const store = await start()
     const logged = await loggedFailures()
@@ -697,7 +678,6 @@ describe('what is written down of the reads that fail', () => {
     let reads = 0
     server.slotsBy('asset-9', () => {
       reads++
-      // Gone twice, there once with the file still stored, then gone for good.
       if (reads !== 3) throw httpError(404)
 
       return { data: [{ slotName: 'extra', assetFile: assetFile(String(row.fileId), 'stored', { asset: 'asset-9' }) }] }
@@ -712,14 +692,12 @@ describe('what is written down of the reads that fail', () => {
     ])
   })
 
-  // What was written down for one upload says nothing of the next one into that slot.
   it('writes down what fails for the next upload into the slot of an asset that was gone for the one before', async () => {
     const store = await start()
     const logged = await loggedFailures()
     const [first] = await sent(store, SLOTS, [
       waitingUpload({ type: 'slotFile', assetId: 'asset-9', slotName: 'extra' }),
     ])
-    // A gateway answers 404 for the slots of the asset, three times: the row fails.
     server.slotsBy('asset-9', () => {
       throw httpError(404)
     })
@@ -727,7 +705,6 @@ describe('what is written down of the reads that fail', () => {
     expect([server.slotReads('asset-9'), first.status]).toEqual([3, 'failed'])
     expect(logged).toEqual([{ url: '/adm/v1/asset-slot/asset/asset-9', status: 404 }])
 
-    // The user sends a file into that slot again, and now the server is in trouble.
     server.slotsBy('asset-9', () => {
       throw httpError(502)
     })
@@ -746,7 +723,6 @@ describe('what is written down of the reads that fail', () => {
     ])
   })
 
-  // Its first read came while the reads of another row kept failing, when nothing more was being written down.
   it('writes down the gone asset of a slot upload at the first read that is let, not before and once', async () => {
     const store = await start()
     const logged = await loggedFailures()
@@ -772,7 +748,6 @@ describe('what is written down of the reads that fail', () => {
     ])
   })
 
-  /** A second file into another slot of `asset-9`, whose only chunk the server holds: it is still being sent. */
   const secondSlotUploadHeld = async (store: Store) => {
     let answerChunk: () => void = () => undefined
     server.on('POST', /\/image\/file-2\/chunk$/, async () => {
@@ -789,7 +764,6 @@ describe('what is written down of the reads that fail', () => {
     return { row, answerChunk: () => answerChunk() }
   }
 
-  // What was written down while a file was still being sent was not written down for that file.
   it('writes down what fails for a slot upload that was still being sent when the asset was gone for another', async () => {
     const store = await start()
     const logged = await loggedFailures()
@@ -804,7 +778,6 @@ describe('what is written down of the reads that fail', () => {
     expect([server.slotReads('asset-9'), first.status, second.row.status]).toEqual([3, 'failed', 'uploading'])
     expect(logged).toEqual([{ url: '/adm/v1/asset-slot/asset/asset-9', status: 404 }])
 
-    // The second file is with the server now, which is in trouble.
     server.slotsBy('asset-9', () => {
       throw httpError(502)
     })
@@ -820,7 +793,6 @@ describe('what is written down of the reads that fail', () => {
     ])
   })
 
-  // A row that is not asked about yet does not make the same answer new.
   it('writes down the gone asset of a slot upload once although another file goes into a slot of it meanwhile', async () => {
     const store = await start()
     const logged = await loggedFailures()
@@ -873,7 +845,6 @@ describe('what is written down of the reads that fail', () => {
 
     expect([server.assetReads('asset-1'), logged.length]).toEqual([4, 3])
     await vi.advanceTimersByTimeAsync(MINUTE)
-    // The poll goes on asking, and has said what it had to say.
     expect(server.assetReads('asset-1')).toBeGreaterThan(4)
     expect(logged).toHaveLength(3)
   })
@@ -887,7 +858,6 @@ describe('what is written down of the reads that fail', () => {
     ])
     server.asset(assetDetail('asset-9', { mainFile: assetFile('file-main', 'processed', { asset: 'asset-9' }) }))
 
-    // Not finished yet, then finished: every read answers.
     await vi.advanceTimersByTimeAsync(30 * SECOND)
     server.asset(assetDetail('asset-1'))
     server.asset(assetDetail('asset-2', { mainFile: assetFile('file-2', 'processed', { asset: 'asset-2' }) }))
@@ -900,7 +870,6 @@ describe('what is written down of the reads that fail', () => {
 })
 
 describe('an upload whose finish request fails', () => {
-  // The whole file is with the server by then, which may well complete it.
   it('fails on its row, and is uploaded with its metadata and its form once the server has finished the file', async () => {
     const store = await start()
     const [row] = seedQueue(store, GLOBAL, [waitingUpload()])
@@ -911,7 +880,6 @@ describe('an upload whose finish request fails', () => {
     await vi.advanceTimersByTimeAsync(0)
     expect([row.status, row.error.message]).toEqual(['failed', 'system.uploadErrors.unknownError'])
 
-    // Asked about for as long as it stays, and never told that its processing takes too long: it is not processing.
     await vi.advanceTimersByTimeAsync(30 * MINUTE)
     expect(server.assetReads('asset-1')).toBeGreaterThan(5)
     expect([row.status, row.error.message]).toEqual(['failed', 'system.uploadErrors.unknownError'])
@@ -939,7 +907,6 @@ describe('an upload whose finish request fails', () => {
     await vi.advanceTimersByTimeAsync(MINUTE)
     const reads = server.assetReads('asset-1')
 
-    // The reason of the server in place of the text of the client.
     expect(row.status).toBe('failed')
     expect(row.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_checksum' })
 
@@ -949,8 +916,6 @@ describe('an upload whose finish request fails', () => {
   })
 })
 
-// The server could not be asked about the asset while the file was still being sent, and the row said so. Then
-// the upload itself failed: from there on that failure is what the row says, whatever is read about it later.
 describe('an upload that fails after its row was warned that its data could not be loaded', () => {
   it('keeps the text of its failure at the reads that follow', async () => {
     const store = await start({ enabled: true, webSocketUrl: SOCKET_URL })
@@ -968,7 +933,6 @@ describe('an upload that fails after its row was warned that its data could not 
     await vi.advanceTimersByTimeAsync(0)
     expect(row.status).toBe('uploading')
 
-    // The read its metadata notification asks for fails three times.
     sockets[0].says('asset_metadata_processed', { asset: 'asset-1' })
     await vi.advanceTimersByTimeAsync(MINUTE)
     expect(server.assetReads('asset-1')).toBe(3)
@@ -979,19 +943,16 @@ describe('an upload that fails after its row was warned that its data could not 
     const failure = { hasError: true, message: 'system.uploadErrors.unknownError', assetFileFailReason: 'none' }
     expect([row.status, row.error]).toEqual(['failed', failure])
 
-    // The row is asked about on, its finish request having gone out; the reads still fail.
     await vi.advanceTimersByTimeAsync(10 * MINUTE)
     expect(server.assetReads('asset-1')).toBeGreaterThan(5)
     expect([row.status, row.error]).toEqual(['failed', failure])
 
-    // And a read that answers, the file not finished, leaves the failure where it is as well.
     server.asset(assetDetail('asset-1', { mainFile: assetFile('file-1', 'stored', { asset: 'asset-1' }) }))
     await vi.advanceTimersByTimeAsync(10 * MINUTE)
     expect([row.status, row.error]).toEqual(['failed', failure])
   })
 })
 
-// Not every finish request that fails leaves the question open: the server may have answered it, with a no.
 describe('an upload whose finish request the server answers with a refusal', () => {
   const finishRefused = async (queueId: string, row: UploadQueueItem, refusal: () => unknown) => {
     const store = await start()
@@ -1014,7 +975,6 @@ describe('an upload whose finish request the server answers with a refusal', () 
       false,
     ])
     expect(queueTimers.waiting()).toBe(0)
-    // Whatever the server says of the asset afterwards.
     server.asset(assetDetail('asset-1'))
     await vi.advanceTimersByTimeAsync(MINUTE)
 
@@ -1082,7 +1042,6 @@ describe('an upload whose finish request gets no answer, or the answer of a serv
 })
 
 describe('an upload one of whose chunks fails', () => {
-  // The server never had the whole file: there is nothing it could finish.
   it('fails on its row and is not asked about', async () => {
     const store = await start()
     const [row] = seedQueue(store, GLOBAL, [waitingUpload()])
@@ -1120,7 +1079,6 @@ describe.each([true, 'true'] as const)('an application whose notification servic
     expect(row.status).toBe('processing')
     await vi.advanceTimersByTimeAsync(1)
 
-    // No notification came, and the row is settled all the same.
     expect(server.assetReads('asset-1')).toBe(1)
     expect([row.status, row.canEditMetadata]).toEqual(['uploaded', true])
   })
@@ -1162,7 +1120,6 @@ describe.each([true, 'true'] as const)('an application whose notification servic
 
     socket.says('asset_metadata_processed', { asset: 'asset-1' })
     socket.says('asset_file_processed', { asset: 'asset-1', id: 'file-1' })
-    // The state at once, from the notification itself.
     expect(row.status).toBe('uploaded')
     await vi.advanceTimersByTimeAsync(SECOND)
 
@@ -1187,7 +1144,6 @@ describe('a metadata read that is answered after the processed notification has 
     server.assetBy('asset-1', () => {
       reads++
 
-      // The first read, the one the metadata notification asked for, is held open.
       return reads === 1 ? new Promise((resolve) => (answer = resolve)) : assetDetail('asset-1')
     })
 
@@ -1206,7 +1162,6 @@ describe('a metadata read that is answered after the processed notification has 
 
     await vi.advanceTimersByTimeAsync(60 * MINUTE)
 
-    // The two reads of the two notifications, and none after.
     expect(server.assetReads('asset-1')).toBe(2)
   })
 })

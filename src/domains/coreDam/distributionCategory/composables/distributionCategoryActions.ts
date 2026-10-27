@@ -84,9 +84,9 @@ export const useDistributionCategoryDetailActions = () => {
       const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
       const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
       distributionCategoryOneStore.setDistributionCategory(distributionCategory, [])
-      // The category is there by now: failing to load the selects shows it without its selected options.
+      // The category is loaded by now. If the selects fail, it shows without its selected options.
       try {
-        // The selects request takes no signal: a page left meanwhile ignores its answer instead.
+        // The selects request takes no signal, so an answer for a left page is ignored here.
         const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
         if (options.signal?.aborted) return undefined
         distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
@@ -98,7 +98,7 @@ export const useDistributionCategoryDetailActions = () => {
     } catch (error) {
       return handleRecordLoadError(error) ? false : undefined
     } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
       if (!options.signal?.aborted) detailLoading.value = false
     }
   }
@@ -216,12 +216,12 @@ export const useDistributionCategoryEditActions = () => {
       const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
       const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
       try {
-        // The selects request takes no signal: a page left meanwhile ignores its answer instead.
+        // The selects request takes no signal, so an answer for a left page is ignored here.
         const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
         if (options.signal?.aborted) return undefined
         distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
       } catch (error) {
-        // Not a category to edit without its selects: Save rebuilds the selected options from them, to none.
+        // Not editable without its selects: Save would rebuild the selected options from them as empty.
         return handleRecordLoadError(error) ? false : undefined
       }
       return true

@@ -55,8 +55,10 @@ const {
 
 provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
-/* The upload queue and "Create empty asset" are drawn on this page too, and the detail they open is not: only the
- * detail of the provider is. */
+/*
+ * The upload queue and "Create empty asset" also render here, but their detail opens in a new tab.
+ * Only the provider detail opens on this page.
+ */
 provideAssetOpensInNewTab()
 
 const autoloadOnIntersect = (isIntersecting: boolean) => {

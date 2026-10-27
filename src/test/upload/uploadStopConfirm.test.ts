@@ -6,9 +6,10 @@ import { createI18n } from 'vue-i18n'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 
-/* The library's button that stops the uploads of a queue, as both overlays of the uploads draw it. While something
- * is uploading it asks first, and the question can be dismissed from the keyboard: the app's dialogs are
- * persistent, so Esc closes one only where the dialog says so itself. */
+/*
+ * The library's button that stops the uploads of a queue. While something is uploading it asks first.
+ * The app's dialogs are persistent, so Esc closes one only where the dialog allows it.
+ */
 
 const STOP = 'common.damImage.upload.stop'
 
@@ -23,7 +24,7 @@ const mountButton = async (isUploading: boolean) => {
     createVuetify({
       components,
       aliases: { ABtnPrimary: components.VBtn, ABtnTertiary: components.VBtn },
-      // As the app has them: Esc and a click outside leave a dialog open.
+      // Same as the app: Esc and a click outside leave a dialog open.
       defaults: { VDialog: { persistent: true, noClickAnimation: true } },
     })
   )
@@ -41,7 +42,7 @@ const mountButton = async (isUploading: boolean) => {
 }
 
 beforeEach(() => {
-  // happy-dom has none, and the dialog listens on it for the size of the window.
+  // happy-dom has no `visualViewport`, and the dialog listens on it for the window size.
   vi.stubGlobal('visualViewport', new EventTarget())
 })
 

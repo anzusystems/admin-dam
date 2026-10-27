@@ -6,9 +6,6 @@ import type { Router } from 'vue-router'
 import { assetDetail, createFakeDam, queueRow, seedQueue } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* Picking assets in the list for mass edit: a tile toggled on puts its asset into the mass-edit queue, toggled off
- * takes it out, and the queue takes fifty at most. The real list actions and the real queue over a fake server. */
-
 let server: FakeDam
 let router: Router
 const showWarning = vi.fn()

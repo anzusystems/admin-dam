@@ -17,8 +17,6 @@ test.describe.serial(`${ADMIN_SUITE} - Log`, () => {
     await page.context().close()
   })
 
-  // The system is a route segment now, not a filter: there is no system select to open and no tab strip
-  // to appear, the table is there on arrival and neither a search nor a reset takes it away.
   test('lists the app logs of coreDam', async () => {
     await openSettingsSection(page, 'log-settings', 'logs/dam/app', 'Logy')
     await expect(page.locator('main .v-table').first()).toBeVisible()

@@ -37,14 +37,13 @@ export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: st
 export const downloadLink = (imageId: DocId) =>
   fileRequest<AssetFileDownloadLink>('GET', END_POINT + '/' + imageId + '/download-link', [HTTP_STATUS_OK])
 
-// The server answers with the file turned (`ImageFileAdmDetailDto`, as a read of the file).
+// The server returns the rotated file (`ImageFileAdmDetailDto`, same as a file read).
 export const rotateImage = (imageId: DocId, angle: 90 | 270) =>
   fileRequest<AssetFileImage>('PATCH', END_POINT + '/' + imageId + '/rotate/' + angle, [HTTP_STATUS_OK])
 
 export const makePublic = (imageId: DocId) =>
   fileRequest<AssetFileRoute>('PATCH', END_POINT + '/' + imageId + '/make-public', [HTTP_STATUS_OK])
 
-/* The server answers 204 with no body, though it documents a body: either is the change gone through. Nothing reads
- * what it answers with. */
+/* The server returns 204 with no body, though it documents a body. Both mean success. The response is not read. */
 export const makePrivate = (imageId: DocId) =>
   fileCommand('PATCH', END_POINT + '/' + imageId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

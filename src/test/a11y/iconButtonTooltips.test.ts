@@ -7,12 +7,14 @@ import en from '@/locales/en'
 import sk from '@/locales/sk'
 import { i18n } from '@/plugins/i18n'
 
-/* Every icon-only control of the app says what it does: to the pointer by a tooltip, and to a screen reader by an
- * accessible name. A tooltip is not a name: it gives `aria-describedby`, is rendered only while it is open and is
- * hidden on touch devices. Read from the templates of all of `src`, as the library reads its own
- * (`src/test/a11y/iconButtonNames.test.ts` there). The controls: an icon-only button (`VBtn`, the library's aliases of
- * it, the hamburger of an app bar), a `VIcon` that takes a click, which Vuetify draws as `role="button"`, and a list
- * item that leads somewhere and shows nothing but icons. What library components draw is guarded by the library. */
+/*
+ * Every icon-only control must say what it does: a tooltip for the pointer and an accessible name for screen readers.
+ * A tooltip is not a name: it gives `aria-describedby`, renders only while open and is hidden on touch devices.
+ * Reads the templates of all `src`, as the library does (`src/test/a11y/iconButtonNames.test.ts` there).
+ * Controls: icon-only buttons (`VBtn`, library aliases, app bar hamburger), a
+ * `VIcon` with a click (Vuetify renders `role="button"`), and a list item that links
+ * somewhere and shows only icons. Library components are guarded by the library.
+ */
 
 const sources = import.meta.glob('/src/**/*.vue', { query: '?raw', import: 'default', eager: true }) as Record<
   string,
@@ -25,11 +27,10 @@ type ElementNode = Extract<TemplateChildNode, { tag: string }>
 // `NodeTypes` is a const enum of a package this app does not depend on directly.
 const NodeTypes = { ELEMENT: 1, TEXT: 2, COMMENT: 3, INTERPOLATION: 5, ATTRIBUTE: 6, DIRECTIVE: 7 } as const
 
-// `VBtn` and the library's aliases of it, which add no name of their own; the hamburger of an app bar is a `VBtn` too.
 const BUTTONS = new Set(['VBtn', 'ABtnIcon', 'ABtnPrimary', 'ABtnSecondary', 'ABtnTertiary', 'VAppBarNavIcon'])
-// What binds the props of their activator slot opens them; a menu and a dialog hand it a click as well.
+// Binding the props of the activator slot opens these overlays. Menu and dialog also hand the activator a click.
 const OVERLAYS = new Set(['VTooltip', 'VMenu', 'VDialog'])
-// Rendered elsewhere (overlays) or not text: they are not what the button shows as its own content.
+// Overlay content is rendered elsewhere and icons are not text, so neither counts as the button's own content.
 const NOT_CONTENT = new Set([...OVERLAYS, 'VIcon'])
 
 const isElement = (node: TemplateChildNode): node is ElementNode => node.type === NodeTypes.ELEMENT
@@ -43,7 +44,6 @@ const content = (children: TemplateChildNode[]): TemplateChildNode[] =>
     return [child]
   })
 
-/** The attribute of the element, plain or bound. */
 const attribute = (el: ElementNode, name: string) =>
   el.props.find(
     (prop) =>
@@ -51,7 +51,6 @@ const attribute = (el: ElementNode, name: string) =>
       (prop.type === NodeTypes.DIRECTIVE && prop.name === 'bind' && prop.arg?.loc.source === name)
   )
 
-/** The expression of a bound attribute, or the text of a plain one as a string literal: a plain one says its text. */
 const valueOf = (el: ElementNode, name: string) => {
   const prop = attribute(el, name)
   if (!prop) return undefined
@@ -63,8 +62,10 @@ const valueOf = (el: ElementNode, name: string) => {
 const listens = (el: ElementNode, event: string) =>
   el.props.some((prop) => prop.type === NodeTypes.DIRECTIVE && prop.name === 'on' && prop.arg?.loc.source === event)
 
-/* What Vuetify draws in a button without content: the icon when `icon` names one, and only otherwise its `text`. A
- * bare `icon` merely shapes the button, and its `text` shows. The hamburger always draws its icon, `$menu`. */
+/*
+ * Vuetify draws the `icon` in a content-less button when it names an icon, and only otherwise its `text`.
+ * A bare `icon` only shapes the button, and its `text` shows. The hamburger always draws its icon `$menu`.
+ */
 const showsText = (el: ElementNode) => {
   const icon = attribute(el, 'icon')
   const namesIcon =
@@ -73,7 +74,7 @@ const showsText = (el: ElementNode) => {
   return !!attribute(el, 'text') && !namesIcon
 }
 
-// A tooltip inside the button is the button's only when the button is its activator.
+// A tooltip inside the button belongs to it only when the button is its activator.
 const ownTooltip = (el: ElementNode) =>
   el.children.find(
     (child): child is ElementNode =>
@@ -84,8 +85,9 @@ const ownTooltip = (el: ElementNode) =>
       )
   )
 
-// An overlay around the control is the control's only when the control sits in its activator slot and binds what the
-// slot hands it: the name the slot gives its `props`, which the control's `v-bind` has to mention.
+// An overlay around a control belongs to it only when the control
+// sits in the activator slot and binds what the slot hands it.
+// The control's `v-bind` must mention the name the slot gives its `props`.
 const activatorSlot = (el: ElementNode) =>
   el.tag === 'template'
     ? el.props.find(
@@ -115,10 +117,9 @@ interface ActivatorSlot {
 
 type Kind = 'button' | 'icon' | 'listItem'
 
-/** What the control is, or nothing for an element that is none. `bound`: the activator slots whose props it binds. */
 const kindOf = (el: ElementNode, insideButton: boolean, bound: ActivatorSlot[]): Kind | undefined => {
   if (BUTTONS.has(el.tag)) return content(el.children).length === 0 && !showsText(el) ? 'button' : undefined
-  // The icon of a button is the button's content, not a control of its own.
+  // The icon of a button is the button's content, not a separate control.
   if (el.tag === 'VIcon') {
     return !insideButton && (listens(el, 'click') || bound.some((slot) => slot.overlay.tag !== 'VTooltip'))
       ? 'icon'
@@ -131,7 +132,6 @@ const kindOf = (el: ElementNode, insideButton: boolean, bound: ActivatorSlot[]):
   return undefined
 }
 
-/** What an element says: the keys it shows as `{{ t('…') }}`, and whether it shows anything else. */
 interface Said {
   keys: string[]
   other: boolean
@@ -154,7 +154,6 @@ const saidBy = (el: ElementNode): Said => {
   return said
 }
 
-/** What a tooltip says: the expression of its one `{{ … }}`, or of its `:text`; `undefined` when it says more than that. */
 const tooltipSays = (tooltip: ElementNode) => {
   const said = tooltip.children.filter(
     (child) =>
@@ -171,16 +170,13 @@ const tooltipSays = (tooltip: ElementNode) => {
     : undefined
 }
 
-// An expression that picks one of two values.
 const TERNARY = /\?(?![?.])[\s\S]*:/
-/** The icons a control shows as its own, its overlays left out. */
 const ownIcons = (children: TemplateChildNode[]): ElementNode[] =>
   children.flatMap((child) => {
     if (!isElement(child) || OVERLAYS.has(child.tag)) return []
 
     return child.tag === 'VIcon' ? [child] : ownIcons(child.children)
   })
-/** Whether a control shows a state by its icon: two icons of its own drawn by a condition, or an icon picked by one. */
 const swapsIcon = (el: ElementNode) => {
   const icons = ownIcons(el.children)
   const drawnIf = icons.filter((icon) =>
@@ -201,15 +197,10 @@ interface Control {
   at: string
   path: string
   kind: Kind
-  /** Its `aria-label`: the expression of a bound one, the text of a plain one as a string literal. */
   label: string | undefined
-  /** Its `aria-labelledby`, and what each id of it points at in the template; `undefined` where at nothing. */
   labelledBy: { by: string; labels: Array<Said | undefined> } | undefined
-  /** The source of its tooltip: the one inside it, or the one it is the activator of. */
   tooltip: string | undefined
-  /** What that tooltip says (`tooltipSays`). */
   says: string | undefined
-  /** What it binds to `active`, `aria-pressed` and `aria-expanded`, and whether its icon changes with a state. */
   active: string | undefined
   pressed: string | undefined
   expanded: string | undefined
@@ -221,7 +212,9 @@ const controls = (path: string, source: string): Control[] => {
   const found: Array<{ el: ElementNode; kind: Kind; tooltip: ElementNode | undefined; apart: Apart }> = []
   const elements: Array<{ el: ElementNode; apart: Apart }> = []
   const sourceOf = (el: ElementNode) => source.slice(el.loc.start.offset, el.loc.end.offset)
-  /** `slots`: the activator slots the nodes are in, however deep; `apart`: the overlay whose content they are. */
+  /**
+   * `slots`: the activator slots the nodes are in, at any depth. `apart`: the overlay whose content they are.
+   */
   const visit = (nodes: TemplateChildNode[], slots: ActivatorSlot[], insideButton: boolean, apart: Apart) => {
     for (const node of nodes) {
       if (!isElement(node)) continue
@@ -236,7 +229,8 @@ const controls = (path: string, source: string): Control[] => {
           visit([child], slots, inside, apart)
           continue
         }
-        // What binds the props of its activator slot opens the overlay; the rest of it is its content, drawn apart.
+        // Binding the props of the activator slot opens the overlay.
+        // The rest of the element is overlay content, drawn apart.
         const slot = isElement(child) ? activatorSlot(child) : undefined
         const props = slot ? slotPropsName(slot) : undefined
         visit([child], slot ? (props ? [...slots, { overlay: node, props }] : slots) : [], inside, slot ? apart : node)
@@ -245,9 +239,11 @@ const controls = (path: string, source: string): Control[] => {
   }
   visit(parse(source).descriptor.template?.ast?.children ?? [], [], false, undefined)
 
-  /* The ids of a plain `aria-labelledby` are each the plain `id` of an element; a bound one is the same bound `id`. Of
-   * an element drawn with the control, not in the content of an overlay apart from it: that is there only while the
-   * overlay is open, and a tooltip not at all on a touch screen. */
+  /*
+   * Ids of a plain `aria-labelledby` match a plain `id`; a bound one matches the same bound `id`.
+   * Only elements drawn with the control count, not overlay content drawn apart. That
+   * exists only while the overlay is open, and a tooltip never on touch screens.
+   */
   const labelsOf = (by: string, apart: Apart) =>
     (by.startsWith('"')
       ? (JSON.parse(by) as string)
@@ -280,12 +276,10 @@ const controls = (path: string, source: string): Control[] => {
 
 const all = Object.entries(sources).flatMap(([path, source]) => controls(path, source))
 
-// The app's own messages, the library's `common.*` among them.
 i18n.global.setLocaleMessage('sk', sk)
 i18n.global.setLocaleMessage('en', en as never)
 const text = (key: string, locale: 'sk' | 'en') =>
   i18n.global.te(key, locale) ? i18n.global.t(key, {}, { locale }) : undefined
-/** The keys among them that the app has no text for in sk or en: such a key would be said as it is written. */
 const untranslated = (keys: string[]) =>
   keys.flatMap((key) =>
     (['sk', 'en'] as const)
@@ -295,8 +289,10 @@ const untranslated = (keys: string[]) =>
 
 const KEY_LABEL = /^t\('([^']+)'(?:,[\s\S]*)?\)$/
 
-/** What the elements of the tag are given for the prop, over the templates: the values of it written plain in kebab
- * case, and where it is given otherwise - bound, or in camel case - which this guard does not read. */
+/**
+ * Collects what elements of the tag get for the prop: plain kebab-case values, and
+ * where it is given otherwise (bound or camel case), which this guard does not read.
+ */
 const givenTo = (tag: string, prop: string, from: Record<string, string> = sources) => {
   const camel = prop.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase())
   const values: string[] = []
@@ -321,9 +317,11 @@ const givenTo = (tag: string, prop: string, from: Record<string, string> = sourc
   return { values, unread }
 }
 
-/* The names a template cannot spell out, with every key each of them can take: the button that changes the route of a
- * file names itself by its prop (its default and what its callers pass), a button of the editor toolbar by the list of
- * the toolbar. */
+/*
+ * Names a template cannot spell out, with every key they can take.
+ * The button that changes a file route names itself by its prop (default and
+ * callers' values). Editor toolbar buttons are named by the toolbar list.
+ */
 const ROUTE_CHANGE = '/src/domains/coreDam/shared/assetFileRoute/components/AssetFileRouteChangeBtn.vue'
 const TOOLBAR_ITEM = '/src/domains/coreDam/shared/components/anzutap/components/AnzutapToolbarItem.vue'
 const DYNAMIC: Record<string, { label: string; keys: () => string[] }> = {
@@ -340,8 +338,8 @@ const DYNAMIC: Record<string, { label: string; keys: () => string[] }> = {
   },
 }
 
-// Named, and drawn without a tooltip: the hamburger of the layout, and the search icon at the end of its field. By
-// file and name: another control of these files has a tooltip as any other.
+// Named but drawn without a tooltip: the layout hamburger and the search icon at the end of its field.
+// Matched by file and name, because other controls in these files do have tooltips.
 const WITHOUT_TOOLTIP = [
   ['/src/layouts/AppLayoutDrawer.vue', "t('system.mainBar.mainMenu')"],
   ['/src/domains/coreDam/asset/components/toolbar/AssetSearchInput.vue', "t('system.mainBar.search')"],
@@ -353,7 +351,6 @@ const withoutTooltip = (list: Control[]) =>
     )
     .map(({ at }) => at)
 
-/** The name as an expression: the `aria-label`, or the one key the element an `aria-labelledby` points at shows. */
 const nameOf = ({ label, labelledBy }: Control) => {
   if (label) return label
   const [only] = labelledBy?.labels ?? []
@@ -362,12 +359,13 @@ const nameOf = ({ label, labelledBy }: Control) => {
     ? `t('${only.keys[0]}')`
     : undefined
 }
-/** The controls whose tooltip says something else than their name, or more. */
 const notAsTooltip = (list: Control[]) =>
   list.filter((control) => control.tooltip && (!control.says || control.says !== nameOf(control))).map(({ at }) => at)
 
-/* A button drawn as on (`active`), or one whose icon changes with a state, says the state as well; a state is bound,
- * never written once. */
+/*
+ * A button drawn as on (`active`), or one whose icon changes with a
+ * state, must also say the state. The state is bound, never written once.
+ */
 const withoutState = (list: Control[]) =>
   list
     .filter(
@@ -377,8 +375,10 @@ const withoutState = (list: Control[]) =>
     )
     .map(({ at }) => at)
 
-/* The state a control says with its name: `aria-pressed` on one that is on or off, `aria-expanded` on one that opens
- * and closes a panel or the main menu. By file and name. */
+/*
+ * The state a control says with its name: `aria-pressed` for on/off, `aria-expanded`
+ * for opening and closing a panel or the main menu. Matched by file and name.
+ */
 const D = '/src/domains/coreDam/'
 const STATES: Array<[path: string, label: string, state: 'aria-pressed' | 'aria-expanded']> = [
   [D + 'asset/components/detail/AssetDetailView.vue', "t('coreDam.asset.detail.toggleInfo')", 'aria-expanded'],
@@ -442,29 +442,27 @@ describe('icon-only controls of the app', () => {
     expect(one('<VBtn text="Add" />')).toEqual([])
   })
 
-  // Vuetify draws the icon that `icon` names and leaves the `text` of such a button out.
+  // Vuetify draws the icon that `icon` names and leaves out the `text` of such a button.
   it('are icon-only also with a `text`, when their `icon` names an icon', () => {
     expect(one('<VBtn icon="mdi-plus" text="Add" />')).toEqual(unnamed)
     expect(one('<VBtn :icon="plus" text="Add" />')).toEqual(unnamed)
-    // A bare `icon` only shapes the button: the text shows.
+    // A bare `icon` only shapes the button, so the text shows.
     expect(one('<VBtn icon text="Add" />')).toEqual([])
   })
 
   it('have for their tooltip only one they are the activator of', () => {
     const bound = [{ at: 'x:1', tooltip: expect.stringContaining('Settings') }]
 
-    // Inside the button, but not told to open on it.
     expect(one('<VBtn icon><VIcon icon="mdi-cog" /><VTooltip>Settings</VTooltip></VBtn>')).toEqual(unnamed)
     expect(one('<VBtn icon><VIcon icon="mdi-cog" /><VTooltip activator="#another">Settings</VTooltip></VBtn>')).toEqual(
       unnamed
     )
-    // Of something inside its menu.
     expect(
       one(
         '<VBtn icon><VIcon icon="mdi-dots" /><VMenu><VBtn>Go<VTooltip activator="parent">Where</VTooltip></VBtn></VMenu></VBtn>'
       )
     ).toEqual(unnamed)
-    // Around the button: only through the activator slot, whose props the button takes.
+    // An enclosing tooltip belongs to the button only through the activator slot, whose props the button binds.
     expect(one('<VTooltip>Settings<VBtn icon="mdi-cog" /></VTooltip>')).toEqual(unnamed)
     expect(
       one('<VTooltip>Settings<template #activator="{ props }"><VBtn icon="mdi-cog" /></template></VTooltip>')
@@ -481,7 +479,7 @@ describe('icon-only controls of the app', () => {
     ).toEqual(bound)
   })
 
-  // Something else bound to the button does not make it the activator: it has to be what the slot handed out.
+  // Binding something else does not make the button the activator. It must bind what the slot handed out.
   it('are the activator of a tooltip around them only when they bind the props of its slot', () => {
     const around = (slot: string, binding: string) =>
       one(`<VTooltip>Settings<template #activator="${slot}"><VBtn ${binding} icon="mdi-cog" /></template></VTooltip>`)
@@ -496,7 +494,7 @@ describe('icon-only controls of the app', () => {
     expect(around('slot', 'v-bind="slot.props"')).toEqual(bound)
   })
 
-  // Vuetify hands the icon a click and draws it as `role="button"`; inside a button it is the button's content.
+  // Vuetify hands the icon a click and renders it as `role="button"`. Inside a button it is the button's content.
   it('are also an icon that takes a click outside a button, by a listener or from a menu it opens', () => {
     const kinds = (template: string) => found(template).map(({ kind }) => kind)
 
@@ -508,13 +506,13 @@ describe('icon-only controls of the app', () => {
     expect(
       kinds('<VDialog><template #activator="{ props: open }"><VIcon v-bind="open" icon="mdi-x" /></template></VDialog>')
     ).toEqual(['icon'])
-    // A tooltip opens on the pointer and on focus, and hands no click.
+    // A tooltip opens on pointer and focus and hands no click.
     expect(
       kinds('<VTooltip><template #activator="{ props }"><VIcon v-bind="props" icon="mdi-x" /></template></VTooltip>')
     ).toEqual([])
     expect(kinds('<VIcon icon="mdi-magnify" />')).toEqual([])
     expect(kinds('<VBtn icon @click="search"><VIcon icon="mdi-magnify" @click="search" /></VBtn>')).toEqual(['button'])
-    // The menu of a button is drawn apart from it: an icon there is a control of its own.
+    // The menu of a button is drawn apart from it, so an icon there is a separate control.
     expect(
       kinds(
         '<VBtn icon><VIcon icon="mdi-dots" /><VMenu activator="parent"><VList><VIcon icon="mdi-x" @click="x" /></VList></VMenu></VBtn>'
@@ -543,7 +541,7 @@ describe('icon-only controls of the app', () => {
     expect(kinds('<VListItem prepend-icon="mdi-home" />')).toEqual([])
   })
 
-  // A `title` is not taken for a name: it is a second, native tooltip next to the one of Vuetify.
+  // A `title` is not accepted as a name. It is a second, native tooltip next to the Vuetify one.
   it('are named by an `aria-label`, bound or plain, or by an `aria-labelledby`; not by a `title`', () => {
     const names = (template: string) => found(template).map(({ label, labelledBy }) => ({ label, labelledBy }))
 
@@ -563,7 +561,7 @@ describe('icon-only controls of the app', () => {
     ])
   })
 
-  // The text an `aria-labelledby` points at is the name, so it has to be there, and in the language of the user.
+  // The text an `aria-labelledby` points at is the name, so it must exist and be in the user's language.
   it('follow an `aria-labelledby` to what it points at in their template', () => {
     const labels = (template: string) => found(template).map(({ labelledBy }) => labelledBy?.labels)
 
@@ -586,13 +584,13 @@ describe('icon-only controls of the app', () => {
     expect(
       labels('<span id="titleId">{{ t(\'x.y\') }}</span><VBtn icon="mdi-x" :aria-labelledby="titleId" />')
     ).toEqual([[undefined]])
-    // Not into an overlay drawn apart from the control: its own tooltip is there only while it is open.
+    // Do not follow into an overlay drawn apart from the control: its tooltip exists only while open.
     expect(
       labels(
         '<VBtn icon="mdi-x" aria-labelledby="a"><VTooltip activator="parent"><span id="a">{{ t(\'x.y\') }}</span></VTooltip></VBtn>'
       )
     ).toEqual([[undefined]])
-    // Within the same one it is: both are drawn together.
+    // Within the same overlay it is followed, because both are drawn together.
     expect(
       labels(
         '<VDialog><VCard><b id="a">{{ t(\'x.y\') }}</b><VBtn icon="mdi-x" aria-labelledby="a" /></VCard></VDialog>'
@@ -629,7 +627,7 @@ describe('icon-only controls of the app', () => {
     expect(withoutTooltip(controls('/src/x.vue', `<template>${hamburger}</template>`))).toEqual(['/src/x.vue:1'])
   })
 
-  // The guard reads only a key written out plain: a bound one, or one in camel case, it would leave unchecked.
+  // The guard reads only plain keys. A bound key or one in camel case stays unchecked.
   it('read the keys a prop is given only where it is written plain, and tell where it is not', () => {
     const given = givenTo('AssetFileRouteChangeBtn', 'button-t', {
       '/x.vue': `<template>
@@ -656,7 +654,6 @@ describe('icon-only controls of the app', () => {
     ])
     expect(stateless('<VBtn icon :active="on" @click="toggle"><VIcon icon="mdi-x" /></VBtn>')).toEqual(['x:1'])
     expect(stateless('<VBtn icon :active="on" aria-pressed="true"><VIcon icon="mdi-x" /></VBtn>')).toEqual(['x:1'])
-    // An icon that only comes and goes, or is picked by another expression, is not told.
     expect(stateless('<VBtn icon><VIcon v-if="on" icon="mdi-x" /></VBtn>')).toEqual([])
     expect(stateless('<VBtn :icon="item.icon" />')).toEqual([])
     expect(stateless('<VBtn :icon="item?.icon ?? \'mdi-x\'" />')).toEqual([])
@@ -672,7 +669,7 @@ describe('icon-only controls of the app', () => {
     expect(withoutTooltip(all)).toEqual([])
   })
 
-  // A tooltip is there even when its translation is not: then it would show the key.
+  // A tooltip exists even when its translation is missing. Then it would show the key.
   it.each(['sk', 'en'] as const)('say in their tooltips texts the app has in %s', (locale) => {
     const said = all.flatMap((control) =>
       Array.from(control.tooltip?.matchAll(/\bt\('([^']+)'/g) ?? [], (match) => ({ at: control.at, key: match[1] }))
@@ -686,8 +683,8 @@ describe('icon-only controls of the app', () => {
     expect(all.filter((control) => !control.label && !control.labelledBy).map(({ at }) => at)).toEqual([])
   })
 
-  // An `aria-label` is there even when its translation is not: then the control would be named by the key. A plain
-  // one says the same in every language.
+  // An `aria-label` exists even when its translation is missing. Then the
+  // control is named by the key. A plain one says the same in every language.
   it.each(['sk', 'en'] as const)('are named by a text the app has in %s', (locale) => {
     const named = all
       .filter((control) => control.label && !DYNAMIC[control.path])
@@ -741,7 +738,6 @@ describe('icon-only controls of the app', () => {
 
     expect(states.sort()).toEqual([...STATES].sort())
     expect(withoutState(all)).toEqual([])
-    // The three select buttons of a tile are told by their icon alone.
     expect(all.filter(({ swapsIcon }) => swapsIcon).length).toBe(3)
   })
 })

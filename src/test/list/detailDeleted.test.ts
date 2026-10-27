@@ -12,13 +12,14 @@ import {
   stopUploadUi,
 } from '@/test/support/uploadUi'
 
-/* An asset deleted in the detail over the list is marked as being deleted - its tile, and the panel beside the list
- * that holds it, which offers no "Save" of it any more. The mark is of the asset the delete was sent for, also when the
- * detail has gone on to the next asset or to another of its tabs before the delete was answered, and a read of the
- * asset asked before the delete, answered after it, does not undo the mark. The real page of the list with its detail
- * and its panel, the real listener of the notifications, and the application around them as it starts; the server is
- * a fake, and so are the connection its notifications come by and the address the page asks about a new version of
- * the application. */
+/*
+ * An asset deleted in the detail over the list is marked as being
+ * deleted, in its tile and in the panel, which then offers no "Save".
+ * The mark goes to the asset the delete was sent for, even if the detail moved to the next asset or another
+ * tab before the answer. A read asked before the delete and answered after it does not undo the mark.
+ * Real list, detail, panel and notification listener. The server,
+ * the notification connection and the app-version address are fakes.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -41,12 +42,10 @@ const DELETE_ASSET = /^\/adm\/v1\/asset\/([^/]+)$/
 
 const LIST = '/assets'
 const BEING_DELETED = 'Asset will be removed soon'
-/** The asset deleted, its main file the server is processing; the asset after it in the list. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
-/** How far the server is with the main file of the asset. */
 let fileIs: 'stored' | 'processed' = 'stored'
 
 const fileOnServer = (fileId: string, assetId: string) => ({
@@ -56,7 +55,6 @@ const fileOnServer = (fileId: string, assetId: string) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: 'with_file' },
@@ -70,11 +68,8 @@ const onServer = (id: string) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** How a read of the asset is answered: at once with what the server holds, unless a case holds it. */
 let answerRead: () => unknown = () => onServer(ASSET)
 
-/* The next read of the asset is held, every later one answers at once. Let go, it answers what the server held when
- * it was asked. */
 const holdNextRead = () => {
   let letGo: () => void = () => undefined
   let asked = false
@@ -93,7 +88,6 @@ const holdNextRead = () => {
   }
 }
 
-/** The delete of an asset is held from now on: answered by what this gives back. */
 const holdDelete = () => {
   let answer: () => void = () => undefined
   server.on(
@@ -111,7 +105,6 @@ const holdDelete = () => {
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** "Delete" of the Info tab of the open detail, pressed and its question answered. */
 const pressDelete = async () => {
   buttonsNamed(dialogOfList()!, 'Delete')[0].click()
   await eventually(() => expect(dialogButton('Delete')).not.toBeNull())
@@ -119,20 +112,17 @@ const pressDelete = async () => {
   await settled()
 }
 
-/** What the panel shows: whether it says its asset is being deleted, and whether its "Save" is disabled. */
 const panelShows = () => ({
   beingDeleted: !!panel().textContent?.includes(BEING_DELETED),
   saveDisabled: buttonsNamed(panel(), 'Save')[0]?.disabled,
 })
 
-/** The page of the list with its two assets. */
 const listOpened = async () => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update', 'dam_asset_delete', 'dam_image_update'],
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -147,7 +137,6 @@ const listOpened = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
@@ -161,9 +150,7 @@ const listOpened = async () => {
   return {
     ...ui,
     tiles,
-    /** Which tiles are drawn as of an asset being deleted. */
     deleting: () => tiles().map((tile) => !!tile.querySelector('.mdi-trash-can')),
-    /** The detail of the first asset, opened by the pencil of its tile and drawn. */
     openDetail: async () => {
       tiles()[0].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
       await eventually(() => expect(dialogOfList()?.querySelector('textarea')).toBeTruthy())
@@ -200,8 +187,10 @@ afterEach(() => {
 })
 
 describe('an asset deleted in the detail over the list', () => {
-  /* The delete changed the asset the panel holds in its place, and a read of it asked before - by the news of its
-   * file, here - and answered after the delete put the asset back as it was: no longer being deleted, "Save" free. */
+  /*
+   * Guards a bug: the delete changed the asset the panel holds. A read of it asked before the delete (here by the
+   * news of its file) and answered after it put the asset back as it was, no longer being deleted with "Save" free.
+   */
   it('stays marked as being deleted when a read of it asked before the delete is answered after it', async () => {
     const list = await listOpened()
     list.tiles()[0].click()
@@ -224,8 +213,10 @@ describe('an asset deleted in the detail over the list', () => {
     expect([list.deleting(), panelShows()]).toEqual([[true, false], { beingDeleted: true, saveDisabled: true }])
   })
 
-  /* The mark was taken from the asset the detail held when the delete was answered: the next one, gone on to by the
-   * arrow key meanwhile, was marked, and the deleted one not. */
+  /*
+   * Guards a bug: the mark was taken from the asset the detail held when the delete was answered.
+   * If the arrow key had moved on meanwhile, the next asset was marked instead of the deleted one.
+   */
   it('marks the asset deleted, not the next one the detail has gone on to before the delete was answered', async () => {
     const list = await listOpened()
     await list.openDetail()
@@ -244,7 +235,7 @@ describe('an asset deleted in the detail over the list', () => {
     ])
   })
 
-  // The part of the detail that deleted is gone with its tab: what it would have said, Vue dropped.
+  // The part of the detail that deleted is gone with its tab, and Vue dropped what it would have said.
   it('marks the asset deleted when another tab of the detail was opened before the delete was answered', async () => {
     const list = await listOpened()
     await list.openDetail()

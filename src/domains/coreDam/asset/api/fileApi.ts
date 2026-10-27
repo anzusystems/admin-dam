@@ -60,7 +60,7 @@ const UPLOAD_END_POINT: Partial<Record<DamAssetTypeType, string>> = {
   [DamAssetType.Document]: '/adm/v1/document',
 }
 
-// Every request below rejects on a type it does not cover: the promise would otherwise never settle.
+// Requests reject on an unsupported asset type. Otherwise the promise would never settle.
 const toEndPoint = <T>(item: UploadQueueItem, send: (endPoint: string) => Promise<T>) => {
   const endPoint = UPLOAD_END_POINT[item.assetType]
   if (isUndefined(endPoint)) return Promise.reject(new Error(`fileApi: unsupported asset type '${item.assetType}'`))
@@ -71,8 +71,10 @@ const toEndPoint = <T>(item: UploadQueueItem, send: (endPoint: string) => Promis
 export const uploadStart = (item: UploadQueueItem) =>
   toEndPoint(item, (endPoint) => damFileUploadStart(damClient, endPoint, item) as Promise<DamUploadStartResponse>)
 
-/* Only if nothing has settled the item meanwhile: the notification can beat the finish response, and
- * `Processing` written over `Uploaded` would put a settled row back among the waiting ones. */
+/*
+ * Only while still uploading. The notification can arrive before the finish response,
+ * and `Processing` over `Uploaded` would put a settled row back among the waiting ones.
+ */
 function startProcessing(item: UploadQueueItem) {
   if (item.status !== UploadQueueItemStatus.Uploading) return
   item.status = UploadQueueItemStatus.Processing
@@ -86,7 +88,7 @@ export const uploadFinish = (item: UploadQueueItem, sha: string) =>
     return res
   })
 
-// Sent as the library sends it: checked first, reported to Sentry, and with no type named, so the browser sets it.
+// Sent like the library sends it: validated, reported to Sentry, and with no content type, so the browser sets it.
 export const uploadChunk = (
   item: UploadQueueItem,
   fileId: DocId,

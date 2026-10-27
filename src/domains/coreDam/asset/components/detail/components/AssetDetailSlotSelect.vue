@@ -10,8 +10,11 @@ import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStor
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 const props = defineProps<{
-  /* The file the form around works with: the slot that holds it is picked first, and a slot picked in its place is
-   * told to the form. Left out, the main slot is picked and nothing is told until the user picks another. */
+  /*
+   * The file the surrounding form works with. Its slot is selected
+   * first, and another selected slot is reported to the form.
+   * If omitted, the main slot is selected and nothing is reported until the user picks another.
+   */
   assetFileId?: DocIdNullable
 }>()
 

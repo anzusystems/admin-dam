@@ -63,11 +63,11 @@ export const useUserDetailActions = () => {
   const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      // The DAM user requests take no signal: a page left meanwhile ignores their answers instead.
+      // DAM user requests take no signal, so answers are ignored after the page is left.
       const user = await fetchDamUser(damClient, id)
       if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
-      // The user is there by now: failing to load the licence groups shows the user without them.
+      // If loading licence groups fails, the user is still shown without them.
       try {
         const licenceGroups = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
         if (options.signal?.aborted) return undefined
@@ -87,7 +87,7 @@ export const useUserDetailActions = () => {
       if (options.signal?.aborted) return undefined
       return handleRecordLoadError(error) ? false : undefined
     } finally {
-      // An aborted load belongs to a page that is gone; the flag is the next page's by now.
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
       if (!options.signal?.aborted) detailLoading.value = false
     }
   }

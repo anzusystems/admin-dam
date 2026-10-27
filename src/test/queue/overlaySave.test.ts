@@ -24,13 +24,6 @@ import {
 } from '@/test/support/uploadUi'
 import type { UploadUiSetup } from '@/test/support/uploadUi'
 
-/* The two full-screen overlays that edit and save a whole queue: the one of the uploads and the one of the assets
- * picked for mass edit. Each is mounted whole - toolbar, editable list, rows and forms - over the real stores, with
- * the application around it as it starts; the server is a fake.
- *
- * That neither can be saved while no row would be sent is in `saveNothing.test.ts`; what the rows validate is in
- * `queueRowValidation.test.ts` and `asset/assetMetadataValidation.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -43,8 +36,7 @@ const FIX = 'Please, fix these errors'
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const LIST = /^\/adm\/v1\/asset\/licence\/1\/search$/
 
-// Put into its queue as it is: nothing is known of what the server has of it, and the save sends such a row whole.
-// What the save sends of a row that got its metadata from the server is in `bulkSaveChanges.test.ts`.
+// Put into the queue as is: nothing is known of what the server has, so the save sends such a row whole.
 const editable = (assetId: string, over: Partial<UploadQueueItem> = {}) =>
   queueRow({ status: 'uploaded', canEditMetadata: true, assetId, fileId: 'file-of-' + assetId, ...over })
 
@@ -57,7 +49,6 @@ const sentTo = (requests: FakeDamRequest[]) => requests.map((request) => request
 const saved = () => server.sent('PATCH', BULK).map((request) => JSON.parse(request.data as string))
 
 const requiredTitle = { customForm: { image: [customField('title', { required: true })] } }
-// A field the form names otherwise than its key, as a deployment names its fields.
 const titled = (name: string) => ({ ...customField('title'), name })
 const namedTitle = { customForm: { image: [titled('Title of the photo')] } }
 
@@ -65,9 +56,10 @@ const failWith = (error: () => Error) => () => {
   throw error()
 }
 
-/* What the server can do to the save in place of answering it with a 200, and what the user is told then. A
- * refusal by validation names the field by its key in the batch it was sent - the index is the place of the asset
- * in that batch; the user is told it as the form names it. */
+/*
+ * A validation refusal names the field by its key in the batch that was sent.
+ * The index is the place of the asset in that batch. The user is told the field name as the form shows it.
+ */
 const refusals: Array<[string, () => FakeDamAnswer, string]> = [
   ['a server error', failWith(() => httpError(500)), SYSTEM_ERROR],
   ['no access', failWith(() => httpError(403)), "Access denied, you don't have correct rights for this action"],
@@ -98,7 +90,6 @@ afterEach(() => {
 describe('the overlay of the uploads', () => {
   const QUEUE = 'global'
 
-  /** Mounts the overlay, opened full as the user opens it, over the upload queue holding the rows. */
   const mountOverlay = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}) => {
     const ui = await startUploadUi({ server, queues: { [QUEUE]: rows }, ...setup })
     const { useAssetFooterUploadView } = await import('@/domains/coreDam/asset/composables/assetFooterUpload')
@@ -135,7 +126,6 @@ describe('the overlay of the uploads', () => {
         queueRow({ status: 'waiting', assetId: null, fileId: null }),
       ])
 
-      // Two of the four are settled, one way or the other.
       expect(texts(toolbar)).toContain('Upload')
       expect(texts(toolbar)).not.toContain('Upload done')
       expect(texts(toolbar)).toContain('Uploading 3/4')
@@ -198,7 +188,6 @@ describe('the overlay of the uploads', () => {
           customData: { title: 'typed' },
           mainFileSingleUse: true,
         }),
-        // Not sent: a failed upload, a duplicate, a row still waiting for its metadata.
         queueRow({
           status: 'failed',
           assetId: 'asset-2',
@@ -226,15 +215,11 @@ describe('the overlay of the uploads', () => {
         ],
       ])
       expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search'])
-      // The save is not the end of the work: the queue and the overlay stay.
       expect([held(), shown()]).toEqual([5, 'full'])
     })
 
-    /* Rows that hold what the server has of them, of assets that are described: nothing is to be written. To the
-     * user the save is as any other that went through. */
     it('says so and reads the asset list again, with no request, when no row has anything to send', async () => {
       const { save, alerts, held, shown, store } = await mountOverlay([editable('asset-1'), editable('asset-2')])
-      // As after a save of each from its detail.
       store.updateAssetMetadata(assetDetail('asset-1') as never)
       store.updateAssetMetadata(assetDetail('asset-2') as never)
 
@@ -257,7 +242,6 @@ describe('the overlay of the uploads', () => {
 
       expect(server.sent('PATCH')).toEqual([])
       expect(server.sent('GET', LIST)).toEqual([])
-      // And the field says so itself.
       expect(overlay.querySelectorAll('.v-input--error')).toHaveLength(1)
     })
 
@@ -289,7 +273,6 @@ describe('the overlay of the uploads', () => {
 
         save().click()
         await eventually(() => expect(server.sent('PATCH', BULK)).toHaveLength(1))
-        // Its spinner stops, and it can be pressed again.
         await eventually(() =>
           expect([save().disabled, save().classList.contains('v-btn--loading')]).toEqual([false, false])
         )
@@ -300,8 +283,6 @@ describe('the overlay of the uploads', () => {
       }
     )
 
-    /* Ten rows a request, one after the other: the batches before the one that fails stay saved, those after it
-     * are not sent, and the user is told why that one failed - the field of the asset it names, of that batch. */
     it('says why a later batch failed, the batches before it sent and the queue kept', async () => {
       let batches = 0
       server.on('PATCH', BULK, (request) => {
@@ -365,7 +346,6 @@ describe('the overlay of the uploads', () => {
       ])
       expect(alerts()).toEqual([UPDATED])
       expect(held()).toBe(0)
-      // The rows are stopped, as the close button stops them: nothing asks about them any more.
       expect(rows.map((row) => row.status)).toEqual(['stop', 'stop'])
       await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search']))
     })
@@ -410,9 +390,10 @@ describe('the overlay of the uploads', () => {
     )
   })
 
-  /* The panel of the list showed an asset saved here as it was before the save, and its own save would then have put
-   * the metadata it was loaded with over what was saved here. The asset of the detail store is read again by its id,
-   * as after a save of the mass edit. */
+  /*
+   * The list panel showed an asset saved here as it was before the save.
+   * Its own save would then overwrite what was saved here with the metadata it was loaded with.
+   */
   describe.each([
     ['its save button', 'save'],
     ['its "save and finish" button', 'saveAndFinish'],
@@ -503,7 +484,6 @@ describe('the overlay of the assets picked for mass edit', () => {
   const QUEUE = 'edit'
   const picked = (assetId: string, over: Partial<UploadQueueItem> = {}) => editable(assetId, { type: 'asset', ...over })
 
-  /** Mounts the overlay, opened full, over the mass-edit queue holding the rows, their assets ticked in the list. */
   const mountOverlay = async (rows: UploadQueueItem[], setup: Partial<UploadUiSetup> = {}) => {
     const ui = await startUploadUi({ server, queues: { [QUEUE]: rows }, ...setup })
     const { useAssetFooterSelectedView } = await import('@/domains/coreDam/asset/composables/assetFooterSelected')
@@ -533,7 +513,6 @@ describe('the overlay of the assets picked for mass edit', () => {
     }
   }
 
-  /** Picks the assets as the list picks them: their metadata are read from the server, and they are ticked in it. */
   const pick = async (ui: Awaited<ReturnType<typeof mountOverlay>>, assets: Array<ReturnType<typeof assetDetail>>) => {
     assets.forEach((asset) => server.asset(asset))
     await ui.store.addByAssets(
@@ -570,10 +549,6 @@ describe('the overlay of the assets picked for mass edit', () => {
   })
 
   describe('its save button', () => {
-    /* Rewritten with finding 49. It pinned that every picked asset is sent whole, typed into or not, which put the
-     * values it was loaded with over whatever another editor had saved meanwhile. The assets are picked here as the
-     * list picks them, their metadata read from the server. The save sends of each what was changed in it; of one
-     * nobody changed only that it is described now, and nothing when it was described already. */
     it('sends of the picked assets what was changed in them and says so; the list is not read again, the selection stays', async () => {
       const ui = await mountOverlay([], { customForm: { image: [customField('title')] } })
       const { save, alerts, held, shown, ticked, overlay } = ui
@@ -599,7 +574,6 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect([held(), shown(), ticked()]).toEqual([3, 'full', ['asset-1', 'asset-2', 'asset-3']])
     })
 
-    // Nothing is to be written of them. To the user the save is as any other that went through.
     it('says so, with no request, when nothing was changed in picked assets that are described; the selection stays', async () => {
       const ui = await mountOverlay([])
       await pick(ui, [described('asset-1'), described('asset-2')])
@@ -611,15 +585,12 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect([ui.held(), ui.shown(), ui.ticked()]).toEqual([2, 'full', ['asset-1', 'asset-2']])
     })
 
-    /* Finding 50: the panel of the list showed its asset as it was before the save. The asset of the detail store is
-     * read again by its id, which need not be the active row of the list. */
     const panel = async (open: boolean, shownId: string) => {
       const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
       const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
       const { useMainWrapper } = await import('@/domains/system/composables/useMainWrapper')
       const detail = useAssetDetailStore()
       const { sidebarRight } = useMainWrapper()
-      // The active row is another asset than the one the panel shows.
       useAssetListStore().setActiveByIndex(1)
       sidebarRight.value = open
       detail.setAsset(assetDetail(shownId, { keywords: ['before'] }) as never)
@@ -631,7 +602,6 @@ describe('the overlay of the assets picked for mass edit', () => {
 
       return { detail, sidebarRight }
     }
-    /** The save of the bulk held on the wire until the test lets it answer. */
     const holdBulkSave = () => {
       let answer = () => undefined as void
       server.on(
@@ -645,7 +615,6 @@ describe('the overlay of the assets picked for mass edit', () => {
 
       return () => answer()
     }
-    /** The reads of the asset answer one after the other with the keyword it had: at once, or when the test lets them. */
     const reads = (assetId: string, ...answers: Array<string | { held: string }>) => {
       const held: Array<() => void> = []
       let next = 0
@@ -656,7 +625,6 @@ describe('the overlay of the assets picked for mass edit', () => {
         return new Promise((resolve) => held.push(() => resolve(assetDetail(assetId, { keywords: [answer.held] }))))
       })
 
-      /** Lets the oldest read still held answer. */
       return () => {
         const answer = held.shift()
         if (!answer) throw new Error(`no read of ${assetId} is held`)
@@ -689,8 +657,8 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(detail.asset?.keywords).toEqual(reads ? ['saved'] : ['before'])
     })
 
-    // Its toggle opens it on what the store holds, without a read: left alone, it opened on the asset before the save,
-    // and its own save would have undone this one.
+    // The toggle opens the panel on what the store holds, without a read.
+    // Otherwise it opens on the asset from before the save, and its own save undoes this one.
     it('the panel of the list: reads its asset while it is closed too, so that it opens on what was saved', async () => {
       const { save, alerts } = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail, sidebarRight } = await panel(false, 'asset-1')
@@ -705,9 +673,11 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(detail.asset?.keywords).toEqual(['saved'])
     })
 
-    /* A read of the detail on its way when the save answers may bring the asset as it was before the save. It is let
-     * land - throwing it away left its loader up over the asset before it - and the asset is read again when it is one
-     * of the saved; the loader comes down after that. */
+    /*
+     * A detail read in flight when the save answers can return the asset as it was before the save.
+     * It is let land, because throwing it away left its loader up over the asset.
+     * The asset is read again if it was one of the saved; the loader comes down after that.
+     */
     it('the panel of the list: reads again a saved asset whose read was on its way when the save answered', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
@@ -787,7 +757,7 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(server.assetReads('asset-2')).toBe(1)
     })
 
-    // The older read is thrown away by the newer one, and the newer one was asked after the save.
+    // The newer read, asked after the save, throws away the older read.
     it('the panel of the list: reads once a saved asset clicked after the save, over a read from before it', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
@@ -809,9 +779,11 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect([server.assetReads('asset-1'), server.assetReads('asset-2')]).toEqual([1, 1])
     })
 
-    /* The list skips the read of the asset fetched last within five seconds: after the save that would keep a saved
-     * asset as it was before it, once the read again was thrown away by a newer read - the asset itself, or another
-     * one first. */
+    /*
+     * The list skips the read of the asset fetched last within five seconds.
+     * After the save that would keep a saved asset in its pre-save
+     * state if the read again was thrown away by a newer read.
+     */
     it.each([
       ['clicked again', [0]],
       ['clicked again after another asset', [1, 0]],
@@ -821,7 +793,6 @@ describe('the overlay of the assets picked for mass edit', () => {
         const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
         const { detail } = await panel(true, 'asset-1')
         const click = await tilesOf(ui)
-        // Fetched by the list, the read again after the save held on the wire, and the click after it.
         const answerReadAgain = reads('asset-1', 'before', { held: 'stale' }, 'saved')
         const answerOther = reads('asset-2', { held: 'other' })
         await click(0)
@@ -839,7 +810,7 @@ describe('the overlay of the assets picked for mass edit', () => {
       }
     )
 
-    // The shortcut is dropped when the save answers, also while another read is on its way and the read again waits.
+    // The shortcut is dropped when the save answers, also while another read is in flight and the read again waits.
     it('the panel of the list: reads a saved asset clicked again while a read from before the save is on its way', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
@@ -862,13 +833,12 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(server.assetReads('asset-1')).toBe(2)
     })
 
-    // And again before the read again: the read from before the save, landing, stamps its asset as fetched last.
+    // A click before the read again: the read from before the save lands and stamps its asset as fetched last.
     it('the panel of the list: reads a saved asset clicked again while it is read again after a read from before the save', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
       const click = await tilesOf(ui)
       const answerSave = holdBulkSave()
-      // The click before the save, the read again after it, and the click during that one.
       const answer = reads('asset-1', { held: 'before' }, { held: 'stale' }, 'saved')
 
       ui.save().click()
@@ -887,9 +857,11 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(server.assetReads('asset-1')).toBe(3)
     })
 
-    /* The shortcut goes by the asset fetched last by the list, and the edit of a queue row writes another into the
-     * detail without that stamp: a click on the asset fetched last is read then, not taken for what the detail
-     * holds - which would be the row's asset from before the save, its read again thrown away by the click. */
+    /*
+     * The shortcut goes by the asset the list fetched last.
+     * Editing a queue row writes another asset into the detail without that stamp.
+     * A click on the asset fetched last must then be read, not assumed to be what the detail holds.
+     */
     it('the panel of the list: reads the asset clicked, fetched last, when the edit of a row put another in the detail', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
@@ -927,7 +899,7 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect([detail.loader, detail.asset?.keywords]).toEqual([false, ['saved']])
     })
 
-    // The second save no longer sends the asset: what the first asked for after the read on its way still holds.
+    // The second save no longer sends the asset: what the first save asked for after the in-flight read still holds.
     it('the panel of the list: reads again an asset of the first of two saves answered while its read was on its way', async () => {
       const ui = await mountOverlay([picked('asset-1'), picked('asset-2')])
       const { detail } = await panel(true, 'asset-1')
@@ -948,7 +920,6 @@ describe('the overlay of the assets picked for mass edit', () => {
       expect(server.assetReads('asset-2')).toBe(2)
     })
 
-    // Its file had failed, and the server processed it after all: the row is a loaded one again, as it was left.
     it('sends a picked asset whose file was processed after it had failed, with what was typed', async () => {
       const { save, alerts, store } = await mountOverlay([
         picked('asset-1', { keywords: ['keyword-1'], customData: { title: 'typed' } }),
@@ -956,7 +927,6 @@ describe('the overlay of the assets picked for mass edit', () => {
       ])
       server.asset(assetDetail('asset-1'))
       store.queueItemFailed('asset-1', 'unknown', 'file-of-asset-1')
-      // Its read of the asset waits on the clock, which the case moves.
       void store.queueItemProcessed('asset-1', 'file-of-asset-1')
       await vi.advanceTimersByTimeAsync(1000)
 
@@ -975,7 +945,8 @@ describe('the overlay of the assets picked for mass edit', () => {
       ])
     })
 
-    // The server may yet fill in its metadata from the file: no form for it, so nothing of it is sent over that.
+    // The server may still fill in its metadata from the file.
+    // There is no form for it, so nothing of it is sent.
     it('leaves out a picked asset whose file the server is still processing, and sends the others', async () => {
       const { save, alerts, store, overlay } = await mountOverlay([])
       const listed = (id: string) => ({
@@ -1022,7 +993,6 @@ describe('the overlay of the assets picked for mass edit', () => {
 
       save().click()
       await eventually(() => expect(server.sent('PATCH', BULK)).toHaveLength(1))
-      // Its spinner stops, and it can be pressed again.
       await eventually(() =>
         expect([save().disabled, save().classList.contains('v-btn--loading')]).toEqual([false, false])
       )

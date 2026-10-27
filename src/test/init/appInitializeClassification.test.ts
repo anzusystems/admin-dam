@@ -38,7 +38,6 @@ vi.mock('@/domains/system/composables/appNotificationListeners', () => ({
 vi.mock('@/shared/apiClients/authCookies', () => ({ getAuthCookieState: () => ({}) }))
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: vi.fn() }))
 
-// What the installed `loadDamPrvConfig` really rejects with.
 const CONFIG_REJECTION = false
 
 const route = (query: Record<string, string> = {}) =>
@@ -66,8 +65,8 @@ describe('a start-up the sign-in has already refused', () => {
     const { createAppInitialize } = await load()
 
     expect(await createAppInitialize(route({ loginState: 'failure-unauthorized' }))).toBe('/unauthorized')
-    // The private config is a protected endpoint, so for this user it is the request most likely to fail - and its
-    // failure used to send the user to the sign-in screen before this verdict was read.
+    // The private config is a protected endpoint, so it is the request most likely to fail for this user.
+    // Its failure used to send the user to the sign-in screen before this verdict was read.
     expect(loadDamPrvConfig).not.toHaveBeenCalled()
     expect(fetchCurrentUser).not.toHaveBeenCalled()
   })
@@ -93,7 +92,6 @@ describe('a private configuration that will not load', () => {
     const { createAppInitialize } = await load()
     loadDamPrvConfig.mockRejectedValue(CONFIG_REJECTION)
 
-    // The user is readable, which rules out the sign-in problem; what this is instead is unknown.
     expect(await createAppInitialize(route())).toBe('/error')
   })
 })
@@ -110,7 +108,6 @@ describe('a user the configuration knows nothing about', () => {
 
   it('is not mistaken for the user the last attempt read', async () => {
     const { createAppInitialize } = await load()
-    // Left behind by an earlier start-up that got this far and then bailed out.
     currentUser.value = { id: 1 }
     fetchCurrentUser.mockResolvedValue(undefined)
 
@@ -156,8 +153,9 @@ describe('a user read that fails because nothing answers', () => {
   })
 })
 
-// The loaders reject with a bare `false` whatever the status was; the backend lets only an admin or a user of the ext
-// system read its configuration, under dam_extSystem_read, dam_customFormElement_read and dam_assetCustomForm_read.
+// The loaders reject with a bare `false` whatever the status was.
+// The backend lets only an admin or a user of the ext system read its configuration
+// (`dam_extSystem_read`, `dam_customFormElement_read`, `dam_assetCustomForm_read`).
 describe('an ext system configuration that will not load', () => {
   const member = { id: 1, adminToExtSystems: [], userToExtSystems: [1] }
 

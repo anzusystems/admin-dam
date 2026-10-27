@@ -25,11 +25,10 @@ export const checkAbility = async (to: RouteLocationNormalized): Promise<Navigat
 }
 
 /**
- * Logs are gated on being that system's superadmin, not on a permission.
- *
- * The `:type` segment is validated first, so a typo reads as a typo rather than as a refusal --
- * and so nothing indexes `logPaths` with a string that is not a log type. Correcting it goes back
- * to the listing and drops any `:id`: an id belongs to the store it came from.
+ * Logs require being that system's superadmin, not a permission.
+ * `:type` is validated first, so a typo shows as a typo, not a
+ * refusal, and `logPaths` is never indexed with a non-log type.
+ * The correction goes to the listing and drops any `:id`, because an id belongs to its own store.
  */
 const checkSuperAdmin = (to: RouteLocationNormalized): NavigationGuardReturn | undefined => {
   const system = to.meta.superAdminOf as string | undefined
@@ -39,8 +38,8 @@ const checkSuperAdmin = (to: RouteLocationNormalized): NavigationGuardReturn | u
 
   const type = (to.params as Record<string, string | string[] | undefined>).type
   if (isDefined(type) && !isLogType(type)) {
-    // `replace`, not a push: the browser has already committed the bad url by the time the guard
-    // sees it, so a push would leave it in history and Back would bounce straight back here.
+    // `replace`, not push. The browser has already committed the bad url,
+    // so a push would keep it in history and Back would return here.
     return { path: `/logs/dam/${LogTypeDefault}`, replace: true }
   }
 

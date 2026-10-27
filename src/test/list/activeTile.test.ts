@@ -6,14 +6,13 @@ import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/te
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* One tile of the list is the active one: the tile of the asset picked last, by a click or by an arrow key. The arrow
- * keys go on from it, a click with Shift picks the tiles from it for the mass edit, and the panel beside the list
- * shows its asset. The list is read anew by its filter, its search, its sorting and its "Refresh", and a further page
- * of it is read as its end is scrolled into view: the active tile is the tile of its asset, wherever that is by then,
- * not the tile at the place it had. An asset a list came without has no tile, and is waited for only while the panel
- * still shows it. The real page of the list with its real panel, detail and upload queue, the application around it
- * as it starts; the server is a fake, and so are the address the page asks about a new version of the application
- * and what the browser tells the page of its end coming into view. */
+/*
+ * The active tile is the tile of the asset picked last, by a click or an arrow key. It follows
+ * its asset when the list is read anew or a further page is read, not the place it had.
+ * An asset the list came without has no tile, and is waited for only while the panel still shows it.
+ * Real list page, panel, detail and upload queue. The server, the
+ * app-version address and the browser's view-intersection reports are fakes.
+ */
 
 let server: FakeDam
 
@@ -27,24 +26,18 @@ const LEFT = 'ArrowLeft'
 const LIST = '/assets'
 const NO_ASSET = 'No asset selected'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
-/** The asset of the row of the upload queue: an image the list does not hold. */
 const UPLOADED = 'asset-9'
 
-/** An asset the server has, in the list and in its detail: a video, its title is its id. */
 const onServer = (id: string) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' } }),
   keywords: [],
   authors: [],
 })
 
-/** The pages of the list the server has, in their order. */
 let pages: string[][] = []
-/** The rows the page asks for at a time. */
 const ROWS = 25
-/** The addresses the server was asked, each whole: the one asked last says which page of the list it is for. */
 let asked: string[] = []
 
-/** What the page watches for coming into view. */
 let watched: Array<{ element: Element; tell: (entries: Array<{ isIntersecting: boolean }>) => void }> = []
 
 class ViewWatcher {
@@ -58,16 +51,16 @@ class ViewWatcher {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** Past the few seconds in which an asset read a moment ago is not read again. */
+/**
+ * Moves past the few seconds in which an asset read a moment ago is not read again.
+ */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
-/** An arrow key let go over the page, as the window hears it. */
 const arrow = async (key: typeof RIGHT | typeof LEFT) => {
   document.body.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }))
   await settled()
 }
 
-/** What the bar of the open detail says: the place of its asset in the list and its title. */
 const shown = () =>
   Array.from(
     document.body.querySelectorAll('.dam-image-detail-dialog.v-overlay--active .v-toolbar .text-label-large > div')
@@ -75,15 +68,11 @@ const shown = () =>
     .map((part) => part.textContent?.trim())
     .join(' ')
 
-/** The assets the server was asked for one at a time, as the panel reads its own. */
 const readAlone = () =>
   server.sent('GET', /^\/adm\/v1\/asset\/asset-\d$/).map((request) => request.url.split('/').pop())
 
-/** The open detail, or null with none open. */
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 
-/** The page of the list with the assets of the first page the server has, none of them picked, and one uploaded
- * asset in the upload queue. */
 const openList = async () => {
   vi.stubGlobal('IntersectionObserver', ViewWatcher)
   const uploaded: UploadQueueItem[] = [
@@ -96,7 +85,6 @@ const openList = async () => {
     queues: { global: uploaded },
   })
   asked = ui.asked
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -111,16 +99,13 @@ const openList = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  /* The page as the router draws it, at its own address: it asks the router about the way out of it. With it the
-   * other page the bar of the list links to. */
+  /* The page asks the router about the way out of it. The other page the list bar links to is added too. */
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
   ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   ui.router.addRoute({ path: '/settings', component: { render: () => null } })
   await ui.router.push(LIST)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
-  /** The assets of the tiles, in the order they are drawn in. */
   const order = () => tiles().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim())
   await eventually(() => expect(order()).toEqual(pages[0]))
   const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
@@ -130,26 +115,20 @@ const openList = async () => {
     page,
     tiles,
     order,
-    /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** Which of the tiles are picked for the mass edit. */
     selected: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--selected')),
-    /** The asset the panel beside the list holds, as its file card says it: null while it holds none. */
     held: () => panel().querySelector('.anzu-copy-text > span')?.textContent?.trim() ?? null,
     panel,
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles()[index].click()
       await settled()
     },
-    /** The list is read anew by its "Refresh", and from now on the server has these pages of it. */
     readAnew: async (...now: string[][]) => {
       pages = now
       page.querySelector('.mdi-refresh')!.closest('button')!.click()
       await settled()
       await eventually(() => expect(order()).toEqual(now[0]))
     },
-    /** The edit of the row of the upload queue, from the queue drawn over the whole page: pressed, not waited for. */
     editUploaded: async () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
       const edit = await eventually(() => {
@@ -162,20 +141,17 @@ const openList = async () => {
       edit.click()
       await settled()
     },
-    /** The detail is closed, and the queue drawn over the whole page put away: the list is in view again. */
     backToTheList: async () => {
       detail()?.querySelector('.v-toolbar .mdi-close')!.closest('button')!.click()
       await eventually(() => expect(detail()).toBeNull())
       document.body.querySelector('.overlay--sidebar .mdi-chevron-down')!.closest('button')!.click()
       await eventually(() => expect(document.body.querySelector('.overlay--sidebar')).toBeNull())
     },
-    /** The end of the list is scrolled into view, as the browser tells the page: the next page of it is read. */
     scrollToTheEnd: async () => {
       const end = watched.filter(({ element }) => element.isConnected && element.className === 'w-100').at(-1)!
       end.tell([{ isIntersecting: true }])
       await settled()
     },
-    /** The user goes to another page of the application, and comes back to the list. */
     leaveAndComeBack: async () => {
       void ui.router.push('/settings')
       await settled()
@@ -223,13 +199,11 @@ afterEach(() => {
 describe('the active tile of the list, once the list is read anew', () => {
   it('is the tile of its asset at the place the asset has by then: the keys go on from there', async () => {
     const list = await openList()
-    // The asset picked last is the one that counts.
     await list.pick(0)
     await list.pick(1)
 
     await list.readAnew(['asset-3', 'asset-1', 'asset-2'])
 
-    // The panel holds the asset as it did, and nothing was read for it.
     expect([list.active(), list.held(), readAlone()]).toEqual([[false, false, true], 'asset-2', ['asset-1', 'asset-2']])
 
     await later()
@@ -239,7 +213,6 @@ describe('the active tile of the list, once the list is read anew', () => {
       'asset-1',
       ['asset-1', 'asset-2', 'asset-1'],
     ])
-    // And from the last tile there is nowhere to go on to.
     await arrow(RIGHT)
     await arrow(RIGHT)
     expect([list.active(), readAlone()]).toEqual([
@@ -248,7 +221,6 @@ describe('the active tile of the list, once the list is read anew', () => {
     ])
   })
 
-  // The tile at the place the active one had is a tile as any other: a click on it picks it.
   it('is no tile when its asset is in the list no more, and a click makes the tile at its old place the active one', async () => {
     const list = await openList()
     await list.pick(1)
@@ -261,7 +233,6 @@ describe('the active tile of the list, once the list is read anew', () => {
     expect([list.active(), list.held(), readAlone()]).toEqual([[false, true], 'asset-3', ['asset-2', 'asset-3']])
   })
 
-  // With no tile active the keys start where they start on a list nothing was picked in: at its first tile.
   it('is no tile when its asset is in the list no more, and the keys start as in a list nothing was picked in', async () => {
     const list = await openList()
     await arrow(RIGHT)
@@ -277,7 +248,6 @@ describe('the active tile of the list, once the list is read anew', () => {
     ])
   })
 
-  // The first page of the list read anew need not bring the asset: a page read as the list is scrolled can.
   it('is the tile of its asset in a further page of the list, once that page is read', async () => {
     const list = await openList()
     await list.pick(1)
@@ -299,8 +269,10 @@ describe('the active tile of the list, once the list is read anew', () => {
     expect([list.active(), list.held()]).toEqual([[false, false, true, false], 'asset-4'])
   })
 
-  /* A tile picked meanwhile is the active one, and a further page does not take that from it: not for the asset
-   * that was active before, nor for an earlier tile of its own asset - a list can hold an asset twice. */
+  /*
+   * A tile picked meanwhile stays the active one when a further page arrives. This holds for the previously
+   * active asset and for an earlier tile of its own asset, since a list can hold an asset twice.
+   */
   it('stays the tile picked since, whatever a further page of the list brings', async () => {
     const list = await openList()
     await list.pick(1)
@@ -316,7 +288,6 @@ describe('the active tile of the list, once the list is read anew', () => {
     ])
   })
 
-  // The tiles for the mass edit are picked from the active one to the one clicked with Shift.
   it('is where a click with Shift picks from', async () => {
     const list = await openList()
     await list.pick(1)
@@ -332,8 +303,10 @@ describe('the active tile of the list, once the list is read anew', () => {
   })
 })
 
-/* "Reset" of the filter empties the list before it reads it anew, where the other ways leave the old rows drawn
- * meanwhile: one more way the list is read anew, and the active tile follows its asset through it as well. */
+/*
+ * "Reset" of the filter empties the list before reading it anew. The other ways keep the
+ * old rows drawn meanwhile. The active tile must follow its asset through this one too.
+ */
 describe('the active tile of the list, once the filter is reset', () => {
   it('is the tile of its asset at the place the asset has by then, and the detail of the panel is of the list', async () => {
     const list = await openList()
@@ -346,7 +319,6 @@ describe('the active tile of the list, once the filter is reset', () => {
 
     expect([list.active(), list.held(), readAlone()]).toEqual([[false, false, true], 'asset-2', ['asset-2']])
 
-    // "Edit more" of the panel opens the detail of the active tile: with its place in the list, and its buttons.
     buttonsNamed(list.panel(), 'Edit more')[0].click()
     await eventually(() => expect(shown()).toBe('3 / 3 asset-2'))
     await arrow(LEFT)
@@ -366,12 +338,13 @@ describe('the active tile of the list, once the filter is reset', () => {
   })
 })
 
-/* A list that comes without the asset of the active tile leaves no tile active; the asset is waited for, and its tile
- * is the active one again once a later list or a further page brings it. Waited for while the panel beside the list
- * still shows it: when the panel has taken another asset since, or lost its own, a tile made active for the old one
- * would be a tile nobody picked, beside a panel that shows something else. */
+/*
+ * A list without the asset of the active tile leaves no tile active. The
+ * tile becomes active again when a later list or page brings the asset.
+ * This is waited for only while the panel still shows the asset. Otherwise
+ * the tile would be one nobody picked, beside a panel showing something else.
+ */
 describe('the asset of the active tile that a list came without', () => {
-  /** The second asset picked, and the list read anew without it: no tile is active, the panel holds the asset. */
   const lostFromTheList = async (...then: string[][]) => {
     const list = await openList()
     await list.pick(1)
@@ -398,7 +371,6 @@ describe('the asset of the active tile that a list came without', () => {
     await list.readAnew(['asset-1', 'asset-2', 'asset-3'])
 
     expect([list.active(), list.held()]).toEqual([[false, false, false], UPLOADED])
-    // And it stays forgotten: the list read once more has none either.
     await list.readAnew(['asset-2', 'asset-1', 'asset-3'])
     expect(list.active()).toEqual([false, false, false])
   })
@@ -433,7 +405,7 @@ describe('the asset of the active tile that a list came without', () => {
     ])
   })
 
-  // Behind its loader the panel shows no asset: the one it is reading can be another.
+  // Behind its loader the panel shows no asset, because the one it is reading can be another.
   it('is forgotten by a list that comes while the panel reads the asset of a queue row', async () => {
     let answer: () => void = () => undefined
     const uploaded = {
@@ -454,8 +426,10 @@ describe('the asset of the active tile that a list came without', () => {
     expect(list.active()).toEqual([false, false, false])
   })
 
-  /* A tile that is active stays the tile of its asset whatever the panel holds: the detail of a queue row opened and
-   * closed over it leaves it highlighted, and so does the list read anew after that. */
+  /*
+   * An active tile follows its asset whatever the panel holds. Opening and closing the
+   * detail of a queue row over it, or reading the list anew, leaves it highlighted.
+   */
   it('is not what an active tile is: that one follows its asset though the panel holds the asset of a queue row', async () => {
     const list = await openList()
     await list.pick(1)
@@ -469,7 +443,6 @@ describe('the asset of the active tile that a list came without', () => {
     expect([list.active(), list.held()]).toEqual([[false, false, true], UPLOADED])
   })
 
-  // The same for a tile picked after an asset was lost: it is active as any other, not waited for.
   it('gives way to a tile picked since, which follows its asset as any other', async () => {
     const list = await lostFromTheList()
     await list.pick(0)
@@ -484,7 +457,6 @@ describe('the asset of the active tile that a list came without', () => {
 })
 
 describe('the active tile of the list, once the page of the list is left', () => {
-  // The page comes back with nothing picked: its panel holds no asset, and no tile is the active one.
   it('is no tile on the way back into the page, and a click makes the tile at its old place the active one', async () => {
     const list = await openList()
     await list.pick(1)

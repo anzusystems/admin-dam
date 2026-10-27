@@ -2,11 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { parse } from 'vue/compiler-sfc'
 import type { SFCTemplateBlock } from 'vue/compiler-sfc'
 
-/* The four details of an image lay out their picture and their panel by the classes of the library's css
- * (`image-detail.scss`): the box that holds both is `dam-image-detail__content`, which puts the picture above the panel
- * in a window narrower than 1145 px, as the library's own detail (`AssetDetailDialogFrame.vue`) does. Narrower than
- * 840 px the button of the info panel shows and hides that picture, and draws an image icon there, as the library's
- * does. Read from the templates. */
+/*
+ * The four image details use the classes of the library css (`image-detail.scss`).
+ * `dam-image-detail__content` puts the picture above the panel below 1145 px, as `AssetDetailDialogFrame.vue`
+ * does. Below 840 px the info button shows and hides the picture and draws an image icon, as in the library.
+ * Read from the templates.
+ */
 
 const DETAILS = [
   '/src/domains/coreDam/asset/components/detail/AssetDetailView.vue',
@@ -33,7 +34,6 @@ const NodeTypes = { ELEMENT: 1, ATTRIBUTE: 6, DIRECTIVE: 7 } as const
 
 const isElement = (node: TemplateChildNode): node is ElementNode => node.type === NodeTypes.ELEMENT
 
-/** The plain classes of the element. */
 const classes = (el: ElementNode) =>
   el.props
     .flatMap((prop) => (prop.type === NodeTypes.ATTRIBUTE && prop.name === 'class' ? [prop.value?.content ?? ''] : []))
@@ -41,7 +41,6 @@ const classes = (el: ElementNode) =>
     .split(/\s+/)
     .filter(Boolean)
 
-/** The classes of every box that holds the picture and the panel of the detail side by side. */
 const holders = (source: string) => {
   const found: string[][] = []
   const visit = (nodes: TemplateChildNode[]) => {
@@ -62,7 +61,6 @@ const holders = (source: string) => {
   return found
 }
 
-/** The icons of the button of the info panel, each with its plain classes. */
 const toggleIcons = (source: string) => {
   const found: Array<[string, string[]]> = []
   const visit = (nodes: TemplateChildNode[]) => {

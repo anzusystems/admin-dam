@@ -6,11 +6,12 @@ import { assetDetail, assetFile, createFakeDam, httpError, queueRow } from '@/te
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* "Uložiť" and "Uložiť a ukončiť" of the mass edit save the asset the panel beside the list holds, and the read after the
- * save puts the asset as saved into the panel: what was typed there and not saved went without a word. It is asked
- * about first, as every other way that throws it away: "Zostať" sends nothing, "Odísť aj tak" saves and reads. The
- * real page of the list with its real panel and mass edit, as the router draws it; the server is a fake, and so is the
- * address the page asks about a new version of the application. */
+/*
+ * "Uložiť" and "Uložiť a ukončiť" of the mass edit save the asset the side
+ * panel holds. The read after the save puts the saved asset into the panel.
+ * Typed and unsaved text there used to be lost silently, so it is asked about first like
+ * every other way of discarding it: "Zostať" sends nothing, "Odísť aj tak" saves and reads.
+ */
 
 let server: FakeDam
 
@@ -28,17 +29,14 @@ const TYPED = 'typed and not saved'
 const EDIT_MORE = 'Edit more'
 
 const LIST = '/assets'
-/** The asset of the row of the upload queue: an image the list does not hold. */
 const UPLOADED = 'asset-9'
 
-/** An asset the server has, in the list and in its detail: a video unless told otherwise, its title is its id. */
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
   ...assetDetail(id, { attributes: { assetType: 'video', assetStatus: 'with_file' }, ...over }),
   keywords: [],
   authors: [],
 })
 
-/** What the server lists, in this order: the three videos unless a case lists others. */
 let listed: ReturnType<typeof onServer>[] = []
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
@@ -48,7 +46,6 @@ const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-bt
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
-/** The questions about changes that were not saved that are open: one at most, whoever draws it. */
 const questions = () =>
   Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
     dialog.textContent?.includes(UNSAVED)
@@ -58,7 +55,6 @@ const answer = async (name: typeof STAY | typeof LEAVE) => {
   await settled()
 }
 
-/** The page of the list with what the server lists, none of it picked, and one uploaded asset in the upload queue. */
 const openList = async () => {
   const ui = await startUploadUi({
     server,
@@ -66,7 +62,6 @@ const openList = async () => {
     customForm: { video: [customField('title')], image: [customField('title')] },
     queues: { global: [queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' })] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -85,10 +80,8 @@ const openList = async () => {
   ui.router.addRoute({ path: LIST, name: '/(coreDam)/assets', component: View })
   await ui.router.push(LIST)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  /** The tiles as they are drawn now: a list read anew draws new ones. */
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
   await eventually(() => expect(tiles()).toHaveLength(listed.length))
-  /** The queue drawn over the whole page, or null while none is. */
   const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 
   return {
@@ -96,23 +89,18 @@ const openList = async () => {
     page,
     tiles,
     queue,
-    /** Which of the tiles is the active one. */
     active: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles()[index].click()
       await settled()
     },
     pencil: (index: number) => tiles()[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1],
-    /** The title in the form of the panel. */
     title: () => panel().querySelector<HTMLTextAreaElement>('textarea')!,
     save: () => buttonsNamed(panel(), 'Save')[0],
-    /** The list read anew, by its button. */
     reload: async () => {
       buttonsNamed(page, 'Reload list')[0].click()
       await settled()
     },
-    /** "Make private" of the menu of the file card of the panel, pressed. */
     makePrivate: async () => {
       panel().querySelector('.mdi-dots-vertical')!.closest('button')!.click()
       const item = await eventually(() => {
@@ -126,7 +114,6 @@ const openList = async () => {
       item.click()
       await settled()
     },
-    /** The upload queue drawn over the whole page, and the edit of its row pressed once the row can be edited. */
     editRowOfUploadQueue: async () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
       await eventually(() => expect(queue()).not.toBeNull())
@@ -139,7 +126,6 @@ const openList = async () => {
       edit.click()
       await settled()
     },
-    /** The tile picked for the mass edit, and its queue drawn over the whole page. */
     openMassEdit: async (index: number) => {
       tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
       const open = await eventually(() => {
@@ -152,7 +138,6 @@ const openList = async () => {
       open.click()
       await eventually(() => expect(queue()).not.toBeNull())
     },
-    /** What the bar of the open detail says: the place of the asset in the list and its title; null with none open. */
     detail: () => {
       const dialog = dialogOfList()
       if (!dialog) return null
@@ -173,7 +158,6 @@ const typeInto = async (field: HTMLTextAreaElement) => {
   await nextTick()
 }
 
-/** The second asset picked, and its title typed into the panel: the element typed into. */
 const typedIntoTheSecond = async (list: List) => {
   await list.pick(1)
   await typeInto(list.title())
@@ -214,10 +198,8 @@ const SAVE = 'Save and continue'
 const SAVE_AND_FINISH = 'Save and finish'
 const SAVED = { title: 'saved', note: 'kept' }
 
-/** How many times the server was asked for the asset the panel holds. */
 const readsOfPanel = () => server.assetReads('asset-2')
 
-/** The button of the mass edit drawn over the whole page, once it can be pressed. */
 const massButton = (list: List, name: string) =>
   eventually(() => {
     const found = buttonsNamed(list.queue()!, name)[0]
@@ -226,7 +208,6 @@ const massButton = (list: List, name: string) =>
     return found!
   })
 
-/** The asset of the panel picked for the mass edit too, with its title typed into the panel. */
 const typedAndPicked = async () => {
   const list = await openList()
   await typedIntoTheSecond(list)
@@ -287,7 +268,6 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
     expect([questions(), standsOut(list.save())]).toEqual([[], false])
   })
 
-  // Not saved, nothing is read: what was typed stays, unsaved, and the next way elsewhere asks about it again.
   it('keeps what was typed when the save fails after "Leave anyway", and asks about it again', async () => {
     const { list, before } = await typedAndPicked()
     server.on('PATCH', BULK, () => {
@@ -305,9 +285,12 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
     expect(questions()).toHaveLength(1)
   })
 
-  /* After "Leave anyway" the mass edit can be put away while its save is on its way: what was typed into the panel then
-   * would be replaced by the read after the save without a question. The panel takes no typing until that read has
-   * landed - it shows its spinner, as while it reads - and gives the form back as it was when the save fails. */
+  /*
+   * After "Leave anyway" the mass edit can be put away while its save is on its way. Text
+   * typed into the panel would then be replaced by the read after the save without a question.
+   * So the panel takes no typing until that read has landed, and shows its
+   * spinner as while reading. It gives the form back as it was if the save fails.
+   */
   it.each<[string, boolean, string]>([
     ['answered', true, SAVED.title],
     ['refused', false, TYPED],
@@ -336,7 +319,6 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
       await answer(LEAVE)
       expect(server.sent('PATCH', BULK)).toHaveLength(1)
 
-      // Put away by its own button while its save is on its way.
       buttonsNamed(list.queue()!, 'Hide')[0].click()
       await eventually(() => expect(list.queue()).toBeNull())
       expect([panel().querySelector('textarea'), panel().querySelector('.v-progress-circular') !== null]).toEqual([
@@ -350,7 +332,6 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
     }
   )
 
-  // The guard: with nothing typed, nothing is asked, as before.
   it('asks nothing when nothing is typed into the panel, saves and reads', async () => {
     const list = await openList()
     await list.pick(1)
@@ -365,14 +346,15 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
   })
 })
 
-/* The upload queue saves its rows in bulk as well, and the asset of one of them can be in the panel: "Edit more" of the
- * row opens its detail, and the panel keeps the asset once the detail is closed. Its save neither asked about what was
- * typed into the panel nor read the asset into it: the panel showed it as before the save, and a save of the panel
- * then sent that over what the queue had saved. */
+/*
+ * The upload queue also saves its rows in bulk, and the asset of one row can be in the panel:
+ * "Edit more" opens its detail, and the panel keeps the asset after the detail closes.
+ * That save neither asked about typed text nor read the asset into the panel. The panel showed
+ * the asset as before the save, and a panel save then overwrote what the queue had saved.
+ */
 describe('a save of the upload queue that saves the asset of the panel', () => {
   const readsOfUploaded = () => server.assetReads(UPLOADED)
 
-  /** The uploaded asset in the panel, by the edit of its row with the detail closed again; the queue hidden. */
   const uploadedInPanel = async () => {
     const list = await openList()
     await list.editRowOfUploadQueue()
@@ -385,13 +367,11 @@ describe('a save of the upload queue that saves the asset of the panel', () => {
     return list
   }
 
-  /** The upload queue drawn over the whole page again, as its "Add description" button draws it. */
   const openUploadQueue = async (list: List) => {
     document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
     await eventually(() => expect(list.queue()).not.toBeNull())
   }
 
-  /** The uploaded asset in the panel with its title typed there, and the upload queue drawn over the page again. */
   const typedAndQueued = async () => {
     const list = await uploadedInPanel()
     await typeInto(list.title())
@@ -451,7 +431,6 @@ describe('a save of the upload queue that saves the asset of the panel', () => {
     }
   )
 
-  // With nothing typed into the panel nothing is asked, and the asset is read into it all the same.
   it('asks nothing when nothing is typed into the panel, saves and reads the asset into it', async () => {
     const list = await uploadedInPanel()
     await openUploadQueue(list)

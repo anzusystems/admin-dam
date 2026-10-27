@@ -6,12 +6,13 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The list of an external provider is walked by the arrow keys, and so is its detail, by the keys and by the two
- * buttons of its bar. The upload queue of the application is drawn on that page too, and over the whole of it: the
- * keys do nothing under it. At the two ends of the list there is nowhere to go: the button that leads out is
- * disabled - in the bar drawn while the asset is read as well - and nothing is read there. The real page of the list
- * of the provider with its real detail and the real upload queue, the application around it as it starts; the server
- * is a fake, and so is the address the page asks about a new version of the application. */
+/*
+ * The provider list is walked by arrow keys. Its detail is walked by keys and by the two buttons of its bar.
+ * The upload queue is drawn over the whole page, and the keys do nothing under it.
+ * At the two ends of the list the button that leads out is disabled,
+ * also in the bar drawn while the asset is read, and nothing is read.
+ * Real page, detail and queue; fake server and fake new-version address.
+ */
 
 let server: FakeDam
 
@@ -26,13 +27,11 @@ const LEFT = 'ArrowLeft'
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** An arrow key let go over the page, as the window hears it. */
 const arrow = async (key: typeof RIGHT | typeof LEFT) => {
   document.body.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }))
   await settled()
 }
 
-/** An image of the provider. */
 const provided = (id: string) => ({
   id,
   texts: { displayTitle: id },
@@ -41,29 +40,23 @@ const provided = (id: string) => ({
   metadata: {},
 })
 
-/** The images the list of the provider holds, in its order. */
 let listed: string[] = []
 
-/** The assets of the provider the server was asked for one at a time, in the order it was asked. */
 const asked = () => server.sent('GET', PROVIDER_ASSET).map((request) => request.url.split('/').pop())
 
-/** The open detail of the provider. */
 const detail = () => document.body.querySelector<HTMLElement>('.v-dialog.v-overlay--active .dam-image-detail')
 
-/** What the bar of the open detail says: the place of the asset in its list and its title, also while it is read. */
 const shown = () =>
   Array.from(detail()?.querySelectorAll('.v-toolbar .text-label-large > div') ?? [])
     .map((part) => part.textContent?.trim())
     .join(' ')
 
-/** The two buttons of the bar that walk the list, of whichever bar is drawn. */
 const walk = () => {
   const [previous, next] = Array.from(detail()!.querySelectorAll<HTMLButtonElement>('.v-toolbar button'))
 
   return { previous, next }
 }
 
-/** Which of the two buttons are disabled: previous, next. */
 const disabled = () => [walk().previous.disabled, walk().next.disabled]
 
 const press = async (button: HTMLButtonElement) => {
@@ -71,11 +64,8 @@ const press = async (button: HTMLButtonElement) => {
   await settled()
 }
 
-/** The upload queue drawn over the whole page, or null while it is not. */
 const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
 
-/** The page of the list of the provider with its three images, none of them picked, and one uploaded asset in the
- * upload queue. */
 const openProviderList = async () => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: 'asset-9', fileId: 'file-9' }),
@@ -85,11 +75,9 @@ const openProviderList = async () => {
     grants: ['dam_asset_update', 'dam_assetExternalProvider_access'],
     queues: { global: uploaded },
   })
-  // The provider, as the config of the ext system names it.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider' } }
-  // The user as the bar of the page draws them, with the provider on their account.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -107,7 +95,6 @@ const openProviderList = async () => {
   }))
   const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
     .default
-  // The page of the list of DAM is only linked to here.
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/not-found', component: { render: () => null } })
   ui.router.addRoute({
@@ -126,25 +113,20 @@ const openProviderList = async () => {
 
   return {
     ...ui,
-    /** Which of the tiles is the active one. */
     active: () => tiles.map((tile) => tile.classList.contains('dam-image-grid__item--active')),
-    /** A click on the tile, and the read it starts answered. */
     pick: async (index: number) => {
       tiles[index].click()
       await settled()
     },
-    /** The pencil of the tile, pressed: the detail of its asset opens, behind its loader while the asset is read. */
     pencil: async (index: number) => {
       tiles[index].querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
       await settled()
     },
-    /** The upload queue drawn over the whole page, as its "Add description" button draws it. */
     openUploadQueue: () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
 
       return eventually(() => expect(queue()).not.toBeNull())
     },
-    /** The upload queue put away into its strip under the list. */
     putUploadQueueAway: () => {
       queue()!.querySelector('.mdi-chevron-down')!.closest('button')!.click()
 
@@ -153,7 +135,6 @@ const openProviderList = async () => {
   }
 }
 
-/** The read of every asset of the provider is held from now on: answered one by one, by what this gives back. */
 const holdReads = () => {
   const answers = new Map<string, () => void>()
   server.on(
@@ -185,12 +166,13 @@ afterEach(() => {
 })
 
 describe('the arrow keys of the list of an external provider', () => {
-  /* The upload queue turns off the keys of the list of DAM, which is not this list: here they walked the tiles
-   * under the queue, and read their assets into the panel nobody saw. */
+  /*
+   * The upload queue turns off the keys of the DAM list, which is not this list.
+   * Here the keys walked the tiles under the queue and read their assets into a panel nobody saw.
+   */
   it('do nothing under the upload queue drawn over the whole page, and walk the list before it and after it', async () => {
     const list = await openProviderList()
     await list.pick(0)
-    // With the queue in its strip under the list the keys walk the list.
     await arrow(RIGHT)
     expect([list.active(), asked()]).toEqual([
       [false, true, false],
@@ -243,7 +225,6 @@ describe('the two buttons of the detail of an asset of an external provider', ()
     expect([shown(), asked()]).toEqual(['3 / 3 provided-3', ['provided-3']])
 
     await press(walk().previous)
-    // In the middle of the list both lead somewhere.
     expect([shown(), disabled()]).toEqual(['2 / 3 provided-2', [false, false]])
     await press(walk().previous)
     expect([shown(), disabled()]).toEqual(['1 / 3 provided-1', [true, false]])
@@ -270,7 +251,6 @@ describe('the two buttons of the detail of an asset of an external provider', ()
     await press(walk().next)
     expect([shown(), asked()]).toEqual(['3 / 3 provided-3', ['provided-1', 'provided-2', 'provided-3']])
 
-    // And the loaded detail says of them what its loader said.
     await answer('provided-3')
     expect([shown(), disabled()]).toEqual(['3 / 3 provided-3', [false, true]])
   })

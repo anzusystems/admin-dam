@@ -43,7 +43,7 @@ const distributionListStore = useDistributionListStore()
 const distributionContent = ref<DistributionUpdateDto | null>()
 const distributionManageDialog = ref(false)
 const distributionDialogEdit = ref(false)
-// core-dam checks the service on every write: one off the user's account is shown, not saved.
+// core-dam checks the service on every write. A service not on the user's account is shown read-only.
 const distributionDialogReadonly = ref(false)
 const isDistributionServiceAllowed = useDistributionServiceAllowed()
 const damConfigStore = useDamConfigStore()
@@ -84,7 +84,7 @@ const { showRecordWas, showErrorsDefault } = useAlerts()
 const { t } = useI18n()
 const { can } = useAuth()
 
-// The settings can be hidden while a delete is on its way: what they emit after that reaches nobody.
+// The settings can be hidden during a delete, and later emits then reach nobody.
 let closed = false
 onBeforeUnmount(() => {
   closed = true
@@ -97,14 +97,14 @@ const onDeleteDistributionItem = async (item: DistributionItem) => {
   const raised = distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
-    // Out of the list at once: the read asked for below can fail, or be asked of nobody, and the list would keep
-    // what is deleted. The editor does not drop the row either: it is unmounted under the loader.
+    // Removed from the list at once: the reload can fail or have no listener, and the list would keep the deleted row.
+    // The editor does not remove the row either, because it is unmounted under the loader.
     distributionListStore.removeListItem(distributionId)
-    // The loader stays on: the list is read again by the tab, whose read turns it off. Turned off here, the list
-    // would show, and could be clicked, before that read answers.
+    // The loader stays on until the tab's reload turns it off.
+    // Turning it off here would show a clickable list before that reload answers.
     emit('onDistributionDelete')
     showRecordWas('deleted')
-    // Nobody heard of the delete, so nobody reads the list: the loader would stay on for good.
+    // If closed, nobody reloads the list, so the loader would stay on forever.
     if (closed) distributionListStore.hideLoader(raised)
   } catch (error) {
     distributionListStore.hideLoader(raised)
@@ -122,7 +122,7 @@ const onEdit = (vi: ListViewItem<DistributionItem>) => {
 }
 
 const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
-  // The slot select keeps its slot when the type changes: the new record takes the file it shows.
+  // The slot select keeps its slot when the type changes, so the new record uses the file it shows.
   const fileId = distributionContent.value?.assetFile ?? assetFileId.value
   if (!isString(fileId)) {
     throw new Error('Asset file id is null')
@@ -138,7 +138,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
   }
 }
 
-// The tab is told by the dialog itself, which reads its list anew.
+// The tab is notified by the dialog itself, which reloads the list.
 const onDistributionUpsert = () => {
   closeDialog()
 }

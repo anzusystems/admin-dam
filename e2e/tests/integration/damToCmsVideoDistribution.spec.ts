@@ -64,7 +64,6 @@ test.describe.serial(`${ADMIN_SUITE} - DAM to CMS video distribution`, { tag: '@
     await saveCmsArticle(page)
     await setMainMediaFromDam(page, 'video', assetIds[0])
     await saveCmsArticle(page)
-    // Neither the embed nor the main media can play before the video is distributed.
     await expect(mediaWarnings(page)).toHaveCount(2)
     await publishCmsArticle(page, article.id)
   })

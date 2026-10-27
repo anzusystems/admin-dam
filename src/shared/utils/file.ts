@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
 
-// This module calls the duration plugin; extending here does not rely on another module having done it first.
+// Extended here because this module uses the duration plugin. It must not rely on another module extending it first.
 dayjs.extend(Duration)
 
 export const prettyBps = (bytes: number, decimals = 2): string => {

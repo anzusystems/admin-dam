@@ -14,14 +14,11 @@ import {
 } from '@pages/assets/assetDetailPage'
 
 /**
- * The "Fókus" tab of an image detail — the crop previews and their reload.
- *
- * **No crop ratio can be chosen.** The tab shows a read-only preview per ratio the ext system configures, a
- * slot picker, the reload button and the two rotate buttons. For a user who may change the region of interest
- * the image beside it is the library's cropper, and dragging its frame writes `pointX`/`pointY` and the rest of
- * the region through `PUT /roi/<id>`; this spec does not drag it.
- *
- * Rotation is covered by `imageAsset.spec.ts` and is not repeated here.
+ * The "Fókus" tab of an image detail: the crop previews and their reload.
+ * No crop ratio can be chosen. The tab shows a read-only preview per ratio the ext system configures, a slot picker,
+ * the reload button and two rotate buttons. For users who may change the region of interest, the image is the
+ * library's cropper, and dragging its frame writes the region through `PUT /roi/<id>`. This spec does not drag it.
+ * Rotation is covered by `imageAsset.spec.ts`.
  */
 
 let page: Page
@@ -52,12 +49,10 @@ test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
     const config = await assetTypeConfig(page, 'image')
     await openAssetTab(page, ASSET_ID, 'button-focus')
 
-    // The first preview is the ratio the ext system declares; the square one is shown alongside it.
     const titles = await roiPreviewTitles(page)
     expect(titles[0]).toBe(`${config.roiWidth}:${config.roiHeight}`)
     expect(titles).toEqual(['3:2', '1:1'])
 
-    // Each preview is the main file, cropped to the box its title names.
     const sources = await roiPreviewSources(page)
     expect(sources).toHaveLength(titles.length)
     for (const source of sources) {
@@ -76,7 +71,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
     await openAssetTab(page, ASSET_ID, 'button-focus')
     const picker = detailSidebar(page).getByRole('combobox').first()
     await expect(picker).toContainText(config.defaultSlotName)
-    // There is nowhere to switch to, so the select is rendered disabled rather than hidden.
     await expect(detailSidebar(page).locator('.v-field--disabled')).toHaveCount(1)
   })
 
@@ -91,7 +85,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
   })
 
   test('the asset keeps its main file through a visit to the tab', async () => {
-    // Whatever the reload button does, it must not touch the asset: its main file stays.
     await openAssetTab(page, ASSET_ID, 'button-focus')
     await refreshRoiPreviews(page)
     expect((await getAsset(page, ASSET_ID)).mainFile.id).toBe(MAIN_FILE_ID)

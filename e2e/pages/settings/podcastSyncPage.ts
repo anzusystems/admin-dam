@@ -12,8 +12,8 @@ export interface PodcastEpisodeAsset {
 }
 
 /**
- * An audio asset the podcast synchronizer imported from an RSS feed. Takes the ninth newest one, as the original suite did, so the
- * pick stays clear of an episode the scheduled synchronizer may be importing right now.
+ * Takes the ninth newest imported audio asset, so the pick stays clear
+ * of an episode the scheduled synchronizer may be importing right now.
  */
 export async function findImportedEpisodeAsset(page: Page): Promise<PodcastEpisodeAsset> {
   const params = new URLSearchParams({
@@ -36,14 +36,12 @@ export async function findImportedEpisodeAsset(page: Page): Promise<PodcastEpiso
   return { assetId: asset.id, podcastId: asset.podcasts[0], title: asset.texts.displayTitle }
 }
 
-/** Title of a podcast, from the API. */
 export async function podcastTitle(page: Page, podcastId: string): Promise<string> {
   const response = await page.request.get(`${CORE_DAM_API}/podcast/${podcastId}`)
   expect(response.ok(), `GET podcast/${podcastId}`).toBeTruthy()
   return (await response.json()).texts.title
 }
 
-/** Remove the asset from its podcast episode through the asset's podcast tab. */
 export async function removeAssetFromPodcast(page: Page, assetId: string): Promise<void> {
   await openAssetTab(page, assetId, 'button-podcast')
   await page.locator('.sidebar-info [data-cy="button-delete"]').first().click()
@@ -51,14 +49,12 @@ export async function removeAssetFromPodcast(page: Page, assetId: string): Promi
   await expect(page.locator('.sidebar-info [data-cy="button-delete"]')).toHaveCount(0)
 }
 
-/** Set the asset title in the detail form and save it. */
 export async function setAssetTitle(page: Page, assetId: string, title: string): Promise<void> {
   await openAssetDetail(page, assetId)
   await saveAssetTitle(page, title)
   await expect(metadataTextarea(page, 'title')).toHaveValue(title)
 }
 
-/** Add the asset to a new episode of `podcast` (searched by title) through the podcast tab. */
 export async function addAssetToNewEpisode(page: Page, assetId: string, podcast: string, title: string): Promise<void> {
   await openAssetTab(page, assetId, 'button-podcast')
   await visibleCy(page, 'button-add-new-podcast-episode').click()
@@ -76,13 +72,12 @@ export async function addAssetToNewEpisode(page: Page, assetId: string, podcast:
   await expect(page.locator('.sidebar-info .v-chip').filter({ hasText: podcast })).toBeVisible()
 }
 
-/** Assert the "Povolené na webe" and "Povolené v appke" flags of the podcast episode titled `title`. */
 export async function expectEpisodeFlags(page: Page, podcastId: string, title: string, value: 'áno' | 'nie') {
   await page.goto(`/podcasts/${podcastId}`)
   await cardLoad(page)
   await visibleCy(page, 'episode-list').click()
   await cardLoad(page)
-  // Episodes list oldest first, so a new one sits on the last page — find it by title instead.
+  // Episodes list oldest first, so a new one sits on the last page. Find it by title instead.
   await filterBy(page, 'Nadpis', title)
   await page
     .locator('tbody tr')

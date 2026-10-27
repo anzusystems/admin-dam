@@ -12,12 +12,11 @@ import type {
 type DistributionListItems = Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>
 
 /**
- * How long after a read the next one comes, by the time since a distribution under way was first seen or the
- * list was last read for the user: reads at 15 s and 30 s, then every 30 s until 5 minutes, then every minute.
- * core-dam itself looks at a distribution under way once in 30 to 90 s.
- *
- * `afterFailure`: after a read that failed the next one comes no sooner than this, by the number of reads that
- * failed in a row; the last entry holds for every failure after it.
+ * Delay until the next read, by time since a distribution in
+ * progress was first seen or the list was last read for the user.
+ * Reads at 15 s and 30 s, then every 30 s until 5 minutes, then every
+ * minute. core-dam checks a running distribution every 30 to 90 s.
+ * `afterFailure`: minimum delay by the number of consecutive failures. The last entry applies to all further failures.
  */
 export const DISTRIBUTION_LIST_POLL = {
   early: { until: 30_000, every: 15_000 },
@@ -26,7 +25,9 @@ export const DISTRIBUTION_LIST_POLL = {
   afterFailure: [15_000, 30_000, 60_000, 120_000, 300_000],
 } as const
 
-/** A distribution in one of these is still going to change on its own. */
+/**
+ * A distribution in one of these statuses still changes on its own.
+ */
 export const DISTRIBUTION_STATUSES_UNDER_WAY: ReadonlyArray<DamDistributionStatusType> = [
   DamDistributionStatus.Waiting,
   DamDistributionStatus.Distributing,
@@ -46,13 +47,11 @@ export const distributionListPollDelay = (age: number, failures = 0) => {
 }
 
 /**
- * Keeps the distribution list of the mounted tab up to date without the notification server: while a listed
- * distribution is under way, the list is read again in the rhythm above and its rows are replaced. The
- * notifications, where they arrive, change the rows as before.
- *
- * @param read The request of the list as the tab shows it. It is handed a signal: a read of the tab's own
- * stops the one made here. And whether its failure is to be written down: the first of a row of failures is, the
- * ones after it would only say the same again.
+ * Keeps the distribution list of the mounted tab current without the notification server.
+ * While a listed distribution is in progress, the list is re-read on the schedule above
+ * and its rows replaced. Notifications still update rows where they arrive.
+ * @param read Fetches the list as the tab shows it. Its signal is aborted by the
+ * tab's own reads. `report` is true only for the first of consecutive failures.
  */
 export function useDistributionListPoll(
   read: (signal: AbortSignal, report: boolean) => Promise<DistributionListItems>
@@ -63,15 +62,15 @@ export function useDistributionListPoll(
   )
 
   let mounted = false
-  // Set while there is something to wait for; the rhythm is measured from it.
+  // Set while something is in progress. The schedule is measured from it.
   let startedAt: number | undefined = undefined
   let timer: ReturnType<typeof setTimeout> | undefined = undefined
   let reading: AbortController | undefined = undefined
   let ownReads = 0
-  // Reads of this poll that failed one after another.
+  // Consecutive failed reads of this poll.
   let failures = 0
 
-  // A notification writes into the list while a read is on its way: what it wrote is newer than the answer.
+  // A notification can write into the list while a read is in flight. That write is newer than the answer.
   let listWrites = 0
   watch(
     () => distributionListStore.list,
@@ -107,7 +106,7 @@ export function useDistributionListPoll(
       failures = 0
       if (listWrites === listWritesBefore) distributionListStore.setList(items)
     } catch {
-      // Said nowhere: the list stays as it is, and the next read comes later the more of them failed.
+      // Not reported. The list stays unchanged, and the next read is delayed more with each failure.
       if (!current.signal.aborted) failures++
     } finally {
       if (reading === current) {
@@ -117,7 +116,7 @@ export function useDistributionListPoll(
     }
   }
 
-  // Sync, so that the rows a read has just put in decide about the next read before it is scheduled.
+  // Sync, so rows just written by a read decide the next read before it is scheduled.
   watch(
     underWay,
     (value) => {
@@ -129,8 +128,8 @@ export function useDistributionListPoll(
   )
 
   /**
-   * Wraps every read the tab makes itself (opening, paging, after a distribution was created, cancelled or
-   * managed): nothing is read here meanwhile, and the rhythm starts again when it is over.
+   * Wraps every read the tab makes itself (opening, paging, after creating, cancelling or
+   * managing a distribution). No poll read runs meanwhile, and the schedule restarts afterwards.
    */
   const duringOwnRead = async <T>(run: () => Promise<T>): Promise<T> => {
     ownReads++

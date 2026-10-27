@@ -50,8 +50,8 @@ const { signal, leave } = useRecordPage({
   loading: detailLoading,
 })
 
-// The episode list fetches by the route's id as well: only once the video show is there, or a failed
-// load would raise a second alert.
+// The episode list also fetches by the route id. It waits for the
+// video show to load, or a failed load would raise a second alert.
 const videoShowLoaded = ref(false)
 
 onMounted(async () => {

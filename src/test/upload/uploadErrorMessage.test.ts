@@ -2,8 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { forbiddenOperationError, httpError, validationError } from '@/test/support/fakeDam'
 
-/* The text a failed upload leaves on its row and shows in its alert. No catalogue is loaded here, so a text is
- * the key it is looked up under - but for the one forbidden operation the case below gives a text of its own. */
+/*
+ * The text a failed upload leaves on its row and shows in its alert.
+ * No catalogue is loaded here, so a text is its lookup key. The one forbidden operation case below has its own text.
+ */
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: vi.fn() }))
 
@@ -50,7 +52,7 @@ describe('the message of a failed upload', () => {
         'system.uploadErrors.size',
         'system.uploadErrors.offset',
         'system.uploadErrors.mimeType',
-        // A field the upload has no text for is named as the server names it, with what was wrong with it.
+        // A field the upload has no text for is named as the server names it, with what was wrong.
         'system.uploadErrors.systemError: checksum - error_field_empty,error_field_invalid',
       ].join('\n')
     )

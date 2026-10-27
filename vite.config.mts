@@ -20,30 +20,29 @@ export default defineConfig({
   build: {
     target: 'es2019',
     rolldownOptions: {
-      // Advisory, and it fires on builds that are already fast -- common-admin switches it off
-      // the same way.
+      // Advisory only, and it fires on builds that are already fast. common-admin disables it the same way.
       checks: { pluginTimings: false },
       output: {
         codeSplitting: {
           groups: [
             {
-              // What the app needs from common-admin at startup, in one chunk: the library ships one
-              // file per module, so a page takes only the modules it imports. With
-              // `includeDependenciesRecursively` (the default, written out) the chunk also takes what those
-              // modules import -- Vue, Vuetify, axios, ... -- which measured the smallest first view in all
-              // six admins, at the cost of that chunk changing whenever any of them does.
+              // What the app needs from common-admin at startup, in one chunk. The
+              // library ships one file per module, so a page takes only what it imports.
+              // `includeDependenciesRecursively` (the default, written out)
+              // also pulls in their imports such as Vue, Vuetify and axios.
+              // This measured the smallest first view in all six admins.
+              // The cost is that the chunk changes when any of them does.
               name: 'common-admin',
               test: /node_modules[\\/]@anzusystems[\\/]common-admin[\\/]/,
               tags: ['$initial'],
               priority: 100,
               includeDependenciesRecursively: true,
-              // Split into chunks under Vite's 500 kB warning. The limit counts the modules before
-              // minification: 900 KiB of them came out at most 480 kB in admin-cms.
+              // Split into chunks under Vite's 500 kB warning. The limit counts modules
+              // before minification: 900 KiB came out at most 480 kB in admin-cms.
               maxSize: 900 * 1024,
             },
             {
               name: (id) => {
-                // Core Vue runtime
                 if (
                   id.includes('node_modules/vue/') ||
                   id.includes('node_modules/vue-router/') ||
@@ -51,23 +50,18 @@ export default defineConfig({
                 ) {
                   return 'vue-core'
                 }
-                // i18n stack
                 if (id.includes('node_modules/vue-i18n/') || id.includes('node_modules/@intlify/')) {
                   return 'vue-i18n'
                 }
-                // Vuetify UI framework
                 if (id.includes('node_modules/vuetify/')) {
                   return 'vuetify'
                 }
-                // TipTap editor and ProseMirror
                 if (id.includes('node_modules/@tiptap/') || id.includes('node_modules/prosemirror-')) {
                   return 'tiptap'
                 }
-                // Sentry
                 if (id.includes('node_modules/@sentry/')) {
                   return 'sentry'
                 }
-                // Vendor utility libs (axios, vuelidate, floating-ui, jwt, cookie, uuid, rusha, sortablejs)
                 if (
                   id.includes('node_modules/axios/') ||
                   id.includes('node_modules/@vuelidate/') ||
@@ -146,8 +140,8 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
-    // What unplugin-auto-import used to have pre-bundled: some of these are imported only by lazily
-    // loaded pages, and a dependency found that late reloads the page on a cold start.
+    // Pre-bundled because some of these are imported only by lazy pages.
+    // A dependency found that late reloads the page on a cold start.
     include: ['vue', 'vue-router', 'pinia', 'vue-i18n', '@vuelidate/core', '@anzusystems/common-admin'],
   },
   resolve: {

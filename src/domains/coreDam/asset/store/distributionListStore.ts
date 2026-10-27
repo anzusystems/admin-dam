@@ -14,15 +14,19 @@ import type { DistributionAuth, DistributionAuthStatusType } from '@/domains/cor
 
 export const useDistributionListStore = defineStore('damDistributionListStore', () => {
   const list = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
-  // The asset the list is of: the store is one for the tabs of all assets.
+  // The asset the list belongs to. The store is shared by the tabs of all assets.
   const listAssetId = ref<DocId | null>(null)
   const loader = ref(false)
   const auth = ref<Array<DistributionAuth>>([])
-  /* How many times the loader was raised - by a read of a tab, by a delete in its settings: it is lowered only by the
-   * one that raised it last. A delete answered under the read of a tab opened again took it down under that read. */
+  /*
+   * Loader raise count. Raised by a tab read or a delete in its settings, and lowered only by the latest raiser.
+   * Previously a delete answered during a reopened tab's read hid the loader under that read.
+   */
   let loaderRaised = 0
-  /* The distributions deleted or stopped here: a read asked before that was answered brings them back, and a list
-   * never takes them again. */
+  /*
+   * Distributions deleted or stopped here. A read sent before that
+   * would bring them back, so the list never takes them again.
+   */
   const gone = new Set<DocId>()
 
   function getDistributionAuth(distributionService: DamDistributionServiceName) {
@@ -31,14 +35,18 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     return null
   }
 
-  /** Answers what lowers it again: `hideLoader` with it. */
+  /**
+   * Returns the raise count to pass to `hideLoader`.
+   */
   function showLoader() {
     loader.value = true
 
     return ++loaderRaised
   }
 
-  /** Lowered only when `raised` - what `showLoader` answered - is the last raise. */
+  /**
+   * Lowered only when `raised` (from `showLoader`) is the latest raise.
+   */
   function hideLoader(raised: number) {
     if (raised !== loaderRaised) return
     loader.value = false
@@ -48,8 +56,10 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     list.value = items.filter((item) => !gone.has(item.id))
   }
 
-  /** Takes the distribution out of the list, if it is listed: the list may be another asset's by now. Deleted or
-   * stopped, it is gone for good. */
+  /**
+   * Removes the distribution if listed; the list may belong to another asset by now.
+   * A deleted or stopped distribution is excluded for good.
+   */
   function removeListItem(distributionId: DocId) {
     gone.add(distributionId)
     const foundIndex = list.value.findIndex((item) => item.id === distributionId)
@@ -106,7 +116,9 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     auth.value.push({ distributionService, status: status })
   }
 
-  /** Empties the list unless it is that asset's already: a read that fails must not leave another asset's there. */
+  /**
+   * Empties the list unless it already belongs to that asset, so a failed read does not leave another asset's list.
+   */
   function listOfAsset(assetId: DocId) {
     if (listAssetId.value === assetId) return
     listAssetId.value = assetId

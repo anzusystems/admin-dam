@@ -7,15 +7,15 @@ import { assetDetail, createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The mass edit of the list of DAM, the selection of the list of an external provider and the upload queue are drawn
- * over the whole page, and Vuetify keeps the back and forward buttons of the browser from leaving a page from under
- * them - except onto an entry of the history where ADAM was loaded or reloaded, which vue-router writes by `replace`.
- * Left from under a selection that way, the next page drew the dialog over the whole of it, empty, with no button and
- * no strip: only a reload helped. A selection drawn over the whole page is put back into its strip as its page goes,
- * and the answer of its "save and finish" leaves the next page alone. The upload queue is the same on both lists, and
- * is drawn over the next one, whole, as it always was. The two real pages of the lists, as the application draws
- * them, with their real strips and queues; the server is a fake, and so is the address the page asks about a new
- * version of the application. */
+/*
+ * The DAM mass edit, the provider selection and the upload queue are drawn over the whole page.
+ * Vuetify keeps the browser back and forward buttons from leaving a page from under them, except
+ * onto a history entry where ADAM was loaded or reloaded, which vue-router writes by `replace`.
+ * Left that way, the next page drew an empty dialog with no button and no strip, and only a reload helped.
+ * A selection over the whole page is put back into its strip as its page
+ * goes, and the answer of its "save and finish" leaves the next page alone.
+ * Real pages; fake server and fake new-version address.
+ */
 
 let server: FakeDam
 
@@ -42,7 +42,6 @@ const onServer = (id: string) => ({
   authors: [],
 })
 
-/** An image of the provider. */
 const provided = (id: string) => ({
   id,
   texts: { displayTitle: id },
@@ -55,19 +54,15 @@ const settled = () => vi.advanceTimersByTimeAsync(100)
 
 const FULL_SCREEN = '.v-dialog--fullscreen'
 
-/** The dialog over the whole page, or null while none is drawn. */
 const fullScreen = () => document.body.querySelector<HTMLElement>(FULL_SCREEN)
 
-/** The questions about changes that were not saved that are open. */
 const questions = () =>
   Array.from(document.body.querySelectorAll('.v-dialog.v-overlay--active')).filter((dialog) =>
     dialog.textContent?.includes('Unsaved changes')
   )
 
-/** The title in the form of the panel beside the list. */
 const panelTitle = () => document.body.querySelector<HTMLTextAreaElement>('.v-navigation-drawer--right textarea')
 
-/** The bulk save of metadata is held from now on: answered, as the server answers it, by what this gives back. */
 const holdBulkSave = () => {
   let answer: () => Promise<unknown> = async () => undefined
   server.on(
@@ -86,7 +81,6 @@ const holdBulkSave = () => {
   return () => answer()
 }
 
-/** "Save and finish" of the queue drawn over the whole page, pressed once it can be: its save is sent. */
 const saveAndFinish = async (queue: () => HTMLElement | null) => {
   const button = await eventually(() => {
     const found = buttonsNamed(queue()!, SAVE_AND_FINISH)[0]
@@ -99,8 +93,6 @@ const saveAndFinish = async (queue: () => HTMLElement | null) => {
   expect(server.sent('PATCH', BULK)).toHaveLength(1)
 }
 
-/** What says where each queue is drawn: the dialog over the whole page, the selection of DAM, the selection of the
- * provider, the upload. */
 const positions = async () => {
   const { useMainWrapper } = await import('@/domains/system/composables/useMainWrapper')
   const { useAssetFooterSelectedView } = await import('@/domains/coreDam/asset/composables/assetFooterSelected')
@@ -116,8 +108,6 @@ const positions = async () => {
   ]
 }
 
-/** The page of the list of DAM with its three assets, one uploaded asset in the upload queue, and the page of the list
- * of the provider beside it. */
 const openList = async () => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: 'asset-9', fileId: 'file-9' }),
@@ -128,11 +118,9 @@ const openList = async () => {
     customForm: { image: [customField('title')] },
     queues: { global: uploaded },
   })
-  // The provider, as the config of the ext system names it.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider' } }
-  // The user as the bar of the page draws them, with the provider on their account.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -159,7 +147,6 @@ const openList = async () => {
     component: Provided,
   })
   await ui.router.push(LIST)
-  // As `App.vue` draws the pages: each address its own page.
   const Pages = defineComponent({
     setup: () => {
       const route = useRoute()
@@ -169,21 +156,16 @@ const openList = async () => {
   })
   const page = await ui.mount(async () => ({ default: Pages }))
   const tiles = () => Array.from(page.querySelectorAll<HTMLElement>('.dam-image-grid__item'))
-  /** The titles of the tiles drawn: whose list it is. */
   const titles = () => tiles().map((tile) => tile.querySelector('.text-truncate')?.textContent?.trim())
   await eventually(() => expect(titles()).toEqual(DAM_TITLES))
-  /** The queue drawn over the whole page, or null while none is. */
   const queue = () => document.body.querySelector<HTMLElement>('.overlay--sidebar')
-  /** The strip of the page under its list, with the strip of the selection in it, or null while it is not drawn. */
   const strip = () => page.querySelector<HTMLElement>('.v-app-bar .asset-footer__selected')
 
-  /** The tile picked by a click with Ctrl. */
   const pick = (index: number) => {
     tiles()[index].dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }))
 
     return settled()
   }
-  /** The tile picked, and the selection opened over the whole page by the button of its strip. */
   const openSelection = async (index: number, button: string) => {
     await pick(index)
     const open = await eventually(() => {
@@ -202,28 +184,24 @@ const openList = async () => {
     titles,
     queue,
     strip,
-    /** Where the router is: the address of the page it draws. */
     at: () => ui.router.currentRoute.value.path,
     pick,
-    /** A click on the tile: its asset is read into the panel beside the list. */
     click: (index: number) => {
       tiles()[index].click()
 
       return settled()
     },
-    /** Which tiles are picked for the mass edit. */
     picked: () => tiles().map((tile) => tile.classList.contains('dam-image-grid__item--selected')),
-    /** The user goes where the address says, as a link of the application takes them, and its list is drawn. */
     goTo: async (address: string) => {
       void ui.router.push(address)
       await settled()
       await eventually(() => expect(titles()).toEqual(address === LIST ? DAM_TITLES : PROVIDED_TITLES))
     },
     /**
-     * The back button of the browser onto an entry of the history where ADAM was loaded or reloaded, as the
-     * application hears it: the router first, then whatever else listens to `popstate` on the window. The state of
-     * that entry says it was written by `replace`, as vue-router writes the entry of every load. Answers whether a
-     * dialog over the whole page was put into the page on the way, also one taken out again at once.
+     * Simulates the browser back button onto a history entry where ADAM was loaded or reloaded.
+     * The router hears it first, then other `popstate` listeners on the window.
+     * The entry state says it was written by `replace`, as vue-router writes the entry of every load.
+     * Returns whether a full-page dialog was put into the page on the way, also one removed again at once.
      */
     backToALoadedEntry: async () => {
       let drawn = false
@@ -237,7 +215,7 @@ const openList = async () => {
       const watcher = new MutationObserver(note)
       watcher.observe(document.body, { childList: true, subtree: true })
       ui.router.back()
-      // The guards of the router run up to the one of Vuetify that waits a moment for the event below.
+      // The router guards run up to the Vuetify guard, which waits a moment for the event below.
       for (let turn = 0; turn < 50; turn++) await Promise.resolve()
       window.dispatchEvent(new PopStateEvent('popstate', { state: { replaced: true } }))
       await settled()
@@ -246,17 +224,13 @@ const openList = async () => {
 
       return drawn
     },
-    /** The mass edit of the list of DAM drawn over the whole page, with the tile picked for it. */
     openMassEdit: (index: number) => openSelection(index, 'Edit'),
-    /** The selection of the list of the provider drawn over the whole page, with the tile picked for it. */
     openProviderSelection: (index: number) => openSelection(index, 'View more'),
-    /** The upload queue drawn over the whole page, as its "Add description" button draws it. */
     openUploadQueue: () => {
       document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
 
       return eventually(() => expect(queue()).not.toBeNull())
     },
-    /** The upload queue put away into its strip, at its smallest, by its "hide" button. */
     putUploadQueueAway: async () => {
       queue()!.querySelector('.mdi-chevron-down')!.closest('button')!.click()
       await eventually(() => expect(queue()).toBeNull())
@@ -326,7 +300,6 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     expect(list.strip()?.className).toContain('asset-footer__selected--hidden')
   })
 
-  // As before the step that put the selections back into their strips: the upload is not the page's.
   it.each<[string, string, string]>([
     ['the list of DAM', LIST, PROVIDED],
     ['the page of a provider', PROVIDED, LIST],
@@ -343,7 +316,6 @@ describe('a queue drawn over the whole page, left by the back button of the brow
 
       expect([list.at(), list.titles()]).toEqual([to, to === LIST ? DAM_TITLES : PROVIDED_TITLES])
       expect(await positions()).toEqual([true, 'hidden', 'hidden', 'full'])
-      // Its row and its buttons, not an empty card.
       const queue = list.queue()!
       expect([buttonsNamed(queue, 'Edit more').length, buttonsNamed(queue, SAVE_AND_FINISH).length]).toEqual([1, 1])
 
@@ -354,8 +326,11 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     }
   )
 
-  /* "Save and finish" of the mass edit empties it and puts it away once the server answers: not when its page was left
-   * meanwhile, where the lists share the mass edit and the next one has been picked anew. */
+  /*
+   * "Save and finish" of the mass edit empties it and puts it away once the server answers.
+   * This must not happen when its page was left meanwhile: the
+   * lists share the mass edit, and the next page has picked anew.
+   */
   it('the mass edit of DAM saved and finished: its answer after the page was left keeps what the next page picked', async () => {
     const answer = holdBulkSave()
     const list = await openList()
@@ -383,11 +358,9 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     expect(await positions()).toEqual([false, 'hidden', 'compact', 'hidden'])
   })
 
-  // A way out that still asks, and is called off then, leaves the page where it was: the mass edit is finished there.
   it('the mass edit of DAM saved and finished: its answer while a way out asks, called off, empties it and puts it away', async () => {
     const answer = holdBulkSave()
     const list = await openList()
-    // What is typed into the panel beside the list and not saved is asked about before the page is left.
     await list.click(1)
     const typedInto = panelTitle()!
     typedInto.value = 'typed and not saved'
@@ -409,8 +382,10 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     expect([panelTitle() === typedInto, typedInto.value]).toEqual([true, 'typed and not saved'])
   })
 
-  /* "Save and finish" of the upload queue stops it and hides it once the server answers. Put away meanwhile, it holds
-   * the view over the whole page no more: a selection drawn there since stays. */
+  /*
+   * "Save and finish" of the upload queue stops it and hides it once the server answers.
+   * If it was put away meanwhile, it no longer holds the full-page view, so a selection drawn there since stays.
+   */
   it('the upload queue saved and finished: its answer once it was put away leaves the mass edit opened since', async () => {
     const answer = holdBulkSave()
     const list = await openList()

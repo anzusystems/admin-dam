@@ -5,16 +5,16 @@ import { RouterView, createMemoryHistory, createRouter } from 'vue-router'
 
 import HomepageView from '@/domains/system/views/HomepageView.vue'
 
-/* The page at `/` shows nothing of its own: it sends the user on to the list of assets. The logo of the pages with
- * the side menu leads to it. It takes the place of its own entry in the history: left there, the way back from the
- * list would end on it, and it would send the user to the list anew - a list read again, and no way back past it.
- * The real page under a router with a history kept in memory, as the application's is kept by the browser. */
+/*
+ * The page at `/` redirects to the asset list and replaces its own history entry.
+ * If it stayed in the history, going back from the list would land on it and redirect again,
+ * which re-reads the list and blocks the way back.
+ */
 
 const Page = defineComponent(() => () => null)
 
 let app: App | undefined
 
-/** The application at the page the user is on before they go to `/`. */
 const openAt = async (path: string) => {
   const router = createRouter({
     history: createMemoryHistory(),
@@ -30,7 +30,6 @@ const openAt = async (path: string) => {
 
   return {
     at: () => router.currentRoute.value.path,
-    /** A navigation, and the ones a page starts as it is drawn: all of them over. */
     go: async (move: () => unknown) => {
       await move()
       // The page at `/` navigates once it is mounted, which is after the navigation to it is over.

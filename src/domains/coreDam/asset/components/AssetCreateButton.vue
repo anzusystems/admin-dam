@@ -41,15 +41,20 @@ const onClick = () => {
 }
 
 const onCancel = () => {
-  /* The asset is made all the same, and what holds a second confirm back goes with this dialog: the menu it is in is
-   * drawn anew each time it is opened, and a dialog opened from it again would make a second asset. */
+  /*
+   * The asset is still created, and the guard against a second confirm closes with the dialog.
+   * The menu is re-rendered on each open, so reopening the dialog would create a second asset.
+   */
   if (buttonLoading.value) return
   dialog.value = false
 }
 
-/* Nor does the page go meanwhile, with the dialog: the back button of the browser onto an entry where ADAM was loaded
- * or reloaded gets past Vuetify, which otherwise only closes the dialog. Nor its address: the page of another provider
- * is the same page of the router, and the application draws each address anew; another query is drawn on. */
+/*
+ * Blocks leaving the page while creating. The browser back button to an entry where
+ * ADAM was loaded or reloaded bypasses Vuetify, which otherwise only closes the dialog.
+ * Also blocks address changes: another provider's page is the same
+ * router page and is fully re-rendered. A query-only change is allowed.
+ */
 onBeforeRouteLeave(() => !buttonLoading.value)
 onBeforeRouteUpdate((to, from) => to.path === from.path || !buttonLoading.value)
 
@@ -59,9 +64,10 @@ const showDetail = async (asset: AssetDetailItemDto) => {
   assetDetailStore.setView('queue')
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
-  /* Nothing is fetched here - the asset has just been created - but the detail is opened all the
-   * same, so it has to take its turn: a request from before this one, coming back with an error,
-   * would otherwise see an open dialog and close it over the new asset. */
+  /*
+   * Nothing is fetched, but the detail is opened, so it must take a request turn.
+   * Otherwise an earlier request returning with an error could see the open dialog and close it over the new asset.
+   */
   assetDetailStore.startDetailRequest(asset.id)
   assetDetailStore.setAsset(asset)
   addToCachedUsers(assetDetailStore.asset?.createdBy, assetDetailStore.asset?.modifiedBy)
@@ -72,13 +78,18 @@ const showDetail = async (asset: AssetDetailItemDto) => {
 const onConfirm = async () => {
   // A second confirm while the first is on its way would make a second asset.
   if (buttonLoading.value) return
-  /* On a page that draws no detail of an asset the new one is shown on its own page, in a tab opened here, at the
-   * press. Nothing of this page is replaced by it, so there is nothing to ask about. */
+  /*
+   * On a page without an asset detail, the new asset opens in a new tab, opened here on the click.
+   * Nothing on this page is replaced, so there is no unsaved-changes prompt.
+   */
   const tab = opensInNewTab() ? openTabForAsset() : null
-  // No tab given, nothing is made: the asset would be made with nothing to show it in. The editor was told why.
+  // If the tab was blocked, nothing is created, since there is
+  // nowhere to show the asset. The editor was already told why.
   if (tab && !tab.opened) return
-  /* Otherwise the asset made here is written into the detail the panel beside the list reads from: metadata typed
-   * into the panel and not saved go only when told to, asked about before anything is sent. */
+  /*
+   * Otherwise the new asset replaces the detail the side panel reads from.
+   * Unsaved panel metadata is discarded only after confirmation, asked before anything is sent.
+   */
   if (!tab && assetDetailStore.panelHoldsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
   try {
     buttonLoading.value = true

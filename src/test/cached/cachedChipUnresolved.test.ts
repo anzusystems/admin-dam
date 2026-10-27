@@ -8,14 +8,13 @@ import * as components from 'vuetify/components'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The chip that shows an author by its id - the library's, as the pages of admin-dam draw it - over the real cache
- * and a fake server. An id the server does not return used to leave the chip spinning for good; now it shows the id.
- * The chips of a keyword and of an author conflict are inside the inputs of the library, which guards them itself
- * (`damNameChipsUnresolved.test.ts` there).
- *
- * The cache is the library's, which asks through the client of its plugin and under the ext system written for
- * it: the plugin is installed with the client of the application, and the ext system written as the start of the
- * application writes it. */
+/*
+ * Library chip that shows an author by id, over the real cache and a fake server. Bug:
+ * an id the server does not return left the chip spinning for good. Now it shows the id.
+ * Chips inside library inputs are tested in the library (`damNameChipsUnresolved.test.ts`).
+ * The library cache asks through its plugin client and the ext system the app start writes,
+ * so the plugin is installed with the app client and the ext system is written the same way.
+ */
 
 let server: FakeDam
 
@@ -32,7 +31,6 @@ const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
 const AUTHORS = /^\/adm\/v1\/author\/ext-system\/1\/search$/
 const UNAVAILABLE = 'common.model.cachedUnavailable'
-// What the chip shows for the record below.
 const NAME = 'Jane Roe (TASR)'
 
 const author = (id: string) => ({ id, name: 'Jane Roe', identifier: 'TASR', flags: { reviewed: false } })
@@ -64,16 +62,13 @@ const mountChip = async (props: Record<string, unknown> = {}) => {
     id,
     text: () => root.textContent?.trim(),
     spinning: () => root.querySelector('.v-progress-circular') !== null,
-    /** What the chip says of itself when the pointer is over it: the tooltip of the application. */
     tooltip: async () => {
       root.querySelector('.v-chip')?.dispatchEvent(new MouseEvent('mouseenter'))
       await vi.advanceTimersByTimeAsync(1000)
 
       return document.body.querySelector('.v-tooltip .v-overlay__content')?.textContent?.trim()
     },
-    /** The same of the plain text, which has no tooltip: the title of the browser. */
     title: () => root.querySelector('[title]')?.getAttribute('title'),
-    /** The cache asks the server for what it was told to; the answer is in when this resolves. */
     answered: async () => {
       fetchCachedAuthors()
       await vi.advanceTimersByTimeAsync(10_000)
@@ -82,13 +77,12 @@ const mountChip = async (props: Record<string, unknown> = {}) => {
   }
 }
 
-/** The server has the record the case asks for, or it has not. */
 const answerWith = (found: () => boolean) =>
   server.on('GET', AUTHORS, () => ({ status: 200, data: { data: found() ? [author(asked)] : [] } }))
 
 beforeEach(() => {
   vi.useFakeTimers()
-  // happy-dom has none, and an open tooltip listens on it for the size of the window.
+  // happy-dom has no `visualViewport`, and an open tooltip listens on it for window resize.
   vi.stubGlobal('visualViewport', new EventTarget())
   server = createFakeDam()
 })
@@ -127,8 +121,6 @@ describe('the author chip', () => {
     expect(await chip.tooltip()).toBeUndefined()
   })
 
-  // In the tooltip of the application, as the other tooltips are: the chip of admin-dam said it in the title of
-  // the browser.
   it('shows the id, and says why, when the server does not return the record', async () => {
     answerWith(() => false)
     const chip = await mountChip()
@@ -183,8 +175,6 @@ describe('the author chip', () => {
     expect(chip.title()).toBe(UNAVAILABLE)
   })
 
-  // The chip of the library says that the record could not be loaded also under a title it was handed; the chip of
-  // admin-dam said nothing there.
   it('keeps a title it was handed, whatever the server returns', async () => {
     answerWith(() => false)
     const chip = await mountChip({ title: 'Handed in' })

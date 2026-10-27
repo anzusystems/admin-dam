@@ -10,9 +10,11 @@ import * as components from 'vuetify/components'
 import { createFakeDam, queueRow, seedDamConfig, seedQueue, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The entry of every upload: what is picked goes into the queue at once, unless the queue would then hold more
- * than fifty rows - then a dialog offers to take the first few. Mounted over the real store, the file picker
- * replaced by a button that hands over the files of the case. */
+/*
+ * The entry point of every upload: picked files go into the queue at once, unless the
+ * queue would then hold more than fifty rows. Then a dialog offers to take the first few.
+ * Mounted over the real store. The file picker is replaced by a button that hands over the case files.
+ */
 
 let server: FakeDam
 const picked = vi.hoisted(() => ({ files: [] as File[] }))
@@ -72,7 +74,6 @@ const settled = (count: number): UploadQueueItem[] =>
 
 let app: App | undefined
 
-/** Mounts the upload entry over a queue that already holds the rows. */
 const mountUpload = async (queueId: string, rows: UploadQueueItem[], props: Record<string, unknown> = {}) => {
   const pinia = createPinia()
   setActivePinia(pinia)
@@ -90,7 +91,6 @@ const mountUpload = async (queueId: string, rows: UploadQueueItem[], props: Reco
   const pick = async (count: number) => {
     picked.files = files(count)
     root.querySelector<HTMLButtonElement>('button[data-picker]')?.click()
-    // The files are taken one after another, a tick apart.
     await new Promise((resolve) => setTimeout(resolve, 0))
     await nextTick()
   }
@@ -113,10 +113,10 @@ const CANCEL = 'common.button.cancel'
 beforeEach(() => {
   vi.clearAllMocks()
   stubFileReader()
-  // happy-dom has none, and the dialog listens on it for the size of the window.
+  // happy-dom has no `visualViewport`, and the dialog listens on it for the window size.
   vi.stubGlobal('visualViewport', new EventTarget())
   server = createFakeDam()
-  // Every upload stays at its first request: the cases are about what gets into the queue.
+  // Every upload stays at its first request, because the cases are about what gets into the queue.
   server.on('POST', /./, () => new Promise(() => undefined))
 })
 
@@ -197,7 +197,7 @@ describe('a file picked for a slot of an asset', () => {
     expect(server.requests.map((request) => request.url)).toEqual(['/adm/v1/audio/asset/asset-9/slot-name/bonus'])
   })
 
-  // The dialog only asks how many: what it lets through goes where the files were meant to go.
+  // The dialog only asks how many. The files it lets through go where they were meant to go.
   it('goes there as well when it is taken through the dialog of the limit, not into the queue as a new asset', async () => {
     const { store, pick, dialogButton } = await mountUpload('slots', settled(48), {
       type: 'slots',
@@ -220,7 +220,6 @@ describe('a file picked for a slot of an asset', () => {
       ['slotFile', 'asset-9', 'bonus', 'audio', 'picked-2.jpg'],
     ])
     expect(store.getQueueTotalCount('slots')).toBe(50)
-    // Sent as files of that slot: no request that would make a new asset.
     expect(server.requests.map((request) => request.url)).toEqual([
       '/adm/v1/audio/asset/asset-9/slot-name/bonus',
       '/adm/v1/audio/asset/asset-9/slot-name/bonus',

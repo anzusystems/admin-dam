@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { immediateScheduler } from '@/test/support/immediateScheduler'
 
-// What the server answers unless a case says otherwise: the asset with its main file.
 const assetWithItsFile = (): unknown => ({
   id: 'asset-1',
   attributes: { assetStatus: 'with_file' },
@@ -29,22 +28,21 @@ vi.mock('@/domains/coreDam/shared/services/upload/externalProviderImportService'
 const startedUploads = vi.fn()
 const runningUpload = vi.hoisted(() => ({ fail: undefined as undefined | ((error: Error) => void) }))
 vi.mock('@/domains/coreDam/shared/services/upload/uploadService', () => ({
-  // Never settling, unless a test fails it while it sends: an upload that resolves at once sends `processUpload`
-  // straight back into the waiting item it just started, and the loop never ends.
+  // Never settles unless a test fails it while sending.
+  // An upload that resolves at once sends `processUpload` back into
+  // the waiting item it just started, and the loop never ends.
   useUpload: (item: { status: string }) => {
     startedUploads()
 
     return {
-      // The chunks and the finish request.
       upload: () => new Promise((_resolve, reject) => (runningUpload.fail = reject)),
-      // As the real one: a started row is uploading at once, so nothing takes it for a waiting one again.
+      // Like the real one: a started row is `uploading` at once, so nothing takes it for a waiting one again.
       uploadInit: () => {
         item.status = 'uploading'
 
         return Promise.resolve()
       },
       stop: vi.fn(),
-      // The uploads these cases fail are refused on a chunk: the server never had the whole file.
       finishAttempted: () => false,
     }
   },
@@ -94,8 +92,9 @@ const slotItem = (over: Record<string, unknown>) => ({
 const load = async () => {
   vi.resetModules()
   setActivePinia(createPinia())
-  // The store reads the asset a notification names a moment after it: here that moment is the next microtask, so
-  // a case that awaits the store has the read behind it. The poll of a queue never comes.
+  // The store reads the asset a notification names shortly after it.
+  // Here that is the next microtask, so a case that awaits the store has the read behind it.
+  // The poll of a queue never runs.
   const { uploadSettlementRuntime } = await import('@anzusystems/common-admin')
   uploadSettlementRuntime.scheduler = immediateScheduler()
 
@@ -114,8 +113,10 @@ const seed = (store: { queues: Record<string, unknown> }, items: unknown[]) => {
 
 const METADATA_FAILED = 'system.uploadErrors.metadataFailed'
 
-/** The asset cannot be read, three times over: from the third on, a row that misses its metadata says so. A read
- * that failed is tried again by itself, 15 and 30 seconds later; here a notification brings each try. */
+/**
+ * The asset cannot be read three times. From the third failure a row that misses its metadata says so.
+ * A failed read is retried by itself after 15 and 30 seconds; here a notification brings each try.
+ */
 const metadataUnreadable = async (store: { queueItemMetadataProcessed: (assetId: string) => Promise<void> }) => {
   for (let attempt = 0; attempt < 3; attempt++) {
     fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
@@ -125,8 +126,8 @@ const metadataUnreadable = async (store: { queueItemMetadataProcessed: (assetId:
 
 beforeEach(() => {
   vi.clearAllMocks()
-  // `clearAllMocks` forgets the calls of a mock, not what a case has told it to answer: without this the answer
-  // one case sets is the answer of every case after it.
+  // `clearAllMocks` keeps what a case told a mock to answer.
+  // Without this reset, the answer one case sets leaks into every later case.
   fetchAsset.mockReset()
   fetchAsset.mockImplementation(async () => assetWithItsFile())
   fetchImageFile.mockReset()
@@ -144,8 +145,8 @@ describe('slot uploads of one asset', () => {
     await store.queueItemProcessed('asset-1', 'file-1')
 
     expect(uploading.status).toBe(UploadQueueItemStatus.Uploaded)
-    // They share the asset and differ only in the file, so without the file the first result
-    // marked the second one finished too.
+    // The slots share the asset and differ only in the file.
+    // Without matching on the file, the first result marked the second slot finished too.
     expect(other.status).toBe(UploadQueueItemStatus.Uploading)
   })
 
@@ -153,22 +154,21 @@ describe('slot uploads of one asset', () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
     const uploading = slotItem({ fileId: 'file-1' })
-    // Only two run at a time, so a third waits with no `fileId` — matching it on the asset alone
-    // marked a slot finished whose file had never been sent.
+    // Only two uploads run at a time, so a third waits with no `fileId`.
+    // Matching on the asset alone marked a slot finished whose file was never sent.
     const waiting = slotItem({ fileId: null, status: UploadQueueItemStatus.Waiting, slotName: 'image_3' })
     seed(store as never, [uploading, waiting])
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // Not finished: it only takes the place the settled upload has freed, and is being sent now.
     expect(waiting.status).toBe(UploadQueueItemStatus.Uploading)
   })
 
   it('leaves a queued upload alone when the refresh knows no file either', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // The refresh button carries no file id, and a queued slot has none yet - two nulls are not a
-    // match, they are two things nobody knows.
+    // The refresh button carries no file id and a queued slot has none yet.
+    // Two nulls must not match.
     const waiting = slotItem({ fileId: null, status: UploadQueueItemStatus.Waiting })
     seed(store as never, [waiting])
 
@@ -180,8 +180,6 @@ describe('slot uploads of one asset', () => {
   it('brings an asset picked for mass edit up to date without settling it', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Added by asset, not uploaded: there is no file to match the event on, only the asset.
-    // The switch as the user has just set it in the mass edit form; the server still says `null`.
     const item = slotItem({
       fileId: null,
       type: UploadQueueItemType.Asset,
@@ -192,19 +190,17 @@ describe('slot uploads of one asset', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // The status of such a row belongs to the batch load that put it there; the event brings the asset status and the
-    // preview, and settling one the batch had failed would have left it looking finished with the failure still
-    // written on it.
+    // The status of such a row belongs to the batch load.
+    // The event brings only the asset status and the preview.
+    // Settling a row the batch had failed would show it as finished with the failure still on it.
     expect(item.assetStatus).toBe('with_file')
     expect(item.status).toBe(UploadQueueItemStatus.Uploading)
-    // And the form field is the form's, not the server's.
     expect(item.mainFileSingleUse).toBe(true)
   })
 
   it('does not fail an asset picked for mass edit on a file of somebody else', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Picked before it had a main file, so it carries no file id of its own.
     const massEdit = slotItem({
       fileId: null,
       type: UploadQueueItemType.Asset,
@@ -215,8 +211,8 @@ describe('slot uploads of one asset', () => {
 
     store.queueItemFailed('asset-1', AssetFileFailReason.Unknown, 'file-9')
 
-    // A slot upload into the same asset at the same moment would otherwise fail a row that is doing fine - the event
-    // does not say whether its file is the asset's main one.
+    // A slot upload into the same asset at the same moment would otherwise fail a healthy row.
+    // The event does not say whether its file is the main one of the asset.
     expect(massEdit.status).toBe(UploadQueueItemStatus.Uploaded)
     expect(massEdit.error.hasError).toBe(false)
   })
@@ -232,16 +228,16 @@ describe('slot uploads of one asset', () => {
 
     store.processUpload(QUEUE)
 
-    // Two at a time, counting the ones already running: starting two regardless of them is what pushed the number up
-    // under a long queue.
+    // Two uploads at a time, counting the ones already running.
+    // Starting two regardless pushed the number up under a long queue.
     expect(startedUploads).toHaveBeenCalledTimes(1)
   })
 
   it('leaves an asset picked for mass edit alone while the batch load still owns it', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Added by asset a moment ago; its metadata batch is still on the wire. The one that already
-    // has a main file takes the same route as an ordinary upload, so both have to be covered.
+    // Added by asset a moment ago, its metadata batch is still in flight.
+    // A row that already has a main file takes the same route as an ordinary upload, so both must be covered.
     const loading = slotItem({
       fileId: null,
       type: UploadQueueItemType.Asset,
@@ -259,8 +255,8 @@ describe('slot uploads of one asset', () => {
     await store.queueItemProcessed('asset-1', 'file-1')
     store.queueItemFailed('asset-1', AssetFileFailReason.Unknown, 'file-1')
 
-    // Taking it off `Loading` here makes the batch's own failure handler pass it by, and the row then looks finished
-    // with no metadata behind it - which the bulk save skips without a word.
+    // Taking the row off `Loading` here makes the batch failure handler skip it.
+    // The row would then look finished with no metadata, and the bulk save skips it silently.
     expect(loading.status).toBe(UploadQueueItemStatus.Loading)
     expect(loadingWithFile.status).toBe(UploadQueueItemStatus.Loading)
   })
@@ -268,7 +264,6 @@ describe('slot uploads of one asset', () => {
   it('still settles an ordinary upload on the asset alone', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Not a slot: the manual refresh knows only the asset.
     const item = slotItem({ fileId: 'file-1', type: UploadQueueItemType.File, slotName: null })
     seed(store as never, [item])
 
@@ -283,8 +278,8 @@ describe('slot uploads of one asset', () => {
     const item = slotItem({ fileId: 'file-1' })
     seed(store as never, [item])
 
-    // An asset carries many slots, and a refresh of the asset says nothing about which of them finished - letting it
-    // through would mark a slot done on somebody else's news.
+    // An asset has many slots, and a refresh of the asset does not say which one finished.
+    // Letting it through would mark a slot done on unrelated news.
     await store.queueItemProcessed('asset-1')
 
     expect(item.status).toBe(UploadQueueItemStatus.Uploading)
@@ -301,7 +296,6 @@ describe('a processed notification', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // The event is what says the file is done; the fetch only decorates the row.
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
   })
 
@@ -319,7 +313,7 @@ describe('a processed notification', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // Gating the transition on `asset.mainFile` left a draft asset's upload running for ever.
+    // Gating the transition on `asset.mainFile` left the upload of a draft asset running forever.
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
   })
 })
@@ -340,9 +334,9 @@ describe('settling one item', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // Settling the item has to free its slot, or the queue stops moving on the notification path. Once: the read
-    // that follows the notification finds the asset with its main file and completes the row, which frees nothing
-    // a second time.
+    // Settling the item must free its slot, or the queue stops moving on the notification path.
+    // Freed once: the following read finds the asset with its
+    // main file and completes the row, which frees nothing again.
     expect(startedUploads).toHaveBeenCalledTimes(1)
     expect(fetchAsset).toHaveBeenCalledTimes(1)
     expect([finishing.status, finishing.assetStatus]).toEqual([UploadQueueItemStatus.Uploaded, 'with_file'])
@@ -358,18 +352,16 @@ describe('settling one item', () => {
     fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
     fetchAsset.mockRejectedValueOnce(new Error('the asset service is down'))
 
-    // A read that failed is tried again by itself, 15 and 30 seconds later; here a notification brings each try.
     await store.queueItemMetadataProcessed('asset-1')
     await store.queueItemMetadataProcessed('asset-1')
-    // Not said yet: one failed request is not a row without its metadata.
     expect(item.error.hasError).toBe(false)
     await store.queueItemMetadataProcessed('asset-1')
     expect(item.error.message).toBe('system.uploadErrors.metadataFailed')
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // The form is still disabled and the bulk save still skips it - a row that looks finished and silently is not is
-    // worse than one that says so.
+    // The form stays disabled and the bulk save keeps skipping the row.
+    // A row that looks finished but silently is not is worse than one that says so.
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
     expect(item.canEditMetadata).toBe(false)
     expect(item.error.hasError).toBe(true)
@@ -379,7 +371,6 @@ describe('settling one item', () => {
   it('says nothing to a row that already has its metadata', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // Picked for mass edit: the batch load gave it its metadata already.
     const loaded = slotItem({
       key: 'loaded',
       fileId: null,
@@ -387,15 +378,14 @@ describe('settling one item', () => {
       slotName: null,
       canEditMetadata: true,
     })
-    // An upload of the same asset that still misses its metadata: the row the warning is for.
     const missing = slotItem({ key: 'missing', fileId: 'file-1', type: UploadQueueItemType.File, slotName: null })
     seed(store as never, [loaded, missing])
 
     await metadataUnreadable(store)
 
     expect(missing.error.message).toBe(METADATA_FAILED)
-    // A red warning on a working row, and one it could not take back: the refresh button is only offered to a row
-    // without metadata.
+    // No red warning on a working row: it could not be cleared, because
+    // the refresh button is offered only to a row without metadata.
     expect(loaded.error.hasError).toBe(false)
   })
 
@@ -416,7 +406,6 @@ describe('settling one item', () => {
 
     await store.queueItemMetadataProcessed('asset-1')
 
-    // Refresh does exactly this, and so does the poll when it finds the file processed.
     expect(item.canEditMetadata).toBe(true)
     expect([item.error.hasError, item.error.message]).toEqual([false, ''])
   })
@@ -436,7 +425,6 @@ describe('settling one item', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // The user did what the message told them to, so the warning has to go.
     expect(item.error.hasError).toBe(false)
   })
 
@@ -452,7 +440,7 @@ describe('settling one item', () => {
 
     await store.queueItemProcessed('asset-1', 'file-1')
 
-    // The fallback message tells the user to press refresh, and refresh comes back through here.
+    // The fallback message tells the user to press refresh, and refresh comes back through this path.
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
     expect(item.error.hasError).toBe(false)
   })
@@ -466,7 +454,6 @@ describe('settling one item', () => {
 
     await store.queueItemDuplicate('asset-1', 'origin-1', 'image', 'file-1')
 
-    // The event is what says it is a duplicate; the origin file only decorates the row.
     expect(item.status).toBe(UploadQueueItemStatus.Uploaded)
     expect(item.isDuplicate).toBe(true)
   })
@@ -483,7 +470,6 @@ describe('a slot upload that fails', () => {
     await store.queueItemFailed('asset-1', AssetFileFailReason.InvalidMimeType, 'file-1')
 
     expect(failing.status).toBe(UploadQueueItemStatus.Failed)
-    // One slot failing says nothing about the other; they share only the asset.
     expect(other.status).toBe(UploadQueueItemStatus.Uploading)
     expect(other.error.hasError).toBe(false)
   })
@@ -496,7 +482,6 @@ describe('a slot upload that fails', () => {
 
     await store.queueItemFailed('asset-1', AssetFileFailReason.InvalidMimeType, 'file-1')
 
-    // The event carries everything this needs.
     expect(fetchAsset).not.toHaveBeenCalled()
     expect(failing.status).toBe(UploadQueueItemStatus.Failed)
   })
@@ -514,7 +499,6 @@ describe('the upload slots', () => {
 
     store.processUpload(QUEUE)
 
-    // Two at a time, the whole point of the queue; nothing in the suite pinned the number itself.
     expect(startedUploads).toHaveBeenCalledTimes(2)
   })
 })
@@ -527,8 +511,8 @@ describe('stopping one item', () => {
     const second = slotItem({ fileId: 'file-2', type: UploadQueueItemType.File, key: 'b' })
     seed(store as never, [first, second])
 
-    // Removed by identity: the caller's index can be stale by the time this runs, and removing nothing left the
-    // stopped item in the queue - counted as unfinished, drawn as done.
+    // Removed by identity: the index of the caller can be stale by the time this runs.
+    // Removing nothing left the stopped item in the queue, counted as unfinished and drawn as done.
     await store.stopItemUpload(QUEUE, second as never)
 
     expect(store.getQueueItems(QUEUE)).toEqual([first])
@@ -543,8 +527,8 @@ describe('the slot lookup', () => {
     const current = slotItem({ fileId: 'file-2' })
     seed(store as never, [finished, current])
 
-    // Finished uploads stay in this queue until it is cleared by hand, so answering with the first match left the
-    // newest upload with no progress bar.
+    // Finished uploads stay in this queue until cleared by hand.
+    // Answering with the first match left the newest upload without a progress bar.
     expect(store.getQueueItemForSlotItem(QUEUE, 'image_1', 'asset-1')).toEqual({ item: current, index: 1 })
   })
 
@@ -557,7 +541,7 @@ describe('the slot lookup', () => {
 
     await store.stopItemUpload(QUEUE, first as never)
 
-    // The guard has to be `> -1`: `> 0` would leave the first item of every queue behind.
+    // The guard must be `> -1`: `> 0` would leave the first item of every queue behind.
     expect(store.getQueueItems(QUEUE)).toEqual([second])
   })
 
@@ -566,7 +550,6 @@ describe('the slot lookup', () => {
     const store = useUploadQueuesStore()
     const first = slotItem({ fileId: 'file-1', assetId: 'asset-1' })
     const second = slotItem({ fileId: 'file-2', assetId: 'asset-2', slotName: 'image_2' })
-    // Only two run at a time, so this one is waiting for the slot the removal frees.
     const waiting = slotItem({ fileId: null, assetId: 'asset-3', status: UploadQueueItemStatus.Waiting })
     seed(store as never, [first, second, waiting])
 
@@ -575,9 +558,9 @@ describe('the slot lookup', () => {
 
     // The delete is awaited before the row is dropped, so an index held across it can shift.
     expect(store.getQueueItems(QUEUE)).toEqual([first, waiting])
-    // And through the same teardown as a cancel: the metadata event arrives after the first chunk, so Delete is
-    // offered while the upload is still running, and a bare splice left it posting chunks to an asset the server had
-    // just deleted with its slot never refilled.
+    // Goes through the same teardown as a cancel.
+    // The metadata event arrives after the first chunk, so Delete is offered while the upload still runs.
+    // A bare splice left it posting chunks to a deleted asset and never refilled the slot.
     expect(second.status).toBe(UploadQueueItemStatus.Stop)
     expect(startedUploads).toHaveBeenCalledTimes(1)
   })
@@ -611,29 +594,24 @@ describe('the metadata of an upload', () => {
       status: UploadQueueItemStatus.Uploaded,
       mainFileSingleUse: false,
     })
-    // An upload of the same asset that is no duplicate: what it is told, the duplicate is spared.
     const waiting = upload({ key: 'waiting' })
     seed(store as never, [duplicate, waiting])
 
     await metadataUnreadable(store)
 
-    // It misses nothing when that metadata cannot be read: the row beside it says so, the duplicate does not.
     expect(waiting.error.message).toBe(METADATA_FAILED)
     expect(duplicate.error.hasError).toBe(false)
 
     fetchAsset.mockResolvedValueOnce(metadataFromServer())
     await store.queueItemMetadataProcessed('asset-1')
 
-    // Its form is disabled for good; editable, it was validated and saved all the same.
+    // The form of a duplicate is disabled for good. If it were editable, it would be validated and saved.
     expect(duplicate.canEditMetadata).toBe(false)
     expect(duplicate.keywords).toEqual([])
-    // What the duplicate handler took from the original file stays.
     expect(duplicate.mainFileSingleUse).toBe(false)
-    // The other row has its metadata by the same answer.
     expect([waiting.canEditMetadata, waiting.error.hasError]).toEqual([true, false])
   })
 
-  // Whoever asks: the notification, the fallback or the refresh button. Their answers can come in either order.
   it('is loaded once: a row that has it keeps what the user has typed since', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -658,27 +636,24 @@ describe('the metadata of an upload', () => {
       status: UploadQueueItemStatus.Failed,
       error: { hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' },
     })
-    // An upload of the same asset that has not failed: what it is told, the failed row is spared.
     const waiting = upload({ key: 'waiting' })
     seed(store as never, [failed, waiting])
 
     await metadataUnreadable(store)
 
-    // Its fail reason is not replaced by a message about metadata: the row beside it gets one, the failed row not.
     expect(waiting.error.message).toBe(METADATA_FAILED)
     expect(failed.error).toEqual({ hasError: true, message: '', assetFileFailReason: 'invalid_mime_type' })
 
     fetchAsset.mockResolvedValueOnce(metadataFromServer())
     await store.queueItemMetadataProcessed('asset-1')
 
-    // Editable, it was validated and saved with the rest of the queue.
     expect(failed.canEditMetadata).toBe(false)
     expect(failed.keywords).toEqual([])
-    // The other row has its metadata by the same answer.
     expect([waiting.canEditMetadata, waiting.error.hasError]).toEqual([true, false])
   })
 
-  // The other order: the server reads the metadata off the first chunk, so its event comes while the file sends.
+  // The other order: the server reads metadata off the first
+  // chunk, so its event arrives while the file is still sending.
   it('stops being editable when its upload fails after its metadata had come', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -694,7 +669,6 @@ describe('the metadata of an upload', () => {
     runningUpload.fail!(new Error('a chunk was refused'))
     await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
 
-    // Editable, it was validated and saved with the rest of the queue.
     expect(sending.canEditMetadata).toBe(false)
   })
 
@@ -710,18 +684,17 @@ describe('the metadata of an upload', () => {
     expect(sending.error.message).toBe(METADATA_FAILED)
     runningUpload.fail!(new Error('a chunk was refused'))
     await vi.waitFor(() => expect(sending.status).toBe(UploadQueueItemStatus.Failed))
-    // The failure takes the place of the text about the metadata.
     expect(sending.error.message).toBe('the upload failed')
     fetchAsset.mockResolvedValueOnce(metadataFromServer())
 
     await store.queueItemMetadataProcessed('asset-1')
 
-    // What is wrong with the row now is its file, and the message says so.
     expect(sending.canEditMetadata).toBe(false)
     expect(sending.error.message).toBe('the upload failed')
   })
 
-  // The client gave up on a request the server finished: the row comes back with its processed notification.
+  // The client gave up on a request the server finished.
+  // The row comes back with its processed notification.
   it('gets its form back as the user left it when its file turns out to be processed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -740,13 +713,11 @@ describe('the metadata of an upload', () => {
     await store.queueItemProcessed('asset-1', 'file-1')
 
     expect([sending.status, sending.canEditMetadata]).toEqual([UploadQueueItemStatus.Uploaded, true])
-    // And a refresh after it is a request for nothing: the metadata is loaded once.
     fetchAsset.mockResolvedValueOnce(metadataFromServer())
     await store.queueItemMetadataProcessed('asset-1')
     expect(sending.customData).toEqual({ title: 'typed' })
   })
 
-  // One that had no metadata yet gets it with the read that follows the notification, and its form with it.
   it('gets its form at once, with the metadata it never had, when it had none before the failure', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -770,8 +741,9 @@ describe('the metadata of an upload', () => {
     expect(sending.error.hasError).toBe(false)
   })
 
-  // Nor does a duplicate get it back, whose form is disabled for good. A mass-edit row whose file failed does: its
-  // status is its batch load's, and the processed file gives back what the failure took.
+  // A duplicate does not get its form back, because its form is disabled for good.
+  // A mass-edit row whose file failed does: its status belongs to its
+  // batch load, and the processed file restores what the failure took.
   it('does not give the form back to a duplicate, and gives it back to a mass-edit row whose file failed', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -797,7 +769,7 @@ describe('the metadata of an upload', () => {
     expect([duplicate.canEditMetadata, picked.canEditMetadata]).toEqual([false, true])
   })
 
-  // The processed notification can beat the answer to the finish request.
+  // The processed notification can arrive before the answer to the finish request.
   it('stays uploaded when the request fails after the notification has settled the row', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
@@ -816,11 +788,9 @@ describe('the metadata of an upload', () => {
     expect(sending.error.hasError).toBe(false)
   })
 
-  // The one failed row it still reaches: it failed for want of this very metadata.
   it('still reaches a mass-edit row that failed because its batch load left it out', async () => {
     const { useUploadQueuesStore } = await load()
     const store = useUploadQueuesStore()
-    // The mocked batch load answers with no asset at all.
     await store.addByAssets(QUEUE, [
       { id: 'asset-1', attributes: { assetType: 'image', assetStatus: 'with_file' }, texts: {}, mainFile: null },
     ] as never)

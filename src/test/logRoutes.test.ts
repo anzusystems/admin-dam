@@ -4,12 +4,11 @@ import { routes } from 'vue-router/auto-routes'
 
 import { LOG_SYSTEM } from '@/domains/system/logSystems'
 
-// The guard reads `meta.superAdminOf` and answers `undefined` when it is absent -- so a log page
-// that forgets it, or spells it differently, is not refused: it is let through with no check at
-// all, and `requiredPermissions: []` waves it past the other gate too. Nothing reports that.
-//
-// It is pinned here rather than left to type-checking because `definePage` meta is not checked
-// against the `RouteMeta` augmentation: this exact mismatch once shipped green.
+// The guard reads `meta.superAdminOf` and gets `undefined` when it is absent.
+// A log page that omits or misspells it is not refused. It passes with no check,
+// and `requiredPermissions: []` lets it past the other gate too. Nothing reports this.
+// This is pinned here because `definePage` meta is not checked against the `RouteMeta` augmentation.
+// This exact mismatch once shipped green.
 const router = createRouter({ history: createMemoryHistory(), routes })
 
 const logRoutes = router.getRoutes().filter((record) => record.path.includes('/logs/'))

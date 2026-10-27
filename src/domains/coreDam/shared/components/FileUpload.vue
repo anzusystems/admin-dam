@@ -23,7 +23,6 @@ const props = withDefaults(
     multiple?: boolean
     buttonText?: string
     height?: number
-    // Of the button that adds a file to a slot.
     disabled?: boolean
   }>(),
   {
@@ -72,7 +71,7 @@ const onDrop = (event: DragEvent) => {
   }
 }
 
-// Local declarations shadow the DOM ones, which take an error callback the platform will use.
+// Local declarations shadow the DOM ones to add the error callback the platform calls.
 interface FileSystemFileEntry extends FileSystemEntry {
   file(callback: (file: File) => void, errorCallback?: (error: unknown) => void): void
 }
@@ -108,8 +107,10 @@ function flattenFileArray(array: (File | File[])[]): File[] {
   return result
 }
 
-/* `readEntries` answers in batches - Chromium caps them at 100 - and the same reader has to be asked until it answers
- * with an empty one. */
+/*
+ * `readEntries` answers in batches (Chromium caps them at 100).
+ * The same reader must be called until it returns an empty batch.
+ */
 const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> =>
   new Promise((resolve, reject) => {
     const entries: FileSystemEntry[] = []
@@ -161,14 +162,14 @@ const traverseFileTree = (item: FileSystemEntry, path = '') =>
             queue.push(traverseFileTree(entries[i], path + item.name + '/'))
           }
 
-          // Every entry settled on its own, or one unreadable file discards the folder around it.
+          // Each entry settles on its own. Otherwise one unreadable file discards the whole folder.
           return Promise.all(queue.map(settleEntry)).then((results) => {
             resolve(flattenFileArray(collectRead(results)))
           })
         })
         .catch(reject)
     } else {
-      // Neither a file nor a directory: unsettled, the whole drop produces no reaction at all.
+      // Neither a file nor a directory. Left unsettled, the whole drop would produce no reaction.
       resolve([])
     }
   })
@@ -200,7 +201,7 @@ const onFileChange = (event: Event) => {
         queue.push(traverseFileTree(item))
       }
     }
-    // Each entry on its own: `Promise.all` would throw away every file that did read.
+    // Each entry settles on its own: `Promise.all` would discard every file that did read.
     Promise.all(queue.map(settleEntry)).then((results) => {
       setFiles(arrayFromArgs<File>(collectRead(results) as File[]))
     })
@@ -229,7 +230,7 @@ const { checkFormatsAndSizes: keepCorrectFiles } = useFormatAndSizeCheck(
   () => props.maxSizes
 )
 
-// The library's check with its warning off: the warning stays admin-dam's own text.
+// The library's check with its warning off: the warning uses admin-dam's own text.
 const checkFormatsAndSizes = (files: File[]) => {
   const validFiles = keepCorrectFiles(files, true)
   const incorrectFileNames = files.filter((file) => !validFiles.includes(file)).map((file) => file.name)

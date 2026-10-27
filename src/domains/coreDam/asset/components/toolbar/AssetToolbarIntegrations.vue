@@ -35,8 +35,8 @@ const externalProviders = computed(() => configExtSystem.assetExternalProviders 
 const { useCurrentUser, can } = useAuth()
 const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
-// A super admin may open any provider, anyone else the ones on their account (`AssetExternalProviderVoter`), and
-// only with the access grant the provider's list asks for.
+// A super admin may open any provider. Others only the ones on their account
+// (`AssetExternalProviderVoter`), and only with the access grant the provider list requires.
 const offeredExternalProviders = computed(() => {
   if (isSuperAdmin.value) return externalProviders.value
   if (!can(ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS)) return {}

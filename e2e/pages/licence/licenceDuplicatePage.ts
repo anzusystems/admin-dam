@@ -5,22 +5,18 @@ import { type Page, expect } from '@playwright/test'
 import { waitForAssetProcessed } from '@pages/shared/api'
 import { finishUpload, uploadFile, waitForUpload } from '@pages/shared/upload'
 
-/** Copy `file` byte for byte, under the same name, into a fresh temporary directory. */
 function identicalCopy(file: string): string {
   const target = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'adam-e2e-')), path.basename(file))
   fs.copyFileSync(file, target)
   return target
 }
 
-/** Duplicate markers in the upload queue of the upload overlay. */
 function duplicateIcons(page: Page) {
   return page.locator('.asset-upload-overlay .dam-upload-queue--list [data-cy="icon-duplicate"]')
 }
 
 /**
- * Upload `file` twice into the current licence: the first copy must not be marked as a duplicate, the second
- * one must. Pass a `uniqueFixtureCopy` so no earlier run's asset can be the original. Closes the upload overlay
- * afterwards and returns the ids of both assets for cleanup.
+ * Pass a `uniqueFixtureCopy` so no earlier run's asset can be the original.
  */
 export async function expectDuplicateOnSecondUpload(page: Page, file: string): Promise<string[]> {
   const first = await uploadFile(page, file)

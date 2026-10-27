@@ -5,10 +5,14 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { buttonsNamed, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The edit of an anzu user saves to `PUT /adm/v1/anzu-user/{id}` with the id of the form, and the backend writes the
- * form over the user of that id. The form offered the id as a text field: a changed id saved the roles, groups and
- * grants of this user over another one. The id is shown, not offered for typing. The real page with the actionbar its
- * buttons are moved into, over the application as it starts; the server is a fake. */
+/*
+ * The anzu user edit saves to `PUT /adm/v1/anzu-user/{id}` with the
+ * form id, and the backend writes the form over the user with that id.
+ * The form used to offer the id as a text field. A changed id saved
+ * the roles, groups and grants of this user over another user.
+ * The id is therefore shown, not editable. Uses the real page with
+ * the actionbar its buttons are moved into, and a fake server.
+ */
 
 let server: FakeDam
 
@@ -36,13 +40,12 @@ const anzuUser = (id: number) => ({
   _system: 'common',
 })
 
-// The pages of an anzu user, under their real names, which the page navigates by.
+// Anzu user pages under their real route names, which the page navigates by.
 const ANZU_USER_PAGES = [
   { path: '/anzu-users', name: '/(common)/anzu-users' },
   { path: '/anzu-users/:id', name: '/(common)/anzu-users/[id]' },
 ]
 
-/** The edit of the anzu user, at its address, under the actionbar of the layout, once the user is read. */
 const openEdit = async (id: number) => {
   const ui = await startUploadUi({ server })
   const { defineComponent, h, ref } = await import('vue')
@@ -54,7 +57,7 @@ const openEdit = async (id: number) => {
         const router = useRouter()
         ANZU_USER_PAGES.forEach((route) => router.addRoute({ ...route, component: { render: () => null } }))
         router.addRoute({ path: '/anzu-users/:id/edit', name: '/(common)/anzu-users/[id]/edit', component: EditView })
-        // The page is drawn once the user is on it, as the router view of the application draws it.
+        // The page is drawn only once the user has arrived, as the application's router view does.
         const arrived = ref(false)
         void router.push('/anzu-users/' + id + '/edit').then(() => (arrived.value = true))
         return () => [h(ui.library.AActionbarTarget), arrived.value ? h(EditView) : null]

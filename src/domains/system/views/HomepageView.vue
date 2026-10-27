@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 onMounted(() => {
-  // In the place of this page in the history: left there, the way back from the list would end here, on a list anew.
+  // Replace, not push: otherwise going back from the list would land here and redirect to the list again.
   router.replace({ name: '/(coreDam)/assets' })
 })
 </script>

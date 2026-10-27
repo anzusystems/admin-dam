@@ -66,7 +66,7 @@ const closeDialog = () => {
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  // One at a time: the button only spins meanwhile, and a key pressed on it, still in focus, is a click again.
+  // One save at a time. The button only spins, and a key press on the still focused button clicks it again.
   if (isNull(lastSelectedItem.value) || saving.value) return
   saving.value = true
   const fileId = props.fileId
@@ -74,7 +74,7 @@ const onConfirm = async () => {
     await setVideoFileDistributionPreview(fileId, lastSelectedItem.value.id)
     closeDialog()
     showRecordWas('updated')
-    // Not by an event, nor to the card that opened the dialog: either can be gone by now.
+    // Not via an event or the opening card, since either can be gone by now.
     videoPreviewSet(fileId)
   } catch (e) {
     showErrorsDefault(e)

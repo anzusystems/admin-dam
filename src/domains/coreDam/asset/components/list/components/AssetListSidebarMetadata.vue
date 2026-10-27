@@ -48,18 +48,26 @@ const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
 
-/* Behind the loader while the asset is read, and while a save of the mass edit is on its way for it after "Leave
- * anyway" let what was typed go: the read after that save replaces the form, and nothing typed meanwhile is kept. */
+/*
+ * Hidden behind the loader while the asset loads, and while a mass-edit
+ * save is in flight after "Leave anyway" discarded the typed data.
+ * The read after that save replaces the form, so nothing typed meanwhile would be kept.
+ */
 const formAway = computed(
   () => loader.value || (!isNull(asset.value) && assetDetailStore.leftForMassSave === asset.value.id)
 )
 const uploadQueueStore = useUploadQueuesStore()
 
-/* Saved before the server has processed the file, the form would overwrite what it fills in from the file. Also once
- * the asset got another main file under what was typed: the form is still the one read before that. */
+/*
+ * "Save" is blocked while the server may still fill metadata from
+ * the file, or after the main file changed under what was typed.
+ * Saving then would overwrite what the server fills in, because the form is older.
+ */
 const saveBlocked = computed(() => !isNull(asset.value) && (saveHeldBack.value || metadataMayStillChange(asset.value)))
-/* Held back for a main file that failed or is processed, nothing is left to be processed: the asset read whole - opened
- * again, once what was typed is left - frees "Save". The line under it says which. */
+/*
+ * Held back for a main file that is processed or failed: reading the asset whole frees "Save".
+ * That happens when the asset is opened again or nothing typed is left. The line below says which case applies.
+ */
 const heldBackLine = computed(() => {
   switch (asset.value?.mainFile?.fileAttributes.status) {
     case AssetFileProcessStatus.Failed:
@@ -75,9 +83,11 @@ const { showRecordWas, showValidationError } = useAlerts()
 const { readHeldUnlessTyped } = useAssetListActions()
 
 const onEditMore = async () => {
-  /* The view stays as the detail opened last left it, so it is set here as well. Of the list only while the panel
-   * holds the asset of the active tile: it can hold one of a queue row, or one just created, and the detail would
-   * walk the list from a tile that is not its own. */
+  /*
+   * The view persists from the last opened detail, so set it here too.
+   * Use `list` only when the panel holds the active tile's asset. It may hold a queue row's
+   * asset or a newly created one, and the detail would walk the list from the wrong tile.
+   */
   const held = assetDetailStore.asset
   const ofActiveTile = !isNull(held) && assetListStore.getActiveAsset()?.asset.id === held.id
   assetDetailStore.setView(ofActiveTile ? 'list' : 'queue')
@@ -92,9 +102,10 @@ const onEditMore = async () => {
 
 const v$ = useVuelidate({}, {}, { $scope: AssetMetadataValidationScopeSymbol })
 
-/* The button only spins while a save is on its way, so another can start. What a save takes of what was typed, and
- * what it leaves unsaved when it fails - only while no save of the form, here or in the detail, has saved as much,
- * and none on its way takes it too - the store keeps (`saveSent`). */
+/*
+ * The button spins only while a save is in flight, so another save can start.
+ * The store (`saveSent`) tracks what each save takes from the typed data, and what stays unsaved if it fails.
+ */
 const onSave = async () => {
   if (isNull(asset.value)) return
   saveButtonLoading.value = true
@@ -104,11 +115,13 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
-  // What this save sends, taken as it starts: another asset can be opened, or this one typed into, while it is on the
-  // wire. The switch is the panel's own, not the value the asset was opened with.
+  // Snapshot the payload at start. Another asset can be opened, or this one edited, while the request is in flight.
+  // Use the panel's own switch, not the value the asset was opened with.
   const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
-  /* Before the request, not after it: what is typed while it is on the wire is not in it. Known to a read of the asset
-   * that nobody here started too: its answer can be from before this save. */
+  /*
+   * Called before the request so edits made during it are not counted as sent.
+   * Other asset reads also see it, since their answer can predate this save.
+   */
   const saveAnswered = assetDetailStore.saveSent(asset.value)
   let failed = false
   try {
@@ -119,7 +132,7 @@ const onSave = async () => {
       mainFileInternal.value,
       ttsAudio.value
     )
-    // Into a row of the asset in a queue too: a later bulk save sends that row.
+    // Also update the asset's row in a queue, because a later bulk save sends that row.
     uploadQueueStore.updateAssetMetadata(saved)
     showRecordWas('updated')
   } catch (error) {
@@ -133,7 +146,7 @@ const onSave = async () => {
 
 const assetStatus = computed(() => asset.value?.attributes.assetStatus || DamAssetStatus.Draft)
 
-// An asset being deleted - by the detail, by the bin of a queue row, elsewhere - has nothing to be saved into.
+// An asset being deleted, by the detail, a queue row's bin or elsewhere, cannot be saved into.
 const isDeleting = computed(() => assetDetailStore.isDeleting)
 
 const assetMainFile = computed(() => asset.value?.mainFile || undefined)
@@ -185,7 +198,7 @@ watch(
       v-if="!formAway && asset"
       #append
     >
-      <!-- Not for an asset being deleted: "Save" is off for that, and neither line would come true. -->
+      <!-- Hidden for an asset being deleted: "Save" is off, so neither line applies. -->
       <Acl :permission="ACL.DAM_ASSET_UPDATE">
         <div
           v-if="saveBlocked && !isDeleting"

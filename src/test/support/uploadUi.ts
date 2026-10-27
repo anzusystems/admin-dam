@@ -16,29 +16,24 @@ import { createMemoryHistory, createRouter } from 'vue-router'
 import { seedDamConfig, seedQueue } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The application around a component of the upload, put together as `main.ts` puts it: the plugin of the library
- * with the client of the application, its messages (in English), Vuetify as the library configures it, the alerts
- * host of the layout and a user with grants. The config of DAM is written into the store of the library as its
- * load writes it. The one stand-in is the router, which knows a single page: the detail of an asset.
- *
- * Nothing of the application is replaced here. The test file replaces the client (`damClient`) by its fake server;
- * every module is evaluated anew for each start, so one case leaves the next neither a user, nor a cache, nor a
- * footer that is open - and time is faked from the start to `stopUploadUi`, so it leaves it no timer either. */
+/*
+ * The application around an upload component, set up as `main.ts` does: the library plugin with the app
+ * client, English messages, Vuetify as the library configures it, the alerts host and a user with grants.
+ * The DAM config is written into the library store as its load does. The
+ * only stand-in is the router, which knows one page: the asset detail.
+ * Every start evaluates modules anew, so a case leaves no user, cache or open footer
+ * for the next. Time is faked from start to `stopUploadUi`, so no timer is left either.
+ */
 
 type AssetTypeConfig = Omit<DamExtSystemConfigItem, 'customMetadataPinnedAmount'> & {
-  // A deployment can leave it out, whatever the type says.
   customMetadataPinnedAmount?: number
 }
 
 export interface UploadUiSetup {
   server: FakeDam
-  /** What the user is granted. Left out: everything the upload components ask about. */
   grants?: string[]
-  /** Over the config of the ext system, by asset type: keywords and authors are on and optional, two fields pinned. */
   extSystem?: Partial<Record<DamAssetTypeType, Partial<AssetTypeConfig>>>
-  /** The custom form of an asset type; none has a field unless given here. */
   customForm?: Partial<Record<DamAssetTypeType, CustomDataFormElement[]>>
-  /** The rows the queues hold before anything mounts. */
   queues?: Record<string, UploadQueueItem[]>
 }
 
@@ -60,7 +55,6 @@ const LICENCE = 1
 
 let mounted: App[] = []
 
-/** A custom form field as the config of DAM describes it: a text unless told otherwise. */
 export const customField = (
   property: string,
   attributes: Partial<CustomDataFormElement['attributes']> = {}
@@ -84,23 +78,28 @@ export const customField = (
   }) as CustomDataFormElement
 
 export const startUploadUi = async (setup: UploadUiSetup) => {
-  // A component whose setup threw leaves Vue believing it is still inside that setup, and every store asked for
-  // from then on is the store of that dead application: the cases after it would fail for no reason of their own.
+  // A component whose setup threw leaves Vue believing it is still inside that setup. Every store asked
+  // for afterwards is the store of that dead application, so later cases would fail for unrelated reasons.
   if (getCurrentInstance()) throw new Error('uploadUi: a component mounted before this start failed in its setup')
   recordListeners()
   pluginsBefore = devtoolsPlugins()?.length ?? 0
-  /* Vue keeps every component it mounts for its devtools until it gives up on them, three seconds after its first
-   * application is made. Made under the fake clock below, which is thrown away with the case, those three seconds
-   * never come, and every case of the file stays. So an application is made first on the real clock. */
+  /*
+   * Vue keeps every mounted component for its devtools until it
+   * gives up, three seconds after its first application is made.
+   * Under the fake clock below, which is thrown away with the case, those three seconds never
+   * pass and every case of the file stays. So the first application is made on the real clock.
+   */
   createApp({})
-  /* The clock of every case is a fake one, and is thrown away when the case is over: a name lookup the caches put
-   * off, a poll of a queue or a closing dialog of one case cannot fire in the next, into its server. A case moves
-   * the time itself (`vi.advanceTimersByTimeAsync`), or waits with `vi.waitFor`, which moves it as it waits. */
+  /*
+   * The clock of every case is fake and thrown away at the end of the case. A deferred name
+   * lookup, queue poll or closing dialog of one case cannot fire in the next, into its server.
+   * A case moves time itself (`vi.advanceTimersByTimeAsync`) or waits with `vi.waitFor`, which moves it.
+   */
   vi.useFakeTimers()
   vi.resetModules()
-  // happy-dom has none, and a dialog listens on it for the size of the window.
+  // happy-dom has no `visualViewport`, and a dialog listens on it for the window size.
   vi.stubGlobal('visualViewport', new EventTarget())
-  // The addresses the server is asked, each whole: `server.requests` keeps them without their query.
+  // Keeps each requested address whole, because `server.requests` drops the query string.
   const asked: string[] = []
   const { get, request } = setup.server.client
   setup.server.client.get = (url, config) => {
@@ -120,7 +119,6 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
   const { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } = await import('@/plugins/i18n')
   i18n.global.setLocaleMessage('en', (await import('@/locales/en')).default as never)
   i18n.global.locale.value = 'en'
-  // What the application gives the plugin, the grants of creating a keyword and an author with it.
   const { coreDamDefaultConfig } = await import('@/plugins/commonAdminCoreDam')
 
   const config = library.useDamConfigStore()
@@ -153,7 +151,6 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
       selectedLicenceDto: null,
       assetLicencesDto: [],
     } as never)
-  // From the user and the config, as the start of the application: the ext system and the licence uploads go to.
   const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
   if (!(await initCurrentExtSystemAndLicence())) throw new Error('uploadUi: no ext system for the user')
 
@@ -162,7 +159,6 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
   const rows: Record<string, UploadQueueItem[]> = {}
   for (const [queueId, items] of Object.entries(setup.queues ?? {})) {
     rows[queueId] = seedQueue(store, queueId, items)
-    // How many of its rows are settled, as the store counts them.
     store.recalculateQueueCounts(queueId)
   }
 
@@ -173,10 +169,9 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
       { path: '/assets/:id', name: '/(coreDam)/assets/[id]', component: { render: () => null } },
     ],
   })
-  // The user is on a page, with no navigation on its way: a component asks about that before it reports a failure.
+  // The user is on a page with no navigation pending. A component checks this before it reports a failure.
   await router.push('/')
 
-  /** Mounts the component, imported only now, under the alerts host. Answers the element it is drawn in. */
   const mount = async (load: () => Promise<{ default: Component }>, props: Record<string, unknown> = {}) => {
     const component = (await load()).default
     const Page = defineComponent({
@@ -194,7 +189,7 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
         languages: { available: AVAILABLE_LANGUAGES, default: DEFAULT_LANGUAGE },
         coreDam: { configs: { default: coreDamDefaultConfig }, apiTimeout: 30, adminDomain: 'https://dam.test' },
       })
-    // The build registers the Vuetify components a template uses; here all of them are.
+    // The build registers only the Vuetify components a template uses. Here all of them are registered.
     for (const [name, vuetifyComponent] of Object.entries(vuetifyComponents)) {
       app.component(name, vuetifyComponent as Component)
     }
@@ -205,7 +200,6 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
     return root.querySelector<HTMLElement>('[data-under-test]')!
   }
 
-  /** What the alerts host shows, oldest first. */
   const alerts = () =>
     Array.from(document.body.querySelectorAll('.a-alerts .v-alert')).map((alert) => alert.textContent?.trim() ?? '')
 
@@ -214,9 +208,8 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
 
 export type UploadUi = Awaited<ReturnType<typeof startUploadUi>>
 
-/** After each case: what was mounted is taken down, and the page is left empty. */
 export const stopUploadUi = () => {
-  // Also when an unmount throws: the window would keep its recording methods into the next case and file.
+  // Runs even when an unmount throws. Otherwise the window keeps its recording methods into the next case and file.
   try {
     mounted.forEach((app) => app.unmount())
   } finally {
@@ -232,11 +225,12 @@ export const stopUploadUi = () => {
   }
 }
 
-/* Each start evaluates the modules anew, and what a case leaves is garbage once it is over: V8 lets the heap grow first
- * and collects it late, so a file of many cases held several of them at once. Above this, all of it is collected
- * after a case. The collector is not given to a test without a flag of node: it is asked for as the flag would. Node
- * does not promise a flag set after its start takes: without the collector, or when it fails, nothing is collected,
- * and the end of the case is not failed for it. */
+/*
+ * Each start evaluates modules anew, and what a case leaves is garbage afterwards. V8 lets the heap grow and collects
+ * late, so a file with many cases held several at once. Above this size, everything is collected after a case.
+ * Node does not expose the collector without a flag, so it is enabled by setting the flag at runtime. Node does
+ * not promise that works. If the collector is missing or fails, nothing is collected and the case does not fail.
+ */
 const COLLECTED_ABOVE = 1024 ** 3
 let collect: (() => void) | undefined
 const collectWhenBig = () => {
@@ -258,22 +252,25 @@ type Listener = { target: EventTarget; type: string; listener: EventListenerOrEv
 const captureOf = (options?: boolean | EventListenerOptions) =>
   typeof options === 'boolean' ? options : !!options?.capture
 
-/** A listener is one per target, type, function and capture: added twice, it is there once. */
+/**
+ * A listener is unique per target, type, function and capture flag. Added twice, it exists once.
+ */
 const isListener =
   (target: EventTarget, type: string, listener: EventListenerOrEventListenerObject, capture: boolean) =>
   (one: Listener) =>
     one.target === target && one.type === type && one.listener === listener && one.capture === capture
 
-/* The window is one for the whole file, and every start evaluates the modules anew: what the modules of a case leave
- * listening on the window stays, with all it reaches, for as long as the file runs. The settings of the theme of the
- * library listen to the media query of a dark scheme (in happy-dom, a listener of the window) and to the storage
- * from the moment they are evaluated, and never stop. So what is added to the window, the document and the media
- * queries of the window from a start on is recorded, and what of it is still there when the case is over is
- * removed; what was there before the start is left alone. */
+/*
+ * The window is shared by the whole file, and every start evaluates modules anew. Listeners
+ * that a case's modules leave on the window stay, with all they reach, until the file ends.
+ * The library theme settings listen to the dark-scheme media query (in happy-dom
+ * a window listener) and to storage from evaluation on, and never stop.
+ * So listeners added to the window, the document and the window media queries after a start are recorded.
+ * Those still present when the case ends are removed. Listeners from before the start are kept.
+ */
 let listeners: Listener[] = []
 let restoreListening: (() => void)[] = []
 
-/** From now on, the listeners added to the target are recorded, and those removed from it forgotten. */
 const recordOn = (target: EventTarget) => {
   const own = Object.hasOwn(target, 'addEventListener')
   const { addEventListener: add, removeEventListener: remove } = target
@@ -291,7 +288,7 @@ const recordOn = (target: EventTarget) => {
   }
   restoreListening.push(() => {
     if (own) {
-      // The window of vitest is the global object, whose accessors pass what is assigned on to happy-dom's window.
+      // The vitest window is the global object. Its accessors pass assignments on to the happy-dom window.
       Object.assign(target, { addEventListener: add, removeEventListener: remove })
     } else {
       Reflect.deleteProperty(target, 'addEventListener')
@@ -301,7 +298,6 @@ const recordOn = (target: EventTarget) => {
 }
 
 const recordListeners = () => {
-  // Started again before a stop: still recording.
   if (restoreListening.length) return
   recordOn(window)
   recordOn(document)
@@ -325,8 +321,11 @@ const removeListeners = () => {
   left.forEach(({ target, type, listener, capture }) => target.removeEventListener(type, listener, capture))
 }
 
-/* vue-i18n announces each application it is installed in to the devtools of Vue, in a list on the global object
- * the devtools read when they come. Here they never come, and the list would keep the application of every case. */
+/*
+ * vue-i18n announces each application it is installed in to the Vue devtools,
+ * in a list on the global object that the devtools read when they attach.
+ * The devtools never attach here, so the list would keep the application of every case.
+ */
 const devtoolsPlugins = () => (globalThis as { __VUE_DEVTOOLS_PLUGINS__?: unknown[] }).__VUE_DEVTOOLS_PLUGINS__
 let pluginsBefore = 0
 
@@ -334,25 +333,26 @@ type HappyDomWindow = { happyDOM: { setViewport: (viewport: { width: number; hei
 const WINDOW_WIDTH = 1024
 let windowResized = false
 
-/** The width of the window from now on, until the case is over: Vuetify decides by it what is a small screen. */
+/**
+ * Lasts until the case is over. Vuetify uses the window width to decide what a small screen is.
+ */
 export const setWindowWidth = (width: number) => {
   windowResized = true
   ;(window as unknown as HappyDomWindow).happyDOM.setViewport({ width, height: 768 })
 }
 
-/** The button of the open dialog that shows the text. */
 export const dialogButton = (name: string) =>
   Array.from(document.body.querySelectorAll<HTMLButtonElement>('.v-dialog button')).find(
     (button) => button.textContent?.trim() === name
   ) ?? null
 
 /**
- * Waits until the check passes, moving the fake clock a little at each try. Far longer than vitest waits by itself:
- * a run beside the lint set, or beside another suite, can lose the processor for seconds.
+ * Waits until the check passes, moving the fake clock a little on each try.
+ * The timeout is much longer than the vitest default, because a run beside
+ * the lint set or another suite can lose the processor for seconds.
  */
 export const eventually = <T>(check: () => T | Promise<T>) => vi.waitFor(check, { timeout: 15_000, interval: 20 })
 
-/** The buttons under the element that show or are named by the text, in the order of the page. */
 export const buttonsNamed = (within: ParentNode, name: string) =>
   Array.from(within.querySelectorAll<HTMLButtonElement>('button')).filter(
     (button) => button.getAttribute('aria-label') === name || button.textContent?.trim() === name

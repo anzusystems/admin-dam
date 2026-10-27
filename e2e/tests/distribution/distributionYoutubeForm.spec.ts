@@ -22,15 +22,10 @@ import {
 } from '@pages/distribution/distributionPage'
 
 /**
- * The YouTube side of "Pridať novú distribúciu": the playlist and language selects, the privacy options and
- * the publish-at field they reveal, the three flags and the terms of use.
- *
- * **Nothing here submits.** `Pridať` would upload the fixture to the shared YouTube channel, which no test
- * can take back — the happy path is already covered by `videoDistribution.spec.ts`. This spec fills the form
- * and cancels, and asserts the selects against the very endpoints they are built from.
- *
- * The `Odhlásiť YouTube kanál` button sits in the same dialog and logs the whole environment out of the
- * channel, so it is deliberately left alone.
+ * The YouTube side of "Pridať novú distribúciu": selects, privacy options, publish-at field, flags and terms of use.
+ * Nothing here submits. `Pridať` would upload the fixture to the shared YouTube channel
+ * and cannot be undone. The happy path is covered by `videoDistribution.spec.ts`.
+ * `Odhlásiť YouTube kanál` logs the whole environment out of the channel, so it is left alone.
  */
 
 let page: Page
@@ -54,9 +49,9 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
     const listLoaded = waitForAssetList(page)
     await page.goto('/assets')
     await listLoaded
-    // A unique copy, so the main file is processed rather than matched as a duplicate of an earlier upload.
-    // Waited through the API rather than the upload overlay, which can sit on "Nahrávanie 1/1" for ever
-    // when the server's notification is lost.
+    // A unique copy, so the main file is processed and not matched as a duplicate of an earlier upload.
+    // Wait through the API, not the upload overlay. The overlay can stay
+    // on "Nahrávanie 1/1" forever when the server's notification is lost.
     ASSET_ID = await uploadFile(page, uniqueFixtureCopy('video/sample.mp4'))
     await waitForAssetProcessed(page, ASSET_ID)
 
@@ -84,7 +79,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
 
     const languages = await youtubeLanguages(page)
     expect(languages).toContain('Slovak')
-    // The prepared payload picks the channel's own language, and the select shows it.
     await expect(distributionField(dialog, 'Jazyk')).toContainText('Slovak')
 
     // 83 languages: the menu renders only a window of them, so the option has to be scrolled to.
@@ -103,7 +97,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
     // Titles are not unique on this channel, so the two lists are compared as multisets.
     expect(offered.slice().sort()).toEqual(playlists.slice().sort())
 
-    // No playlist is preselected — the prepared payload leaves it empty.
     await expect(distributionField(dialog, 'Zoznam videí')).not.toContainText(playlists[0])
     await pickDistributionOption(page, dialog, 'Zoznam videí', playlists[0])
 
@@ -131,7 +124,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
     // A new distribution defaults to private, so nothing is published by an unfinished form.
     await expect(distributionField(dialog, privacy)).toContainText('Súkromné')
 
-    // Only the scheduled option needs a time, and only then is the picker rendered.
     await expect(dialog.locator('.v-input:has(.mdi-calendar)')).toHaveCount(0)
     await pickDistributionOption(page, dialog, privacy, 'Naplánované')
     await expect(dialog.locator('.v-input:has(.mdi-calendar)')).toHaveCount(1)
@@ -148,7 +140,6 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
     await openDistributionServiceTab(page, dialog, 'YouTube')
     await pickDistributionOption(page, dialog, 'Uložiť alebo zverejniť ako', 'Naplánované')
 
-    // The same field on the JW Player tab is labelled "Publikované o", and the locale defines it.
     await expect(dialog.getByRole('textbox', { name: 'Publikované o' })).toHaveCount(1)
   })
 

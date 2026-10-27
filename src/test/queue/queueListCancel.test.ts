@@ -4,10 +4,6 @@ import { createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The cancel of a row, as the list hears it: the event of the row names the queue, and the upload is stopped in
- * that one. The list is mounted over the real store; the row is a stand-in with only the button, which names a
- * queue of its own choice. That a real row names the queue it is in is in `queueRowActions.test.ts`. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))

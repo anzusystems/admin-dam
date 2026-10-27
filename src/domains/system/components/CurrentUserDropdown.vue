@@ -9,10 +9,8 @@ import { SYSTEM_DAM } from '@/shared/systems'
 const { useCurrentUser } = useAuth()
 const { currentUser } = useCurrentUser(SYSTEM_DAM)
 
-// `AnzuUser` carries `id?: IntegerIdNullable` from `BaseUser`, while the dropdown asks for
-// `AnzuUserMinimal`, whose `id` is required and non-null. The signed-in user always has one -- the
-// app does not get this far otherwise -- so the difference is narrowed here rather than widened to
-// `any` at the call site.
+// `AnzuUser.id` is nullable, but the dropdown needs `AnzuUserMinimal` with a required id.
+// The signed-in user always has an id, so it is narrowed here instead of using `any`.
 const currentUserMinimal = computed(() => currentUser.value as AnzuUserMinimal | undefined)
 </script>
 

@@ -77,7 +77,7 @@ import { resolveUploadErrorMessage, useUpload } from '@/domains/coreDam/shared/s
 import { i18n } from '@/plugins/i18n'
 import { damClient } from '@/shared/apiClients/damClient'
 
-// Outside a component, so the global instance - the same way `uploadService` reaches it.
+// Outside a component, so use the global i18n instance, as `uploadService` does.
 const translate = (key: string) => {
   const { t } = i18n.global
 
@@ -97,14 +97,17 @@ const roleOf = (item: UploadQueueItem): UploadRowRoleType => {
   }
 }
 
-/* What the settlement does with a row, by its role. The state of a processed file is written from its notification
- * at once, and the read after it completes the row; a duplicate stays the row it was, marked. */
+/*
+ * How settlement handles a row, by its role.
+ * A processed file's state is written from its notification at once, and the
+ * following read completes the row. A duplicate stays as it was, marked.
+ */
 const policyFor = (role: UploadRowRoleType): UploadSettlePolicy => {
   switch (role) {
-    // The asset speaks only of its main file, so a slot is read from the list of the slots; it has no form.
+    // The asset only describes its main file, so a slot is read from the slots list. Slots have no form.
     case UploadRowRole.Slot:
       return { reader: 'slots', settleOn: 'event', duplicate: 'markDuplicate', metadata: 'none' }
-    // Never asked about: the batch load owns its status, and a processed file only completes the row.
+    // Never polled: the batch load owns the status, and a processed file only completes the row.
     case UploadRowRole.MassEdit:
       return { reader: 'none', settleOn: 'never', duplicate: 'markDuplicate', metadata: 'load' }
     default:
@@ -112,13 +115,14 @@ const policyFor = (role: UploadRowRoleType): UploadSettlePolicy => {
   }
 }
 
-/* The poll asks for as long as a row waits. The settlement says of each of its requests whether a failure of it is
- * the first of a streak, and only that one is handed to the api error logger: `report` of the three readers. */
+/*
+ * The poll repeats while a row waits. Settlement marks which failure starts
+ * a streak, and only that one goes to the api error logger via `report`.
+ */
 
-// An asset that does not exist is an answer, which the settlement counts; anything else is a read that failed.
+// A missing asset is an answer the settlement counts. Anything else is a failed read.
 const readAsset = async (assetId: DocId, options?: UploadReadOptions) => {
   try {
-    // Called as ever unless it is to be quiet.
     return options?.report === false ? await fetchAsset(assetId, { report: false }) : await fetchAsset(assetId)
   } catch (error) {
     if (apiErrorStatus(error) === 404) return null
@@ -126,19 +130,21 @@ const readAsset = async (assetId: DocId, options?: UploadReadOptions) => {
   }
 }
 
-// The read of several assets, and the read of the slots below, report only where they are told to.
+// The multi-asset read and the slots read below report only when told to.
 const readAssets = (licenceId: number, assetIds: DocId[], options?: UploadReadOptions) =>
   fetchWaitingAssets(assetIds, licenceId, { report: options?.report === true })
 
-// A file the server has not processed yet: it may still fill in the metadata of an asset that is not described.
+// Not yet processed by the server: it may still fill in the metadata of a non-described asset.
 const STILL_PROCESSING: AssetFileProcessStatusType[] = [
   AssetFileProcessStatus.Uploading,
   AssetFileProcessStatus.Uploaded,
   AssetFileProcessStatus.Stored,
 ]
 
-/* The server may yet fill in its metadata from the file: a form loaded now would overwrite that when saved. The
- * mass edit, the detail and the panel of the list go by it alike. */
+/*
+ * The server may still fill in metadata from the file, and a form loaded now would overwrite it on save.
+ * Used by the mass edit, the detail and the list panel.
+ */
 export const metadataMayStillChange = (asset: AssetDetailItemDto) =>
   !!asset.mainFile && STILL_PROCESSING.includes(asset.mainFile.fileAttributes.status) && !asset.flags.described
 
@@ -161,8 +167,10 @@ const fetchDuplicateOriginFile = async (
   return null
 }
 
-/* How the server ended the file of a row that is settled: processed, a duplicate, or failed - by its word, which gives
- * a reason; a failure of the client, or of a read, gives none. Null for an end the server did not say. */
+/*
+ * How the server ended a settled row's file: processed, duplicate, or failed.
+ * Server failures carry a reason; client or read failures do not. Null when the server did not report an end.
+ */
 const slotFileEndedAs = (item: UploadQueueItem): AssetFileProcessStatusType | null => {
   if (item.status === UploadQueueItemStatus.Uploaded) {
     return item.isDuplicate ? AssetFileProcessStatus.Duplicate : AssetFileProcessStatus.Processed
@@ -175,12 +183,12 @@ const slotFileEndedAs = (item: UploadQueueItem): AssetFileProcessStatusType | nu
 }
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
-  // The mass-edit rows whose batch load could not give them their metadata - not by message, which changes with the
-  // language.
+  // Mass-edit rows whose batch load failed to get metadata. Keyed by
+  // row, not message, because the message changes with the language.
   const metadataFailures = new Set<string>()
   const metadataFailureKey = (queueId: string, item: UploadQueueItem) => queueId + '/' + item.key
-  // The mass-edit rows its batch load left without their metadata, whatever became of their file since: their form
-  // is empty, and the bulk save would send that.
+  // Mass-edit rows the batch load left without metadata, regardless of
+  // their file state. Their form is empty and the bulk save would send it.
   const leftOutByBatch = new WeakSet<UploadQueueItem>()
 
   const { createDefault } = useUploadQueueItemFactory()
@@ -190,27 +198,33 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
   const queues = ref<{ [queueId: string]: UploadQueue }>({})
 
-  // The rows handed to the settlement to be asked about: `rowTracked` below.
+  // Rows handed to settlement for polling; see `rowTracked`.
   const handedOver = new WeakSet<UploadQueueItem>()
 
-  /* The settlement writes the metadata of the server into a row once, and `afterMetadataLoaded` tells of it without
-   * saying what the server sent; `onAssetRead` of the same read does. The rows it has written into, and those of
-   * them whose read is not over yet. */
+  /*
+   * Settlement writes server metadata into a row once. `afterMetadataLoaded`
+   * does not pass what was sent; `onAssetRead` of the same read does.
+   * Tracks the rows written into, and those whose read is not finished yet.
+   */
   const loadedBySettlement = new WeakSet<UploadQueueItem>()
   let loadedInThisRead: UploadQueueItem[] = []
 
-  /* The slot rows for which a 404 of the list of the slots of their asset was written down. The settlement asks
-   * three times before it gives such a row up, and knows "already written down" only of an asset its own read found
-   * missing: here the 404 is turned into an answer, so this is where it is remembered. By the row and not by the
-   * asset: what was written down for one upload says nothing of the next one into that slot, and the memory goes
-   * with the row. Forgotten with the next read of the slots that answers. */
+  /*
+   * Slot rows for which a 404 of their asset's slots list was already reported.
+   * Settlement retries three times before giving up, and only knows "already reported" for assets
+   * its own read found missing. The 404 is turned into an answer here, so it is remembered here.
+   * Keyed by row, not asset: a report for one upload says nothing about the
+   * next upload into that slot. Cleared on the next successful slots read.
+   */
   const goneAssetWrittenDown = new WeakSet<UploadQueueItem>()
-  /* What a read of the slots threw while it kept quiet itself, told to write a failure down: the settlement begins a
-   * streak of failures only with one that was written down, and would take these for such. */
+  /*
+   * Errors a slots read threw while it suppressed reporting itself. Settlement starts
+   * a failure streak only with a reported failure and would mistake these for one.
+   */
   const thrownQuietly = new WeakSet<object>()
 
-  // Only the rows a read of the slots is made for: one that still waits or is still being sent has not been asked
-  // about, and what is written down before it is has nothing to do with it.
+  // Only rows a slots read is made for. A row still waiting or uploading
+  // has not been polled, and reports before that do not concern it.
   const slotRowsOf = (assetId: DocId) =>
     Object.values(queues.value).flatMap((queue) =>
       queue.items
@@ -220,10 +234,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         )
     )
 
-  // An asset that is gone has no slots: the file of the row is then missing from a list that was read, which the
-  // settlement counts as it counts an asset that does not exist. Anything else is a read that failed.
+  // A deleted asset has no slots. The row's file is then missing from a read list,
+  // which settlement treats like a nonexistent asset. Anything else is a failed read.
   const readSlotFiles = async (assetId: DocId, options?: UploadReadOptions) => {
-    // The rows as they are when the request goes out.
+    // Snapshot of the rows when the request goes out.
     const rows = slotRowsOf(assetId)
     const writtenDown = rows.length > 0 && rows.every((row) => goneAssetWrittenDown.has(row))
     const report = options?.report === true && !writtenDown
@@ -243,10 +257,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
   }
 
-  /* The queues, two uploads at a time, the run of each row, how a row leaves, and what becomes of a row once its
-   * file is with the server: the poll of its queue, the notifications and the refresh button all go through the
-   * settlement; the notifications only bring the news sooner. What the core is given here is admin-dam's own, and
-   * it calls it: the text and the alert of a failed upload, the upload and the import. */
+  /*
+   * The core handles the queues (two uploads at a time), each row's run, row exit, and settlement after upload.
+   * Poll, notifications and the refresh button all go through settlement; notifications only bring news sooner.
+   * The admin-dam specific parts passed here are the failed-upload text and alert, the upload and the import.
+   */
   const core = createUploadQueueCore(
     adminDamQueuePreset({
       queues,
@@ -254,7 +269,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         roleOf,
         policyFor,
         matches: (item, target, purpose) =>
-          // The metadata notification names no file: by the asset alone.
+          // The metadata notification names no file, so match by asset only.
           purpose === 'metadata'
             ? item.assetId === target.assetId
             : notificationMatches(item, target.assetId, target.fileId, purpose === 'decorate'),
@@ -263,7 +278,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           assets: readAssets,
           slotFiles: readSlotFiles,
           duplicateOriginFile: fetchDuplicateOriginFile,
-          // Written down by the api error logger, as the three readers report through it - not one made quiet above.
+          // Reported by the api error logger, which the three readers use. Errors suppressed above do not count.
           failureReported: (error) =>
             !(error instanceof Object && thrownQuietly.has(error)) && apiErrorIsReported(error),
         },
@@ -274,7 +289,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           fetchKeywords: fetchCachedKeywords,
         },
         messages: {
-          // The slot row has only Cancel, so it must not be sent looking for a refresh button.
+          // The slot row has only Cancel, so its text must not point to a refresh button.
           processingTooLong: (item) =>
             translate(
               item.type === UploadQueueItemType.SlotFile
@@ -282,22 +297,27 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
                 : 'system.uploadErrors.processingTooLong'
             ),
           readFailed: () => translate('system.uploadErrors.metadataFailed'),
-          /* Its own text: the queue tells of a failure of the client once per text, and a row failed with that one would
-           * count as the next such failure already told of. */
+          /*
+           * Uses its own text: the queue reports a client failure once per text,
+           * so sharing that text would hide this failure as already reported.
+           */
           assetMissing: () => translate('system.uploadErrors.fileMissing'),
-          // An uploaded row without its form whose asset is gone: the text of the refresh that finds it so.
+          // Text for an uploaded row without a form whose asset the refresh finds deleted.
           assetGone: () => translate('common.damImage.queueItem.assetGone'),
         },
-        // The one failed row the metadata notification still reaches: it failed for want of this very metadata.
+        // The only failed row the metadata notification still reaches: it failed for lack of this metadata.
         metadataGate: (queueId, item) => (metadataFailures.has(metadataFailureKey(queueId, item)) ? 'load' : undefined),
         hooks: {
-          // Its file failed: that is what is wrong with the row now, not the metadata its batch load left out. The
-          // core counts the queue and starts the next row after this.
+          // The file failed, which is now the row's problem, not the missing batch metadata.
+          // The core counts the queue and starts the next row after this.
           onRowFinal: (queueId, item) => {
             if (item.status === UploadQueueItemStatus.Failed) metadataFailures.delete(metadataFailureKey(queueId, item))
-            /* A file put into a slot, ended by the server: processed, it may have filled in the metadata of its asset
-             * from it; failed or a duplicate, the detail holds it as still on its way. The reads of the queue speak of
-             * it only here - the asset they read brings its main file alone -, as the notifications do of each end. */
+            /*
+             * A slot file ended by the server. If processed, it may have filled in the asset
+             * metadata; if failed or duplicate, the detail still holds it as processing.
+             * Queue reads report it only here, since the asset read
+             * brings only the main file. Notifications report each end.
+             */
             const assetId = item.uploadedAssetId ?? item.assetId
             const ended = slotFileEndedAs(item)
             if (item.type === UploadQueueItemType.SlotFile && ended && assetId && item.fileId) {
@@ -305,18 +325,20 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
             }
           },
           onAssetRead: (asset) => {
-            // What the server has of the rows this read loaded: the bulk save sends what differs from it. Placed
-            // where the read lands, when it was sent not being known here.
+            // Server values of the rows this read loaded; the bulk save sends what differs.
+            // Ordered at landing time, because the send time is unknown here.
             const landedAt = nextMetadataOrder()
             loadedInThisRead.forEach((item) => {
               if (item.assetId === asset.id) setQueueRowBaseline(item, baselineOfAsset(asset), landedAt)
             })
             loadedInThisRead = []
-            /* Every read made for a row comes here - the poll of a queue, the read a notification asks for, the
-             * refresh button: a detail or a panel that holds the asset with its main file still on its way learns
-             * here how far the server is with it, and one of an asset created empty that the asset has its first
-             * file, put into a slot. Nothing is written into the detail here: its page reads the asset, so the form
-             * is not left older than the file under it. */
+            /*
+             * Every row read comes here: queue poll, notification read, refresh button.
+             * A detail or panel holding the asset with its main file processing learns its
+             * progress here, and an empty-created asset learns of its first slot file.
+             * Nothing is written into the detail here. Its page re-reads
+             * the asset so the form is not older than the file.
+             */
             if (asset.mainFile?.fileAttributes) {
               useAssetDetailStore().fileStatusOnServer(
                 asset.id,
@@ -325,19 +347,21 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
               )
             }
           },
-          /* The status of a mass-edit row is its batch load's. A processed file takes the error of the row away - not
-           * the missing-metadata one, which is still true and cleared where it stops being - and gives a row whose
-           * file had failed back what the failure took: the form, as the user left it, or the missing-metadata text
-           * it had before. */
+          /*
+           * A mass-edit row's status belongs to its batch load. A processed file clears
+           * the row error, except the missing-metadata one, which is cleared elsewhere.
+           * For a row whose file had failed, it restores what the failure
+           * removed: the form as left, or the earlier missing-metadata text.
+           */
           onProcessedSeen: (queueId, item) => {
             if (metadataFailures.has(metadataFailureKey(queueId, item))) return
             item.error.hasError = false
             item.error.message = ''
-            // The reason goes with the error: some rows print it in place of the message.
+            // Clear the reason with the error: some rows show it instead of the message.
             item.error.assetFileFailReason = AssetFileFailReason.None
             if (item.status !== UploadQueueItemStatus.Failed) return
             if (leftOutByBatch.has(toRaw(item))) {
-              // Still without its metadata: the row its batch load left, which the metadata notification may reach.
+              // Still without metadata: the batch-left row that the metadata notification may reach.
               metadataFailures.add(metadataFailureKey(queueId, item))
               item.error.hasError = true
               item.error.message = translate('system.uploadErrors.metadataUnavailable')
@@ -347,9 +371,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
             // A duplicate is settled read-only.
             if (!item.isDuplicate) item.canEditMetadata = true
           },
-          // And the warning its batch load left behind: the metadata is here now, and the row is a loaded one.
+          // Also clear the batch load warning: the metadata is here and the row counts as loaded.
           afterMetadataLoaded: (queueId, item) => {
-            // Called for a row that had its metadata already as well: that one kept what it held.
+            // Also called for a row that already had metadata; that row keeps what it had.
             if (!loadedBySettlement.has(toRaw(item))) {
               loadedBySettlement.add(toRaw(item))
               loadedInThisRead.push(item)
@@ -364,23 +388,24 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         },
         connection: useDamNotificationsConnection(),
       },
-      // From `uploadService.ts`, so the tests that replace that module by its path still do.
+      // Imported from `uploadService.ts` so tests that mock that module by path still work.
       upload: useUpload,
-      // The import request is all there is: it never rejects and writes the row itself.
+      // The import request is the whole run: it never rejects and writes the row itself.
       importRun: (item) => adminDamImportRun(externalProviderImport(item).importInit),
       failureMessage: resolveUploadErrorMessage,
-      // Of the store's own `useAlerts()`, so the tests that replace `useAlerts` still do.
+      // Uses the store's own `useAlerts()` so tests that mock `useAlerts` still work.
       alert: (message) => showError(message),
-      // From here the poll of the queue asks about the row.
+      // From here the queue poll checks this row.
       rowTracked: (_queueId, item) => handedOver.add(toRaw(item)),
       rowRemoved: (queueId, item) => metadataFailures.delete(metadataFailureKey(queueId, item)),
     })
   )
 
-  // From the back: finished uploads stay in the queue, so the first match was the previous upload into that slot.
+  // Searches from the back. Finished uploads stay in the queue,
+  // so the first match is the previous upload into that slot.
   function getQueueItemForSlotItem(queueId: string, slotName: string, assetId: DocId) {
     if (!(queueId in queues.value)) return undefined
-    // `findLastIndex` is ES2023 against an es2019 target, and esbuild leaves built-ins alone.
+    // Not `findLastIndex`: it is ES2023, the target is es2019, and esbuild does not polyfill built-ins.
     const items = queues.value[queueId].items
     let index = -1
     for (let i = items.length - 1; i >= 0; i--) {
@@ -462,25 +487,25 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       queueItem.displayTitle = asset.texts.displayTitle
       queueItem.assetId = asset.id
       queueItem.fileId = asset.mainFile ? asset.mainFile.id : null
-      // Or the switch in the queue form shows a `true` as off, and the user has to toggle it twice.
+      // Without this the queue form switch shows `true` as off, and the user has to toggle it twice.
       queueItem.mainFileSingleUse = asset.mainFileSingleUse
       queueItem.imagePreview = asset.mainFile && asset.mainFile.links ? asset.mainFile.links.image_list : undefined
       core.addRow(queueId, queueItem)
     }
-    // Fire-and-forget: without this catch a rejection left every item it fetched on `Loading`.
+    // Fire-and-forget. Without this catch a rejection leaves every fetched item on `Loading`.
     fetchLazyAdditionalMetadata(queueId, currentAssetLicenceId.value, assetIds).catch((error) => {
       console.error('uploadQueue: additional metadata could not be loaded', error)
       failStillLoading(queueId, assetIds)
     })
   }
 
-  // An asset the response did not carry would otherwise sit on `Loading` with no way back.
+  // An asset missing from the response would otherwise stay on `Loading` forever.
   function failStillLoading(queueId: string, assetIds: DocId[]) {
     if (!(queueId in queues.value)) return
     queues.value[queueId].items.forEach((item) => {
       if (item.status !== UploadQueueItemStatus.Loading) return
       if (isNull(item.assetId) || !assetIds.includes(item.assetId)) return
-      // Given its metadata and its form by the notification meanwhile: it has what this batch did not bring.
+      // The notification already gave this row its metadata and form, so it has what this batch did not bring.
       if (item.canEditMetadata) {
         item.status = UploadQueueItemStatus.Uploaded
         return
@@ -489,7 +514,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       leftOutByBatch.add(toRaw(item))
       item.status = UploadQueueItemStatus.Failed
       item.error.hasError = true
-      // Its own wording: this row was never uploaded and has no refresh button to be sent to.
+      // Own message: this row was never uploaded and has no refresh button to point to.
       item.error.message = translate('system.uploadErrors.metadataUnavailable')
     })
     core.recalculateQueueCounts(queueId)
@@ -531,22 +556,24 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
   async function fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
     const { getAuthorConflicts } = useAssetSuggestions()
-    // Its place among the reads and the saves of metadata, taken as it is sent: what a row is given from here on
-    // is newer than the answer of this read.
+    // Order of this read among metadata reads and saves, taken when sent.
+    // Anything a row receives after this point is newer than this read's answer.
     const sentAt = nextMetadataOrder()
-    // Sent while a save of the asset is on its way: answered from before the save or from after it, it is not known.
+    // Sent while a save of the asset is in flight: the answer may be from before or after the save.
     const sentDuringSave = assetIds.filter(metadataSaveOnItsWay)
     const res = await fetchAssetListByIds(assetIds, licenceId)
     for (let i = 0; i < res.length; i++) {
       const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
       if (foundIndex > -1 && metadataMayStillChange(res[i])) {
-        /* No form for it yet: saved before the server has processed its file, it would overwrite what the server fills
-         * in from the file. The metadata notification brings the form to the one who uploaded it; anyone else selects
-         * it again once it is processed. */
+        /*
+         * No form yet: saving before the server processes the file would overwrite what the server fills in from it.
+         * The metadata notification brings the form to the uploader.
+         * Others select the asset again once it is processed.
+         */
         const item = queues.value[queueId].items[foundIndex]
-        // Settled by a newer answer meanwhile - a later batch of it: that one stands.
+        // Already settled by a newer answer, such as a later batch. That one stands.
         if (item.status !== UploadQueueItemStatus.Loading) continue
-        // Given its metadata and its form by the notification before this answer came: the newer word, which it keeps.
+        // The notification gave it metadata and form before this answer. That is newer, so it keeps it.
         if (item.canEditMetadata) {
           item.status = UploadQueueItemStatus.Uploaded
           continue
@@ -557,9 +584,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         item.error.hasError = true
         item.error.message = translate('system.uploadErrors.assetFileStillProcessing')
       } else if (foundIndex > -1) {
-        // Its form is there already, from the notification, a save or another batch. It takes this answer only when
-        // that is newer than what it was last given and nobody changed the row since; otherwise it keeps what it
-        // holds, and so does a row of which that is not known.
+        // The form already exists, from the notification, a save or another batch.
+        // It takes this answer only if the answer is newer than its last data and nobody changed the row since.
+        // Otherwise, or if that is unknown, it keeps what it has.
         if (
           queues.value[queueId].items[foundIndex].canEditMetadata &&
           !queueRowTakesAnswer(queues.value[queueId].items[foundIndex], sentAt)
@@ -568,9 +595,8 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           continue
         }
         leftOutByBatch.delete(toRaw(queues.value[queueId].items[foundIndex]))
-        // A row still without its form can hold what a save from the detail or the panel wrote into it after this
-        // read was sent: that is newer than this answer, which may be from before the save. It keeps it, and is
-        // only given its form.
+        // A row without its form may hold data a detail or panel save wrote after this read was sent.
+        // That is newer than this answer, so it keeps it and only gets its form.
         if (!queueRowGivenSince(queues.value[queueId].items[foundIndex], sentAt)) {
           queues.value[queueId].items[foundIndex].keywords = res[i].keywords
           queues.value[queueId].items[foundIndex].authors = res[i].authors
@@ -583,28 +609,30 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         }
         queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
         queues.value[queueId].items[foundIndex].canEditMetadata = true
-        // And the warning an earlier batch left behind: the metadata it complained about is here.
+        // Clear the warning an earlier batch left: the missing metadata has arrived.
         if (metadataFailures.delete(metadataFailureKey(queueId, queues.value[queueId].items[foundIndex]))) {
           queues.value[queueId].items[foundIndex].error.hasError = false
           queues.value[queueId].items[foundIndex].error.message = ''
         }
         addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
-        // And its author conflicts, as the detail does: their chips show the names too.
+        // Cache author conflicts too, as the detail does, so their chips show names.
         addToCachedAuthors(queues.value[queueId].items[foundIndex].authorConflicts)
       }
     }
     failStillLoading(queueId, assetIds)
     fetchCachedAuthors()
-    // And a detail or a panel that holds one of the assets with its main file still on its way.
+    // Also update a detail or panel holding one of these assets while its main file is still in flight.
     const assetDetailStore = useAssetDetailStore()
     res.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
-    /* Taken or kept by the rules above all the same, and read once more once that save is answered: a row nobody
-     * changed takes what the server has after it, also what another editor saved since. */
+    /*
+     * The rules above still apply. After that save is answered the asset is read again,
+     * so an unchanged row gets the server's latest data, including other editors' saves.
+     */
     sentDuringSave.forEach((assetId) => afterMetadataSaves(assetId, () => readAgain(queueId, licenceId, assetId)))
   }
 
   function readAgain(queueId: string, licenceId: number, assetId: DocId) {
-    // Not for a row taken out meanwhile.
+    // Skip if the row was removed meanwhile.
     if (!queues.value[queueId]?.items.some((item) => item.assetId === assetId)) return
     fetchLazyAdditionalMetadata(queueId, licenceId, [assetId]).catch((error) => {
       console.error('uploadQueue: additional metadata could not be read again', error)
@@ -620,8 +648,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
 
       return
     }
-    /* Through the same teardown, not a bare splice: Delete is offered while the upload still runs
-     * (the metadata event arrives after the first chunk), and it would have kept posting chunks. */
+    /*
+     * Use the same teardown, not a bare splice. Delete is offered while the upload still runs
+     * (the metadata event arrives after the first chunk), and a splice would keep posting chunks.
+     */
     await removeByIndex(queueId, foundIndex)
   }
 
@@ -629,9 +659,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     core.removeByIndex(queueId, index)
   }
 
-  /* Every row of the asset in the queue, each through the same teardown as one row taken out: a row whose upload still
-   * runs is stopped, its chunk on the wire aborted. From the back, so that what is taken out moves no row still to be
-   * looked at. */
+  /*
+   * Each row goes through the same teardown, so a running upload is stopped and its in-flight chunk aborted.
+   * Iterates from the back so removals do not shift rows still to be checked.
+   */
   function removeAllByAssetId(queueId: string, assetId: DocId) {
     if (!(queueId in queues.value)) return
     const items = queues.value[queueId].items
@@ -640,9 +671,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
   }
 
-  /* An asset deleted - by the detail on whatever page, by the bin of a row - takes every row of it out of the mass edit
-   * and the upload queue: their bin would delete it again, their form and the bulk save would send metadata to it. Not
-   * the uploads into its slots, whose rows offer nothing of that. */
+  /*
+   * A deleted asset loses its rows in the mass edit and upload queues.
+   * Otherwise their bin would delete it again and their form or bulk save would send metadata to it.
+   * Slot uploads are not removed, as their rows offer none of that.
+   */
   function removeRowsOfDeletedAsset(assetId: DocId) {
     removeAllByAssetId(QUEUE_ID_MASS_EDIT, assetId)
     removeAllByAssetId(QUEUE_ID_UPLOAD_GLOBAL, assetId)
@@ -660,10 +693,11 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     core.stopItemUpload(queueId, queueItem)
   }
 
-  /* Slot uploads of one asset differ only in the file, so news naming the asset alone settled
-   * all of them. A mass-edit row without a file id cannot be told from one either, so only a
-   * processed file is matched with `matchAssetWithoutFile` - it merely completes such a row, while a
-   * failure or a duplicate would give it a terminal state it has not earned. */
+  /*
+   * Slot uploads of one asset differ only by file, so news naming only the asset would settle all of them.
+   * A mass-edit row without a file id is equally ambiguous, so `matchAssetWithoutFile` matches only a processed file.
+   * That only completes the row. A failure or duplicate would give it an unearned terminal state.
+   */
   function notificationMatches(
     item: UploadQueueItem,
     assetId: DocId,
@@ -671,18 +705,22 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     matchAssetWithoutFile = false
   ) {
     if (item.assetId !== assetId) return false
-    /* Never while the batch load owns the row: off `Loading` its own failure handler passes it by,
-     * and the row is left looking finished with no metadata, which the bulk save skips. */
+    /*
+     * Not while the batch load owns the row. Off `Loading`, the batch failure handler skips it,
+     * and the row looks finished without metadata, which the bulk save skips.
+     */
     if (item.status === UploadQueueItemStatus.Loading) return false
-    /* A slot answers only to news naming its own file: its notification, or the list of the slots of its asset
-     * the poll reads. A read of the asset speaks of the main file alone. */
+    /*
+     * A slot matches only news naming its own file: its notification, or the slot list the poll reads.
+     * A read of the asset covers only the main file.
+     */
     if (item.type === UploadQueueItemType.SlotFile) return !isNull(fileId) && item.fileId === fileId
     if (item.type === UploadQueueItemType.Asset && isNull(item.fileId)) return matchAssetWithoutFile
 
     return isNull(fileId) || item.fileId === fileId
   }
 
-  // The names of before the settlement, kept for their callers: the notification listeners of the application.
+  // Old names kept for the app's notification listeners.
 
   function queueItemProcessed(assetId: DocId, fileId: DocIdNullable = null) {
     return core.settlement.notify({ kind: 'processed', assetId, fileId })
@@ -705,8 +743,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     return core.settlement.settleKnownDuplicate({ assetId, fileId }, originAssetFile, assetType)
   }
 
-  /* The refresh button of a row: asks what became of the file now, and settles by it the rows of the asset that
-   * hold the file of this row. Never a slot upload: the asset says nothing about which of its slots finished. */
+  /*
+   * Row refresh button: checks the file's current state and settles the asset's rows holding this file.
+   * Never for a slot upload: the asset does not say which slots finished.
+   */
   function refreshQueueItem(item: UploadQueueItem): Promise<UploadRefreshOutcome> {
     if (isNull(item.assetId)) return Promise.resolve('error')
 
@@ -721,8 +761,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     uploadQueueFillCustomDataValue(queues.value[queueId].items, data, forceReplace)
   }
 
-  /* Keywords and authors go only into the items whose asset type has them enabled, as a custom value goes only
-   * into the items of its type: the row of another item has no input for them, and the bulk save would send them. */
+  /*
+   * Keywords and authors go only to items whose asset type enables them, like custom values per type.
+   * Other rows have no input for them, and the bulk save would send them.
+   */
   function assetTypeHas(feature: 'keywords' | 'authors') {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentExtSystemId } = useCurrentExtSystem()
@@ -740,20 +782,19 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   function updateAssetMetadata(asset: AssetDetailItemDto) {
-    // Placed where the save of the detail or the panel is answered, which is when this is called.
+    // Called when the detail or panel save is answered, so the order is taken here.
     const savedAt = nextMetadataOrder()
     for (const queueId in queues.value) {
       queues.value[queueId].items.forEach((item) => {
         if (item.assetId === asset.id) {
-          // Copies of its own for each row: a mass operation writes into the custom data of the rows of its queue in
-          // place, and would write into the row of another queue with them.
+          // A separate copy per row: mass operations mutate custom data of their queue's rows in place
+          // and would otherwise write into rows of another queue.
           const saved = cloneDeep(baselineOfAsset(asset))
           item.keywords = saved.keywords
           item.authors = saved.authors
           item.customData = saved.customData
           item.mainFileSingleUse = saved.mainFileSingleUse
-          // What the server has of the row now. That save marks the asset described; the flag on the asset here is
-          // from before it.
+          // The server's current state of the row. That save marks the asset described; the local flag predates it.
           setQueueRowBaseline(item, { ...saved, described: true }, savedAt)
         }
       })

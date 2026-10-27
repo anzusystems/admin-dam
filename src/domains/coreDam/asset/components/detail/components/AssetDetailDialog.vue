@@ -47,7 +47,7 @@ const { activeTab } = useAssetDetailTab()
 
 const assetDetailStore = useAssetDetailStore()
 const assetListStore = useAssetListStore()
-const { pagination, neighbourOfActive } = useAssetListActions() // todo
+const { pagination, neighbourOfActive } = useAssetListActions()
 const { asset } = storeToRefs(assetDetailStore)
 
 const closeDialog = () => {
@@ -56,10 +56,11 @@ const closeDialog = () => {
   browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
 }
 
-/* The list and the panel are told by the page (`provideAssetDeleted`), and so is the dialog, by the same function: the
- * part of the detail that deleted the asset can be gone by the answer - another tab - and what it emits then Vue
- * drops. The dialog closes over the asset deleted, not over the next one it has gone on to meanwhile - also not while
- * that one is being read, and the asset before it is still held. */
+/*
+ * The page tells the list and panel via `provideAssetDeleted`, and the dialog uses the same function.
+ * The deleting part can be gone by the response (another tab), and Vue drops what it emits then.
+ * The dialog closes only over the deleted asset, not one it moved to meanwhile, even while that one is still loading.
+ */
 const toldPage = useAssetDeleted()
 provideAssetDeleted((deletedId: DocId) => {
   toldPage(deletedId)
@@ -137,8 +138,10 @@ const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
 })
-/* Behind the loader the name of the asset being read: the one held when it is read again, the one of its tile when the
- * list is walked to it; none of another asset. */
+/*
+ * Loader title is the name of the asset being read: the held one on a re-read,
+ * or its tile's name when navigating the list. Never another asset's name.
+ */
 const loaderTitle = computed(() => {
   const read = assetDetailStore.shownOrReadAssetId()
   if (!read) return ''
@@ -169,7 +172,7 @@ const { can } = useAuth()
       :model-value="assetDetailStore.leaveUnsavedQuestion && assetDetailStore.detail"
       @resolve="assetDetailStore.answerLeaveUnsaved"
     />
-    <!-- The bar of the loaded detail below, as far as it is known while its asset is read. -->
+    <!-- Mirrors the loaded detail bar below, as far as known while the asset loads. -->
     <AssetDetailDialogLoader
       v-if="assetDetailStore.loader"
       :walks-list="assetDetailStore.view === 'list'"
@@ -231,7 +234,7 @@ const { can } = useAuth()
               </VTooltip>
             </VBtn>
           </div>
-          <!-- The name in every detail; the place in the list only in a detail of the list. -->
+          <!-- Name in every detail. List position only in a list detail. -->
           <div
             class="text-label-large d-flex"
             :class="{ 'pl-2': assetDetailStore.view !== 'list' }"
@@ -259,8 +262,10 @@ const { can } = useAuth()
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
-                   icon there, as in the library's detail. -->
+              <!--
+                Below 840 px the button toggles the image above the panel,
+                so it uses an image icon, as in the library's detail.
+              -->
               <VIcon
                 icon="mdi-information-outline"
                 class="d-none d-md-flex"

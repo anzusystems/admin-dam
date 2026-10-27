@@ -42,8 +42,8 @@ const { signal, leave } = useRecordPage({
   loading: detailLoading,
 })
 
-// The voices are listed by the route's id as well: only once the family is there, or a failed load
-// would raise a second alert.
+// The voice list also fetches by the route id. It waits for the
+// family to load, or a failed load would raise a second alert.
 const voiceFamilyLoaded = ref(false)
 
 onMounted(async () => {

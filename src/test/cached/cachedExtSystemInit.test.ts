@@ -52,8 +52,8 @@ beforeEach(() => {
   }
 })
 
-// The name caches of the library ask under their own ext system, so each way the start-up picks the current one has
-// to write it there too.
+// The library name caches ask under their own ext system, so each
+// start-up path that picks the current one must write it there too.
 describe('the ext system the name caches ask under', () => {
   it('is the one of the licence the user picked', async () => {
     expect(await initCurrentExtSystemAndLicence()).toBe(true)

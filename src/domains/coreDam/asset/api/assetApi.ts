@@ -50,10 +50,12 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 export interface AssetMetadataBulkItem {
   id: DocId
   described: boolean
-  /* Optional on purpose: `AssetMetadataBulkManager` guards each of these with `isXUndefined()`, so
-   * a field left out is one this save does not write - the only way to edit metadata without also
-   * writing flags the form never showed, and to save a row without writing what nobody changed in it.
-   * The backend still runs its internal rules afterwards, which can move `internal` on their own. */
+  /*
+   * Optional on purpose. `AssetMetadataBulkManager` guards each
+   * field with `isXUndefined()`, so an omitted field is not written.
+   * This lets a save skip flags the form never showed and fields nobody changed.
+   * The backend still runs its internal rules afterwards, which can change `internal` on their own.
+   */
   keywords?: DocId[]
   authors?: DocId[]
   customData?: AssetCustomData
@@ -111,7 +113,7 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
         } else if (
           responses.every(
             (res) =>
-              // An answer without its list is not "none of these assets exist".
+              // A response without the list does not mean "none of these assets exist".
               res.status === HTTP_STATUS_OK && Array.isArray(res.data?.data)
           )
         ) {
@@ -130,25 +132,23 @@ export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<A
       })
   })
 
-// The answer is taken as it comes and checked by its reader below.
+// The response is not typed here. The caller below validates it.
 const useFetchWaitingAssets = () =>
   useApiRequest<{ data?: unknown }, null>({ ...damApiBase, method: 'GET', entity: ENTITY })
 
-/* Several assets of a licence by their ids, for the poll of the upload queue: the requests of `fetchAssetListByIds`,
- * in the same groups of fifty.
- *
- * The poll asks again and again, and says of each request whether a failure of it is to be written down:
- * `report: false` keeps this one call from the api error logger, the failure is thrown as ever. That is why it
- * is not `useApiFetchItems`, a single call of which cannot be kept quiet, and why the list is checked here. An
- * answer without its list is refused whether it is reported or not: it must never read as "none of these assets
- * exist". */
+/*
+ * Fetches assets of a licence by id for the upload queue poll, in batches of fifty like `fetchAssetListByIds`.
+ * `report: false` keeps a failed call out of the api error logger. The error is still thrown.
+ * `useApiFetchItems` cannot silence a single call, so the list is validated here.
+ * A response without the list is always rejected. It must never read as "none of these assets exist".
+ */
 export const fetchWaitingAssets = async (ids: DocId[], licenceId: number, options?: { report?: boolean }) => {
   const { execute } = useFetchWaitingAssets()
   const found: AssetDetailItemDto[] = []
   for (let offset = 0; offset < ids.length; offset += FETCH_BY_IDS_MAX_LIMIT) {
     const batch = ids.slice(offset, offset + FETCH_BY_IDS_MAX_LIMIT)
     const body = await execute({
-      // The address whole, not a template with parameters: a parameter would be encoded, its commas with it.
+      // Full URL instead of a template parameter: a parameter would be encoded, including its commas.
       urlTemplate: END_POINT + `/licence/${licenceId}/ids/${batch.join(',')}`,
       report: options?.report,
     })
@@ -167,8 +167,10 @@ export const useFetchAsset = () =>
     urlTemplate: END_POINT + '/:id',
   })
 
-/* `report: false` keeps a failure of this one call from the api error logger; it is thrown as ever. For the poll
- * of the upload queue, which has reported the first failure of a streak already. */
+/*
+ * `report: false` keeps a failed call out of the api error logger. The error is still thrown.
+ * Used by the upload queue poll, which already reported the first failure of a streak.
+ */
 export const fetchAsset = (id: DocId, options?: { report?: boolean }) => {
   const { execute } = useFetchAsset()
   return execute({ urlParams: { id }, report: options?.report })
@@ -200,14 +202,18 @@ export const fetchAssetMetadata = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
-/** What the bulk save sends: an item with an asset whose metadata the user may edit. */
+/**
+ * Items the bulk save sends: those with an asset whose metadata the user may edit.
+ */
 export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
   !isNull(item.assetId) && item.canEditMetadata
 
-/* What the bulk save sends, row by row, each with the metadata the server has of it once that is saved. Of a row goes
- * out what differs from what it last got from the server, or last saved: a field nobody touched here would overwrite
- * what another editor saved meanwhile. A row that goes out is marked described. A row of which it is not known what
- * the server has, or whether its asset is described there, is sent whole. */
+/*
+ * Builds the bulk save payload per row, with the metadata the server will hold after the save.
+ * A row sends only fields that differ from what it last got from or saved to the
+ * server. Sending untouched fields would overwrite another editor's changes.
+ * A sent row is marked described. A row whose server state or described flag is unknown is sent whole.
+ */
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   const dtoItems: Array<{
     item: UploadQueueItem
@@ -217,21 +223,22 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   }> = []
   items.forEach((item) => {
     if (hasMetadataToSave(item)) {
-      // A copy, taken as the save begins: the row can be typed into while its batch waits for the ones before it.
+      // Copied when the save starts. The row can still be edited while its batch waits for earlier batches.
       const metadata = metadataOfQueueRow(item)
       const known = queueRowBaseline(item)
       const whole = !known || isUndefined(known.described)
       const changed: Partial<QueueRowMetadata> = {}
       if (whole || !sameMetadataValue(metadata.keywords, known.keywords)) changed.keywords = metadata.keywords
       if (whole || !sameMetadataValue(metadata.authors, known.authors)) changed.authors = metadata.authors
-      // All of it when any of it differs: the server takes a field of the form that is left out as one emptied.
+      // Sent whole when any part differs. The server treats an omitted form field as emptied.
       if (whole || !sameMetadataValue(metadata.customData, known.customData)) changed.customData = metadata.customData
-      // Only what this form edits.
       if (!isNull(metadata.mainFileSingleUse) && (whole || metadata.mainFileSingleUse !== known.mainFileSingleUse)) {
         changed.mainFileSingleUse = metadata.mainFileSingleUse
       }
-      /* Nothing to write: the asset is described and the row holds what the server has. Sent all the same, core-dam
-       * would take the fields left out for a change of the asset and tell everyone who listens for one. */
+      /*
+       * Nothing to write: the asset is described and the row matches the server.
+       * Sending it anyway would make core-dam treat it as a change and notify all listeners.
+       */
       if (!whole && known.described && Object.keys(changed).length === 0) return
       dtoItems.push({ item, dtoItem: { id: item.assetId, described: true, ...changed }, metadata, changed })
     }
@@ -240,7 +247,7 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   return dtoItems
 }
 
-// Only a 200 is a save: any other answer is a save that failed, as before. Nothing is read from the answer.
+// Only a 200 counts as saved. The response body is not read.
 const useUpdateMetadataBulk = () =>
   useApiCommand<AssetMetadataBulkItem[]>({
     ...damApiBase,
@@ -250,9 +257,12 @@ const useUpdateMetadataBulk = () =>
     options: { validateStatus: (status) => status === HTTP_STATUS_OK },
   })
 
-/* A save of metadata refused by validation. `fields` are as the library makes them, from the keys of the request
- * such as `[0].customData.title` - the index is the place of the asset in its batch, not a row on the screen;
- * `named` holds the same fields as the forms name them, which is what the user is told. */
+/*
+ * Metadata save rejected by validation.
+ * `fields` use request keys such as `[0].customData.title`. The
+ * index is the asset's position in its batch, not a screen row.
+ * `named` holds the same fields with form names, which are shown to the user.
+ */
 class AssetMetadataValidationError extends AnzuApiValidationError {
   named: ValidationError[]
 
@@ -282,8 +292,11 @@ const metadataFieldName = (key: string, assetTypeAt: (index: number) => DamAsset
   return property
 }
 
-/* The failure of a save as the user is to be told it: a refusal by validation gets the names of its fields, a field
- * refused in several assets of the batch once. Any other failure is handed on as it came. */
+/*
+ * Maps a save failure for display. Validation errors get field names,
+ * and a field rejected in several assets of the batch is listed once.
+ * Other errors are returned unchanged.
+ */
 const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAssetTypeType | undefined) => {
   if (!isAnzuApiValidationError(error) || !isAxiosError(error.cause)) return error
   const data = error.cause.response?.data as AnzuApiValidationResponseData
@@ -299,17 +312,22 @@ const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAsse
   )
 }
 
-// The assets deleted here, once their delete was answered.
+// Assets deleted in this session, added once the delete request was answered.
 const deletedHere = new Set<DocId>()
 
-/** Whether the asset was deleted here: a read sent before its delete can still bring it as it was. */
+/**
+ * Whether the asset was deleted here. A read sent before the delete can still return the old asset.
+ */
 export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
 
 type BulkItem = ReturnType<typeof listItemsToMetadataBulkItems>[number]
 
 const saveBatch = async (rows: BulkItem[], execute: ReturnType<typeof useUpdateMetadataBulk>['execute']) => {
-  /* Not an asset deleted while the batches before were on the wire: the queue can still be used meanwhile, and its
-   * row is gone with the delete. A batch left with nothing is not sent. */
+  /*
+   * Skips assets deleted while earlier batches were in flight. The
+   * queue stays usable meanwhile, and the delete removes the row.
+   * An empty batch is not sent.
+   */
   const batch = rows.filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
   if (batch.length === 0) return
   try {
@@ -317,32 +335,36 @@ const saveBatch = async (rows: BulkItem[], execute: ReturnType<typeof useUpdateM
   } catch (error) {
     throw withNamedFields(error, (index) => batch[index]?.item.assetType)
   }
-  /* Saved: the server has what was sent, and a save after this one sends what differs from it. Only the fields that
-   * went out are written, over what is known of the row by now: a read or another save may have moved that while
-   * this one was on the wire, and the copy of the click would put it back. Placed where the save is answered: a
-   * read sent before that may have been answered from before the save. */
+  /*
+   * After a successful save, later saves diff against what was sent.
+   * Only the sent fields are written, over the current row state. A read or another
+   * save may have changed it meanwhile, and the click-time copy would revert that.
+   * This runs when the save is answered, because a read sent earlier may return pre-save data.
+   */
   const savedAt = nextMetadataOrder()
   batch.forEach(({ item, metadata, changed }) =>
     setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
   )
-  // And the detail or the panel that holds one of them.
+  // Also updates the detail or panel holding one of these assets.
   useAssetDetailStore().savedAsDescribed(batch.map(({ dtoItem }) => dtoItem.id))
 }
 
-/* Ten at a time, one batch after the other. The server saves a batch whole or not at all; a batch that fails stops
- * those after it, the ones before it stay saved, and saving again is safe. Only the rows there is something to write
- * of go out: with none of them no request is made, and the save is done all the same. */
+/*
+ * Saves ten rows per batch, sequentially. The server saves a batch atomically.
+ * A failed batch stops later ones, earlier ones stay saved, and retrying is safe.
+ * Only rows with changes are sent. If none have changes, no request is made and the save still succeeds.
+ */
 export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
-  // Refused as before; the buttons are off while no row could be sent (`nothingToSave`).
+  // The buttons are disabled when no row can be sent (`nothingToSave`).
   if (!items.some(hasMetadataToSave)) throw new Error('assetApi: no metadata to save')
   const bulkItems = listItemsToMetadataBulkItems(items)
   const { execute } = useUpdateMetadataBulk()
-  // From the filtered array: counting the input sent trailing PATCHes with an empty body.
+  // Counts the filtered array. Counting the input sent trailing PATCHes with an empty body.
   const batches: BulkItem[][] = []
   for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
     batches.push(bulkItems.slice(offset, offset + BULK_METADATA_LIMIT))
   }
-  // On their way from the click, each batch until it is answered: the bodies of all of them are taken now.
+  // Marks every batch as in flight from the click until it is answered. All bodies are built now.
   const answered = batches.map((batch) => metadataSaveSent(batch.map(({ dtoItem }) => dtoItem.id)))
   try {
     for (const [index, batch] of batches.entries()) {
@@ -350,14 +372,16 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
       answered[index]()
     }
   } finally {
-    // A batch that failed, and those it stopped.
+    // Ends the failed batch and the batches it stopped.
     answered.forEach((end) => end())
   }
 }
 
 const { showErrorsDefault, showUnknownError, showApiValidationError } = useAlerts()
 
-/** What a failed save of metadata tells the user, by the kind of the failure; the one place that says it. */
+/**
+ * Shows the error message for a failed metadata save by failure kind. The single place for this message.
+ */
 export const showMetadataSaveError = (error: unknown) => {
   if (error instanceof AssetMetadataValidationError) {
     showApiValidationError(error.named, -1, true)
@@ -390,7 +414,7 @@ export const updateAssetMetadata = async (
   } catch (error) {
     throw withNamedFields(error, () => asset.attributes.assetType)
   }
-  // Described with it: so is the asset the detail or the panel holds, when it is this one.
+  // Also marks the asset described in the detail or panel if it holds this asset.
   useAssetDetailStore().savedAsDescribed([asset.id])
 }
 
@@ -400,7 +424,7 @@ export const useDeleteAsset = () =>
 export const deleteAsset = async (id: DocId) => {
   const { execute } = useDeleteAsset()
   await execute({ urlParams: { id } })
-  // A bulk save on its way sends nothing more of it.
+  // An in-flight bulk save skips this asset from now on.
   deletedHere.add(id)
 }
 

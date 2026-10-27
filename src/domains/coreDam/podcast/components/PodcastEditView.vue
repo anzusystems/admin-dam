@@ -22,7 +22,7 @@ const id = (route.params as { id: string }).id.toString()
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, podcast } =
   usePodcastEditActions()
 
-// Asks before leaving with unsaved rows in the list editor, which registers itself by its label.
+// Empty sources: the list editor registers itself with the guard by its label.
 const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof PodcastEditForm> | null>(null)

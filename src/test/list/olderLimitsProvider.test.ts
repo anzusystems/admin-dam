@@ -5,10 +5,10 @@ import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The arrow keys of the list of an external provider walked it under a menu or a dialog open over the page, as the
- * keys of the list of DAM did with its detail closed. The real page of the list of the provider with its real detail,
- * the application around it as it starts; the server is a fake, and so is the address the page asks about a new
- * version of the application. */
+/*
+ * The arrow keys of the external provider list walked it under an open
+ * menu or dialog, as the DAM list keys did with its detail closed.
+ */
 
 let server: FakeDam
 
@@ -20,13 +20,11 @@ const PROVIDER_ASSET = /^\/adm\/v1\/asset-external-provider\/provider-1\/(provid
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The right arrow key let go over the page, as the window hears it. */
 const right = async () => {
   document.body.dispatchEvent(new KeyboardEvent('keyup', { key: 'ArrowRight', bubbles: true }))
   await settled()
 }
 
-/** An image of the provider. */
 const provided = (id: string) => ({
   id,
   texts: { displayTitle: id },
@@ -37,12 +35,10 @@ const provided = (id: string) => ({
 
 const LISTED = ['provided-1', 'provided-2', 'provided-3']
 
-/** The assets of the provider the server was asked for one at a time, in the order it was asked. */
 const asked = () => server.sent('GET', PROVIDER_ASSET).map((request) => request.url.split('/').pop())
 
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** The page of the list of the provider with its three images, none of them picked. */
 const openProviderList = async () => {
   const ui = await startUploadUi({
     server,

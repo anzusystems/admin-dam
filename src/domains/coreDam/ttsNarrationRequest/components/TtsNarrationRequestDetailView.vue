@@ -52,7 +52,7 @@ const { signal, leave } = useRecordPage({
   loading: detailLoading,
 })
 
-// Also the refresh after a cancel: with the page's signal, and a request gone meanwhile leaves.
+// Also used to refresh after a cancel. Uses the page's signal, and leaves if the request was deleted.
 const loadDetail = async () => {
   if ((await fetchDetail({ signal })) === false) await leave()
 }

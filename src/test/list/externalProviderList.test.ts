@@ -4,10 +4,8 @@ import { nextTick, ref } from 'vue'
 
 const execute = vi.fn<(...args: unknown[]) => Promise<unknown[]>>(async () => [])
 
-// The rows a page carries say which page it is, so a page fetched twice is visible in the list.
 const pageOf = (args: unknown[]) => {
   const pagination = args[0] as { value: { page: number; hasNextPage?: boolean } }
-  // What the library does with the pagination object it is handed as it answers.
   pagination.value = { ...pagination.value, hasNextPage }
 
   return [listItem(`page-${pagination.value.page}`)]
@@ -17,7 +15,6 @@ let hasNextPage = true
 
 vi.mock('@/domains/coreDam/externalProvider/api/externalProviderAssetApi', () => ({
   useFetchExternalProviderAssetList: () => ({ execute: (...args: unknown[]) => execute(...args) }),
-  // The detail fetch destructures `execute`, not `execute`.
   useFetchExternalProviderAsset: () => ({ execute: vi.fn() }),
 }))
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
@@ -81,7 +78,7 @@ describe('the external provider list', () => {
     await nextTick()
     expect(listStore.list.map((row) => row.selected)).toEqual([true])
 
-    // What the bin in the selection dialog and the import both do, with no way to reach the list.
+    // The bin in the selection dialog and the import both do this, with no way to reach the list.
     massEditItems.value = []
     await nextTick()
 
@@ -109,12 +106,11 @@ describe('the external provider list', () => {
     const stalePage = actions.fetchNextPage()
 
     await actions.fetchAssetList()
-    // The new list's own scroll, with the old request still on the wire and nothing aborting it.
+    // Scroll of the new list while the old request is still pending. Nothing aborts the old request.
     let finishNewPage: (value: unknown[]) => void = () => undefined
     execute.mockImplementationOnce(() => new Promise((resolve) => (finishNewPage = resolve)))
     const newPage = actions.fetchNextPage()
 
-    // Four requests: both lists and one next page each.
     expect(execute).toHaveBeenCalledTimes(4)
     finishStalePage([listItem('stale')])
     await stalePage
@@ -160,8 +156,7 @@ describe('the external provider list', () => {
     finishNewList([listItem('page-1')])
     await newList
 
-    // On the shared object that `false` would have dropped the scroll the user made of the new list, and it would
-    // have stopped there.
+    // On the shared object that `false` would drop the scroll the user made of the new list, and it would stop there.
     expect(listStore.list.map((row) => row.asset.id)).toEqual(['page-1', 'page-2'])
   })
 })

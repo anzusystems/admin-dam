@@ -4,9 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDam, forbiddenOperationError, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* Which server address a row is sent to: the one of its asset type and no other, and none at all for a type the
- * app does not know. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -52,7 +49,7 @@ describe.each(requests)('%s of an upload', (_name, send) => {
     const api = await load()
     const row = queueRow({ assetType: 'hologram' as never, file: new File(['abcde'], 'upload.bin') })
 
-    // A promise that never settles would hold one of the two places of the queue for good.
+    // A promise that never settles would hold one of the two queue places for good.
     await expect(send(api, row)).rejects.toThrow("fileApi: unsupported asset type 'hologram'")
 
     expect(server.requests).toEqual([])

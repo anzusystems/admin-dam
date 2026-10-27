@@ -6,8 +6,8 @@ import type { PropType } from 'vue'
 import { usePodcastSelectActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { usePodcastFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 
-// Scoped to an explicitly passed ext system (the synthesize dialog), else the actions use the current one.
-// Another ext system remounts the list; the dialog clears its picks itself, so the model is kept.
+// Scoped to an explicitly passed ext system (the synthesize dialog), else the current one.
+// A changed ext system remounts the list. The dialog clears its picks itself, so the model is kept.
 export default createRemoteAutocomplete({
   name: 'PodcastRemoteAutocomplete',
   props: { extSystemId: { type: Number as PropType<IntegerIdNullable>, default: undefined } },

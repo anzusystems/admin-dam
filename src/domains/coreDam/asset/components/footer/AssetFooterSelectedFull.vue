@@ -51,7 +51,7 @@ const massOperations = ref(true)
 
 const list = computed(() => uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
 
-// Assets whose metadata has not loaded, or could not be: the save would send nothing and say it failed.
+// Assets whose metadata has not loaded or failed to load. Saving them would send nothing and report a failure.
 const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
 const { assetIdsToSave, leaveTypedOfPanel, refreshDetailAsset, panelTakesTypingAgain, typedKeptAfterFailure } =
@@ -113,10 +113,12 @@ const onSaveAndClose = async () => {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
     refreshDetailAsset(savedAssetIds)
-    /* Not when the page was left meanwhile: the lists share the mass edit, and the next list empties it as it is drawn -
-     * what it holds by then was picked there, and a dialog over the whole page is that page's. Another query of the list,
-     * or the address of a detail written past the router, is the same page; a way out still asking whether to leave
-     * waits for the answer. */
+    /*
+     * Not after leaving the page. The lists share the mass edit, and the next list
+     * empties it on render. Its contents and full-page dialogs belong to that page.
+     * A different list query, or a detail URL written past the router, is the same page.
+     * A navigation still asking whether to leave waits for the answer.
+     */
     whileOnPage(() => void onClearConfirm())
   } catch (error) {
     typedKeptAfterFailure(left)
@@ -180,7 +182,7 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
-          <!-- Under two rows there is no panel to open. -->
+          <!-- With fewer than two rows there is no panel to open. -->
           <VBtn
             v-if="list.length >= MASS_OPERATIONS_FROM"
             :aria-label="t('coreDam.asset.massOperations.title')"

@@ -7,9 +7,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createFakeDam, queueRow, seedDamConfig, seedQueue, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamRequest } from '@/test/support/fakeDam'
 
-/* One file from the queue to the server, request by request: what is sent, in which order, and what the row says
- * meanwhile. The real store, upload service and API modules over a fake server; chunks of 1024 bytes. */
-
 let server: FakeDam
 const showError = vi.fn()
 
@@ -92,15 +89,12 @@ describe('the upload of a file larger than one chunk', () => {
       ['PATCH', '/adm/v1/image/file-1/uploaded'],
     ])
     expect(JSON.parse(server.requests[0].data as string)).toEqual({ mimeType: 'image/jpeg', size: 2500 })
-    // Each chunk says where in the file it belongs; the last one is what was left.
     expect(server.sent('POST', /\/chunk$/).map(chunkOf)).toEqual([
       { offset: 0, size: CHUNK, bytes: CHUNK },
       { offset: 1024, size: CHUNK, bytes: CHUNK },
       { offset: 2048, size: 452, bytes: 452 },
     ])
-    // A sha1 over the bytes in the order they were sent.
     expect(JSON.parse(server.requests[4].data as string)).toEqual({ checksum: sha1(bytes) })
-    // The ids are the ones the start request answered with, and from the finish on the server works on the file.
     expect([row.assetId, row.fileId, row.status]).toEqual(['asset-1', 'file-1', 'processing'])
     expect(showError).not.toHaveBeenCalled()
   })
@@ -118,14 +112,12 @@ describe('the upload of a file larger than one chunk', () => {
       'photo.jpg',
       'photo.jpg',
     ])
-    // One controller per chunk: the row holds the one of the chunk sent last.
     expect(chunks[2].config.signal).toBe(row.latestChunkAbortController?.signal)
     expect(new Set(chunks.map((request) => request.config.signal)).size).toBe(3)
   })
 })
 
 describe('the progress of an upload on its row', () => {
-  /** A server whose chunks report what they have sent, one second apart, and can be held open. */
   const reportingServer = () => {
     const held: Array<() => void> = []
     let hold = false
@@ -156,11 +148,10 @@ describe('the progress of an upload on its row', () => {
     store.processUpload(QUEUE)
     await vi.advanceTimersByTimeAsync(1500)
 
-    // The first chunk is still on the wire: what it has sent of itself counts already.
     expect(row.status).toBe('uploading')
     expect(row.progress.progressPercent).toBeCloseTo((501 / 2500) * 100)
-    // Its 501 bytes over the two seconds since the chunk was sent: the second of its two reports, and the second
-    // that has passed since with nothing more.
+    // 501 bytes over the two seconds since the chunk was sent: the
+    // second of its two reports, plus one more second with no news.
     expect(row.progress.speed).toBe(251)
     expect(row.progress.remainingTime).toBe(8)
 
@@ -168,11 +159,10 @@ describe('the progress of an upload on its row', () => {
     chunks.holdChunks()
     await vi.advanceTimersByTimeAsync(1500)
 
-    // The first chunk whole and what the second has sent of itself.
     expect(row.progress.progressPercent).toBeCloseTo(((1024 + 501) / 2500) * 100)
-    // One measure across the chunks: those 1525 bytes over the four seconds from the request of the first chunk to
-    // the second that saw the last of them, the time the server took to answer the first chunk among them. The
-    // second after it has nothing new of a chunk that is half on its way and says nothing: the row keeps its values.
+    // One measure across the chunks: 1525 bytes over the four seconds from the first chunk
+    // request to the second that saw the last of them. The first chunk server time is included.
+    // The next second brings nothing new from a half-sent chunk and reports nothing, so the row keeps its values.
     expect(row.progress.speed).toBe(382)
     expect(row.progress.remainingTime).toBe(3)
   })
@@ -192,8 +182,11 @@ describe('the progress of an upload on its row', () => {
     expect(row.progress.speed).toBeGreaterThan(0)
   })
 
-  /* The chunks of the fake server are answered in the millisecond they are sent in: a measure needs time to pass. With
-   * none of it, the meter of the library still says the whole file is sent once the last chunk is: it said nothing. */
+  /*
+   * The fake server answers chunks in the same millisecond they are sent, and a speed measure needs time to pass.
+   * With no time passing, the library meter must still say the whole
+   * file is sent once the last chunk is. It used to say nothing.
+   */
   it('says the whole file is sent, with no speed, where no time passes', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload(bytesOf(2500))])
@@ -207,7 +200,6 @@ describe('the progress of an upload on its row', () => {
 })
 
 describe('the upload of a file with nothing in it', () => {
-  // The server is asked to make a file of no bytes, and told it is complete.
   it('is started and finished with no chunk between', async () => {
     const store = await load()
     const [row] = seedQueue(store, QUEUE, [waitingUpload(bytesOf(0))])
@@ -249,7 +241,6 @@ describe('a row that has no file to send', () => {
     expect(broken.assetId).toBeNull()
     expect(showError).toHaveBeenCalledTimes(1)
     expect(showError).toHaveBeenCalledWith('system.uploadErrors.unknownError')
-    // The other three went through, two at a time.
     expect(next.status).toBe('processing')
     expect(server.sent('POST', /\/image\/licence\/1$/)).toHaveLength(3)
     expect([store.getQueueProcessedCount(QUEUE), store.getQueueTotalCount(QUEUE)]).toEqual([1, 4])

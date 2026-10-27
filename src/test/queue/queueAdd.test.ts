@@ -4,10 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { assetDetail, assetFile, createFakeDam, seedDamConfig, stubFileReader } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The four ways a row gets into a queue, and what the row is when it does: files picked for upload, files picked
- * for a slot of an asset, assets picked for mass edit, and assets of an external provider. The real store over a
- * fake server; the ext system knows jpeg and png images, mp3 audio, mp4 video and pdf documents. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -37,7 +33,6 @@ const load = async (extSystemId = 1) => {
 
 const file = (name: string, type: string) => new File(['abc'], name, { type })
 
-/** Holds every upload at its first request, so that a row can be looked at as it was added. */
 const holdUploads = () => {
   server.on('POST', /./, () => new Promise(() => undefined))
 }
@@ -75,11 +70,9 @@ describe('files picked for upload', () => {
       ['file', 'document', 'paper.pdf', 7],
     ])
     expect(rows.map((row) => row.file)).toEqual(picked)
-    // No asset yet, no metadata, nothing wrong.
     expect(rows.map((row) => [row.assetId, row.fileId, row.canEditMetadata, row.error.hasError])).toEqual(
       Array(4).fill([null, null, false, false])
     )
-    // Two are sent at once, the others wait their turn.
     expect(rows.map((row) => row.status)).toEqual(['uploading', 'uploading', 'waiting', 'waiting'])
     expect(server.requests.map((request) => request.url)).toEqual([
       '/adm/v1/image/licence/7',
@@ -89,7 +82,7 @@ describe('files picked for upload', () => {
     expect(store.getQueueItemsTypes('global')).toEqual(['image', 'audio', 'video', 'document'])
   })
 
-  // A file name is not unique, and the key is what the list tells its tiles apart by.
+  // A file name is not unique. The list tells its tiles apart by the key.
   it('get a key of their own, also when two of them share a name', async () => {
     const store = await load()
     holdUploads()
@@ -120,7 +113,6 @@ describe('files picked for upload', () => {
   })
 
   it('are refused while the ext system of the user is not loaded', async () => {
-    // The configuration is there for another ext system than the current one.
     const store = await load(2)
 
     await expect(store.addByFiles('global', [file('photo.jpg', 'image/jpeg')])).rejects.toThrow(
@@ -155,11 +147,10 @@ describe('files picked for a slot of an asset', () => {
     expect([row.displayTitle, row.licenceId, row.fileId, row.file]).toEqual(['song.mp3', 7, null, picked[0]])
     expect(row.status).toBe('uploading')
     expect(server.requests.map((request) => request.url)).toEqual(['/adm/v1/audio/asset/asset-9/slot-name/bonus'])
-    // The slot the detail of the asset looks the upload up by.
     expect(store.getQueueItemForSlotItem('slots', 'bonus', 'asset-9')?.item).toBe(row)
   })
 
-  // The type is the asset's, whatever the file is: the server is left to refuse it.
+  // The type comes from the asset, whatever the file is. The server refuses a mismatch.
   it('are taken whatever their format', async () => {
     const store = await load()
     holdUploads()
@@ -188,7 +179,6 @@ describe('assets picked for mass edit', () => {
 
   it('become rows that load, with what the list already knows about the asset', async () => {
     const store = await load()
-    // The read of their metadata is still on the wire.
     server.on('GET', /^\/adm\/v1\/asset\//, () => new Promise(() => undefined))
 
     await store.addByAssets('edit', [
@@ -213,11 +203,10 @@ describe('assets picked for mass edit', () => {
       'title of asset-a',
       7,
     ])
-    // Or the switch of the form shows a `true` as off.
+    // A `true` must be kept, or the form switch shows it as off.
     expect(first.mainFileSingleUse).toBe(true)
     expect(first.imagePreview).toEqual({ url: 'https://dam.test/asset-a/list.jpg', width: 200, height: 100 })
     expect(first.canEditMetadata).toBe(false)
-    // An asset with no file yet has none of that.
     expect([second.assetType, second.assetStatus, second.fileId, second.mainFileSingleUse]).toEqual([
       'video',
       'draft',
@@ -225,7 +214,6 @@ describe('assets picked for mass edit', () => {
       null,
     ])
     expect(second.imagePreview).toBeUndefined()
-    // Nothing is uploaded for them.
     expect(server.sent('POST')).toEqual([])
     expect([store.getQueueProcessedCount('edit'), store.getQueueTotalCount('edit')]).toEqual([0, 2])
   })
@@ -247,7 +235,6 @@ describe('assets picked for mass edit', () => {
     await store.addByAssets('edit', [listed('asset-a'), listed('asset-b')] as never)
     await vi.advanceTimersByTimeAsync(0)
 
-    // One request for the lot, under the current licence.
     expect(server.sent('GET').map((request) => request.url)).toEqual(['/adm/v1/asset/licence/7/ids/asset-a,asset-b'])
     const [first, second] = store.getQueueItems('edit')
     expect([first.status, first.canEditMetadata]).toEqual(['uploaded', true])
@@ -256,7 +243,7 @@ describe('assets picked for mass edit', () => {
       ['author-server'],
       { title: 'a' },
     ])
-    // The switch as the detail says it, over what the list said.
+    // The detail value of the switch wins over the list value.
     expect(first.mainFileSingleUse).toBe(false)
     expect(first.authorConflicts).toEqual(['author-a', 'author-b'])
     expect([second.status, second.canEditMetadata, second.keywords]).toEqual(['uploaded', true, []])
@@ -291,7 +278,6 @@ describe('assets of an external provider', () => {
       { width: 800 },
     ])
     expect([row.displayTitle, row.licenceId, row.assetId, row.fileId]).toEqual(['title of photo-1', 7, null, null])
-    // The provider's own picture stands in for a preview.
     expect(row.imagePreview?.url).toBe('https://provider.test/photo-1.jpg')
     expect(server.requests).toEqual([])
     expect([store.getQueueProcessedCount('edit'), store.getQueueTotalCount('edit')]).toEqual([2, 2])
@@ -308,7 +294,6 @@ describe('assets of an external provider', () => {
       ['POST', '/adm/v1/image/licence/7/external-provider'],
     ])
     expect(JSON.parse(server.requests[0].data as string)).toEqual({ id: 'photo-1', externalProvider: 'unsplash' })
-    // The asset and the file the server made for it; from here the server works on the file.
     expect([row.status, row.assetId, row.fileId]).toEqual(['processing', 'asset-1', 'file-1'])
   })
 })

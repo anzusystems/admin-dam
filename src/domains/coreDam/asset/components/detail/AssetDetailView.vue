@@ -70,7 +70,7 @@ const closeDialog = () => {
   router.push({ name: '/(coreDam)/assets' })
 }
 
-// The asset the part of the detail that deleted it told of by its event: the page closes over it.
+// The asset reported deleted by the detail's event. The page closes over it.
 let closedOver: DocId | null = null
 
 const onPostDelete = (deletedId: DocId) => {
@@ -89,7 +89,7 @@ const getDetail = async () => {
   assetDetailStore.setView('list')
   assetDetailStore.showLoader()
   assetDetailStore.showDetail()
-  // Counted with the list's own detail fetches: they all write to this one store.
+  // Counted together with the list's detail fetches because they all write to this store.
   const detailRequest = assetDetailStore.startDetailRequest(assetId.value)
   try {
     const res = await fetchAsset(assetId.value)
@@ -104,8 +104,11 @@ const getDetail = async () => {
     fetchCachedUsers()
   } catch (error) {
     if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-    /* Cleared, as the list clears its detail: read again after a change of its file, the asset the page drew is the
-     * one from before the change, and would be left there under a working "Save". The first read has none yet. */
+    /*
+     * Cleared like the list's detail. On a re-read after a file change,
+     * the old asset would otherwise stay under a working "Save".
+     * The first read has nothing to clear.
+     */
     assetDetailStore.reset()
     if (!onPage()) return
     showErrorsDefault(error)
@@ -114,16 +117,20 @@ const getDetail = async () => {
   }
 }
 
-/* The detail tells of a change of the file of its asset: it is read again. Not once the page is left, which the
- * answer of the change can outlast: the whole read goes by the address of the page. */
+/*
+ * Re-reads the asset after its file changed.
+ * Skipped once the page is left, which the change response can outlast. The read depends on the page address.
+ */
 provideAssetFileChanged((byServer) => {
   if (onPage()) readAfterFileChange(getDetail, byServer)
 })
 
-/* And of the asset deleted in the detail: marked as being deleted while the page holds it, so that what changes it is
- * off - also when another tab was opened before the delete was answered, and the part that deleted, gone with its tab,
- * has no event to send. Its event, when it sends one, comes right after this and closes the page; without it the page
- * stays on the asset, and says that it went meanwhile. */
+/*
+ * Marks the deleted asset as deleting while the page holds it, so editing is disabled.
+ * This also covers a delete answered after another tab opened, when the deleting part is gone and sends no event.
+ * If its event arrives, it comes right after and closes the page.
+ * Otherwise the page stays and shows the asset was deleted.
+ */
 provideAssetDeleted((deletedId) => {
   if (assetDetailStore.asset?.id !== deletedId) return
   assetDetailStore.setDeleting()
@@ -143,7 +150,7 @@ const resetAllStores = () => {
 const { currentExtSystemId } = useCurrentExtSystem()
 const { can } = useAuth()
 
-// The first read waits a moment: called off when the page is left before it, or it would read for the page after.
+// The first read is delayed. It is cancelled when the page is left first, or it would read for the next page.
 let firstRead: ReturnType<typeof setTimeout> | undefined
 
 onMounted(() => {
@@ -198,8 +205,10 @@ onUnmounted(() => {
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <!-- Narrower than 840 px the button shows and hides the picture above the panel: an image
-                   icon there, as in the library's detail. -->
+              <!--
+                Below 840 px the button toggles the image above the panel,
+                so it uses an image icon, as in the library's detail.
+              -->
               <VIcon
                 icon="mdi-information-outline"
                 class="d-none d-md-flex"

@@ -43,7 +43,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list display modes`, () => {
     await row.locator('[data-cy="table-copy"]').click()
     await alertMessage(page, 'ID bolo skopírované do schránky')
 
-    // The copied id has to belong to the clicked row: the asset it names carries that row's title.
     const copiedId = (await page.evaluate(() => navigator.clipboard.readText())).trim()
     expect(copiedId).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     const asset = await getAsset(page, copiedId)

@@ -32,8 +32,6 @@ const protectedRoute = { path: '/assets', meta: { requiresAuth: true } } as neve
 const publicRoute = { path: '/login', meta: { requiresAuth: false } } as never
 const errorRoute = { path: '/error', meta: { requiresAuth: false } } as never
 
-// The guard records the route being left before it decides anything, so every call carries one.
-// A nameless route is what the very first navigation comes from, and it records nothing.
 const fromNowhere = { path: '/', name: undefined, meta: {} } as never
 
 const load = async () => {
@@ -58,7 +56,6 @@ describe('the route guard', () => {
     appInitialized = true
     checkAbility.mockResolvedValue('/unauthorized')
 
-    // Calling it is not enough: what it answers has to be what the router is told.
     expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/unauthorized')
     expect(checkAbility).toHaveBeenCalledTimes(1)
   })
@@ -76,7 +73,7 @@ describe('the route guard', () => {
     loadDamPubConfig.mockRejectedValue(new Error('502'))
     checkAbility.mockResolvedValue('/unauthorized')
 
-    // Answering the navigation here would skip the guard below, on one failed configuration load.
+    // Answering the navigation here would skip the guard below on one failed configuration load.
     expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBe('/unauthorized')
     expect(checkAbility).toHaveBeenCalledTimes(1)
   })
@@ -86,7 +83,7 @@ describe('the route guard', () => {
     appInitialized = true
     loadDamPubConfig.mockRejectedValue(new Error('502'))
 
-    // The error page recovers with a full reload, which would take the upload queue with it.
+    // The error page recovers with a full reload, which would drop the upload queue.
     expect(await beforeEachRoute(protectedRoute, fromNowhere)).not.toBe('/error')
   })
 
@@ -98,7 +95,6 @@ describe('the route guard', () => {
     expect(await beforeEachRoute(errorRoute, fromNowhere)).toBeUndefined()
   })
 
-  // The error page says "try again"; a reload of it tried nothing until its button was used.
   it('runs the start-up again when the error page is reloaded', async () => {
     const { beforeEachRoute } = await load()
     initialized.value = { damPubConfig: true }

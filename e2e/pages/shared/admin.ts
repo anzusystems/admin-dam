@@ -1,11 +1,9 @@
 import { type Locator, type Page, expect } from '@playwright/test'
 
-// Polling helpers
-
 /**
- * Wait up to `timeout` for `locator` to become visible, reporting whether it did instead of throwing.
- * `locator.isVisible()` does not retry, so asking it the instant a navigation settles reports "no"
- * while the page is still rendering.
+ * Waits up to `timeout` for `locator` to become visible and reports whether it did, instead of throwing.
+ * `locator.isVisible()` does not retry, so it reports "no" if asked
+ * right after a navigation while the page is still rendering.
  */
 async function becomesVisible(locator: Locator, timeout: number): Promise<boolean> {
   return locator
@@ -15,10 +13,8 @@ async function becomesVisible(locator: Locator, timeout: number): Promise<boolea
     .catch(() => false)
 }
 
-/** Per-reload budget in `reloadUntilVisible` — spent polling, so an early appearance ends it. */
 const RELOAD_ATTEMPT_TIMEOUT = 6000
 
-/** Reload the page until the given selector is visible, or throw after retries. */
 export async function reloadUntilVisible(
   page: Page,
   selector: string,
@@ -28,8 +24,8 @@ export async function reloadUntilVisible(
   const timeout = options.timeout ?? 30000
   for (let i = 0; i <= retries; i++) {
     const el = page.locator(selector)
-    // Give each attempt a real polling window rather than one instant check bracketed by two fixed
-    // 3s sleeps: the same overall budget, but it returns the moment the content lands.
+    // Give each attempt a real polling window instead of one instant check between two fixed 3s sleeps.
+    // The overall budget is the same, but it returns as soon as the content appears.
     if (await becomesVisible(el, RELOAD_ATTEMPT_TIMEOUT)) {
       await expect(el.first()).toBeVisible({ timeout })
       return
@@ -39,11 +35,9 @@ export async function reloadUntilVisible(
   }
 }
 
-// Loaders
-
 /**
- * Wait for the custom card loader to disappear. It may flash in and out quickly, so only its absence is
- * asserted; the `display:none` wait keeps a CSS transition from intercepting the caller's next click.
+ * The loader may flash in and out quickly, so only its absence is asserted.
+ * The `display:none` wait keeps a CSS transition from intercepting the caller's next click.
  */
 export async function cardLoad(page: Page): Promise<void> {
   await expect(page.locator('.a-card-loader'))
@@ -59,11 +53,9 @@ export async function cardLoad(page: Page): Promise<void> {
     .catch(() => {})
 }
 
-// Alerts
-
 /**
- * Close every open alert — leaving one up would overlay the caller's next click.
- * Alerts may auto-dismiss before the close button is clicked, so ignore click errors.
+ * Leaving an alert up would overlay the caller's next click.
+ * Alerts may auto-dismiss before the close button is clicked, so click errors are ignored.
  */
 export async function closeAlerts(page: Page): Promise<void> {
   const closeButtons = page.locator('.v-alert__close')
@@ -73,28 +65,24 @@ export async function closeAlerts(page: Page): Promise<void> {
       .click({ timeout: 2000 })
       .catch(() => {})
   }
-  // A dismissed alert keeps intercepting pointer events until its leave transition ends, which is
-  // long enough to swallow the caller's next click. Wait it out — tolerantly, since an alert the
-  // app re-raises on its own (autosave, collaboration) must not fail an unrelated step.
+  // A dismissed alert keeps intercepting pointer events until its
+  // leave transition ends, which can swallow the caller's next click.
+  // Wait tolerantly: an alert the app re-raises on its own (autosave, collaboration) must not fail an unrelated step.
   await expect(page.locator('.v-alert'))
     .toHaveCount(0, { timeout: 3000 })
     .catch(() => {})
 }
 
 /**
- * Click a button that is supposed to raise `message`, and wait for that alert.
- *
- * A save/create click is swallowed surprisingly often: an alert from an earlier step keeps intercepting
- * pointer events for the length of its leave transition, and a Vuetify menu or tooltip that is still
- * closing does the same. The press then lands on nothing and the caller waits out `alertMessage` on an
- * action that never happened.
- *
- * Only a click that provably did nothing is retried: every write goes to `/api/adm/`, so a press that
- * fires no such request cannot have created or saved anything and re-issuing it cannot duplicate a
- * record. Once a request is out, the alert is simply awaited.
+ * Click a button that should raise `message` and wait for that alert.
+ * A save/create click is often swallowed. An earlier alert or a closing Vuetify
+ * menu or tooltip intercepts pointer events, so the press lands on nothing.
+ * Only a click that provably did nothing is retried. Every write goes to `/api/adm/`,
+ * so a press that fires no such request cannot have saved anything and a retry cannot
+ * duplicate a record. Once a request is out, the alert is just awaited.
  */
 export async function clickForAlert(page: Page, button: Locator, message: string): Promise<void> {
-  // Clear the way first — this removes the usual interceptor before it can swallow anything.
+  // Clear the way first. This removes the usual interceptor before it can swallow the click.
   await closeAlerts(page)
 
   const deadline = Date.now() + 60000
@@ -107,8 +95,8 @@ export async function clickForAlert(page: Page, button: Locator, message: string
       .catch(() => false)
     await button.click()
     if (await started) break
-    // A form that fails client-side validation never calls the API either; that is not a swallowed
-    // click, and retrying cannot fix it.
+    // A form that fails client-side validation never calls the API either.
+    // That is not a swallowed click, and retrying cannot fix it.
     if (await page.locator('.v-alert').filter({ hasText: ALERT_FORM_INVALID }).first().isVisible()) {
       throw new Error(`"${message}": the form failed validation ("${ALERT_FORM_INVALID}")`)
     }
@@ -123,27 +111,23 @@ export async function clickForAlert(page: Page, button: Locator, message: string
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
 const ALERT_FORM_INVALID = 'Vyplňte všetky povinné polia a opravte chyby.'
 
-/** Assert that a v-alert with the given message is visible, then close it. */
 export async function alertMessage(page: Page, message: string): Promise<void> {
-  // One action can raise several warnings at once (e.g. flipping "PR správa" warns about both the
-  // forum/iText switch-off and auto-narration), so pick the alert that carries `message` rather than
-  // assuming it is the first one in the stack.
+  // One action can raise several warnings at once (e.g. flipping "PR
+  // správa" warns about the forum/iText switch-off and auto-narration).
+  // Pick the alert that carries `message` instead of assuming it is the first.
   await expect(page.locator('.v-alert').filter({ hasText: message }).first()).toBeVisible({ timeout: 15000 })
   await closeAlerts(page)
 }
 
-// Dropdowns / selects
-
-/** `^\s*text\s*$` with every regex metacharacter in `text` escaped. */
 export function exactTextMatch(text: string): RegExp {
   return new RegExp(`^\\s*${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`)
 }
 
 /**
- * Pick `item` from a select whose menu virtualises its options: only the rendered window exists in the
- * DOM, so a plain text-filtered click never resolves for an option further down the list.
- * Opens the select by its accessible name, walks the menu it declares through `aria-controls` from the
- * top until the option mounts, then clicks it.
+ * Picks `item` from a select whose menu virtualises its options. Only the rendered window
+ * is in the DOM, so a plain text-filtered click never finds an option further down.
+ * Opens the select by its accessible name, walks the menu declared via
+ * `aria-controls` from the top until the option mounts, then clicks it.
  */
 export async function pickVirtualizedOption(page: Page, combo: Locator, item: string): Promise<void> {
   await expect(combo).toBeEnabled({ timeout: 15000 })
@@ -156,15 +140,16 @@ export async function pickVirtualizedOption(page: Page, combo: Locator, item: st
   const menu = menuId ? page.locator(`[id="${menuId}"]`) : page.locator('.v-overlay--active').last()
   const scroller = menu.locator('.v-list').first()
   await expect(scroller).toBeVisible({ timeout: 15000 })
-  // Vuetify scrolls a freshly opened menu to its selected option a tick after the menu mounts, so a
-  // scroll issued right after the click gets undone. Let that settle before sweeping.
+  // Vuetify scrolls a freshly opened menu to its selected option a tick
+  // after it mounts, which undoes a scroll issued right after the click.
+  // Let that settle before sweeping.
   await page.waitForTimeout(500)
 
   const option = menu.locator('.v-list-item').filter({ hasText: item }).first()
   await expect(async () => {
     if ((await option.count()) === 0) {
-      // Walk the rendered window down, and wrap back to the top on reaching the end: the target can
-      // sit above the offset Vuetify restored, and a one-way sweep would never come back to it.
+      // Walk the rendered window down and wrap back to the top at the end.
+      // The target can sit above the offset Vuetify restored, and a one-way sweep would never reach it.
       await scroller.evaluate((el) => {
         const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 2
         el.scrollTo(0, atEnd ? 0 : el.scrollTop + 250)
@@ -173,17 +158,14 @@ export async function pickVirtualizedOption(page: Page, combo: Locator, item: st
     await expect(option).toHaveCount(1, { timeout: 500 })
   }).toPass({ timeout: 30000 })
   await option.click()
-  // A single-select closes on pick; wait it out so the menu cannot swallow the caller's next click.
+  // A single-select closes on pick. Wait for that so the menu cannot swallow the caller's next click.
   await expect(menu)
     .toBeHidden({ timeout: 5000 })
     .catch(() => {})
 }
 
-// Datatables
-
 /**
- * The input of the datatable filter labelled exactly `label` — an exact match, so "ID" does not also hit
- * "Externé ID".
+ * Exact match, so "ID" does not also hit "Externé ID".
  */
 export function filterInput(page: Page, label: string | RegExp): Locator {
   const text =
@@ -194,8 +176,8 @@ export function filterInput(page: Page, label: string | RegExp): Locator {
 }
 
 /**
- * Fill the datatable filter labelled `label` and submit it with Enter. Expands the advanced filters when that
- * field is collapsed — a quick filter or two stay visible without them, so only the target field tells.
+ * Expands the advanced filters when the field is collapsed. A quick filter
+ * or two stay visible without them, so only the target field tells.
  */
 export async function filterBy(page: Page, label: string | RegExp, value: string): Promise<void> {
   const input = filterInput(page, label)
@@ -210,14 +192,16 @@ export async function filterBy(page: Page, label: string | RegExp, value: string
   await cardLoad(page)
 }
 
-/** Search a datatable by the exact id of a record — the quick text filter is fuzzy and does not match ids. */
+/**
+ * The quick text filter is fuzzy and does not match ids.
+ */
 export async function filterById(page: Page, id: string): Promise<void> {
   await filterBy(page, /^\s*ID\s*$/i, id)
 }
 
 /**
- * The id a detail view renders in its copy-text chip, once it equals the id at the end of the URL. Only
- * containment is not enough: the "0" placeholder shown while the entity loads is contained in most ids.
+ * Waits until the id equals the id at the end of the URL. Containment is not enough:
+ * the "0" placeholder shown while the entity loads is contained in most ids.
  */
 export async function detailId(page: Page): Promise<string> {
   const copyText = page.locator('[data-cy="copy-text"]').filter({ visible: true }).first()

@@ -13,13 +13,15 @@ import {
   stopUploadUi,
 } from '@/test/support/uploadUi'
 
-/* Under what was typed, a main file the server failed holds "Save" back as a processed one does: the server can have
- * filled in the metadata from it before it failed. Nothing is left to be processed then, and the line under "Save" says
- * so - the file failed, and "Save" comes with opening the asset again; it does, once what was typed is left. A main file
- * still on its way keeps the line it had. The real pages - the list with its dialog and its panel, the page of an asset
- * - the real listener of the notifications, and the application around them as it starts; the server is a fake, and
- * so are the connection its notifications come by and the address the page asks about a new version of the
- * application. */
+/*
+ * Under typed text, a main file that the server failed holds "Save" back, like a processed one.
+ * The server can fill in metadata from the file before it fails.
+ * The line under "Save" says the file failed and "Save" comes
+ * with opening the asset again, once the typed text is gone.
+ * A main file still in progress keeps its old line.
+ * Real pages, listener and app startup are used. The server, the
+ * notification connection and the new-version address are fakes.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -50,12 +52,10 @@ const DELETE = 'Delete'
 const BEING_DELETED = 'Asset will be removed soon'
 
 const LIST = '/assets'
-/** The asset whose main file the server is processing, and that file; another asset of the list. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
-/** How far the server is with the main file of the asset. */
 let fileIs: 'stored' | 'failed' = 'stored'
 
 const fileOnServer = (fileId: string, assetId: string) => ({
@@ -65,7 +65,6 @@ const fileOnServer = (fileId: string, assetId: string) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: id === ASSET ? 'draft' : 'with_file' },
@@ -78,10 +77,8 @@ const onServer = (id: string) => ({
 })
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
-/** Long enough for whatever the news sets off to have answered. */
 const answered = () => vi.advanceTimersByTimeAsync(1_000)
 
-/** The server says by its notification that the main file failed, having failed it. */
 const failed = async () => {
   fileIs = 'failed'
   listeners.forEach((listener) =>
@@ -93,7 +90,6 @@ const failed = async () => {
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
 
-/** The open question about what was typed, answered "Leave anyway". */
 const leave = async () => {
   await eventually(() => expect(buttonsNamed(document.body, LEAVE)).toHaveLength(1))
   expect(document.body.textContent).toContain(UNSAVED)
@@ -108,7 +104,6 @@ const start = async () => {
     extSystem: { image: { slots: ['default'] } },
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -123,7 +118,6 @@ const start = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
 
@@ -132,8 +126,6 @@ const start = async () => {
 
 type Ui = Awaited<ReturnType<typeof start>>
 
-/** A place the form of the asset is drawn in: opened, it answers the element the form is drawn in, and what opens the
- * asset there again. */
 type Place = () => Promise<{ ui: Ui; form: () => HTMLElement | null; openAgain: () => Promise<void> }>
 
 const listOpened = async () => {
@@ -156,7 +148,6 @@ const inTheDetailOfTheList: Place = async () => {
   return {
     ui,
     form: dialogOfList,
-    // Closed, and opened by the pencil of the tile again.
     openAgain: async () => {
       dialogOfList()!.querySelector('.mdi-close')!.closest('button')!.click()
       await eventually(() => expect(dialogOfList()).toBeNull())
@@ -174,7 +165,6 @@ const inThePanelBesideTheList: Place = async () => {
   return {
     ui,
     form: panel,
-    // Its tile clicked again.
     openAgain: async () => {
       tiles()[0].click()
       await leave()
@@ -197,7 +187,6 @@ const ofTheList: Array<[string, Place]> = [
   ['the panel beside the list', inThePanelBesideTheList],
 ]
 
-/** The form of the asset, opened in the place and drawn, with what was typed into it: what a case reads of it. */
 const openTypedForm = async (place: Place) => {
   const { ui, form, openAgain } = await place()
   const title = () => form()?.querySelector<HTMLTextAreaElement>('textarea') ?? null
@@ -212,38 +201,31 @@ const openTypedForm = async (place: Place) => {
     title,
     typedInto,
     openAgain,
-    /** "Save" of the form: whether it is held back, and which line under it says why. */
     save: () => ({
       heldBack: buttonsNamed(form()!, 'Save')[0]?.disabled,
       stillProcessed: !!form()!.textContent?.includes(STILL_PROCESSED),
       failedOpenAgain: !!form()!.textContent?.includes(FAILED_OPEN_AGAIN),
     }),
-    /** Whether the form says the text. */
     says: (text: string) => !!form()!.textContent?.includes(text),
   }
 }
 
 const HELD_FOR_FAILED = { heldBack: true, stillProcessed: false, failedOpenAgain: true }
 
-/** "Save" of the form drawn in the element: whether it is held back, and which line under it says why. */
 const saveIn = (form: HTMLElement) => ({
   heldBack: buttonsNamed(form, 'Save')[0]?.disabled,
   stillProcessed: !!form.textContent?.includes(STILL_PROCESSED),
   failedOpenAgain: !!form.textContent?.includes(FAILED_OPEN_AGAIN),
 })
 
-/** Whether the server holds the asset as being deleted: once its delete was answered. */
 let deletedOnServer = false
 
-/** The asset as a read of it answers: as the server holds it when it is asked. */
 const assetOnServer = () => ({
   ...onServer(ASSET),
   ...(deletedOnServer ? { attributes: { assetType: 'image', assetStatus: 'deleting' } } : {}),
   metadata: { customData: { title: FROM_SERVER }, authorSuggestions: {}, keywordSuggestions: {} },
 })
 
-/** The reads of the asset held, until `stop`: each answered, in the order asked, as the server held the asset when it
- * was asked. */
 let heldReads: Array<() => void> | null = null
 const holdReads = () => {
   heldReads = []
@@ -302,8 +284,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The line said the file was still being processed and "Save" would come once it was, while the card said it had
- * failed: nothing was left to wait for. */
+/*
+ * Regression: the line said the file was still processing and "Save"
+ * would come once it finished, while the card said it failed.
+ * Nothing was left to wait for.
+ */
 describe('the line under "Save" held back under what was typed, once the main file has failed', () => {
   it.each<[string, Place]>([...ofTheList, ['the page of the asset', onThePageOfTheAsset]])(
     'says in %s that the file failed and that "Save" comes with opening the asset again',
@@ -323,7 +308,6 @@ describe('the line under "Save" held back under what was typed, once the main fi
     }
   )
 
-  // What the line says holds: the asset read whole, once what was typed is left, frees "Save".
   it.each(ofTheList)('goes with the asset opened again in %s, and "Save" comes free', async (_where, place) => {
     const form = await openTypedForm(place)
     await failed()
@@ -342,7 +326,6 @@ describe('the line under "Save" held back under what was typed, once the main fi
     ])
   })
 
-  // The guard: a main file on its way keeps the line it had.
   it.each(ofTheList)(
     'says in %s that the file is still being processed while it is on its way',
     async (_where, place) => {
@@ -353,9 +336,12 @@ describe('the line under "Save" held back under what was typed, once the main fi
     }
   )
 
-  /* A read of the asset asked before the news of the failure and answered after it is stamped as the asset fetched a
-   * moment ago, and the quiet read the news sets off holds "Save" back after that: a click on the tile within five
-   * seconds of the stamp read nothing, and "Save" stayed held back under the line that said opening would free it. */
+  /*
+   * Regression: a read asked before the failure news and answered after it is stamped as fetched a moment ago.
+   * The quiet read set off by the news then holds "Save" back.
+   * A tile click within five seconds of the stamp read nothing, and "Save"
+   * stayed held back under a line saying that opening would free it.
+   */
   it('goes with a click on the tile within five seconds of a read answered between the news and the hold', async () => {
     const { tiles } = await listOpened()
     tiles()[0].click()
@@ -363,12 +349,10 @@ describe('the line under "Save" held back under what was typed, once the main fi
     await eventually(() => expect(title()).not.toBeNull())
     await vi.advanceTimersByTimeAsync(6_000)
     const reads = holdReads()
-    // Read whole by its tile, behind the loader; the news comes while that read is on its way.
     tiles()[0].click()
     await eventually(() => expect(reads.waiting()).toBe(1))
     await failed()
     await reads.answerNext()
-    // The quiet read the news set off, typed under.
     await eventually(() => expect(reads.waiting()).toBe(1))
     await eventually(() => expect(title()).not.toBeNull())
     title()!.value = TYPED
@@ -390,9 +374,12 @@ describe('the line under "Save" held back under what was typed, once the main fi
   })
 })
 
-/* Deleted, the asset had the card say its file failed, and the line under the disabled "Save" say opening it again
- * would free it. The detail closes over the asset deleted in it, and the panel beside the list holds it; "Edit more"
- * opens it again, read as the server holds it by then. */
+/*
+ * Once deleted, the card says the file failed and the line under the
+ * disabled "Save" says that opening the asset again would free it.
+ * The detail closes over the deleted asset and the panel beside the list holds it.
+ * "Edit more" opens it again, read as the server holds it by then.
+ */
 describe('the form of an asset being deleted, whose main file failed under what was typed', () => {
   it('says the asset is being deleted, with no line under "Save", in the panel beside the list and in the detail', async () => {
     const form = await openTypedForm(inTheDetailOfTheList)
@@ -414,7 +401,6 @@ describe('the form of an asset being deleted, whose main file failed under what 
         )
     )
 
-    // Deleted from the detail, with another tab opened before the answer: the detail closes over it all the same.
     buttonsNamed(dialogOfList()!, DELETE)[0].click()
     await eventually(() => expect(dialogButton(DELETE)).not.toBeNull())
     dialogButton(DELETE)!.click()
@@ -430,7 +416,6 @@ describe('the form of an asset being deleted, whose main file failed under what 
       panel().textContent?.includes(FAILED),
       saveIn(panel()),
     ]).toEqual([true, false, NOTHING_UNDER])
-    // Opened on the tab it was left at.
     buttonsNamed(panel(), 'Edit more')[0].click()
     await eventually(() => expect(dialogOfList()?.querySelector('[data-cy="button-meta"]')).toBeTruthy())
     dialogOfList()!.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()

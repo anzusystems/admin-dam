@@ -24,7 +24,6 @@ export interface EpisodeData {
   episodeNumber: string
 }
 
-/** Create a non-imported podcast from the settings section and return its id. */
 export async function createPodcast(page: Page, data: PodcastData): Promise<string> {
   await openSettingsSection(page, 'podcast-settings', '/podcasts', 'Podcasty')
   await visibleCy(page, 'button-create').click()
@@ -39,7 +38,6 @@ export async function createPodcast(page: Page, data: PodcastData): Promise<stri
   return confirmCreate(page, dialog, '/podcast')
 }
 
-/** Open the podcast detail tab and check it renders the podcast id. */
 export async function verifyPodcastDetail(page: Page, podcastId: string, title: string): Promise<void> {
   await page.goto(`/podcasts/${podcastId}`)
   await cardLoad(page)
@@ -50,7 +48,6 @@ export async function verifyPodcastDetail(page: Page, podcastId: string, title: 
   await expect(page).toHaveURL(/\/podcasts/)
 }
 
-/** Edit a podcast found through the list's id filter. */
 export async function updatePodcast(page: Page, podcastId: string, data: PodcastData): Promise<void> {
   await page.goto('/podcasts')
   await filterById(page, podcastId)
@@ -65,7 +62,6 @@ export async function updatePodcast(page: Page, podcastId: string, data: Podcast
   await closeDetail(page, '/edit')
 }
 
-/** Add an episode to a podcast and return its id. */
 export async function createEpisode(page: Page, podcastId: string, data: EpisodeData): Promise<string> {
   await page.goto(`/podcasts/${podcastId}`)
   await visibleCy(page, 'episode-list').click()
@@ -79,7 +75,6 @@ export async function createEpisode(page: Page, podcastId: string, data: Episode
   return confirmCreate(page, dialog, '/podcast-episode')
 }
 
-/** Open an episode detail and check it renders the episode id. */
 export async function verifyEpisodeDetail(page: Page, podcastId: string, episodeId: string): Promise<void> {
   await page.goto(`/podcasts/${podcastId}/episodes/${episodeId}`)
   await cardLoad(page)
@@ -88,7 +83,6 @@ export async function verifyEpisodeDetail(page: Page, podcastId: string, episode
   await expect(page).toHaveURL(new RegExp(`/podcasts/${podcastId}`))
 }
 
-/** Edit an episode found through the episode list's id filter. */
 export async function updateEpisode(
   page: Page,
   podcastId: string,
@@ -112,7 +106,6 @@ export async function updateEpisode(
   await closeDetail(page, '/edit')
 }
 
-/** Delete an episode from its detail view. */
 export async function deleteEpisode(page: Page, podcastId: string, episodeId: string): Promise<void> {
   await page.goto(`/podcasts/${podcastId}/episodes/${episodeId}`)
   await cardLoad(page)

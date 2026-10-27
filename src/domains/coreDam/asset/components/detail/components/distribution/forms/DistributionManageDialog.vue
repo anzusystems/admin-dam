@@ -50,8 +50,8 @@ const { t } = useI18n()
 const saveButtonLoading = ref(false)
 
 const onCancel = () => {
-  // The save goes through all the same, and a dialog closed under it is unmounted: nobody would hear that it was
-  // saved, and the list would not be read again.
+  // Not closable while saving: the save continues, and a closed dialog is unmounted.
+  // Nobody would learn of the save and the list would not be reloaded.
   if (saveButtonLoading.value) return
   distributionManageDialog.value = false
   emit('onCancel')
@@ -62,7 +62,7 @@ const { v$ } = useDistributionUpdateDtoValidations(distribution)
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  // The keyboard reaches a button that spins.
+  // The keyboard can still trigger a spinning button.
   if (saveButtonLoading.value) return
   saveButtonLoading.value = true
   try {
@@ -76,7 +76,7 @@ const onConfirm = async () => {
     distributionManageDialog.value = false
 
     showRecordWas(props.isEdit ? 'updated' : 'created')
-    // Told even when this dialog is gone by the answer: the settings hidden, the tab closed meanwhile.
+    // Notified even if this dialog is gone by the answer, for example when the settings or the tab were closed.
     distributionListChanged()
     emit('onDistributionUpsert')
   } catch (error) {

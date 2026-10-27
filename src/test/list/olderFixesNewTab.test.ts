@@ -6,12 +6,6 @@ import { assetDetail, assetFile, createFakeDam, queueRow } from '@/test/support/
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* On the page of the list of an external provider the edit of a row of the upload queue opens the page of its asset in
- * a new tab of the browser. A double click opened two tabs, and a browser that gave none - its blocker of new windows
- * - left the editor with nothing, without a word. The real page with its real upload queue, the application around it
- * as it starts; the server is a fake, and so are the tabs of the browser and the address the page asks about a new
- * version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -24,7 +18,6 @@ const EDIT = 'Edit more'
 const NO_TAB = 'The browser did not open a new tab. Allow pop-up windows for this site and try again.'
 
 const PROVIDED = '/external-providers/' + PROVIDER
-/** The asset of the row of the upload queue. */
 const UPLOADED = 'asset-9'
 
 const onServer = (id: string, over: Record<string, unknown> = {}) => ({
@@ -35,7 +28,6 @@ const onServer = (id: string, over: Record<string, unknown> = {}) => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** The browser opens tabs from now on, or gives none: what it was asked for each. */
 const browserOpensTabs = (gives: boolean) => {
   const open = vi.fn<(...asked: unknown[]) => { opener: unknown } | null>(() =>
     gives ? { opener: window as unknown } : null
@@ -45,7 +37,6 @@ const browserOpensTabs = (gives: boolean) => {
   return { asked: () => open.mock.calls }
 }
 
-/** The page of the provider, with one uploaded asset in the upload queue drawn over the whole page: its edit button. */
 const openQueue = async () => {
   const uploaded: UploadQueueItem[] = [
     queueRow({ status: 'uploaded', canEditMetadata: true, assetId: UPLOADED, fileId: 'file-9' }),
@@ -56,11 +47,9 @@ const openQueue = async () => {
     customForm: { image: [customField('title')] },
     queues: { global: uploaded },
   })
-  // The provider, as the config of the ext system names it.
   const config = ui.library.useDamConfigStore()
   const extSystem = config.damConfigExtSystem.get(1) as unknown as Record<string, unknown>
   extSystem.assetExternalProviders = { [PROVIDER]: { title: 'Provider' } }
-  // The user as the bar of the page draws them, with the provider on their account.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -119,7 +108,6 @@ afterEach(() => {
 })
 
 describe('the edit of a row of the upload queue on the page of an external provider', () => {
-  // Two clicks and the double click of the browser: the first opens the tab, the rest are of the same press.
   it('opens one tab for a double click', async () => {
     const queue = await openQueue()
     const tabs = browserOpensTabs(true)

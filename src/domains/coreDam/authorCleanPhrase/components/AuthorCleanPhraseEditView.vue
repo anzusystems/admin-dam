@@ -38,7 +38,7 @@ const breadcrumbs = defineBreadcrumbs(() => [
   },
 ])
 
-// Not the Close button's fallback: that is this record's detail, which failed to load just as well.
+// Not the Close button's fallback: that is this record's detail, which failed to load too.
 useRecordPage({
   fallbackRouteName: '/(coreDam)/author-clean-phrases',
   skipRouteNames: ['/(coreDam)/author-clean-phrases/[id]'],

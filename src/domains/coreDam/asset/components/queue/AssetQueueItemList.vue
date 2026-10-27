@@ -23,8 +23,7 @@ const emit = defineEmits<{ cancelItem: [data: { index: number; item: UploadQueue
 const { t } = useI18n()
 const { getAssetFileFailReasonOption } = useDamAssetFileFailReason()
 
-/* This row has no chip and no room for a message, so whatever there is to say hangs off the icon:
- * the reason for a failure, the message for the fallback giving up. */
+/* This row has no chip or room for a message, so the failure reason or fallback message goes on the icon title. */
 const errorTitle = computed(() => {
   if (props.item.error.assetFileFailReason !== AssetFileFailReason.None) {
     return getAssetFileFailReasonOption(props.item.error.assetFileFailReason)?.title ?? ''
@@ -56,7 +55,7 @@ const showCancel = computed(() =>
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
-      // Processing and Failed too: the row is drawn for every status but `Uploaded`, over the slot.
+      // `Processing` and `Failed` too: the row covers the slot for every status except `Uploaded`.
       UploadQueueItemStatus.Processing,
       UploadQueueItemStatus.Failed,
     ] as unknown as UploadQueueItemStatusType
@@ -76,8 +75,9 @@ const { remainingTimeShort } = useRemainingTime()
             :class="{ 'dam-upload-queue__item-status--permanent': !showCancel }"
             :title="errorTitle"
           >
-            <!-- The error first: an item that gave up waiting keeps the status it was given, so
-                 the spinner would otherwise go on covering the one thing that explains it. -->
+            <!--
+              Error first: an item that gave up waiting keeps its status, so the spinner would otherwise hide the error.
+            -->
             <VIcon
               v-if="item.error.hasError"
               icon="mdi-alert"

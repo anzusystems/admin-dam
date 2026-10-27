@@ -99,15 +99,20 @@ const allowSelect = computed(
 )
 
 const onCancel = () => {
-  /* The change goes through all the same, and what holds a second confirm back goes with this dialog: one opened
-   * again would know nothing of it, and send the change once more, under the reload of the first. */
+  /*
+   * The change still goes through. The guard against a second confirm lives in this
+   * dialog, so a reopened dialog would send the change again during the first reload.
+   */
   if (saving.value) return
   dialog.value = false
 }
 
-/* Nor does the page go meanwhile, with the dialog: the back button of the browser onto an entry where ADAM was loaded
- * or reloaded gets past Vuetify, which otherwise only closes the dialog. Nor its address: the page of another provider
- * is the same page of the router, and the application draws each address anew; another query is drawn on. */
+/*
+ * Blocks leaving the page while creating. The browser back button to an entry where
+ * ADAM was loaded or reloaded bypasses Vuetify, which otherwise only closes the dialog.
+ * Also blocks address changes: another provider's page is the same
+ * router page and is fully re-rendered. A query-only change is allowed.
+ */
 onBeforeRouteLeave(() => !saving.value)
 onBeforeRouteUpdate((to, from) => to.path === from.path || !saving.value)
 
@@ -143,8 +148,7 @@ const onConfirm = async () => {
     saving.value = false
     return
   }
-  /* The change ends in a reload of the page: metadata typed into the panel beside the list and not saved go with it,
-   * only when told to. Asked about before anything is sent. */
+  /* The change ends in a page reload, which drops unsaved panel metadata. Ask before anything is sent. */
   const leavesUnsaved = assetDetailStore.panelHoldsUnsavedMetadata
   if (leavesUnsaved && !(await assetDetailStore.askToLeaveUnsaved())) {
     saving.value = false
@@ -155,7 +159,7 @@ const onConfirm = async () => {
     await updateCurrentUser({ selectedLicence: selectedLicence.value })
     dialog.value = false
     showRecordWas('updated')
-    // Given up above: the page that is reloaded holds them no more, or the browser would ask about them once again.
+    // Already given up above. Reset so the browser does not ask about them again on reload.
     if (leavesUnsaved) assetDetailStore.reset()
     window.location.reload()
   } catch (error) {

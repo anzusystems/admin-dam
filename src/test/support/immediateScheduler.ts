@@ -1,15 +1,13 @@
 import { UPLOAD_POLL_SCHEDULE } from '@anzusystems/common-admin'
 import type { UploadSettlementScheduler } from '@anzusystems/common-admin'
 
-// The longest wait a notification asks for before its read: the one of the metadata notification.
 const NOTIFICATION_WAIT_MS = 2000
 
 /**
- * A scheduler for the settlement of the upload queue, for the tests of the store that are not about time: a wait
- * as long as a notification's is over in the next microtask, a longer one never. So what a notification asks for
- * is written by the time its promise resolves, and the poll of a queue never reads.
- *
- * Put into `uploadSettlementRuntime.scheduler` before the store tracks a row or is told of a notification.
+ * Scheduler for tests of the store that are not about time.
+ * A wait up to a notification's length ends in the next microtask, a longer one never. So
+ * notification writes are done when its promise resolves, and the queue poll never reads.
+ * Set `uploadSettlementRuntime.scheduler` before the store tracks a row or is told of a notification.
  */
 export function immediateScheduler(): UploadSettlementScheduler {
   if (UPLOAD_POLL_SCHEDULE.dense.marksMs[0] <= NOTIFICATION_WAIT_MS) {

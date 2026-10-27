@@ -6,13 +6,14 @@ import { assetDetail, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The dialog that changes the licence and the one of "Create empty asset" keep their page while their request is on its
- * way: what holds a second confirm back goes with the dialog. The pages of two external providers are one page of the
- * router with another provider in its address, and the application draws each address anew: a way from one provider to
- * the other is no leave of the page for the router, and took the dialog away all the same. Another query of the same
- * provider draws nothing anew. The real page of a provider with its real menu, as the application draws its pages; the
- * server is a fake, and so are the tabs of the browser, the reload of the window and the address the page asks about a
- * new version of the application. */
+/*
+ * The licence dialog and the "Create empty asset" dialog must stay open while
+ * their request is on its way, because they hold back a second confirm.
+ * Pages of two external providers are one router page with a different provider in the address.
+ * Going from one provider to the other is not a page leave for
+ * the router, but it redrew the page and removed the dialog.
+ * Another query of the same provider redraws nothing.
+ */
 
 let server: FakeDam
 
@@ -37,7 +38,6 @@ const dialogSaying = (text: string) =>
     found.textContent?.includes(text)
   ) ?? null
 
-/** The page of a provider, come to from the page of the first one when it is the second. */
 const openProvider = async (address: typeof FIRST | typeof SECOND) => {
   const ui = await startUploadUi({
     server,
@@ -79,7 +79,6 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
     component: Provided,
   })
   await ui.router.push(FIRST)
-  // As `App.vue` draws the pages: each address its own page.
   const Pages = defineComponent({
     setup: () => {
       const route = useRoute()
@@ -107,7 +106,6 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
   return {
     ...ui,
     at: () => ui.router.currentRoute.value.fullPath,
-    /** "Vytvoriť" of the dialog of "Create empty asset" pressed: the dialog. */
     create: async () => {
       page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
       ;(await item('button-main-empty-asset')).click()
@@ -117,7 +115,6 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
 
       return panel
     },
-    /** The other licence picked in the dialog that changes the licence, and confirmed: the dialog. */
     changeLicence: async () => {
       page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
       ;(await item('button-switch-licence')).click()
@@ -144,7 +141,6 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
 
       return dialog
     },
-    /** The back button of the browser onto an entry where ADAM was loaded or reloaded, as the application hears it. */
     back: async () => {
       ui.router.back()
       for (let turn = 0; turn < 50; turn++) await Promise.resolve()
@@ -154,7 +150,6 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
   }
 }
 
-/** The request is held from now on, until answered. */
 const hold = (method: 'GET' | 'POST', pattern: RegExp, answered: () => FakeDamAnswer) => {
   let answer: () => void = () => undefined
   server.on(method, pattern, () => new Promise<FakeDamAnswer>((resolve) => (answer = () => resolve(answered()))))
@@ -174,7 +169,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
   server.on('GET', PROVIDER_LIST, () => ({ status: 200, data: { data: [], hasNextPage: false } }))
   server.on('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
-  // The tab of the asset being made: the browser gives it, and it stays empty.
   vi.stubGlobal('open', () => ({
     opener: window,
     closed: false,
@@ -225,7 +219,6 @@ describe('a dialog of the menu of the page of a provider while its request is on
     await eventually(() => expect(window.location.reload).toHaveBeenCalledTimes(1))
   })
 
-  // The guard: the same page with another query is drawn on, and the dialog with it.
   it('"Create empty asset": lets another query of the same provider through', async () => {
     hold('POST', CREATE, () => ({ status: 201, data: { ...assetDetail('asset-new'), keywords: [], authors: [] } }))
     const provider = await openProvider(FIRST)

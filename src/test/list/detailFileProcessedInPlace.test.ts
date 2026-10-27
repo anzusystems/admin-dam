@@ -6,13 +6,12 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The server says that it has processed the main file of the asset a detail holds, opened while it was on its way:
- * the asset is read again. The read is not one the user started, and comes at any moment: whatever the user is doing
- * in the detail then - typing into its form, a dialog open over it with what was typed there, a save on its way -
- * stays as it is. The real pages - the list with its dialog and its panel, the page of an asset, the page of the
- * asset of a file - the real listener of the notifications, and the application around them as it starts; the server
- * is a fake, and so are the connection its notifications come by and the address the page asks about a new version
- * of the application. */
+/*
+ * The server says it processed the main file of an asset whose detail
+ * was opened while the file was in progress, so the asset is read again.
+ * That read is not user-started and can come at any moment. Typed form input, a dialog
+ * open over the detail with its input, and a save in progress must stay as they are.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -36,21 +35,17 @@ const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 
 const TYPED = 'typed and not saved'
 const FROM_SERVER = 'from the server'
-/** The title the server fills in from the file as it processes it. */
 const FROM_FILE = 'filled in from the file'
 const STILL_PROCESSED = 'The file is still being processed.'
 const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible after the detail is opened again.'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 
 const LIST = '/assets'
-/** The audio whose main file the server is processing, and that file. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
-/** A file in another slot of the audio, processed, and another asset of the list. */
 const IN_SLOT = 'bbbbbbbb-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
-/** How far the server is with the main file, and whether the asset is described. */
 let processedYet = false
 let described = false
 
@@ -61,7 +56,6 @@ const fileOnServer = (fileId: string, assetId = ASSET) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an audio of the licence of the user, its title filled in from the file. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'audio', assetStatus: 'with_file' },
@@ -92,11 +86,8 @@ const slotsOnServer = () => {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** How a read of the asset is answered: at once with what the server holds, unless a case holds it. */
 let answerRead: () => unknown = () => onServer(ASSET)
 
-/* The next read of the asset is held, every later one answers at once. Let go, it answers what the server held when
- * it was asked. */
 const holdNextRead = () => {
   let letGo: () => void = () => undefined
   let asked = false
@@ -115,11 +106,9 @@ const holdNextRead = () => {
   }
 }
 
-/** How many times the server was asked for the asset, by its own id or by the id of its file. */
 const reads = () =>
   server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + ASSET || BY_FILE.test(request.url)).length
 
-/** The server says by its notification that it has processed the file, having done so. */
 const processed = async () => {
   processedYet = true
   listeners.forEach((listener) => listener({ name: 'asset_file_processed', data: { asset: ASSET, id: FILE } }))
@@ -129,7 +118,6 @@ const processed = async () => {
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 const dialogOfList = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const panel = () => document.body.querySelector<HTMLElement>('.v-navigation-drawer--right')!
-/** A dialog open over the detail. */
 const dialogOver = () =>
   document.body.querySelector<HTMLElement>('.v-dialog.v-overlay--active:not(.dam-image-detail-dialog)')
 
@@ -140,7 +128,6 @@ const start = async () => {
     extSystem: { audio: { slots: ['default', 'extra'] } },
     customForm: { audio: [customField('title')] },
   })
-  // The user as the bar of the page draws them, and as the picker of the sibling of an audio asks about them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -158,7 +145,6 @@ const start = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
   const View = (await import('@/domains/coreDam/asset/components/list/AssetListView.vue')).default
@@ -169,7 +155,6 @@ const start = async () => {
 
 type Ui = Awaited<ReturnType<typeof start>>
 
-/** A place the form of the asset is drawn in: opened, it answers the element the form is drawn in. */
 type Place = () => Promise<{ ui: Ui; form: () => HTMLElement | null }>
 
 const listOpened = async () => {
@@ -196,7 +181,6 @@ const inThePanelBesideTheList: Place = async () => {
   return { ui, form: panel }
 }
 
-/** The page of a detail, as the router draws it at the address. */
 const onPage = async (name: string, path: string, load: () => Promise<{ default: unknown }>, address: string) => {
   const ui = await start()
   ui.router.addRoute({ path, name, component: (await load()).default as never })
@@ -231,7 +215,6 @@ const places: Array<[string, Place]> = [
   ],
 ]
 
-/** The form of the asset, opened in the place and drawn: what a case reads of it. */
 const openForm = async (place: Place) => {
   const { ui, form } = await place()
   const title = () => form()?.querySelector<HTMLTextAreaElement>('textarea') ?? null
@@ -249,7 +232,6 @@ const openForm = async (place: Place) => {
 
       return field
     },
-    /** "Save" of the form: whether it is held back, and whether the form says why - still processed, or processed. */
     save: () => ({
       heldBack: buttonsNamed(form()!, 'Save')[0]?.disabled,
       saysWhy: [STILL_PROCESSED, PROCESSED_OPEN_AGAIN].some((line) => form()!.textContent?.includes(line)),
@@ -257,7 +239,6 @@ const openForm = async (place: Place) => {
   }
 }
 
-/** Whether the form holds metadata that were not saved, as leaving the asset asks about them. */
 const touched = async () => {
   const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
 
@@ -298,8 +279,10 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* With nothing typed into the form the asset was read whole as after a change the user made: behind the loader of the
- * detail, which unmounted the form, its tabs and every dialog open over it, with what was typed there. */
+/*
+ * With nothing typed, the asset was read whole as after a user change, behind the loader of the detail.
+ * That unmounted the form, its tabs and every dialog open over it, with what was typed there.
+ */
 describe('a form opened while the main file of its asset was being processed, once the server says it is processed', () => {
   it.each(places)(
     'takes the asset in its place in %s: no loader goes over it, and "Save" comes free',
@@ -311,7 +294,6 @@ describe('a form opened while the main file of its asset was being processed, on
       await processed()
       await eventually(() => expect(form.save()).toEqual(FREE))
 
-      // Read once, whole, and taken into the very field drawn before.
       expect([reads(), form.title() === field, field.isConnected, field.value, form.ui.alerts()]).toEqual([
         2,
         true,
@@ -365,7 +347,6 @@ describe('a form opened while the main file of its asset was being processed, on
       'typed-slug',
       [],
     ])
-    // Behind it the form is the one of the asset as the server has it now.
     buttonsNamed(dialogOver()!, 'Cancel')[0].click()
     await eventually(() => expect(dialogOver()).toBeNull())
     dialogOfList()!.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()
@@ -374,9 +355,11 @@ describe('a form opened while the main file of its asset was being processed, on
   })
 })
 
-/* What was typed is kept as it is, and so is "Save" held back: the form is the one read before the server was done
- * with the file. Also when it was typed while the asset was being read, or when a save of it was on its way - an
- * answer read before that save could be from before it. */
+/*
+ * Typed input is kept and "Save" stays held back: the form was read before the server finished the file.
+ * This also holds when the input was typed while the asset was being read, or while
+ * a save was in progress, because an answer read before that save could predate it.
+ */
 describe('a form typed into while the server says the main file is processed', () => {
   it('keeps what was typed while the asset was being read, and "Save" held back', async () => {
     const form = await openForm(inTheDetailOfTheList)
@@ -402,7 +385,6 @@ describe('a form typed into while the server says the main file is processed', (
   ])(
     'keeps what was typed in %s when its save was on its way, and not saved once the save is refused',
     async (_where, place) => {
-      // Described: "Save" goes while the file is being processed.
       described = true
       let refuse: () => void = () => undefined
       server.on(

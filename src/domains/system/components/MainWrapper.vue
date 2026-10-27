@@ -31,13 +31,13 @@ const { externalProviderFooterViewSelected, hideSelected: hideExternalProviderSe
   useExternalProviderAssetFooterSelectedView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-/* A selection drawn over the whole page belongs to its page. The back or forward button of the browser leaves the page
- * from under it onto an entry of the history where ADAM was loaded or reloaded: vue-router writes that entry by
- * `replace`, and Vuetify lets a way back or forward to such an entry through an open dialog. The next page drew the
- * dialog over the whole of it then, empty: it draws its own selection only. The selection goes back to its strip,
- * hidden, and the mass edit is emptied, as the next list would empty it: also when the next page is no list, which
- * would keep it until one. Before the next page is drawn, not once this one is gone. The upload queue is the same on
- * every list, and is drawn over the next one as it was. */
+/*
+ * Browser back/forward can leave the page to a history entry vue-router
+ * wrote by `replace`; Vuetify lets that pass through an open dialog.
+ * The next page then showed the full-page selection dialog empty.
+ * So the selection returns to its hidden strip and the mass edit is cleared, also when the next page is not a list.
+ * Runs before the next page renders. The upload queue is shared by all lists and stays.
+ */
 onBeforeUnmount(() => {
   if (footerViewSelected.value === FooterViewSelected.Full) hideSelected()
   if (externalProviderFooterViewSelected.value === ExternalProviderFooterViewSelected.Full) {

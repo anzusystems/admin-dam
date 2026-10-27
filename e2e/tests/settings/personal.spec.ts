@@ -4,7 +4,6 @@ import { ADMIN_SUITE } from '@pages/shared/constants'
 
 let page: Page
 
-/** Pick `option` in the settings select behind `dataCy` — the select closes after every pick. */
 async function pickSetting(dataCy: string, option: string): Promise<void> {
   await page.locator(`[data-cy="${dataCy}"]`).filter({ visible: true }).first().click()
   await page.locator('.v-overlay--active .v-list-item-title').getByText(option, { exact: true }).click()

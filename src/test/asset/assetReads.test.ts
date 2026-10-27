@@ -4,12 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 
-/* The reads that ask about several things at once: the assets of a licence by their ids, and the files of the
- * slots of an asset. Each must tell an answer it cannot use from "there is none": to the poll of the upload queue
- * a file that is missing from an answer is a file the server does not know.
- *
- * The poll's own two reads are run both ways it calls them: with a failure written down (the api error logger)
- * and with it kept quiet. What is refused must not depend on which. */
+/*
+ * Reads that ask about several things at once: assets of a licence by ids, and files of
+ * the slots of an asset. Each must tell an unusable answer from "there is none", because
+ * the upload queue poll treats a file missing from an answer as unknown to the server.
+ * The poll's two reads are run both ways it calls them: with failure
+ * logging (api error logger) and quiet. Refusal must not depend on which.
+ */
 
 let server: FakeDam
 let logged: Array<{ url: string | undefined; status: number | undefined }>
@@ -23,9 +24,11 @@ const BY_IDS = /^\/adm\/v1\/asset\/licence\/7\/ids\//
 const idsAsked = () => server.sent('GET', BY_IDS).map((request) => request.url.split('/ids/')[1].split(','))
 const many = (count: number) => Array.from({ length: count }, (_, index) => 'asset-' + (index + 1))
 
-/* What an answer without its list looks like. Read as an empty list it would say "none of these exist". The last
- * column: an answer with no body at all is refused by the request itself, which writes it down when it is let; a
- * body that is there and carries no list is refused by its reader, and written down by nobody. */
+/*
+ * Answers without a list. Read as an empty list they would say "none of these exist".
+ * Last column: an answer with no body is refused by the request itself, which logs it
+ * when allowed. A body without a list is refused by its reader and logged by nobody.
+ */
 const noList: Array<[string, { status: number; data?: unknown }, boolean]> = [
   ['no body', { status: 200 }, true],
   ['no content at all (204)', { status: 204 }, true],
@@ -56,7 +59,6 @@ afterEach(() => {
   setApiErrorLogger(defaultApiErrorLogger)
 })
 
-// What the mass edit loads its selection with.
 describe('the read of several assets by their ids', () => {
   it('asks for up to fifty of them in one request, under the licence', async () => {
     const { fetchAssetListByIds } = await assetApi()
@@ -162,7 +164,6 @@ describe.each(ways)('the read of the assets the upload queue waits for, with %s'
     })
 
     await expect(fetchWaitingAssets(many(51), 7, { report })).rejects.toBeDefined()
-    // The request that failed, once, or nothing: as the caller said.
     expect(logged).toEqual(report ? [{ url: '/adm/v1/asset/licence/7/ids/asset-51', status: 500 }] : [])
   })
 })
@@ -192,7 +193,7 @@ describe.each(ways)('the read of the files of the slots of an asset, with %s', (
     expect(await fetchAssetSlotFiles('asset-1', { report })).toEqual([])
   })
 
-  // Read as an empty list it would say "the file is in none of the slots".
+  // Read as an empty list, the answer would say "the file is in none of the slots".
   it.each(noList)('is refused when the answer carries %s', async (_name, answer, refusedByTheRequest) => {
     const { fetchAssetSlotFiles } = await assetSlotApi()
     server.on('GET', /^\/adm\/v1\/asset-slot\/asset\/asset-1$/, () => answer)

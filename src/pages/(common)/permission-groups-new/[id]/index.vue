@@ -105,7 +105,6 @@ onBeforeUnmount(() => {
         :client="damClient"
         system="dam"
       >
-        <!-- Created and modified by whom -- what every group detail this replaces showed. -->
         <template #tracking>
           <DamTrackingFields :data="permissionGroup" />
         </template>

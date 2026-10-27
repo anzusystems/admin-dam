@@ -9,11 +9,13 @@ import * as components from 'vuetify/components'
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 
-/* Signing in to YouTube from the new-distribution dialog without the notification server. The dialog asks once,
- * on opening, whether the service is signed in to, and offers a login link when it is not; the user signs in in
- * another tab. The dialog now asks again when they come back. The real dialog over the real store and requests,
- * a fake server; what it shows after the sign-in is replaced by stand-ins. What the notification does is in
- * `appInitialize/notificationEvents.test.ts`. */
+/*
+ * Signing in to YouTube from the new-distribution dialog without the notification server.
+ * The dialog asks once on opening whether the service is signed in, and
+ * offers a login link when it is not. The user signs in in another tab.
+ * The dialog asks again when the user comes back. The real dialog, store and requests are used with a fake server.
+ * What the notification does is tested in `appInitialize/notificationEvents.test.ts`.
+ */
 
 let server: FakeDam
 const alerts = vi.hoisted(() => ({
@@ -22,14 +24,12 @@ const alerts = vi.hoisted(() => ({
   showValidationError: vi.fn(),
 }))
 
-// The fake server refuses a request once its signal is aborted, as axios does. A case can have the next request
-// to an address sent without its signal: its answer then comes although the request was given up, as one already
-// on its way back.
+// The fake server refuses a request once its signal is aborted, as axios does.
+// A case can make the next request to an address go without its signal. Its answer
+// then arrives although the request was given up, like one already on its way back.
 let nextAnswersAfterAbort: RegExp | undefined = undefined
-/** Every request as the app sent it, with its signal, in the order of sending: also one the fake server refuses. */
 const signals: Array<{ url: string; signal: AbortSignal | undefined }> = []
 
-/** The request as the fake server is to get it: without its signal when the case asked for that. */
 const asSent = <T extends { signal?: unknown }>(rawUrl: string, config: T): T => {
   const url = rawUrl.split('?')[0]
   signals.push({ url, signal: config.signal as AbortSignal | undefined })
@@ -102,7 +102,6 @@ const AUTH_URL = /^\/adm\/v1\/youtube-distribution\/youtube_main\/auth-url$/
 const FILE_DISTRIBUTIONS = /^\/adm\/v1\/distribution\/asset-file\/file-1$/
 const LOGIN_LINK = 'https://accounts.example/sign-in?state=first'
 
-/** Whether the server holds a sign-in to the service; a case changes it when "the user signs in elsewhere". */
 let signedIn = false
 const authorizedAnswer = (): FakeDamAnswer => ({
   status: 200,
@@ -111,7 +110,6 @@ const authorizedAnswer = (): FakeDamAnswer => ({
 
 let app: App | undefined
 let visibility: 'visible' | 'hidden' = 'visible'
-/** What Vue hands to the app's error handler: an error that got out of a hook of the dialog. */
 const hookErrors = vi.fn()
 
 const settle = async () => {
@@ -119,7 +117,9 @@ const settle = async () => {
   await nextTick()
 }
 
-/** The sign-in state belongs to the app, not to a dialog: one opened after another is mounted over the same store. */
+/**
+ * The sign-in state belongs to the app, not to a dialog: one opened after another is mounted over the same store.
+ */
 const mountDialog = async (pinia = createPinia()) => {
   setActivePinia(pinia)
   const root = document.createElement('div')
@@ -148,9 +148,7 @@ const mountDialog = async (pinia = createPinia()) => {
 }
 
 const asked = (pattern: RegExp) => server.sent('GET', pattern).length
-/** Every "is the service signed in to?" the app sent, also one sent with a signal the fake server refuses. */
 const questions = () => signals.filter((request) => AUTHORIZED.test(request.url))
-/** Whether the app gave up each of them. */
 const questionsGivenUp = () => questions().map((request) => request.signal?.aborted === true)
 
 const comesBackToTheWindow = async () => {
@@ -163,13 +161,11 @@ const tabBecomes = async (state: 'visible' | 'hidden') => {
   await settle()
 }
 
-/** What becomes of a question the dialog gave up: `true` for one whose answer comes all the same. */
 const GIVEN_UP: Array<[string, boolean]> = [
   ['is refused at once, as in a browser', false],
   ['is answered all the same', true],
 ]
 
-/** Holds the next request to the address open; the ones after it are answered by `later`. */
 const holdNext = (address: RegExp, later: () => FakeDamAnswer, answersAfterAbort = false) => {
   let answer: (value: FakeDamAnswer) => void = () => undefined
   let held = false
@@ -189,7 +185,6 @@ const holdNext = (address: RegExp, later: () => FakeDamAnswer, answersAfterAbort
   }
 }
 
-/** Holds the next "is the service signed in to?" open; the ones after it are answered as the server stands. */
 const holdNextQuestion = (answersAfterAbort = false) => {
   const held = holdNext(AUTHORIZED, authorizedAnswer, answersAfterAbort)
 
@@ -199,8 +194,8 @@ const holdNextQuestion = (answersAfterAbort = false) => {
 const DIALOG_FILE = '/distribution/DistributionNewDialogYoutube.vue'
 
 /**
- * Stands in front of `target[name]` for one case and keeps the calls made from the dialog's own file. Vuetify and
- * the library listen on the window and the document too: theirs are not kept.
+ * Wraps `target[name]` for one case and keeps only the calls made from the dialog's own file.
+ * Vuetify and the library also listen on the window and document; those calls are not kept.
  */
 const callsFromTheDialog = (target: object, name: string) => {
   const original = Reflect.get(target, name) as (...args: unknown[]) => unknown
@@ -262,7 +257,6 @@ describe('the YouTube dialog waiting for the user to sign in', () => {
     expect(asked(AUTHORIZED)).toBe(2)
     expect(dialog.status()).toBe('success')
     expect(dialog.loginLink()).toBeUndefined()
-    // What the dialog does after a sign-in: it reads what the file already has on the service.
     expect(asked(FILE_DISTRIBUTIONS)).toBe(1)
     expect(dialog.existing()).toEqual(['dist-1'])
   })
@@ -289,7 +283,7 @@ describe('the YouTube dialog waiting for the user to sign in', () => {
     expect(asked(AUTHORIZED)).toBe(3)
     expect(dialog.status()).toBe('waiting_for_login')
     expect(dialog.loginLink()).toBe(LOGIN_LINK)
-    // Every link asked for is one more pending sign-in on the server.
+    // Every link requested is one more pending sign-in on the server.
     expect(asked(AUTH_URL)).toBe(1)
     expect(asked(FILE_DISTRIBUTIONS)).toBe(0)
   })
@@ -337,7 +331,6 @@ describe('the YouTube dialog waiting for the user to sign in', () => {
     window.dispatchEvent(new Event('focus'))
     await settle()
 
-    // What the listener of the notifications calls when the sign-in was refused.
     dialog.store.authorizationMessage(SERVICE, false)
     answer({ status: 200, data: { authorized: true, distributionService: SERVICE } })
     await settle()
@@ -400,7 +393,6 @@ describe('the YouTube dialog once it is closed', () => {
       expect(takenOff(offWindow, onWindow.calls[0])).toBe(false)
       expect(takenOff(offDocument, onDocument.calls[0])).toBe(false)
 
-      // Closed while still waiting, the state as it would be if the store were left as it was.
       app?.unmount()
       app = undefined
       dialog.store.setAuthStatus(SERVICE, 'waiting_for_login')
@@ -412,8 +404,8 @@ describe('the YouTube dialog once it is closed', () => {
       await comesBackToTheWindow()
       await tabBecomes('visible')
 
-      // Counted as the app sent them: a question of the closed dialog would carry its aborted signal, and the fake
-      // server refuses such a request without recording it.
+      // Counted as the app sent them. A question of the closed dialog carries its aborted signal,
+      // and the fake server refuses such a request without recording it.
       expect(questions()).toHaveLength(1)
       expect(dialog.status()).toBe('waiting_for_login')
     } finally {
@@ -435,7 +427,6 @@ describe('the YouTube dialog once it is closed', () => {
     app = undefined
     await settle()
 
-    // The question of its opening was answered long ago; the one on its way is the one given up.
     expect(questionsGivenUp()).toEqual([false, true])
     expect(alerts.showErrorsDefault).not.toHaveBeenCalled()
   })
@@ -450,7 +441,6 @@ describe('the YouTube dialog once it is closed', () => {
       app?.unmount()
       app = undefined
 
-      // The next dialog for the same service asks for itself and is told "not signed in".
       const next = await mountDialog(closed.pinia)
       expect(next.status()).toBe('waiting_for_login')
       expect(asked(AUTHORIZED)).toBe(3)
@@ -476,7 +466,6 @@ describe('the YouTube dialog closed while the check of its opening is on its way
       app = undefined
       expect(questionsGivenUp()).toEqual([true])
 
-      // The next dialog for the same service asks for itself and is told "not signed in".
       const next = await mountDialog(closed.pinia)
       expect(next.status()).toBe('waiting_for_login')
 
@@ -502,7 +491,6 @@ describe('the YouTube dialog closed while the check of its opening is on its way
         [true]
       )
 
-      // The user signed in meanwhile: the next dialog for the same service is told so and goes on.
       signedIn = true
       const next = await mountDialog(closed.pinia)
       expect(next.status()).toBe('success')

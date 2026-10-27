@@ -6,13 +6,13 @@ import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* Under what was typed, a main file the server has ended holds "Save" back until the asset is read whole: the server
- * can have filled in the metadata from it meanwhile. The line under "Save" says why: still on its way, failed, or
- * processed - then "Save" comes with opening the detail again. "Edit more" of the panel beside the list opens it so,
- * once nothing typed waits to be saved. The real pages - the list with its dialog and its panel, the page of an asset
- * - the real listener of the notifications, and the application around them as it starts; the server is a fake, and
- * so are the connection its notifications come by and the address the page asks about a new version of the
- * application. */
+/*
+ * Under typed metadata, a main file the server has ended holds "Save" back until the
+ * asset is read whole, because the server can have filled in the metadata from it.
+ * The line under "Save" says why: still on its way, failed, or
+ * processed. For processed, "Save" comes with opening the detail again.
+ * "Edit more" of the panel opens it so, once nothing typed waits to be saved.
+ */
 
 let server: FakeDam
 const listeners: Array<(event: { name: string; data: unknown }) => void> = []
@@ -40,14 +40,11 @@ const PROCESSED_OPEN_AGAIN = 'The file is processed. Saving becomes possible aft
 const UPDATED = 'Record was updated'
 
 const LIST = '/assets'
-/** The asset whose main file the server is processing, and that file; another asset of the list. */
 const ASSET = '11111111-2222-4333-8444-555555555555'
 const FILE = 'aaaaaaaa-2222-4333-8444-555555555555'
-/** The file of another slot of the asset. */
 const EXTRA = 'bbbbbbbb-2222-4333-8444-555555555555'
 const OTHER = '22222222-2222-4333-8444-555555555555'
 
-/** How far the server is with the main file of the asset. */
 let fileIs: 'stored' | 'processed' | 'failed' = 'stored'
 
 const fileOnServer = (fileId: string, assetId: string) => ({
@@ -57,7 +54,6 @@ const fileOnServer = (fileId: string, assetId: string) => ({
   mainRoute: null,
 })
 
-/** An asset as the server holds it now: an image of the licence of the user, not described. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: id === ASSET ? 'draft' : 'with_file' },
@@ -70,10 +66,8 @@ const onServer = (id: string) => ({
 })
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
-/** Long enough for whatever the news sets off to have answered. */
 const answered = () => vi.advanceTimersByTimeAsync(1_000)
 
-/** The server says by its notification how it ended the main file, having ended it so. */
 const ended = async (as: 'processed' | 'failed') => {
   fileIs = as
   listeners.forEach((listener) =>
@@ -110,7 +104,6 @@ const start = async () => {
     headers: { get: () => 'application/json' },
     json: async () => ({ appVersion: '' }),
   }))
-  // As the start of the application: the listener of the notifications of the server.
   const { initAppNotificationListeners } = await import('@/domains/system/composables/appNotificationListeners')
   initAppNotificationListeners()
 
@@ -129,7 +122,6 @@ const listOpened = async () => {
   return { ui, tiles }
 }
 
-/** A place the form of the asset is drawn in: opened, it answers the element the form is drawn in. */
 type Place = () => Promise<{ ui: Awaited<ReturnType<typeof start>>; form: () => HTMLElement | null }>
 
 const places: Array<[string, Place]> = [
@@ -165,7 +157,6 @@ const places: Array<[string, Place]> = [
   ],
 ]
 
-/** "Save" of the form drawn in the element: whether it is held back, and which line under it says why. */
 const saveIn = (form: HTMLElement) => ({
   heldBack: buttonsNamed(form, 'Save')[0]?.disabled,
   stillProcessed: !!form.textContent?.includes(STILL_PROCESSED),
@@ -219,8 +210,11 @@ afterEach(() => {
   stopUploadUi()
 })
 
-/* The line said the file was still being processed after the server said it was processed: "Save" stays held back
- * (the form is older than what the server filled in from the file), and what frees it is opening the detail again. */
+/*
+ * The line said the file was still being processed after the server said it was processed.
+ * "Save" stays held back because the form is older than what the
+ * server filled in from the file. Opening the detail again frees it.
+ */
 describe('the line under "Save" held back under what was typed, once the main file is processed', () => {
   it.each(places)(
     'says in %s that the file is processed and that saving comes with opening the detail again',
@@ -244,9 +238,12 @@ describe('the line under "Save" held back under what was typed, once the main fi
   )
 })
 
-/* "Save" held back under a save on its way - a file of another slot of the asset was processed meanwhile, and the main
- * one had failed -, with nothing typed once that save went through: the line said it would come with opening the
- * asset again, and "Edit more" of the panel opened it over the same form, still held back. */
+/*
+ * "Save" was held back under a save on its way: another slot's file was processed meanwhile
+ * and the main one had failed. Nothing typed was left once that save went through.
+ * The line said "Save" would come with opening the asset again,
+ * but "Edit more" opened it over the same form, still held back.
+ */
 describe('"Edit more" of the panel beside the list', () => {
   it('reads the asset whole once nothing typed waits to be saved, and "Save" comes free', async () => {
     fileIs = 'failed'

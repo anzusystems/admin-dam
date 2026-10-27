@@ -35,7 +35,9 @@ import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'
 export const SORT_BY_SCORE_BEST = 'score_best'
-/** Marks the dialog of the detail among the open ones: every other one is open over it. */
+/**
+ * Marks the detail dialog among open dialogs. Every other dialog opens over it.
+ */
 export const ASSET_DETAIL_DIALOG_CLASS = 'dam-image-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
@@ -64,23 +66,29 @@ export const customSortOptions = [
 
 const filterIsTouched = ref(false)
 
-/* Bumped whenever the list starts again from page one, so a request already on the wire can tell
- * that its rows and its counter belong to a list nobody is looking at. From one, so that the
- * 'nothing postponed' marker below cannot pass for a generation. */
+/*
+ * Bumped whenever the list restarts from page one, so an in-flight
+ * request can tell its rows and counter belong to a stale list.
+ * Starts at 1 so the 0 "nothing postponed" marker is never a valid generation.
+ */
 let listGeneration = 1
 
-/* The generation whose next page is on the wire, or 0 for none - one at a time within a generation,
- * because two of them append in whatever order they answer and a page that fails while the other
- * moved the counter past it is gone. One left over from a replaced list holds nothing back. */
+/*
+ * Generation whose next page is in flight, or 0 for none. One at a time per generation: two would
+ * append in answer order, and a failed page is lost if the other moved the counter past it.
+ * One left over from a replaced list blocks nothing.
+ */
 let nextPageInFlightGeneration = 0
 let firstPageInFlight = false
-/* The generation the postponed scroll was asked in, or 0 for none: one asked of a list since
- * replaced is not the same ask, and one served too early fetches page two before page one. */
+/*
+ * Generation the postponed scroll was requested in, or 0 for none.
+ * A request from a replaced list is stale, and serving it too early fetches page two before page one.
+ */
 let nextPageAskedInGeneration = 0
 
 export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const router = useRouter()
-  // What a failed read leaves to be done is done on the page still, also once a question whether to leave it said "Stay".
+  // Follow-up of a failed read runs only while on the page, including after a leave question answered "Stay".
   const whileOnPage = useWhileOnPage()
   const assetListStore = useAssetListStore()
   const assetDetailStore = useAssetDetailStore()
@@ -102,52 +110,64 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const checkQuickDetailReFetch = (assetId: DocId) =>
-    // The detail has to hold that asset still: the edit of a queue row writes another without the stamp.
+    // The detail must still hold that asset. Editing a queue row writes another asset without the stamp.
     assetDetailStore.asset?.id === assetId &&
     assetDetailStore.lastFetchedId === assetId &&
     Date.now() - assetDetailStore.lastFetched <= DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME
 
   const fetchAsset = async (assetId: DocId, detailRequest: number) => {
-    /* Stamped only after it succeeded, and only by the current request: a failure held the cache for
-     * five seconds, and a stale answer left the next opening short-circuiting to another asset. */
+    /*
+     * Stamp only on success and only for the current request.
+     * A stamped failure held the cache for five seconds. A stale
+     * answer made the next open short-circuit to another asset.
+     */
     const asset = await apiFetchAsset(assetId)
     if (assetDetailStore.isCurrentDetailRequest(detailRequest)) assetDetailStore.updateLastFetched(assetId)
 
     return asset
   }
 
-  /* With the detail closed the panel beside the list holds what was typed into it, and the read of an asset replaces
-   * it: asked about first. Not when nothing is read, which is so for the asset the panel holds, read a moment ago:
-   * its tile and its pencil leave what was typed where it is. While the question is open every such step is one more
-   * ask, and is told to stay. */
+  /*
+   * With the detail closed, the side panel holds typed data and reading an asset replaces it, so ask first.
+   * Not when nothing is read, as for the asset the panel just read. Its tile and pencil keep the typed data.
+   * While the question is open, each such step is another ask and is told to stay.
+   */
   const readReplacesUnsavedOfPanel = (assetId: DocId) =>
     assetDetailStore.panelHoldsUnsavedMetadata &&
     (assetDetailStore.leaveUnsavedQuestion || !checkQuickDetailReFetch(assetId))
 
-  /* Asks, and once told to leave answers where the asset is by then: the list can be read anew under the open
-   * question, and the index the click brought is then another asset's, or nobody's. `null` to stay where it is. */
+  /*
+   * Asks, and if told to leave, returns where the asset is now. The list can reload
+   * while the question is open, so the clicked index may point to another asset or none.
+   * Returns `null` to stay.
+   */
   const leaveUnsavedFor = async <T extends { assetId: DocId; index: number }>(clicked: T) => {
     if (!(await assetDetailStore.askToLeaveUnsaved())) return null
-    // At the place it was clicked while its asset is still there: listed twice, it would be found at its first place.
+    // Prefer the clicked index while it still holds the asset. An asset
+    // listed twice would otherwise be found at its first position.
     if (assetListStore.list[clicked.index]?.asset.id === clicked.assetId) return clicked
     const index = assetListStore.list.findIndex((item) => item.asset.id === clicked.assetId)
 
     return index < 0 ? null : { ...clicked, index }
   }
 
-  /** The asset the panel beside the list shows: behind its loader the one read into it, none when that is not known. */
+  /**
+   * The asset the side panel shows. Behind its loader, the one being read. None when unknown.
+   */
   const shownInPanel = () => assetDetailStore.shownOrReadAssetId()
 
   /**
-   * The asset `nextItem` (1) or `prevItem` (-1) goes to: the neighbour of the active one, none at an end of the list.
-   * With no tile active the next one is the first, and there is no previous one.
+   * Target of `nextItem` (1) or `prevItem` (-1): the active tile's neighbour, none at either end.
+   * With no active tile, next is the first and there is no previous.
    */
   const neighbourOfActive = (step: 1 | -1): AssetListItem | undefined =>
     assetListStore.list[(assetListStore.activeItemIndex ?? -1) + step]
 
-  /* The library replaces the value of the ref it is handed before it returns, so each request gets
-   * its own and only the answer that still owns the list is copied back - a stale one told the new
-   * list there was nothing more to load. */
+  /*
+   * The library replaces the ref's value before it returns. So each request gets
+   * its own ref, and only the answer that still owns the list is copied back.
+   * A stale answer told the new list there was nothing more to load.
+   */
   const paginationForRequest = () => ref({ ...pagination.value })
   const acceptPaginationAnswer = (answered: Ref<Pagination>) => {
     pagination.value.hasNextPage = answered.value.hasNextPage
@@ -162,21 +182,21 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetListStore.showLoader('hard')
       const answered = paginationForRequest()
       const firstPage = await apiFetchAssetList(currentAssetLicenceId.value, answered, filterData, filterConfig)
-      // Two filter changes answer in whatever order they like; the older one used to win.
+      // Two filter changes can answer in any order. Without this check the older one wins.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         assetListStore.setList(firstPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
-        // And the detail or the panel that holds one of them with its main file still on its way.
+        // Also update the detail or panel holding one of them whose main file is still loading.
         firstPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
       }
     } catch (error) {
-      // And the scroll made while this was loading: its page two would land on a page one that is not there.
+      // Also drop a scroll made while this was loading. Its page two would land on a missing page one.
       if (generation === listGeneration) nextPageAskedInGeneration = 0
       showErrorsDefault(error)
     } finally {
       if (generation === listGeneration) {
         firstPageInFlight = false
-        // Only the newest: an older answer taking it down shows the rows from before both changes.
+        // Only the newest request hides it. An older answer hiding it would show rows from before both changes.
         assetListStore.hideLoader('hard')
       }
       await servePostponedScroll()
@@ -188,11 +208,12 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     resetFilter(pagination, fetchAssetList)
   }
 
-  /* Kept waiting while this generation still has something on the wire - whatever finishes last
-   * serves it - and dropped when the list it was asked of is gone, or an answer since said there is
-   * no next page. */
+  /*
+   * Kept waiting while this generation still has a request in flight; whichever finishes last serves it.
+   * Dropped when its list is replaced, or when an answer says there is no next page.
+   */
   const servePostponedScroll = async () => {
-    // First: while a request is out, `hasNextPage` is still the previous answer's.
+    // Checked first: while a request is out, `hasNextPage` still holds the previous answer.
     if (firstPageInFlight || nextPageInFlightGeneration === listGeneration) return
     if (nextPageAskedInGeneration !== listGeneration || pagination.value.hasNextPage === false) {
       nextPageAskedInGeneration = 0
@@ -222,22 +243,25 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetListStore.showLoader('soft')
       const answered = paginationForRequest()
       const nextPage = await apiFetchAssetList(currentAssetLicenceId.value, answered, filterData, filterConfig)
-      // Only onto the list that asked for it, not the one a filter change has put in its place.
+      // Apply only to the list that requested it, not one a filter change has put in its place.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
         assetListStore.appendList(nextPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
         nextPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
       }
     } catch (error) {
-      // Or the failed page is skipped by the next scroll.
+      // Otherwise the next scroll skips the failed page.
       if (generation === listGeneration) {
         pagination.value.page = requestedPage - 1
       }
       showErrorsDefault(error)
     } finally {
-      /* Tied to owning the flag, not to the generation: only a newer next-page request takes it and
-       * it raised the spinner itself, while a generation that moved on without one leaves nobody to
-       * lower `soft` - `fetchAssetList` raises only `hard`. */
+      /*
+       * Tied to owning the flag, not to the generation. Only a newer
+       * next-page request takes it, and it raised the spinner itself.
+       * A generation that moved on without one leaves nobody to
+       * lower `soft`, because `fetchAssetList` raises only `hard`.
+       */
       if (nextPageInFlightGeneration === generation) {
         assetListStore.hideLoader('soft')
         nextPageInFlightGeneration = 0
@@ -284,7 +308,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     await openDetailOf(data)
   }
 
-  // The detail of the tile opened, once nothing typed stands in the way.
+  // Opens the tile's detail once no unsaved typed data stands in the way.
   const openDetailOf = async (data: { assetId: DocId; index: number }) => {
     assetDetailStore.setView('list')
     assetListStore.keyboardNavigationEnable()
@@ -297,7 +321,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       assetDetailStore.hideLoader()
       return
     }
-    // The list comes from an index that lags: the asset can be gone by the time it is clicked.
+    // The list comes from a lagging index, so the asset may be gone when clicked.
     try {
       const res = await fetchAsset(data.assetId, detailRequest)
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
@@ -307,11 +331,13 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the dialog renders the loader or the asset and nothing else,
-       * and the panel on the right renders that same asset - the one before it would be left there
-       * under a working Save button. */
+      /*
+       * Reset, not just closed. The dialog renders only the loader
+       * or the asset, and the right panel renders the same asset.
+       * Otherwise the previous asset would stay there with a working Save button.
+       */
       assetDetailStore.reset()
-      // The address was changed to this asset before the request, so put it back while the user is still here.
+      // The URL was changed to this asset before the request, so restore it while the user is still on the page.
       if (!dialogWasOpen) return
       whileOnPage(() => {
         browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
@@ -322,7 +348,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  // The whole of it, behind the loader: what the read of the detail is while nothing typed into it waits to be saved.
+  // Reads the whole asset behind the loader. This is the detail read when no typed data waits to be saved.
   const readHeldAssetWhole = async () => {
     const held = assetDetailStore.asset
     if (isNull(held)) return
@@ -336,7 +362,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       fetchCachedUsers()
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      // Called from the dialog and the sidebar alike, so it has to undo both.
+      // Called from both the dialog and the sidebar, so it must undo both.
       assetDetailStore.reset()
       whileOnPage(() => {
         browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
@@ -347,26 +373,32 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  /* Reads again the asset the detail holds, in the dialog and in the panel beside the list alike: the address of its
-   * file has changed, or another of its files is the main one, or the server has processed it (`byServer`). The
-   * active tile can be of another asset - the detail of a queue row is not of the list. */
+  /*
+   * Re-reads the detail's asset, in the dialog and in the side panel. Reasons: its file
+   * URL changed, another file became main, or the server processed it (`byServer`).
+   * The active tile can be another asset, because a queue row's detail is not of the list.
+   */
   const refreshActiveItem = (byServer = false) => readAfterFileChange(readHeldAssetWhole, byServer)
 
-  /* "Edit" of the panel beside the list opens the detail over the asset the panel holds: read whole, as its pencil
-   * reads it, when nothing typed into it waits to be saved - a "Save" held back comes free, as the line under it
-   * says. Not when read a moment ago. */
+  /*
+   * "Edit" in the side panel opens the detail over the panel's asset.
+   * Read it whole, as its pencil does, when no typed data waits to be saved.
+   * This frees a held-back "Save", as the hint below it says. Skip if just read.
+   */
   const readHeldUnlessTyped = async () => {
     const held = assetDetailStore.asset
     if (isNull(held) || assetDetailStore.holdsUnsavedMetadata || checkQuickDetailReFetch(held.id)) return
     await readHeldAssetWhole()
   }
 
-  /* A double click on a tile is two clicks and then itself, and the first click asks: in a browser the rest of it lands
-   * on the question, drawn over the tile by then. Heard while the question is open - on the tile, or on the question at
-   * the place of the tile, not inside its card, where a double click is the user's own -, it makes the click open the
-   * detail of the tile once told to leave, as the double click would have. Not once a button was pressed inside the
-   * card since the question opened: the browser can send a double click whose second click was there to an element
-   * that holds both the tile and the card. */
+  /*
+   * A double click on a tile is two clicks then a dblclick. The first
+   * click asks, so the rest lands on the question dialog over the tile.
+   * A dblclick heard while the question is open, on the tile or the question at its
+   * position but not inside its card, opens the tile's detail once told to leave.
+   * Not if a button inside the card was pressed since the question opened. The browser can send
+   * a dblclick, with its second click in the card, to an element containing both tile and card.
+   */
   const leaveUnsavedForClick = async (clicked: { assetId: DocId; index: number; tile?: Element | null }) => {
     let doubled = false
     let pressedInCard = false
@@ -423,7 +455,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
       fetchCachedUsers()
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
-      // The sidebar keeps its last asset, and would show it under the newly selected one.
+      // The sidebar keeps its last asset and would show it under the newly selected one.
       assetDetailStore.reset()
       whileOnPage(() => showErrorsDefault(error))
     } finally {
@@ -431,13 +463,15 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   }
 
-  /* The highlight follows the queue instead of being kept in step by hand: cancel and delete in the mass-edit dialog
-   * cannot reach the list, and left tiles highlighted for assets nothing was going to save. */
+  /*
+   * The highlight follows the queue instead of manual syncing. Cancel and delete in the mass-edit
+   * dialog cannot reach the list, and left tiles highlighted for assets nothing would save.
+   */
   watch(
     () =>
       uploadQueuesStore
         .getQueueItems(QUEUE_ID_MASS_EDIT)
-        // By type as well, the same rule `setList` applies.
+        // Filtered by type too, the same rule `setList` applies.
         .filter((item) => item.type === UploadQueueItemType.Asset)
         .map((item) => item.assetId),
     (assetIds) => {
@@ -445,8 +479,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     }
   )
 
-  /* An asset being deleted - here, or by the word of the server - is not picked for the mass edit: its row would offer a
-   * bin that deletes it again. Picked already, it can be let go. */
+  /*
+   * An asset being deleted, here or per the server, cannot be picked
+   * for mass edit. Its row would offer a bin that deletes it again.
+   * If already picked, it can be unpicked.
+   */
   const isDeleting = (asset: AssetSearchListItemDto) => asset.attributes.assetStatus === DamAssetStatus.Deleting
 
   const toggleSelected = (data: { assetId: DocId; index: number }) => {
@@ -479,7 +516,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     } else if (activeIndex < data.index) {
       selecting = assetListStore.list.slice(activeIndex, data.index + 1).map((item) => item.asset)
     }
-    // A range skips them.
+    // A range selection skips them.
     selecting = selecting.filter((asset) => !isDeleting(asset))
     const selectedQueueTotalCount = uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
     // Reaching the limit exactly cuts nothing, so it is not worth a warning.
@@ -496,21 +533,21 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const nextItem = async () => {
-    // Found first: at the end of the list there is nowhere to go, so nothing to ask about, to show or to read.
+    // Resolved first: at the end of the list there is nowhere to go, so nothing to ask, show or read.
     const target = neighbourOfActive(1)
     if (isUndefined(target)) return
-    // The read of the next asset replaces what the detail holds: metadata that were not saved go only when told to.
+    // Reading the next asset replaces the detail. Unsaved metadata is dropped only after confirmation.
     if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
     if (readReplacesUnsavedOfPanel(target.asset.id) && !(await assetDetailStore.askToLeaveUnsaved())) return
     assetListStore.setActiveNext()
     if (isNull(assetListStore.activeItemIndex)) return
-    // Before the loader goes up: the active index outlives the list, and this threw with it up.
+    // Checked before the loader goes up. The active index can outlive the list, and this threw with the loader up.
     const nextAsset = assetListStore.list[assetListStore.activeItemIndex]
     if (isUndefined(nextAsset)) return
     assetDetailStore.showLoader()
     const newAssetId = nextAsset.asset.id
     const detailRequest = assetDetailStore.startDetailRequest(newAssetId)
-    // The address is of the open detail: with none open the list is walked, and its address stays.
+    // The URL belongs to the open detail. With none open, the list is walked and its URL stays.
     if (assetDetailStore.detail) {
       browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets/[id]', params: { id: newAssetId } })
     }
@@ -525,11 +562,13 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the dialog renders the loader or the asset and nothing else,
-       * and the panel on the right renders that same asset - the one before it would be left there
-       * under a working Save button. */
+      /*
+       * Reset, not just closed. The dialog renders only the loader
+       * or the asset, and the right panel renders the same asset.
+       * Otherwise the previous asset would stay there with a working Save button.
+       */
       assetDetailStore.reset()
-      // The address was changed to this asset only for an open detail: put back while the user is still here.
+      // The URL was changed only for an open detail. Restore it while the user is still on the page.
       whileOnPage(() => {
         if (dialogWasOpen) browserHistoryReplaceUrlByRouter(router, { name: '/(coreDam)/assets' })
         showErrorsDefault(error)
@@ -540,7 +579,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   }
 
   const prevItem = async () => {
-    // The same as `nextItem`: nowhere to go from the first one, and asked first.
+    // Same as `nextItem`: nowhere to go from the first one, so resolved first.
     const target = neighbourOfActive(-1)
     if (isUndefined(target)) return
     if (assetDetailStore.showsUnsavedMetadata && !(await assetDetailStore.askToLeaveUnsaved())) return
@@ -567,9 +606,11 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     } catch (error) {
       if (!assetDetailStore.isCurrentDetailRequest(detailRequest)) return
       const dialogWasOpen = assetDetailStore.detail
-      /* Cleared, not merely closed: the dialog renders the loader or the asset and nothing else,
-       * and the panel on the right renders that same asset - the one before it would be left there
-       * under a working Save button. */
+      /*
+       * Reset, not just closed. The dialog renders only the loader
+       * or the asset, and the right panel renders the same asset.
+       * Otherwise the previous asset would stay there with a working Save button.
+       */
       assetDetailStore.reset()
       // The same as `nextItem`: the address was changed only for an open detail.
       whileOnPage(() => {
@@ -583,7 +624,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const listMounted = async () => {
     uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
-    // Not `resetList`, which keeps the asset of the active tile for the list it reads next: the page starts with none.
+    // Not `resetList`, which keeps the active tile's asset for the next read. The page starts with none.
     assetListStore.reset()
     await fetchAssetList()
     assetListStore.keyboardNavigationEnable()
@@ -591,26 +632,34 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
 
   const listUnmounted = () => {
     assetListStore.keyboardNavigationDisable()
-    /* The list is going, and its detail with it: one it asked for must not answer onto whatever replaces it, and a
-     * question left open has no page to draw it - it would wait for ever and tell the next ask to stay. Nor do
-     * metadata that were not saved stay behind: the licence dialog is drawn on other pages too, and would ask about
-     * them where nothing draws the question. */
+    /*
+     * The list is going, and its detail with it. A pending request must not answer into the replacement, and
+     * an open question has no page to render it, so it would wait forever and tell the next ask to stay.
+     * Unsaved metadata is also dropped. The licence dialog renders on other
+     * pages too and would ask about it where nothing renders the question.
+     */
     assetDetailStore.reset()
   }
 
-  /* The keys are heard on the whole window, so also with a dialog or a menu open over the detail. The read of the
-   * next asset puts the detail behind its loader, and what is open over it is unmounted with it: a form half filled
-   * in is gone. With the detail closed, nor under a dialog or a menu of the page: the list is not what is in use. */
+  /*
+   * Keys are heard on the whole window, so also with a dialog or menu open over the detail. Reading the next
+   * asset puts the detail behind its loader and unmounts what is open over it, losing a half-filled form.
+   * With the detail closed, also ignored under a page dialog or menu, because the list is not in use.
+   */
   const underDialogOrMenu = () =>
     assetDetailStore.detail ? anotherDialogOrMenuIsOpen('.' + ASSET_DETAIL_DIALOG_CLASS) : anotherDialogOrMenuIsOpen()
 
-  /* A queue drawn over the whole page - the upload, the mass edit - covers the list: the keys would walk tiles nobody
-   * sees and read their assets into the panel. The queue turns them off itself, and the detail of one of its rows
-   * turns them on again as it closes, or fails to open. */
+  /*
+   * A full-page queue (upload, mass edit) covers the list. The keys
+   * would walk hidden tiles and read their assets into the panel.
+   * The queue disables the keys itself. A queue row's detail re-enables them when it closes or fails to open.
+   */
   const listIsUnderQueue = () => customDialog.value
 
-  /* A detail opened from elsewhere than the list - the edit of a queue row, an asset just created - is of no tile:
-   * the keys would read the neighbour of whatever tile is active into it. */
+  /*
+   * A detail opened outside the list, such as a queue row edit or a newly created
+   * asset, has no tile. The keys would read the active tile's neighbour into it.
+   */
   const detailIsNotOfList = () => assetDetailStore.detail && assetDetailStore.view !== 'list'
 
   const onArrowRight = async (event: KeyboardEvent) => {

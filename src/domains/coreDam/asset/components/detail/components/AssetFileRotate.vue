@@ -18,16 +18,16 @@ const props = withDefaults(
 
 const { showRecordWas, showErrorsDefault, showUnknownError } = useAlerts()
 
-// The rotation runs in the store: also a tab opened again meanwhile waits for it, and its result reaches the tab open then.
+// The rotation runs in the store so a reopened tab waits for it and gets its result.
 const rotationStore = useImageRotationStore()
-// Nor of an asset being deleted.
+// The asset detail store tells whether the asset is being deleted.
 const assetDetailStore = useAssetDetailStore()
 
 const rotate = async (angle: 90 | 270) => {
   try {
     if (await rotationStore.rotate(props.imageId, angle)) showRecordWas('updated')
   } catch (e) {
-    // Why the server refused it; anything else as an unknown error.
+    // Shows the server's refusal reason, otherwise an unknown error.
     if (!showErrorsDefault(e)) showUnknownError()
   }
 }

@@ -5,13 +5,6 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* The card of the preview image of a video, in the Image preview tab of the detail of its asset. It shows the image
- * of the file of one slot of the asset, and a select above it changes the slot. An image is taken away by a button
- * of the card and picked in the dialog of the library, and each change is saved at once, one save after the other:
- * the card can be changed again, and switched to another slot, while a save is on its way. The real page of the list
- * with its real detail, the application around it as it starts; the server is a fake, and so is the address the page
- * asks about a new version of the application. */
-
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
@@ -25,7 +18,6 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const LIST = '/assets'
 const VIDEO = 'asset-1'
 const IMAGE = 'asset-2'
-/** The files of the two slots of the video, "default" and "extra", and the file of the image. */
 const FIRST = 'video-1'
 const SECOND = 'video-2'
 const OF_IMAGE = 'file-3'
@@ -34,7 +26,6 @@ type Preview = { imageFile: string; position: number } | null
 const SAVED: Preview = { imageFile: 'image-saved', position: 0 }
 const PICKED: Preview = { imageFile: OF_IMAGE, position: 0 }
 
-/** The preview image the server holds for each of the two files of the video. */
 let previews: Record<string, Preview> = {}
 
 const imageFile = (fileId: string) => ({
@@ -50,7 +41,6 @@ const videoFile = (fileId: string) => ({
   imagePreview: previews[fileId],
 })
 
-/** An asset as the server holds it now. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: id === VIDEO ? 'video' : 'image', assetStatus: 'with_file' },
@@ -74,8 +64,9 @@ const slotsOfVideo = () => {
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** In the place of the watcher of the browser: whatever is watched for coming into view is in view at once, so a
- * picture is drawn with its address. */
+/**
+ * Replaces the browser's `IntersectionObserver`: anything watched is in view at once, so pictures get their address.
+ */
 class InView {
   private readonly seen: IntersectionObserverCallback
 
@@ -96,7 +87,6 @@ const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail
 const tabOfPreview = () => detail()!.querySelector<HTMLElement>('.sidebar-info__content')!
 const picker = () => document.body.querySelector<HTMLElement>('.subject-select.v-overlay--active')
 
-/** The card: whether it has an image to take away, and whose picture it draws - told by the address of the picture. */
 const card = () => {
   const src = tabOfPreview().querySelector('.v-img__img')?.getAttribute('src') ?? ''
 
@@ -106,12 +96,9 @@ const card = () => {
   }
 }
 
-/** What the server was asked to save as a preview image, save by save: for which file, and which image. */
 const saves = () =>
   server.sent('PUT', PREVIEW).map((request) => [request.url, JSON.parse(request.data as string).imagePreview])
 
-/* Every save of a preview image is held from now on. Answered in the order they were sent: it went through, and the
- * server holds the image, or it failed. */
 const holdSaves = () => {
   const answers: Array<(went: boolean) => void> = []
   server.on(
@@ -133,9 +120,8 @@ const holdSaves = () => {
   }
 }
 
-/** The tab of the preview image of the video, the card of the file of its main slot drawn. */
 const openPreview = async () => {
-  // A picture is drawn with its address as soon as it would come into view.
+  // The stubbed `IntersectionObserver` makes a picture get its address as soon as it would come into view.
   vi.stubGlobal('IntersectionObserver', InView)
   const ui = await startUploadUi({
     server,
@@ -143,7 +129,6 @@ const openPreview = async () => {
     extSystem: { image: { slots: ['default'] }, video: { slots: ['default', 'extra'] } },
     customForm: { video: [customField('title')], image: [customField('title')] },
   })
-  // The user as the bar of the page draws them, and as the picker of images of the library asks about them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -185,7 +170,6 @@ const takeAway = async () => {
   await settled()
 }
 
-/** The dialog of the library opened from the card, its tiles drawn: the second is the image. */
 const openPicker = async () => {
   buttonsNamed(detail()!, 'Select image')[0].click()
 
@@ -197,7 +181,6 @@ const openPicker = async () => {
   })
 }
 
-/** The file of the image picked in the dialog of the library, and the dialog confirmed. */
 const pickImage = async () => {
   ;(await openPicker()).click()
   await settled()
@@ -206,7 +189,6 @@ const pickImage = async () => {
   await settled()
 }
 
-/** The card switched to the file of the slot, by the select above it. */
 const showSlot = async (name: string) => {
   tabOfPreview()
     .querySelector('.v-select .v-field')!
@@ -238,7 +220,6 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
-  // The files of the video with their preview images, as the tab reads them, and the images the card draws.
   for (const fileId of [FIRST, SECOND]) server.fileBy('video', fileId, () => videoFile(fileId))
   for (const fileId of [SAVED!.imageFile, OF_IMAGE]) server.fileBy('image', fileId, () => imageFile(fileId))
   server.on('PUT', PREVIEW, (request, match) => {
@@ -255,9 +236,11 @@ afterEach(() => {
 })
 
 describe('the preview image of a video, saved while the card is changed again or shows another file', () => {
-  /* A save that waited for its turn read the file and the image off the card as its turn came: with the card
-   * switched to another slot meanwhile, it saved the image of that other file over itself, and what was picked for
-   * the first was not saved at all. */
+  /*
+   * A queued save read the file and image off the card when its turn came.
+   * With the card switched to another slot meanwhile, it saved that other file's image over itself.
+   * The image picked for the first file was not saved at all.
+   */
   it('saves an image for the file it was picked for, once the card shows the file of another slot', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -278,8 +261,10 @@ describe('the preview image of a video, saved while the card is changed again or
     ])
   })
 
-  /* The card went back to the saved image by being drawn anew, and the dialog of the library, a part of the card,
-   * was closed with it under the hand of the user. */
+  /*
+   * The card went back to the saved image by being redrawn.
+   * That also closed the library dialog, a part of the card, under the user's hand.
+   */
   it('goes back to the saved image after a save that failed, with the dialog of the library left open', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -298,9 +283,11 @@ describe('the preview image of a video, saved while the card is changed again or
     expect(saves()).toEqual([['/adm/v1/video/' + FIRST, null]])
   })
 
-  /* Put back after a save of "none" that failed, the image is the one the card has read last. It read its picture
-   * again all the same, and with the server away - what the save failed of - that read never ended: the card spun
-   * for good. */
+  /*
+   * After a failed save of "none", the restored image is the one the card read last.
+   * The card still read its picture again, and with the server away that read never ended.
+   * The card spun for good.
+   */
   it('goes back to the saved image with no read of its picture, the server being away', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -317,8 +304,11 @@ describe('the preview image of a video, saved while the card is changed again or
     expect([card(), pictureReads() - readBefore]).toEqual([{ image: true, picture: 'saved' }, 0])
   })
 
-  /* The save that failed told "changed since" by the image the card held: taken away, picked and taken away again,
-   * the card held what the failed save had sent, and the saved image was put over the third change. */
+  /*
+   * The failed save decided "changed since" from the image the card held.
+   * After take away, pick and take away again, the card held what the failed save had sent.
+   * The saved image was then put over the third change.
+   */
   it('keeps a third change that is the same as the first, whose save failed, and saves all three', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -342,8 +332,11 @@ describe('the preview image of a video, saved while the card is changed again or
     ])
   })
 
-  /* What is saved is told for the file the card shows when a save is answered, by its id: switched to another slot
-   * and back, the card holds the file read anew. The image saved meanwhile is the one it goes back to. */
+  /*
+   * A save answer is matched to the card's file by id.
+   * After switching to another slot and back, the card holds the file read anew.
+   * It goes back to the image saved meanwhile.
+   */
   it('goes back to what a save answered since has saved for the file, read anew meanwhile', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -351,7 +344,6 @@ describe('the preview image of a video, saved while the card is changed again or
     await takeAway()
     await showSlot('extra')
     await showSlot('default')
-    // Read before the save was answered: the image is still there.
     expect(card().image).toBe(true)
     await answer(true)
     expect([previews[FIRST], ui.alerts()]).toEqual([null, [UPDATED]])
@@ -362,7 +354,6 @@ describe('the preview image of a video, saved while the card is changed again or
     expect(card()).toEqual({ image: false, picture: 'none' })
   })
 
-  // The guard: a save answered for the file of another slot says nothing of the file the card shows.
   it('does not take the image saved for the file of another slot for the saved one of the file it shows', async () => {
     const answer = holdSaves()
     const ui = await openPreview()
@@ -382,8 +373,10 @@ describe('the preview image of a video, saved while the card is changed again or
     ])
   })
 
-  /* The guard, of what took the place of the card drawn anew: the picture of an image is read as the image is
-   * picked, and the answer can come after the card went back to the saved one. */
+  /*
+   * The picture of an image is read when the image is picked.
+   * The answer can arrive after the card went back to the saved image.
+   */
   it('does not draw the picture of a picked image that comes after the card went back to the saved one', async () => {
     const answer = holdSaves()
     let showPicked: () => void = () => undefined
@@ -400,8 +393,10 @@ describe('the preview image of a video, saved while the card is changed again or
     expect(card()).toEqual({ image: true, picture: 'saved' })
   })
 
-  /* The guard: the tab draws the card anew, behind its own loader, each time the slot is changed, so the card of a
-   * file with no preview image never showed the picture of the file before. */
+  /*
+   * The tab redraws the card behind its own loader each time the slot changes.
+   * So the card of a file with no preview image never shows the previous file's picture.
+   */
   it('shows no picture for the file of a slot that has no preview image', async () => {
     await openPreview()
     expect(card()).toEqual({ image: true, picture: 'saved' })

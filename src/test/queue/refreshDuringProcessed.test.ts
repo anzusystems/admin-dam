@@ -9,10 +9,10 @@ import * as components from 'vuetify/components'
 import { assetDetail, assetFile, createFakeDam, httpError, queueRow, seedQueue } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 
-/* The refresh button of a queue row whose processed notification comes while the read of the refresh is on its way:
- * the notification settles the row, and what that read answers afterwards is not news to tell (finding 1 B of the
- * review of OP13-L4, fixed in the library). The list is mounted over the real store, the row itself is a stand-in with
- * only the button, and the server is a fake. */
+/*
+ * Guards a regression: when a processed notification arrives while the refresh read is in flight,
+ * the notification settles the row and the late answer of that read must not show a message.
+ */
 
 let server: FakeDam
 const showWarningT = vi.fn()
@@ -35,7 +35,6 @@ vi.mock('@/domains/coreDam/author/composables/cachedAuthors', () => ({
 vi.mock('@/domains/coreDam/keyword/composables/cachedKeywords', () => ({
   useCachedKeywords: () => ({ addToCachedKeywords: vi.fn(), fetchCachedKeywords: vi.fn() }),
 }))
-// What the row is to the list here: the button that asks for a refresh, disabled while the list says so.
 vi.mock('@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue', async () => {
   const { defineComponent, h } = await import('vue')
 
@@ -70,7 +69,6 @@ const QUEUE = 'global'
 
 let app: App | undefined
 
-/** Mounts the list over a queue holding the rows and answers the rows and the refresh button of each. */
 const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, UploadQueueItem[]> = {}) => {
   const pinia = createPinia()
   setActivePinia(pinia)
@@ -94,7 +92,6 @@ const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, U
   return { store, rows: seeded, others, button }
 }
 
-/** Presses the button and waits until the list lets it be pressed again. */
 const refresh = async (button: HTMLButtonElement) => {
   button.click()
   await nextTick()
@@ -107,7 +104,8 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  // The read the notification asks for comes 250 ms after it: called off with the queues, not left to the next case.
+  // The store reads the asset 250 ms after the notification.
+  // Reset the queues so that read does not leak into the next case.
   useUploadQueuesStore().reset()
   app?.unmount()
   app = undefined
@@ -130,7 +128,6 @@ describe('the refresh of a row processed while its read is on its way', () => {
 
   it.each(answers)('says nothing when that read answers %s', async (_how, answered) => {
     const { store, rows, button } = await mountQueue([queueRow({ status: 'processing' })])
-    // Every read of the asset is held: the one of the refresh, and any read before the end of the case.
     const held: Array<() => void> = []
     server.assetBy(
       'asset-1',
@@ -157,7 +154,6 @@ describe('the refresh of a row processed while its read is on its way', () => {
     expect(showWarningT).not.toHaveBeenCalled()
   })
 
-  // The guard: with no notification meanwhile, the same answers are said.
   it.each(answers)('says something when that read answers %s and nothing came meanwhile', async (_how, answered) => {
     const { rows, button } = await mountQueue([queueRow({ status: 'processing' })])
     server.assetBy('asset-1', async () => answered().data)

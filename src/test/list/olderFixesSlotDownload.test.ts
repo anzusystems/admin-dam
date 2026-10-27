@@ -5,11 +5,12 @@ import { assetDetail, assetFile, createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
-/* "Download" of the menu of a row of the Slots tab opens a tab at the press and asks the server for the signed address
- * of the file to send it to. Pressed again while the address was asked for, it opened a second tab and asked again;
- * and a browser that gave no tab - its blocker of new windows - left the editor with nothing, without a word. The real
- * page of the list with its real detail, the application around it as it starts; the server is a fake, and so are the
- * tabs of the browser and the address the page asks about a new version of the application. */
+/*
+ * "Download" in the row menu of the Slots tab opens a tab at
+ * the press, then asks the server for the signed file address.
+ * Pressed again while the address was pending, it opened a second tab and asked again.
+ * A browser that gave no tab (popup blocker) left the editor with nothing and no message.
+ */
 
 let server: FakeDam
 
@@ -41,9 +42,7 @@ const onServer = () => ({
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/** A tab of the browser, as the page that opened it holds it: opened empty. */
 const newTab = () => {
-  /** Where the tab was sent, each time with whether it could reach the page that opened it by then. */
   const sentTo: Array<{ address: string; reachesOpener: boolean }> = []
   const address = 'about:blank'
   const tab = {
@@ -66,7 +65,6 @@ const newTab = () => {
 
 type Tab = ReturnType<typeof newTab>
 
-/** The browser opens tabs from now on, or gives none: what it was asked for each, and the tabs it gave. */
 const browserOpensTabs = (gives = true) => {
   const given: Tab[] = []
   const open = vi.fn<(...asked: unknown[]) => Tab | null>(() => {
@@ -80,7 +78,6 @@ const browserOpensTabs = (gives = true) => {
   return { asked: () => open.mock.calls, given }
 }
 
-/** The address of the file is asked for from now on and held, until answered. */
 const holdLink = () => {
   let answer: () => void = () => undefined
   server.on(
@@ -98,7 +95,6 @@ const holdLink = () => {
 const detail = () => document.body.querySelector<HTMLElement>('.dam-image-detail-dialog.v-overlay--active')
 const menu = () => document.body.querySelector('.v-menu.v-overlay--active')
 
-/** The Slots tab of the detail of the image, and the "Download" of the menu of the row of its main slot. */
 const openDownload = async () => {
   const ui = await startUploadUi({
     server,
@@ -106,7 +102,6 @@ const openDownload = async () => {
     extSystem: { image: { slots: ['default'] } },
     customForm: { image: [customField('title')] },
   })
-  // The user as the bar of the page draws them.
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -133,7 +128,6 @@ const openDownload = async () => {
   })
   tile.querySelectorAll<HTMLButtonElement>('.detail-icon')[1].click()
   await eventually(() => expect(detail()?.querySelector('[data-cy="button-slots"]')).toBeTruthy())
-  /** The Slots tab drawn, and the button of the menu of its row. */
   const slotsTab = () => {
     detail()!.querySelector<HTMLElement>('[data-cy="button-slots"]')!.click()
 
@@ -145,7 +139,6 @@ const openDownload = async () => {
     })
   }
   let actions = await slotsTab()
-  /** The menu of the row opened, if it is not: its "Download". */
   const download = async () => {
     if (!menu()) actions.click()
 
@@ -162,7 +155,6 @@ const openDownload = async () => {
   return {
     ...ui,
     download,
-    /** Another tab of the detail, and the Slots tab drawn anew. */
     redraw: async () => {
       detail()!.querySelector<HTMLElement>('[data-cy="button-meta"]')!.click()
       await settled()
@@ -212,7 +204,6 @@ describe('"Download" of the menu of a row of the Slots tab', () => {
     await answer()
 
     expect([browser.given[0].sentTo, ui.alerts()]).toEqual([[{ address: SIGNED, reachesOpener: false }], []])
-    // Pressed once the address was had: a tab and an address of its own.
     ;(await ui.download()).click()
     await settled()
     expect([browser.asked().length, server.sent('GET', DOWNLOAD_LINK).length]).toEqual([2, 2])
@@ -228,7 +219,7 @@ describe('"Download" of the menu of a row of the Slots tab', () => {
     expect([browser.asked().length, server.sent('GET', DOWNLOAD_LINK).length, ui.alerts()]).toEqual([1, 0, [NO_TAB]])
   })
 
-  // Drawn anew, the row is another one: what held the second press back went with the one drawn before.
+  // Drawn anew, the row is a different one. What held the second press back went with the row drawn before.
   it('opens one tab and asks once when pressed again in the Slots tab drawn anew meanwhile', async () => {
     const answer = holdLink()
     const ui = await openDownload()
@@ -245,7 +236,6 @@ describe('"Download" of the menu of a row of the Slots tab', () => {
     expect(browser.given[0].sentTo).toEqual([{ address: SIGNED, reachesOpener: false }])
   })
 
-  // With no tab there is nothing to close with the page: nothing is left listening for it to go.
   it('leaves nothing listening for the page to go when the browser gives no tab', async () => {
     const ui = await openDownload()
     browserOpensTabs(false)

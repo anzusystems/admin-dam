@@ -53,7 +53,7 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-// With what was clicked: a double click begun on it is told from one elsewhere.
+// Pass the clicked element so a double click started on it can be told from one started elsewhere.
 const onItemClick = (event: MouseEvent) => {
   emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }
@@ -148,9 +148,11 @@ onMounted(() => {
     <td>
       <div class="d-flex justify-end">
         <ATableCopyIdButton :id="asset.id" />
-        <!-- A link, and its clicks are the router's or the browser's: a plain one goes to the page of the detail, one
-             with a modifier key held or of another button opens that page elsewhere. The list does nothing with
-             either, and a double click is two of those clicks, not the double click of the row. -->
+        <!--
+          A link, so the router or browser handles its clicks. A plain click opens
+          the detail page. A modifier key or another button opens it elsewhere.
+          The list ignores both, and a double click here is two link clicks, not the row's double click.
+        -->
         <ATableEditButton
           :record-id="asset.id"
           :route-name="'/(coreDam)/assets/[id]'"
