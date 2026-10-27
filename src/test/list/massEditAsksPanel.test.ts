@@ -364,3 +364,103 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
     await eventually(() => expect(readsOfPanel() - before).toBe(1))
   })
 })
+
+/* The upload queue saves its rows in bulk as well, and the asset of one of them can be in the panel: "Edit more" of the
+ * row opens its detail, and the panel keeps the asset once the detail is closed. Its save neither asked about what was
+ * typed into the panel nor read the asset into it: the panel showed it as before the save, and a save of the panel
+ * then sent that over what the queue had saved. */
+describe('a save of the upload queue that saves the asset of the panel', () => {
+  const readsOfUploaded = () => server.assetReads(UPLOADED)
+
+  /** The uploaded asset in the panel, by the edit of its row with the detail closed again; the queue hidden. */
+  const uploadedInPanel = async () => {
+    const list = await openList()
+    await list.editRowOfUploadQueue()
+    await eventually(() => expect(dialogOfList()).not.toBeNull())
+    dialogOfList()!.querySelector('.v-toolbar .mdi-close')!.closest('button')!.click()
+    await eventually(() => expect(dialogOfList()).toBeNull())
+    buttonsNamed(list.queue()!, 'Hide')[0].click()
+    await eventually(() => expect(list.queue()).toBeNull())
+
+    return list
+  }
+
+  /** The upload queue drawn over the whole page again, as its "Add description" button draws it. */
+  const openUploadQueue = async (list: List) => {
+    document.body.querySelector<HTMLButtonElement>('[data-cy="button-add-description"]')!.click()
+    await eventually(() => expect(list.queue()).not.toBeNull())
+  }
+
+  /** The uploaded asset in the panel with its title typed there, and the upload queue drawn over the page again. */
+  const typedAndQueued = async () => {
+    const list = await uploadedInPanel()
+    await typeInto(list.title())
+    await openUploadQueue(list)
+
+    return { list, before: readsOfUploaded() }
+  }
+
+  it.each([SAVE, SAVE_AND_FINISH])('"%s" asks first, and sends nothing until answered', async (name) => {
+    const { list } = await typedAndQueued()
+
+    ;(await massButton(list, name)).click()
+    await settled()
+
+    expect([questions().length, server.sent('PATCH', BULK).length]).toEqual([1, 0])
+  })
+
+  it.each([SAVE, SAVE_AND_FINISH])(
+    '"%s" sends nothing after "Stay", and the panel keeps what was typed',
+    async (name) => {
+      const { list, before } = await typedAndQueued()
+      ;(await massButton(list, name)).click()
+      await settled()
+
+      await answer(STAY)
+
+      expect([questions(), server.sent('PATCH', BULK).length, readsOfUploaded() - before]).toEqual([[], 0, 0])
+      expect([list.queue() !== null, list.alerts(), list.title().value]).toEqual([true, [], TYPED])
+    }
+  )
+
+  it.each([SAVE, SAVE_AND_FINISH])(
+    '"%s" saves after "Leave anyway", and reads the asset into the panel',
+    async (name) => {
+      const { list, before } = await typedAndQueued()
+      server.on('PATCH', BULK, (request) => {
+        server.asset(
+          onServer(UPLOADED, {
+            attributes: { assetType: 'image', assetStatus: 'with_file' },
+            mainFile: assetFile('file-9', 'processed', { asset: UPLOADED }),
+            metadata: { customData: SAVED, authorSuggestions: {}, keywordSuggestions: {} },
+          })
+        )
+
+        return { status: 200, data: JSON.parse(request.data as string) }
+      })
+      ;(await massButton(list, name)).click()
+      await settled()
+
+      await answer(LEAVE)
+
+      await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
+      expect(server.sent('PATCH', BULK)).toHaveLength(1)
+      await eventually(() => expect(readsOfUploaded() - before).toBe(1))
+      await eventually(() => expect(list.title().value).toBe(SAVED.title))
+      expect([questions(), standsOut(list.save())]).toEqual([[], false])
+    }
+  )
+
+  // With nothing typed into the panel nothing is asked, and the asset is read into it all the same.
+  it('asks nothing when nothing is typed into the panel, saves and reads the asset into it', async () => {
+    const list = await uploadedInPanel()
+    await openUploadQueue(list)
+    const before = readsOfUploaded()
+
+    ;(await massButton(list, SAVE)).click()
+
+    await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
+    expect([questions(), server.sent('PATCH', BULK).length]).toEqual([[], 1])
+    await eventually(() => expect(readsOfUploaded() - before).toBe(1))
+  })
+})

@@ -410,6 +410,36 @@ describe('the overlay of the uploads', () => {
     )
   })
 
+  /* The panel of the list showed an asset saved here as it was before the save, and its own save would then have put
+   * the metadata it was loaded with over what was saved here. The asset of the detail store is read again by its id,
+   * as after a save of the mass edit. */
+  describe.each([
+    ['its save button', 'save'],
+    ['its "save and finish" button', 'saveAndFinish'],
+  ] as const)('%s and the panel of the list', (_button, press) => {
+    it.each([
+      ['reads the asset the panel shows when it was saved', 'asset-1', 1, ['saved']],
+      ['leaves the panel alone when its asset was not saved', 'asset-not-uploaded', 0, ['before']],
+    ] as const)('%s', async (_name, shownId, reads, keywords) => {
+      const ui = await mountOverlay([editable('asset-1'), editable('asset-2')])
+      const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
+      const detail = useAssetDetailStore()
+      detail.setAsset(assetDetail(shownId, { keywords: ['before'] }) as never)
+      server.asset(assetDetail(shownId, { keywords: ['saved'] }))
+      server.asset(assetDetail('asset-2'))
+
+      ui[press]()!.click()
+      await eventually(() => expect(ui.alerts()).toEqual([UPDATED]))
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect([server.assetReads(shownId), server.assetReads('asset-2'), detail.asset?.keywords]).toEqual([
+        reads,
+        0,
+        keywords,
+      ])
+    })
+  })
+
   describe('its close button', () => {
     it('empties the queue and hides the overlay at once when every row is settled, and saves nothing', async () => {
       const { close, held, shown } = await mountOverlay([editable('asset-1', { customData: { title: 'typed' } })])

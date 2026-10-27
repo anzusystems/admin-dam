@@ -33,6 +33,8 @@ export function useAssetDetailDistributionDialog() {
   }
   const openRedistribute = (item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem) => {
     assetFileId.value = item.assetFileId
+    // The item carries no status of its file, and a file that was distributed was processed.
+    assetFileStatus.value = AssetFileProcessStatus.Processed
     activeDistributionName.value = item.distributionService
     redistributeId.value = item.id
     showTabs.value = false
@@ -44,6 +46,7 @@ export function useAssetDetailDistributionDialog() {
   const openNew = () => {
     if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
       assetFileId.value = assetDetailStore.asset.mainFile.id
+      assetFileStatus.value = assetDetailStore.asset.mainFile.fileAttributes.status
     }
     activeDistributionName.value = null
     redistributeId.value = null

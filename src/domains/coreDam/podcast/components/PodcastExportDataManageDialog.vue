@@ -56,8 +56,8 @@ const onConfirm = () => {
     scrollable
   >
     <VCard v-if="podcastExportDataManageDialog">
-      <ADialogToolbar @cancel="podcastExportDataManageDialog = false">
-        <span v-if="podcastExportData.id">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
+      <ADialogToolbar @cancel="onCancel">
+        <span v-if="podcastExportData.id > 0">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.podcastExportData.meta.create') }}</span>
       </ADialogToolbar>
       <VCardText>
@@ -99,7 +99,7 @@ const onConfirm = () => {
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary @click.stop="onConfirm">
-          {{ podcastExportData.id ? t('common.button.confirm') : t('common.button.create') }}
+          {{ podcastExportData.id > 0 ? t('common.button.confirm') : t('common.button.create') }}
         </ABtnPrimary>
       </VCardActions>
     </VCard>

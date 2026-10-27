@@ -25,7 +25,6 @@ import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vu
 import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
 import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
 import type { Job } from '@/domains/coreDam/job/types/Job'
-import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -68,7 +67,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
-  ENTITY
+  'job'
 )
 
 const getList = useDebounceFn(() => {

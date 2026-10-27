@@ -197,7 +197,10 @@ onMounted(async () => {
       class="mb-6"
     >
       <VCol>
-        <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+        <AssetDetailSlotSelect
+          :asset-file-id="assetFileId"
+          @active-slot-change="activeSlotChange"
+        />
       </VCol>
     </VRow>
     <div

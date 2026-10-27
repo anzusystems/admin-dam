@@ -100,7 +100,7 @@ watch(
   <VImg
     v-else
     :width="width"
-    :height="width"
+    :height="height"
     :src="src"
   >
     <template #placeholder />
@@ -124,10 +124,10 @@ watch(
           {{ t('coreDam.asset.queueItem.duplicate') }}
         </div>
         <AssetByImageIdLink
-          v-if="imageFile"
+          v-if="imageFile?.originAssetFile"
           variant="text"
           size="small"
-          :image-id="imageFile.id"
+          :image-id="imageFile.originAssetFile"
         >
           {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
         </AssetByImageIdLink>

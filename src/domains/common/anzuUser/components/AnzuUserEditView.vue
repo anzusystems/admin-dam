@@ -60,7 +60,10 @@ onBeforeUnmount(() => {
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <AnzuUserEditForm :client="damClient" />
+      <AnzuUserEditForm
+        :client="damClient"
+        is-edit
+      />
     </VCardText>
   </ACard>
 </template>

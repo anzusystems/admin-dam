@@ -122,17 +122,19 @@ const onEdit = (vi: ListViewItem<DistributionItem>) => {
 }
 
 const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
-  if (!isString(assetFileId.value)) {
+  // The slot select keeps its slot when the type changes: the new record takes the file it shows.
+  const fileId = distributionContent.value?.assetFile ?? assetFileId.value
+  if (!isString(fileId)) {
     throw new Error('Asset file id is null')
   }
   if (value === DistributionItemResourceName.Jw) {
-    distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultUpdateDto(props.assetId, fileId)
   }
   if (value === DistributionItemResourceName.Youtube) {
-    distributionContent.value = createDefaultYoutubeUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultYoutubeUpdateDto(props.assetId, fileId)
   }
   if (value === DistributionItemResourceName.Custom) {
-    distributionContent.value = createDefaultCustomUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultCustomUpdateDto(props.assetId, fileId)
   }
 }
 

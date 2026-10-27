@@ -14,6 +14,7 @@ import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
+import { useAssetFooterBulkSave } from '@/domains/coreDam/asset/composables/assetFooterBulkSave'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -57,6 +58,9 @@ const onStopConfirm = async () => {
 // Failed uploads, duplicates, items still waiting for their metadata: the save would send nothing and say it failed.
 const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
 
+const { assetIdsToSave, leaveTypedOfPanel, refreshDetailAsset, panelTakesTypingAgain, typedKeptAfterFailure } =
+  useAssetFooterBulkSave()
+
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
@@ -74,13 +78,22 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave(list.value)
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     fetchAssetList()
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
   } catch (error) {
+    typedKeptAfterFailure(left)
     showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveButtonLoading.value = false
   }
 }
@@ -94,14 +107,23 @@ const onSaveAndClose = async () => {
     saveAndCloseButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave(list.value)
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveAndCloseButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
     await onStopConfirm()
     fetchAssetList()
   } catch (error) {
+    typedKeptAfterFailure(left)
     showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveAndCloseButtonLoading.value = false
   }
 }
