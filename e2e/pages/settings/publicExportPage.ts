@@ -8,9 +8,7 @@ export interface PublicExportData {
   type?: string
 }
 
-/**
- * The licence autocomplete only lists matches of the typed text.
- */
+/** The licence autocomplete only lists matches of the typed text. */
 async function pickLicence(page: Page, licence: string): Promise<void> {
   const input = page.locator('[data-cy="publicExport-licence"] input').filter({ visible: true }).first()
   await input.click()

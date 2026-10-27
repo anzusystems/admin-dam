@@ -32,9 +32,7 @@ export async function switchMainFileToSlot(page: Page, slot: string): Promise<vo
   await page.getByRole('button', { name: 'Znovu načítať sloty assetu' }).click()
 }
 
-/**
- * `slot` defaults to audio's `free`. Single-slot types (image, video, document) name theirs `default`.
- */
+/** `slot` defaults to audio's `free`. Single-slot types (image, video, document) name theirs `default`. */
 export async function openSlots(page: Page, assetId: string, slot = 'free'): Promise<void> {
   await openAssetTab(page, assetId, 'button-slots')
   await expect(slotRow(page, slot)).toBeVisible()
@@ -137,9 +135,7 @@ export async function downloadSlotFile(page: Page, slot: string): Promise<{ id: 
   return file
 }
 
-/**
- * `expectedOptions` asserts the list of slots the picker offers (every other slot).
- */
+/** `expectedOptions` asserts the list of slots the picker offers (every other slot). */
 export async function moveSlotFile(
   page: Page,
   action: 'button-slot-duplicate' | 'button-slot-switch',
@@ -184,9 +180,7 @@ export async function unlinkSlotFile(page: Page, slot: string): Promise<void> {
   await expect(slotRow(page, slot)).toContainText(NO_FILE)
 }
 
-/**
- * The file is deleted everywhere, so every other slot holding it is emptied too.
- */
+/** The file is deleted everywhere, so every other slot holding it is emptied too. */
 export async function deleteSlotFile(page: Page, slot: string): Promise<void> {
   const dialog = await openSlotRemove(page, slot)
   await dialog.locator('[data-cy="button-remove"]').click()

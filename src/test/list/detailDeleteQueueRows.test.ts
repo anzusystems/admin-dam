@@ -37,9 +37,7 @@ const EDIT_MORE = 'Edit more'
 let deletingOnServer: string | null = null
 let listed: string[] = []
 
-/**
- * Not described: the bulk save sends its row.
- */
+/** Not described: the bulk save sends its row. */
 const onServer = (id: string) => ({
   ...assetDetail(id, {
     attributes: { assetType: 'image', assetStatus: id === deletingOnServer ? 'deleting' : 'with_file' },

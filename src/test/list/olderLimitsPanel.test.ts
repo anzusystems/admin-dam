@@ -46,9 +46,7 @@ let listed: ReturnType<typeof onServer>[] = []
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/**
- * Moves past the few seconds in which an asset read a moment ago is not read again.
- */
+/** Moves past the few seconds in which an asset read a moment ago is not read again. */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
 const arrow = async (over: Element) => {

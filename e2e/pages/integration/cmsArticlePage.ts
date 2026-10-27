@@ -2,9 +2,7 @@ import { type Locator, type Page, expect } from '@playwright/test'
 import { cardLoad, closeAlerts } from '@pages/shared/admin'
 import { URL_DOMAIN, URL_PROTO } from '@pages/shared/constants'
 
-/**
- * admin-cms is reachable with the session of the DAM force-login, because both admins share the sso cookie.
- */
+/** admin-cms is reachable with the session of the DAM force-login, because both admins share the sso cookie. */
 export const CMS_BASE_URL = `${URL_PROTO}://admin-cms.${URL_DOMAIN}`
 const CORE_CMS_API = `${URL_PROTO}://core-cms.${URL_DOMAIN}/api/adm/v1`
 const WEB_BASE_URL = `${URL_PROTO}://www.${URL_DOMAIN}`
@@ -12,13 +10,9 @@ const WEB_BASE_URL = `${URL_PROTO}://www.${URL_DOMAIN}`
 export const MEDIA_NOT_PLAYABLE = 'Mediálny obsah sa zatiaľ neprehrá na webe. Skontrolujte distribúciu.'
 
 export interface CmsArticle {
-  /**
-   * Numeric article id, used by the `/article-kind` endpoints.
-   */
+  /** Numeric article id, used by the `/article-kind` endpoints. */
   id: string
-  /**
-   * Document UUID, used by the web redirect.
-   */
+  /** Document UUID, used by the web redirect. */
   docId: string
 }
 
@@ -83,9 +77,7 @@ function isDamAssetSearch(url: string): boolean {
   return url.startsWith(`${URL_PROTO}://core-dam.${URL_DOMAIN}/api/adm/v1/asset/licence/`) && url.includes('/search?')
 }
 
-/**
- * Filters the picker by asset id so the pick does not depend on list order.
- */
+/** Filters the picker by asset id so the pick does not depend on list order. */
 async function pickDamAsset(page: Page, assetId: string): Promise<void> {
   const picker = page.locator('.v-overlay--active').filter({ has: page.locator('.subject-select__actions') })
   const idFilter = picker.getByRole('textbox', { name: 'Id', exact: true })
@@ -170,9 +162,7 @@ export async function purgeCmsArticleCache(page: Page, articleId: string): Promi
   expect((await purged).status(), 'article cache purge').toBe(204)
 }
 
-/**
- * Reloads between checks, because the web keeps serving a cached render for a while.
- */
+/** Reloads between checks, because the web keeps serving a cached render for a while. */
 export async function expectPlayableOnWeb(page: Page, article: CmsArticle): Promise<void> {
   await expect(async () => {
     await page.goto(`${WEB_BASE_URL}/_c/redirect/${article.docId}`)

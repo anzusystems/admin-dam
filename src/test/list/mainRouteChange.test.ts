@@ -89,9 +89,7 @@ let listed: string[] = []
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/**
- * Moves past the few seconds in which an asset read a moment ago is not read again.
- */
+/** Moves past the few seconds in which an asset read a moment ago is not read again. */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
 const reads = () => ['asset-1', 'asset-2', 'asset-3'].map((assetId) => server.assetReads(assetId))
@@ -263,9 +261,7 @@ const fileMenu = async (place: Place, name: 'Make private' | 'Make public') => {
   await settled()
 }
 
-/**
- * The menu of the file card must be gone once its action went through. Left open, it holds the keys of the detail.
- */
+/** The menu of the file card must be gone once its action went through. Left open, it holds the keys of the detail. */
 const menuIsClosed = () => eventually(() => expect(menu()).toBeNull())
 
 const makePublic = async (place: Place) => {

@@ -59,9 +59,7 @@ const openEditor = async (content: JSONContent) => {
   return {
     editor,
     buttons,
-    /**
-     * The editor reports its new state two frames later.
-     */
+    /** The editor reports its new state two frames later. */
     cursorAt: async (position: number) => {
       editor.commands.setTextSelection(position)
       await vi.advanceTimersByTimeAsync(100)

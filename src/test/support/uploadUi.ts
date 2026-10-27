@@ -252,9 +252,7 @@ type Listener = { target: EventTarget; type: string; listener: EventListenerOrEv
 const captureOf = (options?: boolean | EventListenerOptions) =>
   typeof options === 'boolean' ? options : !!options?.capture
 
-/**
- * A listener is unique per target, type, function and capture flag. Added twice, it exists once.
- */
+/** A listener is unique per target, type, function and capture flag. Added twice, it exists once. */
 const isListener =
   (target: EventTarget, type: string, listener: EventListenerOrEventListenerObject, capture: boolean) =>
   (one: Listener) =>
@@ -333,9 +331,7 @@ type HappyDomWindow = { happyDOM: { setViewport: (viewport: { width: number; hei
 const WINDOW_WIDTH = 1024
 let windowResized = false
 
-/**
- * Lasts until the case is over. Vuetify uses the window width to decide what a small screen is.
- */
+/** Lasts until the case is over. Vuetify uses the window width to decide what a small screen is. */
 export const setWindowWidth = (width: number) => {
   windowResized = true
   ;(window as unknown as HappyDomWindow).happyDOM.setViewport({ width, height: 768 })

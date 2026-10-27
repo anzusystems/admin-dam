@@ -15,9 +15,7 @@ function duplicateIcons(page: Page) {
   return page.locator('.asset-upload-overlay .dam-upload-queue--list [data-cy="icon-duplicate"]')
 }
 
-/**
- * Pass a `uniqueFixtureCopy` so no earlier run's asset can be the original.
- */
+/** Pass a `uniqueFixtureCopy` so no earlier run's asset can be the original. */
 export async function expectDuplicateOnSecondUpload(page: Page, file: string): Promise<string[]> {
   const first = await uploadFile(page, file)
   await waitForUpload(page)

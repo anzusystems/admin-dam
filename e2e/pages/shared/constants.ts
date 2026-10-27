@@ -14,9 +14,7 @@ export const ADMIN_SUITE = `ADMIN-DAM (${ENV_LABEL[ADAM_ENV] ?? ADAM_ENV.toUpper
  */
 export const RAND_NUM = (Math.floor(Date.now() / 10) * 10 + Number(process.env.TEST_PARALLEL_INDEX ?? 0)).toString()
 
-/**
- * Licence every test runs under — see `prepareUser`.
- */
+/** Licence every test runs under — see `prepareUser`. */
 export const LICENCE_ID = process.env.LICENCE_ID ?? ''
 
 export const BASE_URL = process.env.BASE_URL ?? ''

@@ -53,9 +53,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   let detailRequests = 0
   // The asset the newest request reads, when known.
   let detailRequestOf: DocId | null = null
-  /**
-   * @param assetId The asset read into the detail, when known.
-   */
+  /** @param assetId The asset read into the detail, when known. */
   const startDetailRequest = (assetId: DocId | null = null) => {
     detailRequestOf = assetId
     return ++detailRequests
@@ -72,9 +70,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * The current answer may predate a change such as a bulk save. A newer read's answer does not, so it drops this one.
    */
   let afterCurrentRead: { request: number; read: () => void } | null = null
-  /**
-   * Runs `read` now when nothing is in flight, otherwise after the current read lands.
-   */
+  /** Runs `read` now when nothing is in flight, otherwise after the current read lands. */
   function readAfterCurrentRead(read: () => void) {
     if (!loader.value) {
       read()
@@ -106,9 +102,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   let typedCounts = 0
   const typedSaves = shallowRef<Array<{ form: object; typed: number }>>([])
   const savedTyped = new WeakMap<object, number>()
-  /**
-   * Whether typed input is not yet confirmed saved because its save is in flight.
-   */
+  /** Whether typed input is not yet confirmed saved because its save is in flight. */
   const typedOnItsWay = (form: object) =>
     typedSaves.value.some((save) => save.form === form && save.typed > (savedTyped.get(form) ?? 0))
 
@@ -156,9 +150,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     return of?.onTheirWay ? null : (of?.sent ?? 0)
   }
 
-  /**
-   * The held asset is being deleted, here or elsewhere per the server. Nothing of it may be changed.
-   */
+  /** The held asset is being deleted, here or elsewhere per the server. Nothing of it may be changed. */
   const isDeleting = computed(() => asset.value?.attributes?.assetStatus === DamAssetStatus.Deleting)
 
   /*
@@ -182,9 +174,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    * form blocks typing until the post-save read starts (`loader`), which replaces it.
    */
   const leftForMassSave = ref<DocId | null>(null)
-  /**
-   * Not under the loader: the form is hidden then and its asset already left.
-   */
+  /** Not under the loader: the form is hidden then and its asset already left. */
   const showsUnsavedMetadata = computed(() => detail.value && !loader.value && holdsUnsavedMetadata.value)
   /**
    * Same with the detail closed: the panel is the form then, visible
@@ -194,9 +184,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     () => !detail.value && holdsUnsavedMetadata.value && !(loader.value && typedLeft.value)
   )
 
-  /**
-   * Asks whether to drop unsaved metadata. One question at a time: a concurrent ask resolves to stay.
-   */
+  /** Asks whether to drop unsaved metadata. One question at a time: a concurrent ask resolves to stay. */
   function askToLeaveUnsaved() {
     if (leaveUnsavedQuestion.value) return Promise.resolve(false)
     leaveUnsavedQuestion.value = true
@@ -253,9 +241,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     lastFetched.value = 0
   }
 
-  /**
-   * The three form switches that belong to the main file. Off for an asset without one.
-   */
+  /** The three form switches that belong to the main file. Off for an asset without one. */
   function readMainFileSwitches(read: AssetDetailItemDto) {
     mainFileSingleUse.value = read?.mainFileSingleUse || false
     mainFileOverrideInternal.value = read?.mainFile?.flags.overrideInternal || false
@@ -272,9 +258,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   // Newest detail request at the time the held asset was marked as deleting.
   let markedDeletingAt = 0
 
-  /**
-   * `request`: the detail request that read the asset, if any.
-   */
+  /** `request`: the detail request that read the asset, if any. */
   function setAsset(newAsset: AssetDetailItemDto, request?: number) {
     if (heldAsDeleting(newAsset.id) && !(request && request > markedDeletingAt)) return
     const { getAuthorConflicts } = useAssetSuggestions()
@@ -352,9 +336,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
    */
   let toldOfMainFile: { assetId: DocId; fileId: DocId; status: AssetFileProcessStatusType } | null = null
 
-  /**
-   * `fileChanged` makes the page re-read its asset. Returns an unregister function for when the page goes away.
-   */
+  /** `fileChanged` makes the page re-read its asset. Returns an unregister function for when the page goes away. */
   function tellPageBy(fileChanged: () => void) {
     tellPage = fileChanged
 
@@ -363,23 +345,17 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     }
   }
 
-  /**
-   * The page's read after a notification failed. Clear it so the next notification reads again.
-   */
+  /** The page's read after a notification failed. Clear it so the next notification reads again. */
   function readOfToldFailed() {
     toldOfMainFile = null
   }
 
-  /**
-   * The page that draws the detail now is told the file of its asset has changed, as the server tells it.
-   */
+  /** The page that draws the detail now is told the file of its asset has changed, as the server tells it. */
   function tellPageOfFileChange() {
     tellPage?.()
   }
 
-  /**
-   * The asset shown by the detail. Under the loader it is the one being read. Null when unknown.
-   */
+  /** The asset shown by the detail. Under the loader it is the one being read. Null when unknown. */
   const shownOrReadAssetId = () => (loader.value ? detailRequestOf : (asset.value?.id ?? null))
 
   /**

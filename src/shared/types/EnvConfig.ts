@@ -4,9 +4,7 @@ export interface EnvConfig {
   appVersion: string
   appLabel: string
   logoutCoreDamUrl: string
-  /**
-   * @deprecated The poll of the upload queue always runs; the value is not read.
-   */
+  /** @deprecated The poll of the upload queue always runs; the value is not read. */
   uploadStatusFallback?: boolean
   cookies: {
     refreshTokenExistsName: string
@@ -19,9 +17,7 @@ export interface EnvConfig {
     authorCleanPhraseTestSample: string
   }
   notification: {
-    /**
-     * On for `true` or the string `true` in any case, trimmed. Only with a non-empty address.
-     */
+    /** On for `true` or the string `true` in any case, trimmed. Only with a non-empty address. */
     enabled: boolean | string
     webSocketUrl: string
   }

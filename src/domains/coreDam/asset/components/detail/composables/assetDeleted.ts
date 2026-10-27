@@ -10,12 +10,8 @@ import type { InjectionKey } from 'vue'
  */
 const AssetDeletedKey: InjectionKey<(assetId: DocId) => void> = Symbol('assetDeleted')
 
-/**
- * Call in the setup of the page that draws the detail. `deleted` receives the id of the deleted asset.
- */
+/** Call in the setup of the page that draws the detail. `deleted` receives the id of the deleted asset. */
 export const provideAssetDeleted = (deleted: (assetId: DocId) => void) => provide(AssetDeletedKey, deleted)
 
-/**
- * Call in the setup of the detail part that deletes the asset.
- */
+/** Call in the setup of the detail part that deletes the asset. */
 export const useAssetDeleted = () => inject(AssetDeletedKey, () => undefined)

@@ -192,9 +192,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     keyboardNavigation.value = false
   }
 
-  /**
-   * Empties the list before a re-read. No tile stays active, but the active asset is remembered.
-   */
+  /** Empties the list before a re-read. No tile stays active, but the active asset is remembered. */
   function resetList() {
     list.value = []
     activeItemIndex.value = null

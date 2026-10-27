@@ -25,9 +25,7 @@ export const DISTRIBUTION_LIST_POLL = {
   afterFailure: [15_000, 30_000, 60_000, 120_000, 300_000],
 } as const
 
-/**
- * A distribution in one of these statuses still changes on its own.
- */
+/** A distribution in one of these statuses still changes on its own. */
 export const DISTRIBUTION_STATUSES_UNDER_WAY: ReadonlyArray<DamDistributionStatusType> = [
   DamDistributionStatus.Waiting,
   DamDistributionStatus.Distributing,

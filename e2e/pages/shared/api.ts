@@ -22,9 +22,7 @@ export async function assetTypeConfig(page: Page, assetType: AssetType): Promise
   return config
 }
 
-/**
- * A slot holding no file is not listed by the API.
- */
+/** A slot holding no file is not listed by the API. */
 export interface SlotFile {
   fileId: string
   main: boolean
@@ -33,9 +31,7 @@ export interface SlotFile {
   originFileName: string
 }
 
-/**
- * The only way to tie a slot row in the sidebar to a file id: the rows carry the file name, never its id.
- */
+/** The only way to tie a slot row in the sidebar to a file id: the rows carry the file name, never its id. */
 export async function slotFiles(page: Page, assetId: string): Promise<Record<string, SlotFile>> {
   const response = await page.request.get(`${CORE_DAM_API}/asset-slot/asset/${assetId}`)
   expect(response.status(), `GET slots of asset ${assetId}`).toBe(200)
@@ -89,9 +85,7 @@ export async function getAsset(page: Page, assetId: string): Promise<any> {
   return response.json()
 }
 
-/**
- * A 404 is accepted, so cleanup can run for assets a test already deleted.
- */
+/** A 404 is accepted, so cleanup can run for assets a test already deleted. */
 export async function deleteAsset(page: Page, assetId: string): Promise<void> {
   const response = await page.request.delete(`${CORE_DAM_API}/asset/${assetId}`)
   expect([204, 404], `DELETE asset ${assetId}`).toContain(response.status())

@@ -15,9 +15,7 @@ export interface QueueRowMetadata {
   mainFileSingleUse: boolean | null
 }
 
-/**
- * `described` is undefined when the response did not include it.
- */
+/** `described` is undefined when the response did not include it. */
 export interface QueueRowBaseline extends QueueRowMetadata {
   described: boolean | undefined
 }
@@ -28,9 +26,7 @@ export interface QueueRowBaseline extends QueueRowMetadata {
  */
 let order = 0
 
-/**
- * A read takes a number when sent; a baseline writer takes one when writing.
- */
+/** A read takes a number when sent; a baseline writer takes one when writing. */
 export const nextMetadataOrder = () => ++order
 
 /*
@@ -41,9 +37,7 @@ export const nextMetadataOrder = () => ++order
 const savesOnTheirWay = new Map<DocId, number>()
 const afterSaves = new Map<DocId, Array<() => void>>()
 
-/**
- * Call when a metadata save is sent. Call the returned function once it is answered or failed.
- */
+/** Call when a metadata save is sent. Call the returned function once it is answered or failed. */
 export const metadataSaveSent = (assetIds: DocId[]) => {
   assetIds.forEach((assetId) => savesOnTheirWay.set(assetId, (savesOnTheirWay.get(assetId) ?? 0) + 1))
   let ended = false
@@ -67,9 +61,7 @@ export const metadataSaveSent = (assetIds: DocId[]) => {
 
 export const metadataSaveOnItsWay = (assetId: DocId) => savesOnTheirWay.has(assetId)
 
-/**
- * Runs `then` once no metadata save of the asset is in flight, immediately if none is.
- */
+/** Runs `then` once no metadata save of the asset is in flight, immediately if none is. */
 export const afterMetadataSaves = (assetId: DocId, then: () => void) => {
   if (!savesOnTheirWay.has(assetId)) return then()
   afterSaves.set(assetId, [...(afterSaves.get(assetId) ?? []), then])
@@ -123,9 +115,7 @@ export const sameMetadataValue = (a: unknown, b: unknown): boolean => {
   )
 }
 
-/**
- * Whether the row got its metadata after `sentAt`. If so, a response requested at `sentAt` is stale.
- */
+/** Whether the row got its metadata after `sentAt`. If so, a response requested at `sentAt` is stale. */
 export const queueRowGivenSince = (item: UploadQueueItem, sentAt: number) =>
   (baselines.get(toRaw(item))?.at ?? 0) > sentAt
 

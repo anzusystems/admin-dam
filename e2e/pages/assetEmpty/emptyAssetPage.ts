@@ -5,14 +5,10 @@ import { detailSidebar, sidebarContent } from '@pages/assets/assetDetailPage'
 import { openAppsMenu } from '@pages/navigation/appsMenu'
 import { fixture } from '@pages/shared/fixtures'
 
-/**
- * Asset type as the "Vytvoriť prázdny asset" dialog lists it.
- */
+/** Asset type as the "Vytvoriť prázdny asset" dialog lists it. */
 export type EmptyAssetType = 'Obrázok' | 'Audio' | 'Video' | 'Dokument'
 
-/**
- * Text every sidebar tab shows while the asset has no file.
- */
+/** Text every sidebar tab shows while the asset has no file. */
 export const NO_FILE = 'Neobsahuje žiaden súbor'
 
 /**

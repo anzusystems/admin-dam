@@ -44,9 +44,7 @@ export async function openFilterDrawer(page: Page): Promise<void> {
   await expect(filterDrawer(page)).toHaveClass(/v-navigation-drawer--active/)
 }
 
-/**
- * Exact match keeps the ranges apart: "Text" appears inside several labels. Every label in the drawer is unique.
- */
+/** Exact match keeps the ranges apart: "Text" appears inside several labels. Every label in the drawer is unique. */
 export function filterField(page: Page, label: string): Locator {
   return filterDrawer(page)
     .locator('.v-input')
@@ -54,9 +52,7 @@ export function filterField(page: Page, label: string): Locator {
     .first()
 }
 
-/**
- * Nothing is sent until the filter is submitted.
- */
+/** Nothing is sent until the filter is submitted. */
 export async function fillFilter(page: Page, label: string, value: string): Promise<void> {
   await filterField(page, label).locator('input').first().fill(value)
 }
@@ -101,9 +97,7 @@ export function colourSwatch(page: Page, colour: string): Locator {
   return filterDrawer(page).locator(`.color-swatches__item[title="${colour}"]`)
 }
 
-/**
- * The hex is read back from the swatch itself so no assertion hardcodes the palette.
- */
+/** The hex is read back from the swatch itself so no assertion hardcodes the palette. */
 export async function pickColourSwatch(page: Page, colour: string): Promise<string> {
   const swatch = colourSwatch(page, colour)
   await swatch.click()
@@ -114,9 +108,7 @@ export async function pickColourSwatch(page: Page, colour: string): Promise<stri
   })
 }
 
-/**
- * The query string shows which filter a control actually sent. The rendered list cannot show that on shared data.
- */
+/** The query string shows which filter a control actually sent. The rendered list cannot show that on shared data. */
 export async function searchParams(page: Page, action: () => Promise<unknown>): Promise<URLSearchParams> {
   const searched = page.waitForResponse(
     (response) => response.url().startsWith(`${CORE_DAM_API}/asset/licence/search`),
@@ -134,9 +126,7 @@ export async function submitFilter(page: Page): Promise<URLSearchParams> {
   return searchParams(page, () => filterDrawer(page).getByRole('button', { name: 'Hľadať' }).click())
 }
 
-/**
- * Also clears the quick type buttons, but leaves the ordering alone.
- */
+/** Also clears the quick type buttons, but leaves the ordering alone. */
 export async function resetFilter(page: Page): Promise<URLSearchParams> {
   return searchParams(page, () => filterDrawer(page).locator('button:has(.mdi-filter-remove-outline)').click())
 }

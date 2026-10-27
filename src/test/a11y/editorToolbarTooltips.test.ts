@@ -37,9 +37,7 @@ const SAID = {
 let app: App | undefined
 let editor: Editor | undefined
 
-/**
- * Editor of `PodcastExportDataBodyEditor.vue` with the cursor in a link. The link removal is offered only then.
- */
+/** Editor of `PodcastExportDataBodyEditor.vue` with the cursor in a link. The link removal is offered only then. */
 const editorInLink = () => {
   editor = new Editor({
     content: {

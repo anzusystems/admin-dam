@@ -21,9 +21,7 @@ export interface FakeDamRequest {
 export interface FakeDamAnswer {
   status: number
   data?: unknown
-  /**
-   * Called when the answer reaches the client. From then on the request is over and an abort no longer affects it.
-   */
+  /** Called when the answer reaches the client. From then on the request is over and an abort no longer affects it. */
   arrived?: () => void
 }
 
@@ -74,9 +72,7 @@ const unlessAborted = <T>(answer: T | Promise<T>, config: AxiosRequestConfig) =>
 export const validationError = (fields: Record<string, string[]>) =>
   httpError(422, { error: 'validation_failed', contextId: 'context', fields })
 
-/**
- * Also a 422, told apart from a validation error by its `error` field.
- */
+/** Also a 422, told apart from a validation error by its `error` field. */
 export const forbiddenOperationError = (detail: string) =>
   httpError(422, { error: 'forbidden_operation_error', contextId: 'context', detail })
 
@@ -112,9 +108,7 @@ export const createFakeDam = () => {
     return made
   }
 
-  /**
-   * Later registrations win, so a test can put its own answer over a default one.
-   */
+  /** Later registrations win, so a test can put its own answer over a default one. */
   const on = (method: FakeDamMethod, pattern: RegExp, handler: Handler) => {
     handlers.unshift({ method, pattern, handler })
   }
@@ -218,9 +212,7 @@ export const createFakeDam = () => {
   const sent = (method: FakeDamMethod, pattern: RegExp = /./) =>
     requests.filter((request) => request.method === method && pattern.test(request.url))
 
-  /**
-   * Counts reads of the asset, single or among others. The shape of the read does not matter.
-   */
+  /** Counts reads of the asset, single or among others. The shape of the read does not matter. */
   const assetReads = (assetId: string) =>
     sent('GET').filter((request) => {
       if (request.url === '/adm/v1/asset/' + assetId) return true
@@ -241,9 +233,7 @@ export const createFakeDam = () => {
     slotReads,
     uploadStarted: startedAsset,
     asset: (asset: { id: string } & Record<string, unknown>) => assets.set(asset.id, asset),
-    /**
-     * Same, by a function. It may throw to fail the read, or return a promise to hold it open.
-     */
+    /** Same, by a function. It may throw to fail the read, or return a promise to hold it open. */
     assetBy: (assetId: string, answer: () => unknown) => assets.set(assetId, answer),
     file: (assetType: string, file: FakeAssetFile) => files.set(assetType + '/' + file.id, file),
     fileBy: (assetType: string, fileId: string, answer: () => unknown) => files.set(assetType + '/' + fileId, answer),

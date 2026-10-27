@@ -6,9 +6,7 @@ import { resetFilters } from '@pages/shared/crud'
 
 let page: Page
 
-/**
- * A shared, pre-existing ext system: the test saves it under the name it already has.
- */
+/** A shared, pre-existing ext system: the test saves it under the name it already has. */
 const EXT_SYSTEM = { slug: 'cms', name: 'CMS system' }
 
 test.describe.serial(`${ADMIN_SUITE} - Ext system`, () => {

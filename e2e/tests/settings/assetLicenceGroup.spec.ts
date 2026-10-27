@@ -29,13 +29,9 @@ let GROUP_ID = ''
 
 const NAME_PREFIX = 'E2E licence group'
 const NAME = `${NAME_PREFIX} ${RAND_NUM}`
-/**
- * Ext system of the licence every test runs under. The select offers ext systems by **slug**…
- */
+/** Ext system of the licence every test runs under. The select offers ext systems by **slug**… */
 const EXT_SYSTEM = 'cms'
-/**
- * …while the list and the detail render the same ext system by its display name.
- */
+/** …while the list and the detail render the same ext system by its display name. */
 const EXT_SYSTEM_NAME = 'CMS system'
 const LICENCE = 'Sme Family'
 const LIVE_GROUP = 'Sme family'

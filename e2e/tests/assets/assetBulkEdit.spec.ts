@@ -31,14 +31,10 @@ import {
 
 let page: Page
 const assetIds: string[] = []
-/**
- * Assets outside the trio. Kept apart so `saved()` never re-fetches one the tests deleted.
- */
+/** Assets outside the trio. Kept apart so `saved()` never re-fetches one the tests deleted. */
 const extraIds: string[] = []
 
-/**
- * Titles caption the tiles and tell the three apart, so they must stay unique until the end.
- */
+/** Titles caption the tiles and tell the three apart, so they must stay unique until the end. */
 const TITLE = (index: number) => `BulkTitle${index}${RAND_NUM}`
 const TITLE_DOOMED = `BulkDoomed${RAND_NUM}`
 const TITLE_REPLACED = `BulkReplaced${RAND_NUM}`

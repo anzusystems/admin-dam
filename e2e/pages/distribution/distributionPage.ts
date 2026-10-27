@@ -260,9 +260,7 @@ export function distributionField(dialog: Locator, label: string): Locator {
   return dialog.locator('.v-input').filter({ hasText: label }).first()
 }
 
-/**
- * Vuetify's stand-in for a select with nothing to offer — rendered as an option in its own right.
- */
+/** Vuetify's stand-in for a select with nothing to offer — rendered as an option in its own right. */
 const NO_OPTIONS = 'Žiadne dostupné dáta'
 
 /**
@@ -318,9 +316,7 @@ export function advancedToggle(page: Page, shown = false): Locator {
   return page.locator('.sidebar-info').getByRole('button', { name: shown ? HIDE_ADVANCED : SHOW_ADVANCED })
 }
 
-/**
- * The advanced panel is collapsed on every load.
- */
+/** The advanced panel is collapsed on every load. */
 export async function openAdvancedDistributions(page: Page): Promise<void> {
   await closeAlerts(page)
   await advancedToggle(page).click()
@@ -335,15 +331,11 @@ export async function closeAdvancedDistributions(page: Page): Promise<void> {
 }
 
 export interface AdvancedDistributionData {
-  /**
-   * Service as the JW/YouTube sub-form names it, e.g. `JwVideo`. This is the global config title.
-   */
+  /** Service as the JW/YouTube sub-form names it, e.g. `JwVideo`. This is the global config title. */
   service?: string
   extId?: string
   status?: DistributionStatusValue
-  /**
-   * Required by the JW sub-form, including when only the status is being changed.
-   */
+  /** Required by the JW sub-form, including when only the status is being changed. */
   directSourceUrl?: string
 }
 

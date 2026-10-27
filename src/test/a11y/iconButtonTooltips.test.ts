@@ -212,9 +212,7 @@ const controls = (path: string, source: string): Control[] => {
   const found: Array<{ el: ElementNode; kind: Kind; tooltip: ElementNode | undefined; apart: Apart }> = []
   const elements: Array<{ el: ElementNode; apart: Apart }> = []
   const sourceOf = (el: ElementNode) => source.slice(el.loc.start.offset, el.loc.end.offset)
-  /**
-   * `slots`: the activator slots the nodes are in, at any depth. `apart`: the overlay whose content they are.
-   */
+  /** `slots`: the activator slots the nodes are in, at any depth. `apart`: the overlay whose content they are. */
   const visit = (nodes: TemplateChildNode[], slots: ActivatorSlot[], insideButton: boolean, apart: Apart) => {
     for (const node of nodes) {
       if (!isElement(node)) continue

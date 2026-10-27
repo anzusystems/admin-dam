@@ -35,18 +35,14 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     return null
   }
 
-  /**
-   * Returns the raise count to pass to `hideLoader`.
-   */
+  /** Returns the raise count to pass to `hideLoader`. */
   function showLoader() {
     loader.value = true
 
     return ++loaderRaised
   }
 
-  /**
-   * Lowered only when `raised` (from `showLoader`) is the latest raise.
-   */
+  /** Lowered only when `raised` (from `showLoader`) is the latest raise. */
   function hideLoader(raised: number) {
     if (raised !== loaderRaised) return
     loader.value = false
@@ -116,9 +112,7 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     auth.value.push({ distributionService, status: status })
   }
 
-  /**
-   * Empties the list unless it already belongs to that asset, so a failed read does not leave another asset's list.
-   */
+  /** Empties the list unless it already belongs to that asset, so a failed read does not leave another asset's list. */
   function listOfAsset(assetId: DocId) {
     if (listAssetId.value === assetId) return
     listAssetId.value = assetId

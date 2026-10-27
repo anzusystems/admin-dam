@@ -131,9 +131,7 @@ export async function closeColumnMenu(page: Page): Promise<void> {
   await expect(page.locator('.v-overlay--active .v-list')).toBeHidden()
 }
 
-/**
- * Exact match, so `ID` does not also hit `Identifikátor`.
- */
+/** Exact match, so `ID` does not also hit `Identifikátor`. */
 export async function toggleColumn(page: Page, title: string): Promise<void> {
   const menu = page.locator('.v-overlay--active .v-list')
   await menu

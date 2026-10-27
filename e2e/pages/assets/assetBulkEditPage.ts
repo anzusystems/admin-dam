@@ -19,9 +19,7 @@ const MASS_OPERATION_ICON: Record<MassOperation, string> = {
   'replace-all': '.mdi-file-replace-outline',
 }
 
-/**
- * The footer holding the current selection. Present even with nothing selected, then reading "0".
- */
+/** The footer holding the current selection. Present even with nothing selected, then reading "0". */
 export function selectedFooter(page: Page): Locator {
   return page.locator('.asset-footer__selected')
 }
@@ -115,9 +113,7 @@ export async function openMassOperations(page: Page): Promise<void> {
   await expect(massSidebar(page)).toBeVisible()
 }
 
-/**
- * Labels of the mass operations fields that carry no `data-cy` of their own.
- */
+/** Labels of the mass operations fields that carry no `data-cy` of their own. */
 const MASS_FIELD_LABEL: Record<string, string> = {
   keywords: 'Kľúčové slová',
   authors: 'Autori',
@@ -131,9 +127,7 @@ function massRow(page: Page, field: string): Locator {
     : rows.filter({ has: page.locator(`[data-cy="custom-field-${field}"]`) })
 }
 
-/**
- * Type a value into a text field of the mass operations form. It is not applied until `applyMass`.
- */
+/** Type a value into a text field of the mass operations form. It is not applied until `applyMass`. */
 export async function fillMassText(page: Page, field: string, value: string): Promise<void> {
   await fieldTextarea(massSidebar(page), field).fill(value)
 }
@@ -192,9 +186,7 @@ export async function applyMassForm(page: Page, operation: MassOperation): Promi
   await massSidebar(page).getByRole('button', { name }).click()
 }
 
-/**
- * Empty the mass operations form itself. The rows keep whatever was already applied to them.
- */
+/** Empty the mass operations form itself. The rows keep whatever was already applied to them. */
 export async function clearMassForm(page: Page): Promise<void> {
   await massSidebar(page).getByRole('button', { name: 'Vyčistiť' }).click()
 }

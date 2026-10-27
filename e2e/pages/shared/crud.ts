@@ -2,9 +2,7 @@ import { type Locator, type Page, type Response, expect } from '@playwright/test
 import { ALERT_CREATE, ALERT_UPDATE, CORE_DAM_API } from '@pages/shared/constants'
 import { cardLoad, clickForAlert, detailId } from '@pages/shared/admin'
 
-/**
- * Datatables and the rail/drawer duplicate most `data-cy` elements, so take the first visible one.
- */
+/** Datatables and the rail/drawer duplicate most `data-cy` elements, so take the first visible one. */
 export function visibleCy(scope: Page | Locator, dataCy: string): Locator {
   return scope.locator(`[data-cy="${dataCy}"]`).filter({ visible: true }).first()
 }

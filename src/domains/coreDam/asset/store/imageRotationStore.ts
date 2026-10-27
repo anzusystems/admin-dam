@@ -18,9 +18,7 @@ export const useImageRotationStore = defineStore('damImageRotationStore', () => 
 
   const isRotating = (imageId: DocId) => rotating.value.includes(imageId)
 
-  /**
-   * Returns whether the file was rotated. False when a rotation of it is already running.
-   */
+  /** Returns whether the file was rotated. False when a rotation of it is already running. */
   async function rotate(imageId: DocId, angle: 90 | 270) {
     if (isRotating(imageId)) return false
     rotating.value = [...rotating.value, imageId]

@@ -9,15 +9,11 @@ import { onBeforeUnmount } from 'vue'
  */
 const cards = new Set<(fileId: DocId) => void>()
 
-/**
- * Call in the card's setup. `imageSet` receives the file whose preview was set, while the card is mounted.
- */
+/** Call in the card's setup. `imageSet` receives the file whose preview was set, while the card is mounted. */
 export const onVideoPreviewSet = (imageSet: (fileId: DocId) => void) => {
   cards.add(imageSet)
   onBeforeUnmount(() => cards.delete(imageSet))
 }
 
-/**
- * The file's preview image was set. The card showing the file reads it again.
- */
+/** The file's preview image was set. The card showing the file reads it again. */
 export const videoPreviewSet = (fileId: DocId) => cards.forEach((imageSet) => imageSet(fileId))

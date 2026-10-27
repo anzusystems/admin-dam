@@ -127,9 +127,7 @@ const LAST_FAILURE_STEP = Math.max(...DISTRIBUTION_LIST_POLL.afterFailure) / SEC
 
 const distribution = (id: string, status: string) => ({ id, status, distributionService: 'youtube_main', extId: '' })
 
-/**
- * Second value: `true` if the answer still arrives after the poll gave up the request.
- */
+/** Second value: `true` if the answer still arrives after the poll gave up the request. */
 const GIVEN_UP: Array<[string, boolean]> = [
   ['is refused at once, as in a browser', false],
   ['is answered all the same', true],
@@ -147,9 +145,7 @@ const settle = async () => {
   await nextTick()
 }
 
-/**
- * The store of the list belongs to the app, not to a tab: the tab of the next asset is mounted over the same one.
- */
+/** The store of the list belongs to the app, not to a tab: the tab of the next asset is mounted over the same one. */
 const mountTab = async (assetId = 'asset-1', pinia = createPinia()) => {
   setActivePinia(pinia)
   const root = document.createElement('div')

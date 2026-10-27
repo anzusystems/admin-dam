@@ -24,9 +24,7 @@ const paramsOf = (method: FileMethod, url: string, statuses: number[], validatio
   options: { validateStatus: (status: number) => statuses.includes(status) },
 })
 
-/**
- * For a change whose response is not read.
- */
+/** For a change whose response is not read. */
 export const fileCommand = (method: FileMethod, url: string, statuses: number[], body?: object) =>
   useApiCommand<object>(paramsOf(method, url, statuses)).execute(body ? { body } : {})
 
@@ -42,7 +40,5 @@ export const fileRequest = <R extends NonNullable<unknown>>(
   validationEntity?: string
 ) => useApiRequest<R, object>(paramsOf(method, url, statuses, validationEntity)).execute(body ? { body } : {})
 
-/**
- * Validation entity for file route field labels (the slug).
- */
+/** Validation entity for file route field labels (the slug). */
 export const ROUTE_VALIDATION_ENTITY = 'asset.assetFilePublicLink'

@@ -35,9 +35,7 @@ import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '
 const DO_NOT_RE_FETCH_SAME_ASSET_DETAIL_TIME = 5 * 1000
 export const SORT_BY_SCORE_DATE = 'score_date'
 export const SORT_BY_SCORE_BEST = 'score_best'
-/**
- * Marks the detail dialog among open dialogs. Every other dialog opens over it.
- */
+/** Marks the detail dialog among open dialogs. Every other dialog opens over it. */
 export const ASSET_DETAIL_DIALOG_CLASS = 'dam-image-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
@@ -151,9 +149,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     return index < 0 ? null : { ...clicked, index }
   }
 
-  /**
-   * The asset the side panel shows. Behind its loader, the one being read. None when unknown.
-   */
+  /** The asset the side panel shows. Behind its loader, the one being read. None when unknown. */
   const shownInPanel = () => assetDetailStore.shownOrReadAssetId()
 
   /**

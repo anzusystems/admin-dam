@@ -20,9 +20,7 @@ function isAssetFileCreate(response: Response): boolean {
 
 interface CreatedAsset {
   id: string
-  /**
-   * The `size` the app declared for the file it is uploading — absent for an external-provider import.
-   */
+  /** The `size` the app declared for the file it is uploading — absent for an external-provider import. */
   size?: number
 }
 

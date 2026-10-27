@@ -13,9 +13,7 @@ const AssetOpensInNewTabKey: InjectionKey<boolean> = Symbol('assetOpensInNewTab'
 
 const EMPTY_TAB = 'about:blank'
 
-/**
- * Call in the setup of a page that draws no DAM asset detail.
- */
+/** Call in the setup of a page that draws no DAM asset detail. */
 export const provideAssetOpensInNewTab = () => provide(AssetOpensInNewTabKey, true)
 
 // A popup blocker gives no tab and says nothing, so the editor is warned here.
@@ -50,9 +48,7 @@ export const openTabForAddress = () => {
   const stopClosingWithPage = () => window.removeEventListener('pagehide', closeWithPage)
 
   return {
-    /**
-     * Whether the browser gave a tab. Without one, there is no need to request an address.
-     */
+    /** Whether the browser gave a tab. Without one, there is no need to request an address. */
     opened: !!tab,
     show: (address: string) => {
       // First, because while navigating the tab still reports itself as empty.
@@ -86,9 +82,7 @@ export const useAssetInNewTab = () => {
     else sayNoTab()
   }
 
-  /**
-   * For an asset not created yet: opens a tab now and navigates it once the asset exists.
-   */
+  /** For an asset not created yet: opens a tab now and navigates it once the asset exists. */
   const openTabForAsset = () => {
     const tab = openTabForAddress()
 

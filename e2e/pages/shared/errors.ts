@@ -69,9 +69,7 @@ export function validationErrorBody(fields: Record<string, string[]>): string {
   return JSON.stringify({ contextId: 'e2e-stub', error: 'validation_failed', fields })
 }
 
-/**
- * Assert the system-error alert is up, then clear it so it cannot swallow the next click.
- */
+/** Assert the system-error alert is up, then clear it so it cannot swallow the next click. */
 export async function expectSystemError(page: Page): Promise<void> {
   await expect(page.locator('.v-alert').filter({ hasText: ALERT_SYSTEM_ERROR }).first()).toBeVisible({
     timeout: 30000,

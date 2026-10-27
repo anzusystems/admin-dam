@@ -34,9 +34,7 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 import { anotherDialogOrMenuIsOpen, keyboardEventTargetIsAnyFormElement } from '@/shared/utils/event'
 
-/**
- * Marks the detail dialog among open dialogs. Every other dialog opens over it.
- */
+/** Marks the detail dialog among open dialogs. Every other dialog opens over it. */
 export const EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS = 'dam-external-provider-detail-dialog'
 
 const { showWarning, showErrorsDefault } = useAlerts()
@@ -83,9 +81,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
   const { maxSelectedItems } = useBetaTestFeatures()
   const { list, loader, activeItemIndex } = storeToRefs(externalProviderAssetListStore)
 
-  /**
-   * Asset shown in the side panel, or null while it is loading or empty.
-   */
+  /** Asset shown in the side panel, or null while it is loading or empty. */
   const shownInPanel = () => (assetDetailStore.loader ? null : (assetDetailStore.asset?.id ?? null))
 
   /*

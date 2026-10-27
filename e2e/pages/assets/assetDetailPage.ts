@@ -57,9 +57,7 @@ export function metadataField(page: Page, name: string): Locator {
   return detailSidebar(page).locator(`[data-cy="custom-field-${name}"]`).filter({ visible: true }).first()
 }
 
-/**
- * The editable textarea of a text metadata field (a second one is Vuetify's hidden autosize sizer).
- */
+/** The editable textarea of a text metadata field (a second one is Vuetify's hidden autosize sizer). */
 export function metadataTextarea(page: Page, name: string): Locator {
   return metadataField(page, name).locator('textarea').first()
 }
@@ -214,9 +212,7 @@ export function downloadDialog(page: Page): Locator {
   return page.getByRole('dialog').filter({ has: page.locator('[data-cy="button-download-file"]') })
 }
 
-/**
- * The slots the download dialog's picker offers. Only slots that actually hold a file are listed.
- */
+/** The slots the download dialog's picker offers. Only slots that actually hold a file are listed. */
 export async function downloadDialogSlots(page: Page): Promise<string[]> {
   await downloadDialog(page).getByRole('combobox').first().click()
   // `allInnerTexts` reads once, and the menu opens a beat after the click — read too early, it is empty.

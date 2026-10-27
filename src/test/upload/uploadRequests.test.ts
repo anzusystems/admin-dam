@@ -23,9 +23,7 @@ const types: Array<[DamAssetTypeType, string]> = [
 
 const paths = () => server.requests.map((request) => [request.method, request.url])
 
-/**
- * Whether the request is refused, for any reason or none. The reason is not what is tested.
- */
+/** Whether the request is refused, for any reason or none. The reason is not what is tested. */
 const refused = (request: Promise<unknown>) =>
   request.then(
     () => false,

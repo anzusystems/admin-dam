@@ -164,9 +164,7 @@ export async function pickVirtualizedOption(page: Page, combo: Locator, item: st
     .catch(() => {})
 }
 
-/**
- * Exact match, so "ID" does not also hit "Externé ID".
- */
+/** Exact match, so "ID" does not also hit "Externé ID". */
 export function filterInput(page: Page, label: string | RegExp): Locator {
   const text =
     typeof label === 'string'
@@ -192,9 +190,7 @@ export async function filterBy(page: Page, label: string | RegExp, value: string
   await cardLoad(page)
 }
 
-/**
- * The quick text filter is fuzzy and does not match ids.
- */
+/** The quick text filter is fuzzy and does not match ids. */
 export async function filterById(page: Page, id: string): Promise<void> {
   await filterBy(page, /^\s*ID\s*$/i, id)
 }

@@ -10,9 +10,7 @@ export interface ImportedEpisode {
   title: string
 }
 
-/**
- * Newest imported episode is the one the web lists first.
- */
+/** Newest imported episode is the one the web lists first. */
 export async function newestImportedEpisode(page: Page, podcastId: string): Promise<ImportedEpisode> {
   const response = await page.request.get(
     `${CORE_DAM_API}/podcast-episode/podcast/${podcastId}?limit=10&offset=0&order[attributes.webOrderPosition]=desc`

@@ -7,9 +7,7 @@ export interface SelectOption {
   value: string
 }
 
-/**
- * The detail renders options as a plain list, not the list editor.
- */
+/** The detail renders options as a plain list, not the list editor. */
 function detailOption(page: Page, name: string): Locator {
   return page
     .locator('main .v-list-item')

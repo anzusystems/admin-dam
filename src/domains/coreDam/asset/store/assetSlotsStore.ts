@@ -28,9 +28,7 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
    */
   let listOf: DocId | null = null
 
-  /**
-   * Switches the list to this asset. Rows of another asset are dropped at once, before anything draws them.
-   */
+  /** Switches the list to this asset. Rows of another asset are dropped at once, before anything draws them. */
   function holdListOf(assetId: DocId) {
     if (listOf === assetId) return
     listOf = assetId
@@ -44,25 +42,19 @@ export const useAssetSlotsStore = defineStore('damAssetSlotsStore', () => {
    */
   let loaderRaised = 0
 
-  /**
-   * Returns the raise count, to pass to `isAwaited` and `hideLoader`.
-   */
+  /** Returns the raise count, to pass to `isAwaited` and `hideLoader`. */
   function showLoader() {
     loader.value = true
 
     return ++loaderRaised
   }
 
-  /**
-   * Whether the loader has not gone up for anything else since it went up at `raised`.
-   */
+  /** Whether the loader has not gone up for anything else since it went up at `raised`. */
   function isAwaited(raised: number) {
     return raised === loaderRaised
   }
 
-  /**
-   * Lowered only for the latest raise. Otherwise rows would be drawn before a newer request's answer.
-   */
+  /** Lowered only for the latest raise. Otherwise rows would be drawn before a newer request's answer. */
   function hideLoader(raised: number) {
     if (isAwaited(raised)) loader.value = false
   }

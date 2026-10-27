@@ -11,9 +11,7 @@ export interface VoiceFamily {
   active?: boolean
 }
 
-/**
- * Not `openSettingsSection`: this section renders no breadcrumb, which that helper asserts on.
- */
+/** Not `openSettingsSection`: this section renders no breadcrumb, which that helper asserts on. */
 export async function openVoiceFamilies(page: Page): Promise<void> {
   await page.goto('/settings')
   await visibleCy(page, 'voice-family-settings').click()

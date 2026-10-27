@@ -55,9 +55,7 @@ const questions = () =>
 
 const createDialog = () => document.body.querySelector<HTMLElement>('[data-cy="create-panel"]')
 
-/**
- * A tab the user took to another site does not report its address.
- */
+/** A tab the user took to another site does not report its address. */
 const ANOTHER_SITE = null
 const OF_THE_APPLICATION = 'http://localhost:3000/assets'
 

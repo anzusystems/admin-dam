@@ -74,9 +74,7 @@ const said = (row: HTMLElement) =>
     .slice(0, 2)
     .map((line) => line.textContent?.replace(/\s+/g, ' ').trim())
     .join(': ')
-/**
- * The tab of an audio has one more row above the slot rows, for the sibling of the asset.
- */
+/** The tab of an audio has one more row above the slot rows, for the sibling of the asset. */
 const slotRows = () =>
   Array.from(detail()?.querySelectorAll<HTMLElement>('.sidebar-info__content .pa-4.pb-8') ?? []).filter(
     (row) => !said(row).startsWith('Sibling')
@@ -111,9 +109,7 @@ const removeButton = async (slotName: string, mark: 'button-unset' | 'button-rem
   })
 }
 
-/**
- * The button only spins while the slots are read, and can be pressed anyway.
- */
+/** The button only spins while the slots are read, and can be pressed anyway. */
 const refresh = () => buttonsNamed(detail()!, 'Refresh asset slots')[0]
 
 const goOnToSecond = async () => {

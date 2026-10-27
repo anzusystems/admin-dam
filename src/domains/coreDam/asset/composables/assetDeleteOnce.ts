@@ -10,9 +10,7 @@ import { deleteAsset } from '@/domains/coreDam/asset/api/assetApi'
  */
 const onTheirWay = reactive(new Set<DocId>())
 
-/**
- * Whether a delete of the asset is in progress. No button offers another delete meanwhile.
- */
+/** Whether a delete of the asset is in progress. No button offers another delete meanwhile. */
 export const assetDeleteOnItsWay = (assetId: DocId | null | undefined) => !!assetId && onTheirWay.has(assetId)
 
 /*
@@ -22,15 +20,11 @@ export const assetDeleteOnItsWay = (assetId: DocId | null | undefined) => !!asse
  */
 const takenOverWhileOnItsWay = new Map<DocId, () => void>()
 
-/**
- * Registers `say` to report a delete seen by a read, called if the local delete in progress fails.
- */
+/** Registers `say` to report a delete seen by a read, called if the local delete in progress fails. */
 export const deletingTakenOverWhileOnItsWay = (assetId: DocId, say: () => void) =>
   takenOverWhileOnItsWay.set(assetId, say)
 
-/**
- * Deletes the asset like `deleteAsset`. Returns false without sending while a delete of it is in progress.
- */
+/** Deletes the asset like `deleteAsset`. Returns false without sending while a delete of it is in progress. */
 export async function deleteAssetOnce(assetId: DocId) {
   if (onTheirWay.has(assetId)) return false
   onTheirWay.add(assetId)

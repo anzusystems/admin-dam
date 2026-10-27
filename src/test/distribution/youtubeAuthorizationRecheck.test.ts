@@ -117,9 +117,7 @@ const settle = async () => {
   await nextTick()
 }
 
-/**
- * The sign-in state belongs to the app, not to a dialog: one opened after another is mounted over the same store.
- */
+/** The sign-in state belongs to the app, not to a dialog: one opened after another is mounted over the same store. */
 const mountDialog = async (pinia = createPinia()) => {
   setActivePinia(pinia)
   const root = document.createElement('div')

@@ -8,14 +8,10 @@ import { ref, watch } from 'vue'
  */
 const changes = ref(0)
 
-/**
- * Call in the tab's setup. `changed` reloads the list while the tab is mounted.
- */
+/** Call in the tab's setup. `changed` reloads the list while the tab is mounted. */
 export const onDistributionListChanged = (changed: () => void) => watch(changes, changed)
 
-/**
- * Call from a part that changes a distribution, once the change is answered.
- */
+/** Call from a part that changes a distribution, once the change is answered. */
 export const distributionListChanged = () => {
   changes.value++
 }

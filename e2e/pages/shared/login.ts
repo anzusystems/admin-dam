@@ -39,9 +39,7 @@ export async function forceLogin(page: Page): Promise<void> {
   await page.waitForURL(`${BASE_URL}/**`)
 }
 
-/**
- * Both settings are read from localStorage when the app boots.
- */
+/** Both settings are read from localStorage when the app boots. */
 export async function changeToSlovakDarkTheme(page: Page): Promise<void> {
   await page.evaluate(() => {
     localStorage.setItem('theme', 'dark')

@@ -24,9 +24,7 @@ const SIGNED = 'https://storage.test/file-3?signature=1'
 const LIST = '/assets'
 const IMAGE = 'asset-1'
 
-/**
- * A tab the user took to another site does not report its address.
- */
+/** A tab the user took to another site does not report its address. */
 const ANOTHER_SITE = null
 
 const fileOnServer = (fileId: string) => ({

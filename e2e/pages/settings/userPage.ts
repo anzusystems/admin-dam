@@ -4,9 +4,7 @@ import { CORE_DAM_API } from '@pages/shared/constants'
 import { closeDetail, confirmCreate, createDialog, saveEdit, visibleCy } from '@pages/shared/crud'
 
 export interface AnzuUserCreateData {
-  /**
-   * Central user id. Pick one far above the real accounts, because the app cannot delete a user.
-   */
+  /** Central user id. Pick one far above the real accounts, because the app cannot delete a user. */
   id: string
   email: string
   role: string
@@ -67,9 +65,7 @@ export async function openAnzuUserEdit(page: Page, email: string): Promise<void>
   await expect(page.locator('[data-cy="user-email"] input, input[type="text"]').first()).not.toHaveValue('')
 }
 
-/**
- * Typed key by key: the full name and avatar text are derived from these fields on input, and are required.
- */
+/** Typed key by key: the full name and avatar text are derived from these fields on input, and are required. */
 export async function typeUserNames(page: Page, firstName: string, lastName: string): Promise<void> {
   await page.locator('[data-cy="user-first-name"] input').pressSequentially(firstName)
   await page.locator('[data-cy="user-last-name"] input').pressSequentially(lastName)
@@ -114,9 +110,7 @@ async function toggleMultiselect(page: Page, dataCy: string, options: string[]):
   await expect(page.locator('.v-menu.v-overlay--active')).toHaveCount(0)
 }
 
-/**
- * Running it twice with the same data restores the original access.
- */
+/** Running it twice with the same data restores the original access. */
 export async function toggleUserAccess(page: Page, data: UserAccessData): Promise<void> {
   const licenceInput = page.locator('[data-cy="user-asset-licences"] input')
   for (const licence of data.licences) {

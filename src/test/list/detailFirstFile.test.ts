@@ -57,9 +57,7 @@ const fileOnServer = (fileId: string, status: FileStatus, assetId: string) => ({
   mainRoute: null,
 })
 
-/**
- * The server fills in the metadata of an asset created empty from its first file while processing it.
- */
+/** The server fills in the metadata of an asset created empty from its first file while processing it. */
 const onServer = (id: string) => {
   const status = id === ASSET ? fileIs : 'processed'
 

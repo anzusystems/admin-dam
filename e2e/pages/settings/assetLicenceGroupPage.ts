@@ -16,9 +16,7 @@ export const COLUMN = { name: 0, extSystem: 1, licences: 2, createdAt: 3, modifi
 
 export interface LicenceGroupData {
   name: string
-  /**
-   * Ext system slug as the select labels it, e.g. `cms`.
-   */
+  /** Ext system slug as the select labels it, e.g. `cms`. */
   extSystem: string
   licence?: string
 }
@@ -34,9 +32,7 @@ export async function openLicenceGroups(page: Page): Promise<void> {
   await expect(page.locator('.v-breadcrumbs-item__text').last()).toContainText('Skupiny licencií assetov')
 }
 
-/**
- * Both fields of this form fetch options as you type, so the menu has to be awaited.
- */
+/** Both fields of this form fetch options as you type, so the menu has to be awaited. */
 async function pickSuggestion(page: Page, field: Locator, text: string): Promise<void> {
   await field.locator('input').fill(text)
   const options = page.locator('.v-overlay--active .v-list-item')
@@ -55,9 +51,7 @@ export async function openCreateDialog(page: Page): Promise<Locator> {
   return panel
 }
 
-/**
- * Every field is optional so a validation test can leave them empty.
- */
+/** Every field is optional so a validation test can leave them empty. */
 export async function fillLicenceGroupForm(page: Page, scope: Locator, data: Partial<LicenceGroupData>): Promise<void> {
   if (data.name !== undefined) await scope.locator('[data-cy="asset-licence-group-name"] input').fill(data.name)
   if (data.extSystem)
@@ -98,9 +92,7 @@ export async function fetchLicenceGroup(page: Page, id: string): Promise<{ name:
   return response.json()
 }
 
-/**
- * The API answers a delete with 500 today (DAM-B3).
- */
+/** The API answers a delete with 500 today (DAM-B3). */
 export async function deleteLicenceGroupStatus(page: Page, id: string): Promise<number> {
   const response = await page.request.delete(`${CORE_DAM_API}${LICENCE_GROUP_ENDPOINT}/${id}`, {
     failOnStatusCode: false,
@@ -108,9 +100,7 @@ export async function deleteLicenceGroupStatus(page: Page, id: string): Promise<
   return response.status()
 }
 
-/**
- * Swallows failures: while DAM-B3 is open none of these deletes can succeed.
- */
+/** Swallows failures: while DAM-B3 is open none of these deletes can succeed. */
 export async function deleteLicenceGroupsViaApi(page: Page, prefix: string): Promise<void> {
   const response = await page.request
     .get(`${CORE_DAM_API}${LICENCE_GROUP_ENDPOINT}?limit=100&offset=0`, { failOnStatusCode: false })

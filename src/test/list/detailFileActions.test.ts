@@ -118,9 +118,7 @@ const said = (row: HTMLElement) =>
     .slice(0, 2)
     .map((line) => line.textContent?.replace(/\s+/g, ' ').trim())
     .join(': ')
-/**
- * The tab of an audio and of a video has one extra row above the slots, for the sibling of the asset.
- */
+/** The tab of an audio and of a video has one extra row above the slots, for the sibling of the asset. */
 const slotRows = () =>
   Array.from(detail()?.querySelectorAll<HTMLElement>('.sidebar-info__content .pa-4.pb-8') ?? []).filter(
     (row) => !said(row).startsWith('Sibling')

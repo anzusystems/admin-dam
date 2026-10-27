@@ -8,9 +8,7 @@ import { detailSidebar } from '@pages/assets/assetDetailPage'
 
 export const TTS_FILTER_LABEL = 'Syntetické (TTS)'
 
-/**
- * Rendered only for audio assets. Image and document details show no TTS switch.
- */
+/** Rendered only for audio assets. Image and document details show no TTS switch. */
 export function ttsAudioSwitch(page: Page): Locator {
   return detailSidebar(page)
     .locator('.v-switch, .v-checkbox')
@@ -26,9 +24,7 @@ export async function setTtsAudio(page: Page, on: boolean): Promise<void> {
   await expect(toggle, 'TTS audio switch').toBeChecked({ checked: on })
 }
 
-/**
- * A tile with no flags renders no icons there, so the badge's absence is a count of zero, not a hidden element.
- */
+/** A tile with no flags renders no icons there, so the badge's absence is a count of zero, not a hidden element. */
 export function ttsTileBadge(tile: Locator): Locator {
   return tile.locator(`.asset-image__meta-icons img[title="${TTS_FILTER_LABEL}"]`)
 }

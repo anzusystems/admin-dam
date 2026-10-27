@@ -69,9 +69,7 @@ const loadRois = async (load: number, file: AssetFileImage) => {
   }
 }
 
-/**
- * Reads the file and puts it in the store. Returns nothing if the read failed or a newer load started.
- */
+/** Reads the file and puts it in the store. Returns nothing if the read failed or a newer load started. */
 const readFile = async (load: number, fileId: DocId) => {
   try {
     const file = cloneDeep(await fetchImageFile(fileId))

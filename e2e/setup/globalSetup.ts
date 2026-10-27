@@ -29,9 +29,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
   await downloadFixtures()
 }
 
-/**
- * Fetch every media fixture that is not on disk yet. The files are too large for git.
- */
+/** Fetch every media fixture that is not on disk yet. The files are too large for git. */
 async function downloadFixtures(): Promise<void> {
   for (const file of FIXTURE_FILES) {
     const target = path.join(FIXTURES_DIR, file)

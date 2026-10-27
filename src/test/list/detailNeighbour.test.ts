@@ -53,16 +53,12 @@ const inThePlaceOfItsVideo = (asset: ReturnType<typeof onServer>) => {
 }
 const ofType = (assetType: string) => ({ attributes: { assetType, assetStatus: 'with_file' } })
 
-/**
- * The list answers with its own objects because the page writes into what it receives.
- */
+/** The list answers with its own objects because the page writes into what it receives. */
 const onServerCopy = (asset: ReturnType<typeof onServer>) => structuredClone(asset)
 
 const settled = () => vi.advanceTimersByTimeAsync(100)
 
-/**
- * Moves past the few seconds in which an asset read a moment ago is not read again.
- */
+/** Moves past the few seconds in which an asset read a moment ago is not read again. */
 const later = () => vi.advanceTimersByTimeAsync(6_000)
 
 const address = () => window.location.pathname
@@ -653,9 +649,7 @@ describe('a switch of the form of the detail changed and not saved, when the det
   const TTS = 'TTS audio'
   const OVERRIDE_INTERNAL = 'Override internal flag'
   const INTERNAL = 'Internal'
-  /**
-   * An image whose file overrides the "internal" flag. Only then can that flag be switched.
-   */
+  /** An image whose file overrides the "internal" flag. Only then can that flag be switched. */
   const overriding = (internal: boolean) => ({
     ...ofType('image'),
     mainFile: assetFile('file-1', 'processed', {

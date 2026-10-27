@@ -202,9 +202,7 @@ export const fetchAssetMetadata = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
-/**
- * Items the bulk save sends: those with an asset whose metadata the user may edit.
- */
+/** Items the bulk save sends: those with an asset whose metadata the user may edit. */
 export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
   !isNull(item.assetId) && item.canEditMetadata
 
@@ -315,9 +313,7 @@ const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAsse
 // Assets deleted in this session, added once the delete request was answered.
 const deletedHere = new Set<DocId>()
 
-/**
- * Whether the asset was deleted here. A read sent before the delete can still return the old asset.
- */
+/** Whether the asset was deleted here. A read sent before the delete can still return the old asset. */
 export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
 
 type BulkItem = ReturnType<typeof listItemsToMetadataBulkItems>[number]
@@ -379,9 +375,7 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
 
 const { showErrorsDefault, showUnknownError, showApiValidationError } = useAlerts()
 
-/**
- * Shows the error message for a failed metadata save by failure kind. The single place for this message.
- */
+/** Shows the error message for a failed metadata save by failure kind. The single place for this message. */
 export const showMetadataSaveError = (error: unknown) => {
   if (error instanceof AssetMetadataValidationError) {
     showApiValidationError(error.named, -1, true)

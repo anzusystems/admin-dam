@@ -10,9 +10,7 @@ import { datatable } from '@pages/shared/datatable'
  * The section has a playground (`Ihrisko`). `runPlayground` proves a created rule works, not only that it is stored.
  */
 
-/**
- * The list is scoped to the ext system, unlike the create/update paths.
- */
+/** The list is scoped to the ext system, unlike the create/update paths. */
 const CLEAN_PHRASE_LIST_ENDPOINT = '/author-clean-phrase/ext-system'
 const CLEAN_PHRASE_ENDPOINT = '/author-clean-phrase'
 
@@ -28,9 +26,7 @@ export interface CleanPhraseData {
   mode?: string
   wordBoundary?: boolean
   position?: number
-  /**
-   * Author name to substitute for `Nahradenie` rules, typed into the remote autocomplete.
-   */
+  /** Author name to substitute for `Nahradenie` rules, typed into the remote autocomplete. */
   authorReplacement?: string
 }
 
@@ -65,9 +61,7 @@ async function setSwitch(scope: Locator, dataCy: string, on: boolean): Promise<v
   await expect(toggle, dataCy).toBeChecked({ checked: on })
 }
 
-/**
- * Every field is optional so a validation test can leave them empty.
- */
+/** Every field is optional so a validation test can leave them empty. */
 export async function fillCleanPhraseForm(page: Page, scope: Locator, data: CleanPhraseData): Promise<void> {
   if (data.phrase !== undefined) await scope.locator('[data-cy="authorCleanPhrase-phrase"] input').fill(data.phrase)
   if (data.type) await pickFromSelect(page, scope.locator('[data-cy="authorCleanPhrase-type"]'), data.type)
@@ -129,9 +123,7 @@ export async function deleteOpenCleanPhrase(page: Page): Promise<string> {
   return (await alert.innerText()).trim()
 }
 
-/**
- * Only `Fráza` and the buttons are shown until the filters are revealed.
- */
+/** Only `Fráza` and the buttons are shown until the filters are revealed. */
 export async function showAdvancedFilters(page: Page): Promise<void> {
   const collapsed = page.locator('[data-cy="filter-value"]').filter({ visible: true })
   if ((await collapsed.count()) > 0) return
@@ -149,9 +141,7 @@ export async function filterCleanPhrasesBy(page: Page, label: string, option: st
   await cleanPhraseTable(page).submitFilter()
 }
 
-/**
- * The playground dialog reuses the create panel's data-cy.
- */
+/** The playground dialog reuses the create panel's data-cy. */
 export function playgroundDialog(page: Page): Locator {
   return page.locator('[data-cy="create-panel"]')
 }

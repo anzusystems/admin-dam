@@ -30,9 +30,7 @@ export async function verifyDistributionCategoryDetail(page: Page, categoryId: s
   await expect(page).toHaveURL(/\/distribution-categories/)
 }
 
-/**
- * The list shows only Video categories by default.
- */
+/** The list shows only Video categories by default. */
 export async function filterDistributionCategories(page: Page, type: string, name: string): Promise<void> {
   await page.goto('/distribution-categories')
   await cardLoad(page)
