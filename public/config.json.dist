@@ -19,6 +19,6 @@
     "webSocketUrl": "${NOTIFICATION_WEBSOCKET_URL}"
   },
   "sentry": {
-    "dsn": "${SENTRY_DSN}"
+    "dsn": ""
   }
 }

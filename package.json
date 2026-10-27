@@ -38,7 +38,7 @@
     "release:cleanup": "npx -y --allow-git=all github:anzusystems/release-tools#main cleanup"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "2.0.0-rc.4",
+    "@anzusystems/common-admin": "2.0.0-rc.5",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^11.9.0",
@@ -57,7 +57,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueuse/core": "15.0.0",
     "@vueuse/integrations": "15.0.0",
-    "axios": "^1.20.0",
+    "axios": "^1.21.0",
     "dayjs": "^1.11.23",
     "jwt-decode": "^4.0.0",
     "linkifyjs": "^4.4.0",
@@ -95,7 +95,7 @@
     "lightningcss": "^1.33.0",
     "npm-run-all2": "^9.0.4",
     "oxfmt": "^0.75.0",
-    "oxlint": "1.90.0",
+    "oxlint": "1.89.0",
     "postcss": "^8.5.32",
     "postcss-html": "^2.0.0",
     "sass": "^1.106.1",
