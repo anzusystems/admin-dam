@@ -1,11 +1,20 @@
 <script lang="ts" setup>
-import { AChipNoLink, ADialogToolbar, AFormTextarea, ARow } from '@anzusystems/common-admin'
-import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import {
+  AChipNoLink,
+  ADamAuthorCachedChip,
+  ADialogToolbar,
+  AFormTextarea,
+  ARow,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { usePlaygroundAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanResultDto, AuthorNameDto } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
 withDefaults(
   defineProps<{
@@ -41,14 +50,14 @@ const onCancel = () => {
 
 const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
-const { executeRequest: playground } = usePlaygroundAuthorCleanPhrase()
+const { execute: playground } = usePlaygroundAuthorCleanPhrase()
 
 const onConfirm = async () => {
   try {
     buttonLoading.value = true
     authorCleanPhraseRes.value = await playground({
       urlParams: { extSystemId: currentExtSystemId.value },
-      object: authorNameDto.value,
+      body: authorNameDto.value,
     })
 
     authorCleanPhraseRes.value.authors.forEach((authorId) => {
@@ -79,7 +88,7 @@ const onConfirm = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         <slot name="title">
           {{ t('coreDam.authorCleanPhrase.meta.playground') }}
         </slot>
@@ -100,7 +109,7 @@ const onConfirm = async () => {
           </AChipNoLink>
         </ARow>
         <ARow :title="t('coreDam.authorCleanPhrase.dto.authors')">
-          <AuthorRemoteAutocompleteCachedAuthorChip
+          <ADamAuthorCachedChip
             v-for="authorId in authorCleanPhraseRes.authors"
             :id="authorId"
             :key="authorId"

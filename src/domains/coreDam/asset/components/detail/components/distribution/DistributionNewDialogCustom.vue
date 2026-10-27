@@ -1,8 +1,26 @@
 <script lang="ts" setup>
-import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  AFormDatetimePicker,
+  ASystemEntityScope,
+  AssetFileProcessStatus,
+  cloneDeep,
+  isUndefined,
+  useAlerts,
+  useDamConfigState,
+  useDamConfigStore,
+  usePagination,
+} from '@anzusystems/common-admin'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+  DocId,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import {
   createCustomDistribution,
@@ -10,27 +28,20 @@ import {
   redistributeCustomDistribution,
 } from '@/domains/coreDam/asset/api/distributionCustomApi'
 import { ENTITY } from '@/domains/coreDam/asset/api/distributionJwApi'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type {
-  DistributionCustomCreateRedistributeDto,
-  DistributionCustomItem,
-} from '@/domains/coreDam/asset/types/Distribution'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
 import DistributionCustomMetadataForm from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionCustomMetadataForm.vue'
 import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import {
-  AFormDatetimePicker,
-  AssetFileProcessStatus,
-  ASystemEntityScope,
-  type DamAssetTypeType,
-  type DamDistributionRequirementsConfig,
-  type DamDistributionServiceName,
-  useDamConfigState,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
+import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
+import type {
+  DistributionCustomCreateRedistributeDto,
+  DistributionCustomItem,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -41,9 +52,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+const emit = defineEmits<{ closeDialog: [reloadList: boolean] }>()
 
 const existingDistributions = ref<Array<DistributionCustomItem>>([])
 
@@ -188,7 +197,10 @@ onMounted(async () => {
       class="mb-6"
     >
       <VCol>
-        <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+        <AssetDetailSlotSelect
+          :asset-file-id="assetFileId"
+          @active-slot-change="activeSlotChange"
+        />
       </VCol>
     </VRow>
     <div

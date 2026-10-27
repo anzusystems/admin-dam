@@ -1,35 +1,54 @@
 <script setup lang="ts">
+import { ADialogToolbar, DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
     item: AssetSlot | null
     fileTitle: string
+    assetType: DamAssetTypeType
     dataCy?: string | undefined
   }>(),
   {
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'unsetSlot'): void
-  (e: 'removeFile'): void
-}>()
+const emit = defineEmits<{ unsetSlot: []; removeFile: [] }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const dialog = ref(false)
 const showUnset = ref(false)
 
+const assetSlotsStore = useAssetSlotsStore()
+const { can, canForAll } = useAuth()
+
+const usedInSeveralSlots = computed(
+  () =>
+    assetSlotsStore.list.filter(
+      (slot) => props.item?.assetFile?.id && slot.assetFile?.id && slot.assetFile?.id === props.item?.assetFile?.id
+    ).length > 1
+)
+const canUnset = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
+// TODO(BE): core-dam checks dam_document_delete on DELETE /document/{id}, which no voter supports, so it is a 403 even
+// for a super admin; hidden for documents until the voter takes it, then gated on dam_document_delete
+// (ACL BE task #86852/2.11).
+const canRemove = computed(
+  () => props.assetType !== DamAssetType.Document && can(assetTypeAcl(props.assetType, 'delete'))
+)
+
 const openDialog = () => {
   if (!props.item) return
-  const assetSlotsStore = useAssetSlotsStore()
-  const sameFiles = assetSlotsStore.list.filter(
-    (slot) => props.item?.assetFile?.id && slot.assetFile?.id && slot.assetFile?.id === props.item?.assetFile?.id
-  )
-  showUnset.value = sameFiles.length > 1
+  showUnset.value = usedInSeveralSlots.value && canUnset.value
   dialog.value = true
 }
 
@@ -50,8 +69,10 @@ const onRemove = () => {
 
 <template>
   <VListItem
+    v-if="canRemove || (canUnset && usedInSeveralSlots)"
     :title="t('coreDam.asset.slots.actions.remove')"
     data-cy="button-slot-remove"
+    :disabled="assetDetailStore.isDeleting"
     @click.stop="openDialog"
   />
   <VDialog
@@ -59,15 +80,21 @@ const onRemove = () => {
     :width="600"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onCancel">
-        {{ t('common.modal.system.confirmDelete') }}
+      <ADialogToolbar @cancel="onCancel">
+        {{ t('common.system.modal.confirmDelete') }}
       </ADialogToolbar>
       <VCardText>
         <div
-          v-if="showUnset"
+          v-if="showUnset && canRemove"
           class="mb-2"
         >
           {{ t('coreDam.asset.slots.remove.descriptionBothOptions') }}
+        </div>
+        <div
+          v-else-if="showUnset"
+          class="mb-2"
+        >
+          {{ t('coreDam.asset.slots.remove.descriptionOnlyUnset') }}
         </div>
         <div
           v-else
@@ -79,15 +106,11 @@ const onRemove = () => {
           v-if="item"
           class="mb-1"
         >
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.name') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
           {{ item.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.file') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
           {{ fileTitle }}
         </div>
       </VCardText>
@@ -108,6 +131,7 @@ const onRemove = () => {
           {{ t('coreDam.asset.slots.remove.unsetSlot') }}
         </ABtnPrimary>
         <ABtnPrimary
+          v-if="canRemove"
           color="error"
           data-cy="button-remove"
           @click.stop="onRemove"

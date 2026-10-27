@@ -1,37 +1,49 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import AuthorCleanPhraseDetail from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
 import {
   useAuthorCleanPhraseDetailActions,
   useAuthorCleanPhraseRemoveActions,
 } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhraseDetail from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseDetail.vue'
+import { useAuth } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const { detailLoading, fetchData, resetStore, authorCleanPhrase } = useAuthorCleanPhraseDetailActions()
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 const { removeAuthorCleanPhrase } = useAuthorCleanPhraseRemoveActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
-    {
-      title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
-      routeName: '/(coreDam)/author-clean-phrases/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.authorCleanPhrase.list'), routeName: '/(coreDam)/author-clean-phrases' },
+  {
+    title: authorCleanPhrase.value.phrase || t('breadcrumb.coreDam.authorCleanPhrase.detail'),
+    routeName: '/(coreDam)/author-clean-phrases/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/author-clean-phrases',
+  skipRouteNames: ['/(coreDam)/author-clean-phrases/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -42,21 +54,24 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
+      <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update and _delete without the record, a 403 for all but a
+           super admin; gate on the keys once the checks take the record (ACL BE task #86852/3.11). -->
+      <template v-if="isSuperAdmin">
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: id }"
           :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
         />
-      </Acl>
-      <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
         <AActionDeleteButton
           v-if="!detailLoading"
           data-cy="button-delete"
           @delete-record="removeAuthorCleanPhrase(id)"
         />
-      </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/author-clean-phrases'" />
+      </template>
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/author-clean-phrases'"
+        :skip-route-names="['/(coreDam)/author-clean-phrases/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

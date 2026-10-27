@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import { useI18n } from 'vue-i18n'
+
 import AssetTableListItem from '@/domains/coreDam/asset/components/list/components/AssetTableRowItem.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { sidebarRight } = useMainWrapper()
 

@@ -1,13 +1,17 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
-import AuthorDatatable from '@/domains/coreDam/author/components/AuthorDatatable.vue'
-import AuthorCreateButton from '@/domains/coreDam/author/components/AuthorCreateButton.vue'
+import { ACard, ADamAuthorCreateButton, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
+import AuthorDatatable from '@/domains/coreDam/author/components/AuthorDatatable.vue'
 import { useAuthorListActions } from '@/domains/coreDam/author/composables/authorActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useAuthorListActions()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 
@@ -17,19 +21,19 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+])
 </script>
 
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <Acl :permission="ACL.DAM_AUTHOR_CREATE">
-        <AuthorCreateButton
+        <ADamAuthorCreateButton
+          :ext-system="currentExtSystemId"
           data-cy="button-create"
-          disable-redirect
-          @on-success="afterCreate"
+          @success="afterCreate"
         />
       </Acl>
     </template>

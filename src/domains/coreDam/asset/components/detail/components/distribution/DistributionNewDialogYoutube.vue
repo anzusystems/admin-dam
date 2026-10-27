@@ -1,26 +1,32 @@
 <script lang="ts" setup>
-import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+  DocId,
+} from '@anzusystems/common-admin'
 import {
-  DistributionYoutubePrivacy,
-  useDistributionYoutubePrivacy,
-} from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+  AFormDatetimePicker,
+  AFormTextarea,
+  AFormValueObjectOptionsSelect,
+  ASystemEntityScope,
+  AssetFileProcessStatus,
+  useAlerts,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { distributionIsAuthorized, fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import {
-  createYoutubeDistribution,
   ENTITY,
+  createYoutubeDistribution,
   getYoutubeAuthUrl,
   prepareFormDataYoutubeDistribution,
   redistributeYoutubeDistribution,
 } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
-import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import type {
-  DistributionYoutubeCreateRedistributeDto,
-  DistributionYoutubeItem,
-} from '@/domains/coreDam/asset/types/Distribution'
-import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
 import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
 import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
@@ -30,19 +36,20 @@ import DistributionYoutubePlaylistSelect from '@/domains/coreDam/asset/component
 import DistributionYoutubeTermOfUse from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionYoutubeTermOfUse.vue'
 import YoutubeLogo from '@/domains/coreDam/asset/components/detail/components/distribution/YoutubeLogo.vue'
 import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
+import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type {
-  DamAssetTypeType,
-  DamDistributionRequirementsConfig,
-  DamDistributionServiceName,
-} from '@anzusystems/common-admin'
+  DistributionYoutubeCreateRedistributeDto,
+  DistributionYoutubeItem,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
 import {
-  AFormDatetimePicker,
-  AFormTextarea,
-  AFormValueObjectOptionsSelect,
-  AssetFileProcessStatus,
-  ASystemEntityScope,
-} from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
+  DistributionYoutubePrivacy,
+  useDistributionYoutubePrivacy,
+} from '@/domains/coreDam/asset/valueObject/DistributionYoutubePrivacy'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -53,9 +60,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+const emit = defineEmits<{ closeDialog: [reloadList: boolean] }>()
 
 const existingDistributions = ref<Array<DistributionYoutubeItem>>([])
 
@@ -163,18 +168,49 @@ const rules = computed(() => ({
 }))
 const v$ = useVuelidate(rules, { distribution })
 
+// Pending requests are aborted on close: the sign-in state is shared, and a late answer would land in the next dialog.
+const closed = new AbortController()
+
 const checkAuthorized = async () => {
   if (props.config.requiredAuth) {
-    const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName)
-    if (resIsAuthorized.authorized) {
-      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
-      return
+    try {
+      const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName, closed.signal)
+      if (closed.signal.aborted) return
+      if (resIsAuthorized.authorized) {
+        distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
+        return
+      }
+      const resAuthUrl = await getYoutubeAuthUrl(props.distributionServiceName, closed.signal)
+      if (closed.signal.aborted) return
+      authUrl.value = resAuthUrl.url
+      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.WaitingForLogin)
+    } catch (error) {
+      if (!closed.signal.aborted) throw error
     }
-    const resAuthUrl = await getYoutubeAuthUrl(props.distributionServiceName)
-    authUrl.value = resAuthUrl.url
-    distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.WaitingForLogin)
   }
   // YouTube always requires auth for now
+}
+
+const isWaitingForLogin = () =>
+  distributionListStore.getDistributionAuth(props.distributionServiceName)?.status ===
+  DistributionAuthStatus.WaitingForLogin
+
+// The user signs in in another tab, and the notification may never arrive, so we recheck when they return.
+// Only the signed-in state is checked: each login link request creates another pending sign-in on the server.
+let recheckingAuthorized = false
+const recheckAuthorized = async () => {
+  if (recheckingAuthorized || document.visibilityState === 'hidden' || !isWaitingForLogin()) return
+  recheckingAuthorized = true
+  try {
+    const resIsAuthorized = await distributionIsAuthorized(props.distributionServiceName, closed.signal)
+    if (resIsAuthorized.authorized && !closed.signal.aborted && isWaitingForLogin()) {
+      distributionListStore.setAuthStatus(props.distributionServiceName, DistributionAuthStatus.Success)
+    }
+  } catch {
+    // Rechecked again the next time the user returns.
+  } finally {
+    recheckingAuthorized = false
+  }
 }
 
 const submitRedistribute = async () => {
@@ -250,11 +286,16 @@ const activeSlotChange = async (slot: null | AssetSlot) => {
 }
 
 onMounted(async () => {
+  window.addEventListener('focus', recheckAuthorized)
+  document.addEventListener('visibilitychange', recheckAuthorized)
   distributionListStore.setAuthStatus(props.distributionServiceName)
   await checkAuthorized()
 })
 
 onUnmounted(async () => {
+  window.removeEventListener('focus', recheckAuthorized)
+  document.removeEventListener('visibilitychange', recheckAuthorized)
+  closed.abort()
   distributionListStore.resetAuth(props.distributionServiceName)
 })
 </script>
@@ -266,7 +307,10 @@ onUnmounted(async () => {
       class="mb-6"
     >
       <VCol>
-        <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+        <AssetDetailSlotSelect
+          :asset-file-id="assetFileId"
+          @active-slot-change="activeSlotChange"
+        />
       </VCol>
     </VRow>
     <div>

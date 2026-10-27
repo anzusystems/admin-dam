@@ -1,10 +1,22 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import PermissionGroupDetail from '@/domains/common/permissionGroup/components/PermissionGroupDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -14,22 +26,19 @@ const { deletePermissionGroup, fetchPermissionGroup, resetPermissionGroupStore, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
-    {
-      title: t('breadcrumb.permissionGroup.detail'),
-      routeName: '/(common)/permission-groups/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
+  {
+    title: t('breadcrumb.permissionGroup.detail'),
+    routeName: '/(common)/permission-groups/[id]',
+  },
+])
 
-const getDetail = () => {
-  fetchPermissionGroup(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(common)/permission-groups',
+  skipRouteNames: ['/(common)/permission-groups/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchPermissionGroup(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -55,7 +64,10 @@ onBeforeUnmount(() => {
       >
         <AActionDeleteButton @delete-record="deletePermissionGroup(id)" />
       </Acl>
-      <AActionCloseButton :route-name="'/(common)/permission-groups'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/permission-groups'"
+        :skip-route-names="['/(common)/permission-groups/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

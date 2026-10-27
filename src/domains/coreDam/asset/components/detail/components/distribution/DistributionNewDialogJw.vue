@@ -1,36 +1,43 @@
 <script lang="ts" setup>
-import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
-import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+  DocId,
+} from '@anzusystems/common-admin'
+import {
+  AFormDatetimePicker,
+  AFormTextField,
+  AFormTextarea,
+  ASystemEntityScope,
+  AssetFileProcessStatus,
+  useAlerts,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import {
-  createJwDistribution,
   ENTITY,
+  createJwDistribution,
   prepareFormDataJwDistribution,
   redistributeJwDistribution,
 } from '@/domains/coreDam/asset/api/distributionJwApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
+import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
+import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
+import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import type {
   DistributionJwCreateRedistributeDto,
   DistributionJwItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
-import DistributionBlockedBy from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionBlockedBy.vue'
-import DistributionListItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItem.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import type {
-  DamAssetTypeType,
-  DamDistributionRequirementsConfig,
-  DamDistributionServiceName,
-} from '@anzusystems/common-admin'
-import {
-  AFormDatetimePicker,
-  AFormTextarea,
-  AFormTextField,
-  AssetFileProcessStatus,
-  ASystemEntityScope,
-} from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -41,9 +48,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+const emit = defineEmits<{ closeDialog: [reloadList: boolean] }>()
 
 const existingDistributions = ref<Array<DistributionJwItem>>([])
 
@@ -204,7 +209,10 @@ onMounted(async () => {
       class="mb-6"
     >
       <VCol>
-        <AssetDetailSlotSelect @active-slot-change="activeSlotChange" />
+        <AssetDetailSlotSelect
+          :asset-file-id="assetFileId"
+          @active-slot-change="activeSlotChange"
+        />
       </VCol>
     </VRow>
     <div

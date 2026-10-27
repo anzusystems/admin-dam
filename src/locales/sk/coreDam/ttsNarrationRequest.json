@@ -68,8 +68,6 @@
       "externalVoiceId": "ID externého hlasu",
       "assetStatus": "Stav",
       "assetFailureReason": "Dôvod zlyhania",
-      "assetCreatedAt": "Vytvorené",
-      "assetModifiedAt": "Upravené",
       "sourceTextHash": "Hash zdrojového textu",
       "assetId": "Asset",
       "extSystemId": "Externý systém",

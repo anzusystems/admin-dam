@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import KeywordCreateButton from '@/domains/coreDam/keyword/components/KeywordCreateButton.vue'
 import KeywordDatatable from '@/domains/coreDam/keyword/components/KeywordDatatable.vue'
-import type AssetLicenceDatatable from '@/domains/coreDam/assetLicence/components/AssetLicenceDatatable.vue'
 import { useKeywordListActions } from '@/domains/coreDam/keyword/composables/keywordActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const datatable = ref<InstanceType<typeof AssetLicenceDatatable> | null>(null)
 
@@ -19,9 +22,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
+])
 </script>
 
 <template>

@@ -1,29 +1,30 @@
 <script lang="ts" setup>
-import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import type { DamUser } from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { DamUser } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 import UserFilter from '@/domains/coreDam/user/components/UserFilter.vue'
+import { useUserListActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUserListFilter } from '@/domains/coreDam/user/filter/UserFilter'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamUser
 
@@ -105,7 +106,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
@@ -132,10 +132,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

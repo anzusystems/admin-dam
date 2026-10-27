@@ -1,21 +1,33 @@
+import { DamDistributionStatus, isNull } from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DamDistributionStatusType, DocId } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
 import { fetchDistribution } from '@/domains/coreDam/asset/api/distributionApi'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import {
-  type DistributionAuth,
-  DistributionAuthStatus,
-  type DistributionAuthStatusType,
-} from '@/domains/coreDam/asset/types/DistributionAuth'
-import type { DamDistributionStatusType } from '@anzusystems/common-admin'
-import { type DamDistributionServiceName, DamDistributionStatus } from '@anzusystems/common-admin'
+import { DistributionAuthStatus } from '@/domains/coreDam/asset/types/DistributionAuth'
+import type { DistributionAuth, DistributionAuthStatusType } from '@/domains/coreDam/asset/types/DistributionAuth'
 
 export const useDistributionListStore = defineStore('damDistributionListStore', () => {
   const list = ref<Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>>([])
+  // The asset the list belongs to. The store is shared by the tabs of all assets.
+  const listAssetId = ref<DocId | null>(null)
   const loader = ref(false)
   const auth = ref<Array<DistributionAuth>>([])
+  /*
+   * Loader raise count. Raised by a tab read or a delete in its settings, and lowered only by the latest raiser.
+   * Previously a delete answered during a reopened tab's read hid the loader under that read.
+   */
+  let loaderRaised = 0
+  /*
+   * Distributions deleted or stopped here. A read sent before that
+   * would bring them back, so the list never takes them again.
+   */
+  const gone = new Set<DocId>()
 
   function getDistributionAuth(distributionService: DamDistributionServiceName) {
     const foundIndex = auth.value.findIndex((item) => item.distributionService === distributionService)
@@ -23,16 +35,33 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     return null
   }
 
+  /** Returns the raise count to pass to `hideLoader`. */
   function showLoader() {
     loader.value = true
+
+    return ++loaderRaised
   }
 
-  function hideLoader() {
+  /** Lowered only when `raised` (from `showLoader`) is the latest raise. */
+  function hideLoader(raised: number) {
+    if (raised !== loaderRaised) return
     loader.value = false
   }
 
   function setList(items: Array<DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem>) {
-    list.value = items
+    list.value = items.filter((item) => !gone.has(item.id))
+  }
+
+  /**
+   * Removes the distribution if listed; the list may belong to another asset by now.
+   * A deleted or stopped distribution is excluded for good.
+   */
+  function removeListItem(distributionId: DocId) {
+    gone.add(distributionId)
+    const foundIndex = list.value.findIndex((item) => item.id === distributionId)
+    if (foundIndex > -1) {
+      list.value.splice(foundIndex, 1)
+    }
   }
 
   function authorizationMessage(distributionService: DamDistributionServiceName, success: boolean) {
@@ -83,7 +112,10 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     auth.value.push({ distributionService, status: status })
   }
 
-  function resetList() {
+  /** Empties the list unless it already belongs to that asset, so a failed read does not leave another asset's list. */
+  function listOfAsset(assetId: DocId) {
+    if (listAssetId.value === assetId) return
+    listAssetId.value = assetId
     list.value = []
   }
 
@@ -98,26 +130,21 @@ export const useDistributionListStore = defineStore('damDistributionListStore', 
     }
   }
 
-  function reset() {
-    list.value = []
-    loader.value = false
-    auth.value = []
-  }
-
   return {
     list,
+    listAssetId,
     loader,
     auth,
     getDistributionAuth,
     showLoader,
     hideLoader,
     setList,
+    removeListItem,
     authorizationMessage,
     listItemMessageUpdate,
     setAuthStatus,
-    resetList,
+    listOfAsset,
     resetAuth,
-    reset,
   }
 })
 

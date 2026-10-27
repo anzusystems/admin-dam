@@ -20,7 +20,17 @@
     "allowedAssetExternalProviders": "Allowed external asset providers",
     "allowedDistributionServices": "Allowed distribution services",
     "createdBy": "Created by",
-    "modifiedBy": "Modified by"
+    "modifiedBy": "Modified by",
+    "person": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "fullName": "Full name"
+    },
+    "avatar": {
+      "color": "Avatar colour",
+      "text": "Avatar text"
+    },
+    "permissions": "Permissions"
   },
   "filter": {
     "id": "ID",

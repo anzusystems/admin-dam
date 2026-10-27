@@ -7,9 +7,10 @@ import type {
   IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { PodcastModeType } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
-import type { PodcastLastImportStatusType } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
+
 import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
+import type { PodcastLastImportStatusType } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
+import type { PodcastModeType } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 
 interface Texts {
   title: string

@@ -1,0 +1,97 @@
+<script lang="ts" setup>
+import {
+  AActionCloseButtonHistory,
+  AActionSaveAndCloseButton,
+  AActionSaveButton,
+  ACard,
+  APermissionGroupManage,
+  defineBreadcrumbs,
+  isNull,
+  usePageNavigation,
+  usePermissionGroupActions,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { ACL } from '@/domains/system/auth/auth'
+import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
+
+definePage({
+  meta: {
+    requiresAuth: true,
+    requiredPermissions: [ACL.DAM_PERMISSION_GROUP_CREATE],
+    layout: 'AppLayoutDrawer',
+  },
+})
+
+const {
+  permissionGroup,
+  loadingPermissionGroup,
+  createPermissionGroup,
+  loadingCreatePermissionGroup,
+  resetPermissionGroupStore,
+} = usePermissionGroupActions({
+  client: damClient,
+  system: 'dam',
+  endPoint: damUserSystemDescriptor.endpoints.permissionGroup,
+})
+
+const { push } = usePageNavigation()
+
+// The library returns the saved record instead of navigating, since it does not know this app's typed route names.
+const onCreate = async (close = false) => {
+  const created = await createPermissionGroup()
+  if (isNull(created)) return
+  if (close) {
+    push({ name: '/(common)/permission-groups-new' })
+
+    return
+  }
+  push({ name: '/(common)/permission-groups-new/[id]', params: { id: String(created.id) } })
+}
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-new' },
+  {
+    title: permissionGroup.value.title || t('breadcrumb.permissionGroup.create'),
+    routeName: '/(common)/permission-groups-new/new',
+  },
+])
+
+onMounted(() => {
+  resetPermissionGroupStore()
+})
+
+onBeforeUnmount(() => {
+  resetPermissionGroupStore()
+})
+</script>
+
+<template>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
+    <template #buttons>
+      <AActionSaveButton
+        :loading="loadingCreatePermissionGroup"
+        @save-record="onCreate()"
+      />
+      <AActionSaveAndCloseButton
+        :loading="loadingCreatePermissionGroup"
+        @save-record-and-close="onCreate(true)"
+      />
+      <AActionCloseButtonHistory :fallback-route-name="'/(common)/permission-groups-new'" />
+    </template>
+  </ActionbarWrapper>
+
+  <ACard :loading="loadingPermissionGroup">
+    <VCardText>
+      <APermissionGroupManage
+        :client="damClient"
+        system="dam"
+      />
+    </VCardText>
+  </ACard>
+</template>

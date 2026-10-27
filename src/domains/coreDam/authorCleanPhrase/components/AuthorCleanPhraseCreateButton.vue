@@ -6,15 +6,18 @@ import {
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY, useCreateAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import { ENTITY, useCreateAuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
+import { useAuthorCleanPhraseValidation } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
 import { useAuthorCleanPhraseFactory } from '@/domains/coreDam/authorCleanPhrase/factory/AuthorCleanPhraseFactory'
 import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useAuthorCleanPhraseValidation } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseValidation'
-import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 import { useAuthorCleanPhraseModeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
-import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
+import { useAuthorCleanPhraseTypeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -26,9 +29,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: AuthorCleanPhrase): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: AuthorCleanPhrase] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -43,10 +44,8 @@ const onOpen = () => {
   authorCleanPhrase.value = createDefault(currentExtSystemId.value)
 }
 
-const { executeRequest: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
-const create = async () => {
-  return await createAuthorCleanPhrase({ object: authorCleanPhrase.value })
-}
+const { execute: createAuthorCleanPhrase } = useCreateAuthorCleanPhrase()
+const create = async () => await createAuthorCleanPhrase({ body: authorCleanPhrase.value })
 
 const { authorCleanPhraseTypeOptions } = useAuthorCleanPhraseTypeTypes()
 const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
@@ -61,9 +60,9 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.authorCleanPhrase.button.create') }}

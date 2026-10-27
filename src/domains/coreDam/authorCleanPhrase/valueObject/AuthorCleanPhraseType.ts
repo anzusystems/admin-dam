@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const AuthorCleanPhraseType = {
   Word: 'word',
   Regex: 'regex',
@@ -20,9 +24,8 @@ export function useAuthorCleanPhraseTypeTypes() {
     },
   ])
 
-  const getAuthorCleanPhraseTypeOption = (value: AuthorCleanPhraseTypeType) => {
-    return authorCleanPhraseTypeOptions.value.find((item) => item.value === value)
-  }
+  const getAuthorCleanPhraseTypeOption = (value: AuthorCleanPhraseTypeType) =>
+    authorCleanPhraseTypeOptions.value.find((item) => item.value === value)
 
   return {
     authorCleanPhraseTypeOptions,

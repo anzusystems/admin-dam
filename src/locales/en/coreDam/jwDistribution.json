@@ -1,7 +1,7 @@
 {
   "model": {
     "distributionService": "Distribution service name",
-    "directSourceUrl": "Direct mp4 url",
+    "directSourceUrl": "Direct mp4 URL",
     "texts": {
       "title": "Title",
       "description": "Description",

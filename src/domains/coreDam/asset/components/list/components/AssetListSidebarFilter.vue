@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { AFilterWrapperSidebar, AFiltersSelected, FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin'
+import { provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetListFilterForm from '@/domains/coreDam/asset/components/list/components/AssetListFilterForm.vue'
-import { AFilterWrapperSidebar, FilterConfigKey, FilterDataKey, FiltersSelected } from '@anzusystems/common-admin/labs'
+import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -49,7 +52,7 @@ const resetFilter = () => {
           defer
           to="#asset-active-filters"
         >
-          <FiltersSelected />
+          <AFiltersSelected />
         </Teleport>
       </AFilterWrapperSidebar>
     </div>
@@ -65,6 +68,7 @@ const resetFilter = () => {
           {{ t('common.button.submitFilter') }}
         </VBtn>
         <VBtn
+          :aria-label="t('common.button.resetFilter')"
           class="px-2"
           color="light"
           min-width="36px"

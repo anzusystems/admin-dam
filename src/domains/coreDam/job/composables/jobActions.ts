@@ -1,9 +1,13 @@
-import { type FilterConfig, type FilterData, type Pagination, useJobApi } from '@anzusystems/common-admin/labs'
+import { handleRecordLoadError, useAlerts, useJobApi } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ref } from 'vue'
+
 import { useJobOneStore } from '@/domains/coreDam/job/store/jobStore'
 import type { Job } from '@/domains/coreDam/job/types/Job'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { showErrorsDefault } = useAlerts()
 
@@ -15,12 +19,12 @@ const { useFetchJobList, fetchJob } = useJobApi<Job>(damClient, SYSTEM_CORE_DAM)
 
 export const useJobListActions = () => {
   const listItems = ref<Array<Job>>([])
-  const { executeFetch } = useFetchJobList()
+  const { execute } = useFetchJobList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -40,15 +44,20 @@ export const useJobDetailActions = () => {
   const jobOneStore = useJobOneStore()
   const { job } = storeToRefs(jobOneStore)
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
+      // The library's job request takes no signal, so an answer for a left page is ignored here.
       const job = await fetchJob(id)
+      if (options.signal?.aborted) return undefined
       jobOneStore.setJob(job)
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      if (options.signal?.aborted) return undefined
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

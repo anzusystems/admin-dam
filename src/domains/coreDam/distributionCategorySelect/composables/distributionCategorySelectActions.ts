@@ -1,15 +1,25 @@
-import { isAnzuApiValidationError } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { renumberPositions } from '@anzusystems/common-admin/labs'
+import {
+  defineRecordLoader,
+  isAnzuApiValidationError,
+  isUndefined,
+  renumberPositions,
+  useAlerts,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   useFetchDistributionCategorySelect,
   useFetchDistributionCategorySelectList,
   useUpdateDistributionCategorySelect,
 } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import { useDistributionCategorySelectOneStore } from '@/domains/coreDam/distributionCategorySelect/store/distributionCategorySelectStore'
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 
 const { showValidationError, showRecordWas, showErrorsDefault, showApiValidationError } = useAlerts()
 
@@ -23,12 +33,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useDistributionCategorySelectListActions = () => {
   const listItems = ref<DistributionCategorySelect[]>([])
-  const { executeFetch } = useFetchDistributionCategorySelectList()
+  const { execute } = useFetchDistributionCategorySelectList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -50,18 +60,14 @@ export const useDistributionCategorySelectDetailActions = () => {
   const distributionCategorySelectOneStore = useDistributionCategorySelectOneStore()
   const { distributionCategorySelect } = storeToRefs(distributionCategorySelectOneStore)
 
-  const fetchData = async (id: string) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
-      const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
-      distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+    const distributionCategorySelect = await fetchDistributionCategorySelect({
+      urlParams: { id },
+      signal,
+    })
+    distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
+  })
 
   return {
     distributionCategorySelect,
@@ -73,22 +79,18 @@ export const useDistributionCategorySelectDetailActions = () => {
 
 export const useDistributionCategorySelectEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategorySelectOneStore = useDistributionCategorySelectOneStore()
   const { distributionCategorySelect } = storeToRefs(distributionCategorySelectOneStore)
 
-  const fetchData = async (id: string) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
-      const distributionCategorySelect = await fetchDistributionCategorySelect({ urlParams: { id } })
-      distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchDistributionCategorySelect } = useFetchDistributionCategorySelect()
+    const distributionCategorySelect = await fetchDistributionCategorySelect({
+      urlParams: { id },
+      signal,
+    })
+    distributionCategorySelectOneStore.setDistributionCategorySelect(distributionCategorySelect)
+  })
 
   const onUpdate = async (
     close = false,
@@ -106,7 +108,7 @@ export const useDistributionCategorySelectEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
+      const { execute: updateDistributionCategorySelect } = useUpdateDistributionCategorySelect()
       // New rows carry a negative temp id for the editor key; the API expects '' for new options.
       const object: DistributionCategorySelect = {
         ...distributionCategorySelect.value,
@@ -116,7 +118,7 @@ export const useDistributionCategorySelectEditActions = () => {
       }
       const updated = await updateDistributionCategorySelect({
         urlParams: { id: distributionCategorySelectOneStore.distributionCategorySelect.id },
-        object,
+        body: object,
       })
       // Adopt the response (real ids for new rows, sorted by `setDistributionCategorySelect`) so the
       // editor can re-baseline via commit() and saved rows lose their unsaved markers.
@@ -124,7 +126,7 @@ export const useDistributionCategorySelectEditActions = () => {
       showRecordWas('updated')
       if (!isUndefined(onSuccess)) onSuccess(updated)
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-category-selects' })
+      push({ name: '/(coreDam)/distribution-category-selects' })
     } catch (error) {
       if (isAnzuApiValidationError(error)) {
         const updatedErrors = new Map<string, string[]>()

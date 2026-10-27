@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey, cloneDeep } from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
+import { computed, provide } from 'vue'
+
 import { useUserSelectActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUserFilter } from '@/domains/coreDam/user/filter/UserFilter'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: IntegerId[]
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -22,16 +24,13 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: IntegerId[]): void
-}>()
-
+const modelValue = defineModel<IntegerId[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: IntegerId[]) {
-    emit('update:modelValue', cloneDeep(newValue))
+    modelValue.value = cloneDeep(newValue)
   },
 })
 
@@ -55,5 +54,6 @@ const prefetch = computed(() => (props.disableInitFetch ? false : 'mounted'))
     :clearable="clearable"
     filter-by-field="email"
     :prefetch="prefetch"
+    :data-cy="dataCy"
   />
 </template>

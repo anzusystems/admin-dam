@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { type DeviceTypeType, useDeviceTypeTypes } from '@/domains/coreDam/asset/valueObject/DeviceType'
+import { computed } from 'vue'
+
+import { useDeviceTypeTypes } from '@/domains/coreDam/asset/valueObject/DeviceType'
+import type { DeviceTypeType } from '@/domains/coreDam/asset/valueObject/DeviceType'
 
 const props = withDefaults(
   defineProps<{
@@ -10,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getDeviceTypeOption } = useDeviceTypeTypes()
-const typeOption = computed(() => {
-  return getDeviceTypeOption(props.type)
-})
+const typeOption = computed(() => getDeviceTypeOption(props.type))
 </script>
 
 <template>

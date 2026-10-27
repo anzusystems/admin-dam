@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import { ADamAssetImage } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 
 const props = withDefaults(
   defineProps<{
@@ -15,10 +18,10 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: DocId; index: number }): void
-  (e: 'itemClick', data: { assetId: DocId; index: number }): void
-  (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
-  (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
+  showDetail: [data: { assetId: DocId; index: number }]
+  itemClick: [data: { assetId: DocId; index: number; tile: Element | null }]
+  toggleSelected: [data: { assetId: DocId; index: number }]
+  selectMultiple: [data: { assetId: DocId; index: number }]
 }>()
 
 const { t } = useI18n()
@@ -32,8 +35,9 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-const onItemClick = () => {
-  emit('itemClick', { assetId: asset.value.id, index: props.index })
+// Pass the clicked element so a double click started on it can be told from one started elsewhere.
+const onItemClick = (event: MouseEvent) => {
+  emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }
 
 const toggleSelected = () => {
@@ -67,7 +71,7 @@ const selectMultiple = () => {
           size="large"
         />
       </div>
-      <AssetImage
+      <ADamAssetImage
         :asset-type="assetType"
         :asset-status="assetStatus"
         :src="imageProperties.url"
@@ -77,14 +81,17 @@ const selectMultiple = () => {
         :fallback-height="IMAGE_HEIGHT"
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
+        show-tts
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">
+          <div class="text-truncate">
             {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
           </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
+              :aria-label="t('coreDam.asset.list.toggleSelect')"
+              :aria-pressed="item.selected"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"
@@ -111,6 +118,7 @@ const selectMultiple = () => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.edit')"
               variant="flat"
               color="secondary"
               class="detail-icon"

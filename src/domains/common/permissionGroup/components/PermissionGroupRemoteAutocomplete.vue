@@ -1,12 +1,13 @@
 <script lang="ts" setup>
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey, cloneDeep } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+import { computed, provide } from 'vue'
+
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | number | string[] | number[] | null
     client: () => AxiosInstance
     label?: string | undefined
     required?: boolean | undefined
@@ -24,16 +25,13 @@ const props = withDefaults(
     dataCy: 'permissionGroup-select',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | number | string[] | number[] | null): void
-}>()
-
+const modelValue = defineModel<string | number | string[] | number[] | null>({ required: true })
 const modelValueComputed = computed<number | number[] | null>({
   get() {
-    return props.modelValue as number | number[] | null
+    return modelValue.value as number | number[] | null
   },
   set(newValue) {
-    emit('update:modelValue', cloneDeep<number | number[] | null>(newValue))
+    modelValue.value = cloneDeep<number | number[] | null>(newValue)
   },
 })
 

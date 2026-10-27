@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { UploadQueueItemStatus, useRemainingTime } from '@anzusystems/common-admin'
+import {
+  AssetFileFailReason,
+  UploadQueueItemStatus,
+  useDamAssetFileFailReason,
+  useRemainingTime,
+} from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -11,14 +18,22 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
-}>()
+const emit = defineEmits<{ cancelItem: [data: { index: number; item: UploadQueueItem; queueId: string }] }>()
 
 const { t } = useI18n()
+const { getAssetFileFailReasonOption } = useDamAssetFileFailReason()
 
-const loading = computed(() => {
-  return (
+/* This row has no chip or room for a message, so the failure reason or fallback message goes on the icon title. */
+const errorTitle = computed(() => {
+  if (props.item.error.assetFileFailReason !== AssetFileFailReason.None) {
+    return getAssetFileFailReasonOption(props.item.error.assetFileFailReason)?.title ?? ''
+  }
+
+  return props.item.error.message
+})
+
+const loading = computed(() =>
+  (
     [
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
@@ -26,25 +41,26 @@ const loading = computed(() => {
       UploadQueueItemStatus.Processing,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
+)
 
-const loadingProgress = computed(() => {
-  return props.item.progress.progressPercent
-})
+const loadingProgress = computed(() => props.item.progress.progressPercent)
 
 const cancelItem = () => {
   emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
 }
 
-const showCancel = computed(() => {
-  return (
+const showCancel = computed(() =>
+  (
     [
       UploadQueueItemStatus.Loading,
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
+      // `Processing` and `Failed` too: the row covers the slot for every status except `Uploaded`.
+      UploadQueueItemStatus.Processing,
+      UploadQueueItemStatus.Failed,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
+)
 
 const { remainingTimeShort } = useRemainingTime()
 </script>
@@ -57,20 +73,24 @@ const { remainingTimeShort } = useRemainingTime()
           <div
             class="dam-upload-queue__item-status align-center justify-center"
             :class="{ 'dam-upload-queue__item-status--permanent': !showCancel }"
+            :title="errorTitle"
           >
+            <!--
+              Error first: an item that gave up waiting keeps its status, so the spinner would otherwise hide the error.
+            -->
+            <VIcon
+              v-if="item.error.hasError"
+              icon="mdi-alert"
+              color="error"
+              :size="16"
+            />
             <VProgressCircular
-              v-if="loading"
+              v-else-if="loading"
               color="primary"
               :indeterminate="loadingProgress === null"
               :size="16"
               :width="3"
               :model-value="loadingProgress ? loadingProgress : undefined"
-            />
-            <VIcon
-              v-else-if="item.error.hasError"
-              icon="mdi-alert"
-              color="error"
-              :size="16"
             />
             <VIcon
               v-else-if="item.isDuplicate"
@@ -88,6 +108,7 @@ const { remainingTimeShort } = useRemainingTime()
           </div>
           <VBtn
             v-if="showCancel"
+            :aria-label="t('common.button.cancel')"
             icon
             variant="text"
             :width="16"

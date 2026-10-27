@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useDamDistributionServiceType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 const props = defineProps<{
   serviceName: string
@@ -7,9 +8,7 @@ const props = defineProps<{
 
 const { getDistributionServiceTypeOption } = useDamDistributionServiceType()
 
-const item = computed(() => {
-  return getDistributionServiceTypeOption(props.serviceName)
-})
+const item = computed(() => getDistributionServiceTypeOption(props.serviceName))
 </script>
 
 <template>

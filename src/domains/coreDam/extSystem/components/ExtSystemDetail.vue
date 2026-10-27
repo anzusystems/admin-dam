@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import { ACachedChip, ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+import { ACachedChip, ACopyText, ARow } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
-import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
 
 const { extSystem } = storeToRefs(useExtSystemOneStore())
 
@@ -51,9 +56,7 @@ const activeProviderModeLabel = computed(
           v-if="extSystem.ttsSettings.defaultVoiceFamilyId"
           :id="extSystem.ttsSettings.defaultVoiceFamilyId"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
       <ARow :title="t('coreDam.extSystem.ttsSettings.autoKeyword')">
         <ACachedChip
@@ -63,25 +66,21 @@ const activeProviderModeLabel = computed(
           :route="'/(coreDam)/keywords/[id]'"
           display-text-path="name"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
       <ARow :title="t('coreDam.extSystem.ttsSettings.ttsFreeAudioEpilogAsset')">
         <AssetChip
           v-if="extSystem.ttsFreeAudioEpilogAsset"
           :id="extSystem.ttsFreeAudioEpilogAsset"
         />
-        <template v-else>
-          —
-        </template>
+        <template v-else> — </template>
       </ARow>
     </VCol>
     <VCol cols="4">
       <ARow :title="t('coreDam.extSystem.model.id')">
         <ACopyText :value="extSystem.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="extSystem" />
+      <DamTrackingFields :data="extSystem" />
     </VCol>
   </VRow>
 </template>

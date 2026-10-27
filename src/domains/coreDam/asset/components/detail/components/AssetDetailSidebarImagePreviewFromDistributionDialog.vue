@@ -1,30 +1,36 @@
 <script lang="ts" setup>
-import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
-import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
-import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
-import { ACard, ADialogToolbar, useDamConfigStore } from '@anzusystems/common-admin'
 import {
+  ACard,
   ADatatablePagination,
+  ADialogToolbar,
+  DatatablePaginationKey,
   createFilter,
   createFilterStore,
-  DatatablePaginationKey,
-  type MakeFilterOption,
+  isNull,
+  useAlerts,
+  useDamConfigStore,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { DocId, MakeFilterOption } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { setVideoFileDistributionPreview } from '@/domains/coreDam/asset/api/videoApi'
+import DistributionImagePreviewItem from '@/domains/coreDam/asset/components/detail/components/DistributionImagePreviewItem.vue'
+import { useVideoDistributionPreviewListActions } from '@/domains/coreDam/asset/components/detail/composables/videoDistributionPreviewActions'
+import { videoPreviewSet } from '@/domains/coreDam/asset/components/detail/composables/videoPreviewSet'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     fileId: DocId
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-  (e: 'afterSuccessfulConfirm'): void
-}>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 
@@ -54,19 +60,22 @@ const invalidImage = (index: number) => {
 }
 
 const closeDialog = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  if (isNull(lastSelectedItem.value)) return
+  // One save at a time. The button only spins, and a key press on the still focused button clicks it again.
+  if (isNull(lastSelectedItem.value) || saving.value) return
   saving.value = true
+  const fileId = props.fileId
   try {
-    await setVideoFileDistributionPreview(props.fileId, lastSelectedItem.value.id)
+    await setVideoFileDistributionPreview(fileId, lastSelectedItem.value.id)
     closeDialog()
     showRecordWas('updated')
-    emit('afterSuccessfulConfirm')
+    // Not via an event or the opening card, since either can be gone by now.
+    videoPreviewSet(fileId)
   } catch (e) {
     showErrorsDefault(e)
   } finally {
@@ -96,14 +105,11 @@ onMounted(async () => {
     :max-width="800"
   >
     <VCard>
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('system.imagePreview.actions.chooseFromDistribution') }}
       </ADialogToolbar>
       <VCardText>
-        <ACard
-          :loading="listLoading"
-          inner-div-class=""
-        >
+        <ACard :loading="listLoading">
           <div
             v-if="listItems.length === 0"
             class="text-center text-body-small w-100 pa-2"
@@ -124,7 +130,6 @@ onMounted(async () => {
             />
           </div>
           <ADatatablePagination
-            v-model="pagination"
             hide-records-per-page
             @change="getList"
           />

@@ -1,9 +1,9 @@
+import { createFilter, createFilterStore, defineRecordSave, useAlerts } from '@anzusystems/common-admin'
+import type { DocId, MakeFilterOption, Pagination } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
 import { ref } from 'vue'
 import type { Ref } from 'vue'
-import { type DocId, useAlerts } from '@anzusystems/common-admin'
-import { createFilter, createFilterStore, type MakeFilterOption, type Pagination } from '@anzusystems/common-admin/labs'
-import useVuelidate from '@vuelidate/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import {
   ENTITY,
   useCreateVoice,
@@ -13,10 +13,11 @@ import {
   writeEndpoint,
 } from '@/domains/coreDam/voiceFamily/api/voiceApi'
 import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
-// Voice list has no filter UI — an empty filter satisfies the new executeFetch signature.
+// The voice list has no filter UI. An empty filter satisfies the execute signature.
 const emptyFilterFields = [] satisfies readonly MakeFilterOption[]
 const { filterData: emptyFilterData, filterConfig: emptyFilterConfig } = createFilter(
   emptyFilterFields,
@@ -28,13 +29,13 @@ const listLoading = ref(false)
 const saveButtonLoading = ref(false)
 
 export const useVoiceListActions = () => {
-  const { executeFetch } = useFetchVoiceListByFamily()
+  const { execute } = useFetchVoiceListByFamily()
   const listItems = ref<Voice[]>([])
 
   const fetchList = async (voiceFamilyId: DocId, pagination: Ref<Pagination>) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, emptyFilterData, emptyFilterConfig, {
+      listItems.value = await execute(pagination, emptyFilterData, emptyFilterConfig, {
         urlParams: { voiceFamilyId },
       })
     } catch (error) {
@@ -44,7 +45,7 @@ export const useVoiceListActions = () => {
     }
   }
 
-  const { executeRequest: deleteVoice } = useDeleteVoice()
+  const { execute: deleteVoice } = useDeleteVoice()
   const removeVoice = async (id: DocId): Promise<boolean> => {
     try {
       await deleteVoice({ urlParams: { id } })
@@ -65,11 +66,11 @@ export const useVoiceListActions = () => {
 }
 
 export const useVoiceCreateActions = () => {
-  const { executeRequest: createVoiceRequest } = useCreateVoice()
+  const { execute: createVoiceRequest } = useCreateVoice()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error handling.
   const createVoice = (voice: Voice): Promise<Voice> =>
-    createVoiceRequest({ urlTemplate: writeEndpoint(voice.discriminator), object: voice })
+    createVoiceRequest({ urlTemplate: writeEndpoint(voice.discriminator), body: voice })
 
   return {
     createVoice,
@@ -78,30 +79,17 @@ export const useVoiceCreateActions = () => {
 
 export const useVoiceEditActions = () => {
   const v$ = useVuelidate()
-  const { executeRequest: updateVoiceRequest } = useUpdateVoice()
+  const { execute: updateVoiceRequest } = useUpdateVoice()
 
-  const onUpdate = async (voice: Voice, onSuccess?: () => void) => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      await updateVoiceRequest({
-        urlTemplate: writeEndpoint(voice.discriminator) + '/:id',
-        urlParams: { id: voice.id },
-        object: voice,
-      })
-      showRecordWas('updated')
-      if (onSuccess) onSuccess()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
-    }
-  }
+  const onUpdate = defineRecordSave(saveButtonLoading, v$, async (voice: Voice, onSuccess?: () => void) => {
+    await updateVoiceRequest({
+      urlTemplate: writeEndpoint(voice.discriminator) + '/:id',
+      urlParams: { id: voice.id },
+      body: voice,
+    })
+    showRecordWas('updated')
+    if (onSuccess) onSuccess()
+  })
 
   return {
     saveButtonLoading,

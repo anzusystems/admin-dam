@@ -1,16 +1,24 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router'
-import { computed, onBeforeUnmount, onMounted } from 'vue'
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import VoiceBindingsList from '@/domains/coreDam/voiceFamily/components/VoiceBindingsList.vue'
+import VoiceFamilyDetail from '@/domains/coreDam/voiceFamily/components/VoiceFamilyDetail.vue'
 import {
   useVoiceFamilyDetailActions,
   useVoiceFamilyRemoveActions,
 } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
-import VoiceFamilyDetail from '@/domains/coreDam/voiceFamily/components/VoiceFamilyDetail.vue'
-import VoiceBindingsList from '@/domains/coreDam/voiceFamily/components/VoiceBindingsList.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, voiceFamily } = useVoiceFamilyDetailActions()
 const { removeVoiceFamily } = useVoiceFamilyRemoveActions()
@@ -19,23 +27,29 @@ const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.voiceFamily.list'), routeName: '/(coreDam)/voice-families' },
-    {
-      title: voiceFamily.value.displayName || t('breadcrumb.coreDam.voiceFamily.detail'),
-      routeName: '/(coreDam)/voice-families/[id]',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.voiceFamily.list'), routeName: '/(coreDam)/voice-families' },
+  {
+    title: voiceFamily.value.displayName || t('breadcrumb.coreDam.voiceFamily.detail'),
+    routeName: '/(coreDam)/voice-families/[id]',
+    routeParams: { id },
+  },
+])
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/voice-families',
+  skipRouteNames: ['/(coreDam)/voice-families/[id]/edit'],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The voice list also fetches by the route id. It waits for the
+// family to load, or a failed load would raise a second alert.
+const voiceFamilyLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  voiceFamilyLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -60,7 +74,10 @@ onBeforeUnmount(() => {
           @delete-record="removeVoiceFamily(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/voice-families'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/voice-families'"
+        :skip-route-names="['/(coreDam)/voice-families/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 
@@ -77,7 +94,7 @@ onBeforeUnmount(() => {
           {{ t('coreDam.voiceFamily.voices') }}
         </div>
         <VoiceBindingsList
-          v-if="!detailLoading"
+          v-if="voiceFamilyLoaded && !detailLoading"
           :voice-family-id="id"
         />
       </VCardText>

@@ -2,15 +2,22 @@
 import {
   ADialogToolbar,
   AFormTextField,
-  type AnzuUser,
   ARow,
   ASystemEntityScope,
+  defineRecordSave,
+  isUndefined,
+  useAlerts,
   useAnzuUserFactory,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
-import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
+import type { AnzuUser } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
-import { useAnzuUserCreateValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { ENTITY, useCreateAnzuUser } from '@/domains/common/anzuUser/api/anzuUserApi'
 import AnzuUserRoleSelect from '@/domains/common/anzuUser/components/AnzuUserRoleSelect.vue'
+import { useAnzuUserCreateValidation } from '@/domains/common/anzuUser/composables/anzuUserValidations'
 import PermissionGroupRemoteAutocomplete from '@/domains/common/permissionGroup/components/PermissionGroupRemoteAutocomplete.vue'
 
 const props = withDefaults(
@@ -30,12 +37,10 @@ const props = withDefaults(
     disabled: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterCreate', data: AnzuUser): void
-}>()
+const emit = defineEmits<{ afterCreate: [data: AnzuUser] }>()
 
 const { createAnzuUser } = useAnzuUserFactory()
-const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
+const { execute: createAnzuUserRequest } = useCreateAnzuUser()
 const anzuUser = ref<AnzuUser>(createAnzuUser())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -49,33 +54,20 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 const { v$ } = useAnzuUserCreateValidation(anzuUser)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
-const onConfirm = async () => {
-  try {
-    buttonLoading.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      buttonLoading.value = false
-      return
-    }
-    const res = await createAnzuUserRequest({ object: anzuUser.value })
-    emit('afterCreate', res)
-    showRecordWas('created')
-    dialog.value = false
-    if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
-    }
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    buttonLoading.value = false
+const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
+  const res = await createAnzuUserRequest({ body: anzuUser.value })
+  emit('afterCreate', res)
+  showRecordWas('created')
+  dialog.value = false
+  if (!isUndefined(res.id) && !props.disableRedirect) {
+    push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
   }
-}
+})
 </script>
 
 <template>
@@ -95,7 +87,7 @@ const onConfirm = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('common.anzuUser.meta.create') }}
       </ADialogToolbar>
       <VCardText>

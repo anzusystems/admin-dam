@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
 
 withDefaults(
   defineProps<{
@@ -15,10 +17,12 @@ withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
   <div class="text-body-medium">
-    Unsupported distribution
+    {{ t('coreDam.distribution.meta.unsupported') }}
   </div>
 </template>

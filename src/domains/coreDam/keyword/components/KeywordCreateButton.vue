@@ -5,13 +5,19 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
+  isUndefined,
+  useAlerts,
   useDamKeywordFactory,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { createKeyword, ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY, createKeyword } from '@/domains/coreDam/keyword/api/keywordApi'
 import { useKeywordValidation } from '@/domains/coreDam/keyword/composables/keywordValidation'
 import { KeywordCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -35,9 +41,7 @@ const props = withDefaults(
     validationScope: KeywordCreateValidationScopeSymbol,
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: DamKeyword): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: DamKeyword] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -56,7 +60,7 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useKeywordValidation(keyword, props.validationScope)
 const { t } = useI18n()
@@ -77,7 +81,7 @@ const onConfirm = async () => {
     showRecordWas('created')
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
+      push({ name: '/(coreDam)/keywords/[id]', params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)
@@ -100,6 +104,7 @@ const onConfirm = async () => {
   </ABtnPrimary>
   <VBtn
     v-else
+    :aria-label="t('coreDam.keyword.button.add')"
     :class="buttonClass"
     :data-cy="dataCy"
     icon
@@ -123,7 +128,7 @@ const onConfirm = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.keyword.meta.create') }}
       </ADialogToolbar>
       <VCardText>

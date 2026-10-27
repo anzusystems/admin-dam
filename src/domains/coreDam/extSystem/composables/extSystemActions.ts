@@ -1,6 +1,23 @@
-import { type DamExtSystem, useDamCachedUsers } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import {
+  defineRecordLoader,
+  syncUserAndTimeTracking,
+  useAlerts,
+  useDamCachedUsers,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
+import type {
+  DamExtSystem,
+  FilterConfig,
+  FilterData,
+  IntegerId,
+  Pagination,
+  ValueObjectOption,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+
 import {
   useFetchExtSystem,
   useFetchExtSystemList,
@@ -8,8 +25,8 @@ import {
   useUpdateExtSystem,
 } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemOneStore } from '@/domains/coreDam/extSystem/store/extSystemStore'
-import { useCachedVoiceFamiliesById } from '@/domains/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+import { useCachedVoiceFamiliesById } from '@/domains/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -24,10 +41,10 @@ const saveButtonLoading = ref(false)
 const saveAndCloseButtonLoading = ref(false)
 
 export const useExtSystemSelectActions = () => {
-  const { executeFetch } = useFetchExtSystemList()
+  const { execute } = useFetchExtSystemList()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const extSystems = await executeFetch(pagination, filterData, filterConfig)
+    const extSystems = await execute(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
       title: extSystem.slug,
@@ -36,7 +53,7 @@ export const useExtSystemSelectActions = () => {
   }
 
   const fetchItemsByIds = async (ids: IntegerId[]) => {
-    const { executeFetch: executeFetchByIds } = useFetchExtSystemListByIds()
+    const { execute: executeFetchByIds } = useFetchExtSystemListByIds()
     const extSystems = await executeFetchByIds(ids)
 
     return <ValueObjectOption<IntegerId>[]>extSystems.map((extSystem: DamExtSystem) => ({
@@ -53,12 +70,12 @@ export const useExtSystemSelectActions = () => {
 
 export const useExtSystemListActions = () => {
   const listItems = ref<DamExtSystem[]>([])
-  const { executeFetch } = useFetchExtSystemList()
+  const { execute } = useFetchExtSystemList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -77,29 +94,22 @@ export const useExtSystemListActions = () => {
 export const useExtSystemDetailActions = () => {
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
-  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+  const { execute: fetchExtSystem } = useFetchExtSystem()
 
-  const fetchData = async (id: number) => {
-    detailLoading.value = true
-    try {
-      const extSystem = await fetchExtSystem({ urlParams: { id } })
-      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
-      fetchCachedUsers()
-      if (extSystem.ttsSettings.defaultVoiceFamilyId) {
-        addToCachedVoiceFamilies([extSystem.ttsSettings.defaultVoiceFamilyId])
-        fetchCachedVoiceFamilies()
-      }
-      if (extSystem.ttsSettings.autoKeywordId) {
-        addToCachedKeywords([extSystem.ttsSettings.autoKeywordId])
-        fetchCachedKeywords()
-      }
-      extSystemOneStore.extSystem = extSystem
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const extSystem = await fetchExtSystem({ urlParams: { id }, signal })
+    extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+    fetchCachedUsers()
+    if (extSystem.ttsSettings.defaultVoiceFamilyId) {
+      addToCachedVoiceFamilies([extSystem.ttsSettings.defaultVoiceFamilyId])
+      fetchCachedVoiceFamilies()
     }
-  }
+    if (extSystem.ttsSettings.autoKeywordId) {
+      addToCachedKeywords([extSystem.ttsSettings.autoKeywordId])
+      fetchCachedKeywords()
+    }
+    extSystemOneStore.extSystem = extSystem
+  })
 
   return {
     extSystem,
@@ -111,25 +121,18 @@ export const useExtSystemDetailActions = () => {
 
 export const useExtSystemEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const extSystemOneStore = useExtSystemOneStore()
   const { extSystem } = storeToRefs(extSystemOneStore)
-  const { executeRequest: fetchExtSystem } = useFetchExtSystem()
-  const { executeRequest: updateExtSystem } = useUpdateExtSystem()
+  const { execute: fetchExtSystem } = useFetchExtSystem()
+  const { execute: updateExtSystem } = useUpdateExtSystem()
 
-  const fetchData = async (id: number) => {
-    detailLoading.value = true
-    try {
-      const extSystem = await fetchExtSystem({ urlParams: { id } })
-      extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
-      fetchCachedUsers()
-      extSystemOneStore.extSystem = extSystem
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const extSystem = await fetchExtSystem({ urlParams: { id }, signal })
+    extSystem.adminUsers.forEach((id) => addToCachedUsers(id))
+    fetchCachedUsers()
+    extSystemOneStore.extSystem = extSystem
+  })
 
   const onUpdate = async (close = false) => {
     try {
@@ -141,10 +144,11 @@ export const useExtSystemEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, object: extSystem.value })
+      const res = await updateExtSystem({ urlParams: { id: extSystemOneStore.extSystem.id }, body: extSystem.value })
+      syncUserAndTimeTracking(extSystemOneStore.extSystem, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/ext-systems' })
+      push({ name: '/(coreDam)/ext-systems' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

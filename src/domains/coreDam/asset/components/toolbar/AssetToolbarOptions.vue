@@ -1,11 +1,15 @@
 <script lang="ts" setup>
+import type { DamAssetLicence, DamExtSystem } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
-import { ACL } from '@/domains/system/auth/auth'
-import { type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{
@@ -48,7 +52,7 @@ const openDialog = () => {
 
 const { showErrorsDefault } = useAlerts()
 
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+const { execute: fetchExtSystem } = useFetchExtSystem()
 
 onMounted(async () => {
   if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
@@ -68,6 +72,7 @@ onMounted(async () => {
 
 <template>
   <VBtn
+    :aria-label="t('system.mainBar.options')"
     variant="text"
     icon
     size="small"

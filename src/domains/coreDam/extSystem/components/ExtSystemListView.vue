@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import ExtSystemDatatable from '@/domains/coreDam/extSystem/components/ExtSystemDatatable.vue'
 import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -8,9 +10,9 @@ const { listLoading } = useExtSystemListActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-systems' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.extSystem.list'), routeName: '/(coreDam)/ext-systems' },
+])
 </script>
 
 <template>

@@ -1,10 +1,9 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-import {
-  TtsRequestStatus,
-  type TtsRequestStatusType,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+
+import { TtsRequestStatus } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type { TtsRequestStatusType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 
 export function useTtsRequestStatus() {
   const { t } = useI18n()
@@ -17,9 +16,8 @@ export function useTtsRequestStatus() {
     { value: TtsRequestStatus.Cancelled, title: t('coreDam.ttsNarrationRequest.status.cancelled'), color: 'grey' },
   ])
 
-  const getTtsRequestStatusOption = (value: TtsRequestStatusType) => {
-    return ttsRequestStatusOptions.value.find((item) => item.value === value)
-  }
+  const getTtsRequestStatusOption = (value: TtsRequestStatusType) =>
+    ttsRequestStatusOptions.value.find((item) => item.value === value)
 
   return {
     ttsRequestStatusOptions,

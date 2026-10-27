@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { useWindowFilesDragWatcher } from '@/domains/coreDam/asset/composables/windowFilesDragWatcher'
-import { arrayFlatten, arrayFromArgs, damFileTypeFix } from '@anzusystems/common-admin'
+import {
+  arrayFlatten,
+  arrayFromArgs,
+  isArray,
+  useAlerts,
+  useDropzoneGlobalDragState,
+  useFormatAndSizeCheck,
+} from '@anzusystems/common-admin'
+import { ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 type InputRef = null | HTMLInputElement
 
@@ -15,6 +23,7 @@ const props = withDefaults(
     multiple?: boolean
     buttonText?: string
     height?: number
+    disabled?: boolean
   }>(),
   {
     variant: 'dropzone-fullscreen',
@@ -25,13 +34,11 @@ const props = withDefaults(
     multiple: true,
     buttonText: '',
     height: 34,
+    disabled: false,
   }
 )
 
-const emit = defineEmits<{
-  (e: 'change', event: DragEvent): void
-  (e: 'filesInput', files: File[]): void
-}>()
+const emit = defineEmits<{ change: [event: DragEvent]; filesInput: [files: File[]] }>()
 
 const BLOCK_DOUBLE_CLICK_MS = 200
 
@@ -64,12 +71,13 @@ const onDrop = (event: DragEvent) => {
   }
 }
 
+// Local declarations shadow the DOM ones to add the error callback the platform calls.
 interface FileSystemFileEntry extends FileSystemEntry {
-  file(callback: (file: File) => void): void
+  file(callback: (file: File) => void, errorCallback?: (error: unknown) => void): void
 }
 
 interface FileSystemDirectoryReader {
-  readEntries(callback: (entries: FileSystemEntry[]) => void): void
+  readEntries(callback: (entries: FileSystemEntry[]) => void, errorCallback?: (error: unknown) => void): void
 }
 
 interface FileSystemDirectoryEntry extends FileSystemEntry {
@@ -99,28 +107,72 @@ function flattenFileArray(array: (File | File[])[]): File[] {
   return result
 }
 
-const traverseFileTree = (item: FileSystemEntry, path = '') => {
+/*
+ * `readEntries` answers in batches (Chromium caps them at 100).
+ * The same reader must be called until it returns an empty batch.
+ */
+const readAllEntries = (reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> =>
+  new Promise((resolve, reject) => {
+    const entries: FileSystemEntry[] = []
+    const readBatch = () => {
+      reader.readEntries((batch: FileSystemEntry[]) => {
+        if (batch.length === 0) {
+          resolve(entries)
+
+          return
+        }
+        entries.push(...batch)
+        readBatch()
+      }, reject)
+    }
+    readBatch()
+  })
+
+type SettledEntry = { read: true; value: File | File[] } | { read: false; reason: unknown }
+
+const settleEntry = (entry: Promise<File | File[]>): Promise<SettledEntry> =>
+  entry.then(
+    (value): SettledEntry => ({ read: true, value }),
+    (reason): SettledEntry => ({ read: false, reason })
+  )
+
+const collectRead = (results: SettledEntry[]): (File | File[])[] => {
+  const read: (File | File[])[] = []
+  results.forEach((result) => {
+    if (result.read) read.push(result.value)
+    else console.error('FileUpload: a dropped entry could not be read', result.reason)
+  })
+
+  return read
+}
+
+const traverseFileTree = (item: FileSystemEntry, path = '') =>
   // Based on https://stackoverflow.com/questions/3590058
-  return new Promise<File | File[]>((resolve) => {
+  new Promise<File | File[]>((resolve, reject) => {
     if (isFileEntry(item)) {
       item.file((file: File) => {
         ;(file as File & { $path: string }).$path = path
         resolve(file)
-      })
+      }, reject)
     } else if (isDirectoryEntry(item)) {
-      item.createReader().readEntries((entries: FileSystemEntry[]) => {
-        const queue: Promise<File | File[]>[] = []
-        for (let i = 0; i < entries.length; i++) {
-          queue.push(traverseFileTree(entries[i], path + item.name + '/'))
-        }
-        Promise.all(queue).then((filesArr) => {
-          const flattenedFiles = flattenFileArray(filesArr)
-          resolve(flattenedFiles)
+      readAllEntries(item.createReader())
+        .then((entries) => {
+          const queue: Promise<File | File[]>[] = []
+          for (let i = 0; i < entries.length; i++) {
+            queue.push(traverseFileTree(entries[i], path + item.name + '/'))
+          }
+
+          // Each entry settles on its own. Otherwise one unreadable file discards the whole folder.
+          return Promise.all(queue.map(settleEntry)).then((results) => {
+            resolve(flattenFileArray(collectRead(results)))
+          })
         })
-      })
+        .catch(reject)
+    } else {
+      // Neither a file nor a directory. Left unsettled, the whole drop would produce no reaction.
+      resolve([])
     }
   })
-}
 
 const setFiles = (files: File[] | undefined = []) => {
   if (!files) {
@@ -149,8 +201,9 @@ const onFileChange = (event: Event) => {
         queue.push(traverseFileTree(item))
       }
     }
-    Promise.all(queue).then((filesArr) => {
-      setFiles(arrayFromArgs<File>(filesArr as File[]))
+    // Each entry settles on its own: `Promise.all` would discard every file that did read.
+    Promise.all(queue.map(settleEntry)).then((results) => {
+      setFiles(arrayFromArgs<File>(collectRead(results) as File[]))
     })
     return
   }
@@ -163,86 +216,30 @@ const onFileChange = (event: Event) => {
   }
 }
 
-const { dragOverWindow, hideDragOverWindow } = useWindowFilesDragWatcher()
+const { isDraggingFile: dragOverWindow } = useDropzoneGlobalDragState()
+const hideDragOverWindow = () => {
+  dragOverWindow.value = false
+}
 
 const onReset = () => {
   selectedFiles.value = props.multiple ? [] : null
 }
 
-const acceptKeys = computed(() => {
-  if (isUndefined(props.accept)) {
-    return []
-  }
-  return props.accept.split(',')
-})
+const { checkFormatsAndSizes: keepCorrectFiles } = useFormatAndSizeCheck(
+  () => props.accept,
+  () => props.maxSizes
+)
 
-const maxSizeKeys = computed(() => {
-  if (isUndefined(props.maxSizes)) {
-    return []
-  }
-  return Object.keys(props.maxSizes)
-})
-
+// The library's check with its warning off: the warning uses admin-dam's own text.
 const checkFormatsAndSizes = (files: File[]) => {
-  const incorrectFileNames: string[] = []
-  const validFiles = files.filter((file) => {
-    const isFileValid = checkFormats(file, acceptKeys.value) && checkSizes(file, maxSizeKeys.value, props.maxSizes)
-    if (!isFileValid) {
-      incorrectFileNames.push(file.name)
-    }
-    return isFileValid
-  })
+  const validFiles = keepCorrectFiles(files, true)
+  const incorrectFileNames = files.filter((file) => !validFiles.includes(file)).map((file) => file.name)
   if (incorrectFileNames.length) {
     const { showWarning } = useAlerts()
     showWarning(t('system.upload.incorrectFormatSize') + ':' + incorrectFileNames.join(', '))
   }
 
   return validFiles
-}
-const checkFormats = (file: File, accepts: string[]) => {
-  if (accepts.length === 0) {
-    return true
-  }
-  for (let i = 0; i < accepts.length; i++) {
-    if (accepts[i].startsWith('.')) {
-      // .format
-      if (file.name.toLowerCase().endsWith(accepts[i])) {
-        return true
-      }
-    } else {
-      // type
-      const splitType = accepts[i].split('/')
-      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/')) {
-        return true
-      } else if (accepts[i] === damFileTypeFix(file)) {
-        return true
-      }
-    }
-  }
-  return false
-}
-const checkSizes = (file: File, keys: Array<string>, sizes: Record<string, number> | undefined) => {
-  if (keys.length === 0 || isUndefined(sizes)) {
-    return true
-  }
-  for (let j = 0; j < keys.length; j++) {
-    if (keys[j] === '*' && sizes[keys[j]] <= file.size) {
-      // *
-      return true
-    } else if (keys[j].startsWith('.') && sizes[keys[j]] <= file.size) {
-      // .format
-      return true
-    } else {
-      // type
-      const splitType = keys[j].split('/')
-      if (splitType[1] === '*' && damFileTypeFix(file).startsWith(splitType[0] + '/') && sizes[keys[j]] > file.size) {
-        return true
-      } else if (keys[j] === damFileTypeFix(file) && sizes[keys[j]] > file.size) {
-        return true
-      }
-    }
-  }
-  return false
 }
 
 watch(selectedFiles, (newValue, oldValue) => {
@@ -275,7 +272,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     class="dam-upload-icon d-inline-flex"
   >
     <VBtn
-      tabindex="-1"
+      :aria-label="t('system.upload.add')"
       icon
       variant="text"
       :height="height"
@@ -293,11 +290,12 @@ watch(selectedFiles, (newValue, oldValue) => {
   </div>
   <VBtn
     v-if="variant === 'slot-upload'"
-    tabindex="-1"
+    :aria-label="t('system.upload.add')"
     icon
     variant="flat"
     :height="height"
     :width="height"
+    :disabled="disabled"
     @click.stop="clickDropzone"
   >
     <VIcon
@@ -316,7 +314,6 @@ watch(selectedFiles, (newValue, oldValue) => {
     class="dam-upload-button d-inline-flex"
   >
     <VBtn
-      tabindex="-1"
       color="primary"
       rounded="pill"
       variant="flat"
@@ -351,7 +348,7 @@ watch(selectedFiles, (newValue, oldValue) => {
     type="file"
     @change="onFileChange"
     @reset="onReset"
-  >
+  />
 </template>
 
 <style lang="scss">

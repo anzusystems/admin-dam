@@ -1,32 +1,35 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import {
-  AActionCloseButton,
+  AActionCloseButtonHistory,
   ABooleanValue,
   ACard,
   ACopyText,
   ADatetime,
   ARow,
-  AUserAndTimeTrackingFields,
-  type DocId,
+  defineBreadcrumbs,
+  useRecordPage,
 } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
+import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
+import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import {
   isCancellableRequest,
   useTtsNarrationRequestDetailActions,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
-import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
+import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
 import { ACL } from '@/domains/system/auth/auth'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
-import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
-import TtsAudioStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsAudioStatusChip.vue'
-import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
-import CachedVoiceFamilyChip from '@/domains/coreDam/voiceFamily/components/CachedVoiceFamilyChip.vue'
-import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
-import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -35,18 +38,26 @@ const ttsRequestId = (route.params as { id: DocId }).id
 const { detail, detailLoading, fetchDetail } = useTtsNarrationRequestDetailActions(() => ttsRequestId)
 const cancelDialog = ref(false)
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.ttsNarrationRequest.list'), routeName: '/(coreDam)/tts-narration-requests' },
-    {
-      title: detail.value?.id ?? t('breadcrumb.coreDam.ttsNarrationRequest.detail'),
-      routeName: '/(coreDam)/tts-narration-requests/[id]',
-      routeParams: { id: ttsRequestId },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.ttsNarrationRequest.list'), routeName: '/(coreDam)/tts-narration-requests' },
+  {
+    title: detail.value?.id ?? t('breadcrumb.coreDam.ttsNarrationRequest.detail'),
+    routeName: '/(coreDam)/tts-narration-requests/[id]',
+    routeParams: { id: ttsRequestId },
+  },
+])
 
-onMounted(fetchDetail)
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/tts-narration-requests',
+  loading: detailLoading,
+})
+
+// Also used to refresh after a cancel. Uses the page's signal, and leaves if the request was deleted.
+const loadDetail = async () => {
+  if ((await fetchDetail({ signal })) === false) await leave()
+}
+
+onMounted(loadDetail)
 </script>
 
 <template>
@@ -65,7 +76,7 @@ onMounted(fetchDetail)
           {{ t('coreDam.ttsNarrationRequest.button.cancelRequest') }}
         </VBtn>
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/tts-narration-requests'" />
+      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/tts-narration-requests'" />
     </template>
   </ActionbarWrapper>
 
@@ -121,9 +132,7 @@ onMounted(fetchDetail)
             <template v-if="detail.assetId">
               <AssetChip :id="detail.assetId" />
             </template>
-            <template v-else>
-              —
-            </template>
+            <template v-else> — </template>
           </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.cancelRequested')">
             <ABooleanValue
@@ -140,7 +149,7 @@ onMounted(fetchDetail)
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.startedAt')">
             <ADatetime :date-time="detail.startedAt" />
           </ARow>
-          <AUserAndTimeTrackingFields :data="detail" />
+          <DamTrackingFields :data="detail" />
         </VCol>
       </VRow>
     </VCardText>
@@ -175,15 +184,10 @@ onMounted(fetchDetail)
           />
         </VCol>
         <VCol cols="4">
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetCreatedAt')">
-            <ADatetime :date-time="detail.ttsAsset.createdAt" />
-          </ARow>
-          <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.assetModifiedAt')">
-            <ADatetime :date-time="detail.ttsAsset.modifiedAt" />
-          </ARow>
           <ARow :title="t('coreDam.ttsNarrationRequest.detail.fields.sourceTextHash')">
             <ACopyText :value="detail.ttsAsset.sourceTextHash" />
           </ARow>
+          <DamTrackingFields :data="detail.ttsAsset" />
         </VCol>
       </VRow>
     </VCardText>
@@ -202,6 +206,6 @@ onMounted(fetchDetail)
   <TtsCancelRequestDialog
     v-model="cancelDialog"
     :request-id="detail?.id ?? null"
-    @on-success="fetchDetail"
+    @on-success="loadDetail"
   />
 </template>

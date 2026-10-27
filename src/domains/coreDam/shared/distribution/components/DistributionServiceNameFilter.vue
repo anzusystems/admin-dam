@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { useDamConfigStore } from '@anzusystems/common-admin'
-import { AFilterValueObjectOptionsSelect } from '@anzusystems/common-admin/labs'
+import { AFilterValueObjectOptionsSelect, useDamConfigStore } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 defineProps<{
   name: string
@@ -8,14 +8,12 @@ defineProps<{
 
 const damConfigStore = useDamConfigStore()
 
-const items = computed(() => {
-  return Object.entries(damConfigStore.damPrvConfig.distributionServices).map(([key, value]) => {
-    return {
-      title: value.title,
-      value: key,
-    }
-  })
-})
+const items = computed(() =>
+  Object.entries(damConfigStore.damPrvConfig.distributionServices).map(([key, value]) => ({
+    title: value.title,
+    value: key,
+  }))
+)
 </script>
 
 <template>

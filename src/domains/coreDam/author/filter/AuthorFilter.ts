@@ -1,4 +1,6 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -13,13 +15,11 @@ const fields = [
 const store = createFilterStore(fields)
 
 export function useAuthorListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, store, {
+  return createFilter(fields, store, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }
 
 export function useAuthorInnerFilter() {
@@ -28,11 +28,9 @@ export function useAuthorInnerFilter() {
     { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }

@@ -1,7 +1,18 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AssetLicenceEditForm from '@/domains/coreDam/assetLicence/components/AssetLicenceEditForm.vue'
+import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,22 +23,19 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licences' },
-    {
-      title: assetLicence.value.name || t('breadcrumb.coreDam.assetLicence.edit'),
-      routeName: '/(coreDam)/asset-licences/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetLicence.list'), routeName: '/(coreDam)/asset-licences' },
+  {
+    title: assetLicence.value.name || t('breadcrumb.coreDam.assetLicence.edit'),
+    routeName: '/(coreDam)/asset-licences/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/asset-licences',
+  skipRouteNames: ['/(coreDam)/asset-licences/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -44,7 +52,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/asset-licences'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-licences'"
+        :skip-route-names="['/(coreDam)/asset-licences/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

@@ -1,19 +1,15 @@
 <script setup lang="ts">
-import {
-  AAssetSelect,
-  type AssetSelectReturnData,
-  DamAssetType,
-  type DamAssetTypeType,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { AAssetSelect, DamAssetType } from '@anzusystems/common-admin'
+import type { AssetSelectReturnData, DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
-import {
-  customSortOptions,
-  SORT_BY_SCORE_DATE,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -66,46 +62,57 @@ const pickAssetType = computed(() => {
         </div>
         <div v-if="assetDetailStore.asset.siblingToAsset">
           <AssetChip :id="assetDetailStore.asset.siblingToAsset" />
-          <VBtn
-            icon="mdi-trash-can-outline"
-            variant="text"
-            size="small"
-            :loading="siblingLoader"
-            @click.stop="removeItem"
-          />
+          <Acl :permission="ACL.DAM_ASSET_UPDATE">
+            <VBtn
+              :aria-label="t('coreDam.asset.slots.actions.remove')"
+              icon
+              variant="text"
+              size="small"
+              :loading="siblingLoader"
+              :disabled="assetDetailStore.isDeleting"
+              @click.stop="removeItem"
+            >
+              <VIcon icon="mdi-trash-can-outline" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.slots.actions.remove') }}
+              </VTooltip>
+            </VBtn>
+          </Acl>
         </div>
-        <div v-else>
-          -
-        </div>
+        <div v-else>-</div>
       </VCol>
       <VCol
         cols="3"
         class="text-right"
       >
-        <AAssetSelect
-          v-if="pickAssetType"
-          v-model:sort="sort"
-          :select-licences="[currentAssetLicenceId]"
-          :min-count="1"
-          :max-count="1"
-          return-type="assetId"
-          :asset-type="pickAssetType"
-          :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
-          :custom-sort-options="customSortOptions"
-          @on-confirm="selectAsset"
-        >
-          <template #activator="{ props: assetSelectProps }">
-            <VBtn
-              variant="text"
-              class="my-2 mr-2"
-              size="small"
-              v-bind="assetSelectProps"
-              :loading="siblingLoader"
-            >
-              {{ t('coreDam.asset.sibling.select') }}
-            </VBtn>
-          </template>
-        </AAssetSelect>
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <AAssetSelect
+            v-if="pickAssetType"
+            v-model:sort="sort"
+            :select-licences="[currentAssetLicenceId]"
+            :min-count="1"
+            :max-count="1"
+            return-type="assetId"
+            :asset-type="pickAssetType"
+            @confirm="selectAsset"
+          >
+            <template #activator="{ props: assetSelectProps }">
+              <VBtn
+                variant="text"
+                class="my-2 mr-2"
+                size="small"
+                v-bind="assetSelectProps"
+                :loading="siblingLoader"
+                :disabled="assetDetailStore.isDeleting"
+              >
+                {{ t('coreDam.asset.sibling.select') }}
+              </VBtn>
+            </template>
+          </AAssetSelect>
+        </Acl>
       </VCol>
     </VRow>
   </div>

@@ -1,9 +1,20 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AnzuUserEditForm from '@/domains/common/anzuUser/components/AnzuUserEditForm.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -12,22 +23,19 @@ const { resetAnzuUserStore, fetchAnzuUser, updateAnzuUser, detailLoading, saveBu
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
-    {
-      title: t('breadcrumb.anzuUser.edit'),
-      routeName: '/(common)/anzu-users/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
+  {
+    title: t('breadcrumb.anzuUser.edit'),
+    routeName: '/(common)/anzu-users/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchAnzuUser(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(common)/anzu-users',
+  skipRouteNames: ['/(common)/anzu-users/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchAnzuUser(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -39,16 +47,23 @@ onBeforeUnmount(() => {
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
       <AActionSaveButton
+        v-if="!detailLoading"
         :loading="saveButtonLoading"
         @save-record="updateAnzuUser"
       />
-      <AActionCloseButton :route-name="'/(common)/anzu-users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/anzu-users'"
+        :skip-route-names="['/(common)/anzu-users/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 
   <ACard :loading="detailLoading">
     <VCardText>
-      <AnzuUserEditForm :client="damClient" />
+      <AnzuUserEditForm
+        :client="damClient"
+        is-edit
+      />
     </VCardText>
   </ACard>
 </template>

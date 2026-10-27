@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import ExternalProviderAssetQueueReadonly from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueReadonly.vue'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
+import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 
 const { t } = useI18n()
 
@@ -17,9 +21,7 @@ const { externalProviderFooterViewSelected, showMinimalSelected, setMinimalSelec
 const assetListStore = useExternalProviderAssetListStore()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -33,7 +35,9 @@ const onClearConfirm = async () => {
   hideSelected()
 }
 
-const { importFromSelected } = useExternalProviderAssetImport()
+const { canImport, importFromSelected } = useExternalProviderAssetImport()
+
+const canImportSelected = computed(() => canImport(uploadQueuesStore.getQueueItemsTypes(QUEUE_ID_MASS_EDIT)))
 
 const onImport = () => {
   importFromSelected()
@@ -45,14 +49,14 @@ const onImport = () => {
     class="asset-footer__selected pa-0"
     :class="
       'asset-footer--' +
-        externalProviderFooterViewSelected +
-        ' asset-footer__selected--' +
-        externalProviderFooterViewSelected
+      externalProviderFooterViewSelected +
+      ' asset-footer__selected--' +
+      externalProviderFooterViewSelected
     "
   >
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar
-        class="w-100 system-border-b"
+        class="w-100 border-b"
         :color="toolbarColor"
         density="compact"
         :height="64"
@@ -65,6 +69,7 @@ const onImport = () => {
         <VSpacer />
         <div class="d-flex align-center">
           <VBtn
+            v-if="canImportSelected"
             color="primary"
             variant="flat"
             :height="36"
@@ -76,6 +81,7 @@ const onImport = () => {
           </VBtn>
           <VBtn
             v-show="showMinimalSelected"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="36"
@@ -85,6 +91,12 @@ const onImport = () => {
             @click.stop="setMinimalSelected"
           >
             <VIcon icon="mdi-chevron-down" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.system.modal.hide') }}
+            </VTooltip>
           </VBtn>
           <AssetFooterSelectedButtonClear
             variant="normal"

@@ -1,0 +1,59 @@
+<script lang="ts" setup>
+import { ALogListView, dateTimeEndOfDay, dateTimeStartOfDay, defineBreadcrumbs } from '@anzusystems/common-admin'
+import type { Log, LogTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
+import { LOG_SYSTEM } from '@/domains/system/logSystems'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+
+definePage({
+  meta: {
+    layout: 'AppLayoutDrawer',
+    requiresAuth: true,
+    requiredPermissions: [],
+    superAdminOf: 'dam',
+  },
+})
+
+const route = useRoute('/(common)/logs/dam/[type]')
+const type = computed(() => route.params.type as LogTypeType)
+
+// This admin always bounded its log query. Computed once per mount.
+// See the staleness note in ADMIN-LOGY-PLAN.md 4.5.
+const defaultTimeWindow = { from: dateTimeStartOfDay(-1), to: dateTimeEndOfDay() }
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.log.list'), routeName: '/(common)/logs/dam/[type]', routeParams: { type: type.value } },
+])
+
+const detailRoute = (log: Log) => ({
+  name: '/(common)/logs/dam/[type]/[id]' as const,
+  params: { type: type.value, id: log.id },
+})
+
+const typeRoute = (next: LogTypeType) => ({
+  name: '/(common)/logs/dam/[type]' as const,
+  params: { type: next },
+})
+</script>
+
+<template>
+  <ActionbarWrapper :breadcrumbs="breadcrumbs" />
+  <!-- Keyed on type: the view binds endpoint, columns and filters at mount, so a type change must remount it. -->
+  <ALogListView
+    :key="type"
+    :client="LOG_SYSTEM.client"
+    :system="LOG_SYSTEM.apiSystem"
+    :type="type"
+    :log-paths="LOG_SYSTEM.logPaths"
+    :allowed-time-intervals="allowedTimeIntervalValuesSubject"
+    :default-time-window="defaultTimeWindow"
+    :detail-route="detailRoute"
+    :type-route="typeRoute"
+  />
+</template>

@@ -1,38 +1,33 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
-  type DocId,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
   createDatatableColumnsConfig,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
+import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
+import TtsNarrationRequestFilter from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
+import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
+import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
 import {
   isCancellableRequest,
   useTtsNarrationRequestListActions,
 } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { useTtsNarrationRequestListFilter } from '@/domains/coreDam/ttsNarrationRequest/filter/TtsNarrationRequestFilter'
-import TtsNarrationRequestFilter from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestFilter.vue'
-import TtsRequestStatusChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestStatusChip.vue'
-import TtsRequestModeChip from '@/domains/coreDam/ttsNarrationRequest/components/TtsRequestModeChip.vue'
-import TtsCancelRequestDialog from '@/domains/coreDam/ttsNarrationRequest/components/TtsCancelRequestDialog.vue'
 import type { TtsNarrationRequest } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = TtsNarrationRequest
 
@@ -41,17 +36,10 @@ const { t } = useI18n()
 const { can } = useAuth()
 
 const { filterData, filterConfig } = useTtsNarrationRequestListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useTtsNarrationRequestListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination('id')
-provide(DatatablePaginationKey, pagination)
 
 const cancelDialog = ref(false)
 const cancelTargetRequestId = ref<DocId | null>(null)
@@ -82,29 +70,17 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ENTITY
 )
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
-
-const sortByChange = () => {
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 
 const onCancelSuccess = () => {
   getList()
 }
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
 
 defineExpose({
   refresh: getList,
@@ -130,7 +106,6 @@ defineExpose({
       :headers="columnsVisible"
       :items="listItems"
       :items-length="listItems.length"
-      item-value="id"
       @click:row="onRowClick"
     >
       <template #item.status="{ item }: { item: DatatableItem }">
@@ -157,6 +132,7 @@ defineExpose({
           <Acl :permission="ACL.DAM_TTS_NARRATION_REQUEST_CANCEL">
             <VBtn
               v-if="isCancellableRequest(item)"
+              :aria-label="t('coreDam.ttsNarrationRequest.button.cancelRequest')"
               class="ml-1"
               icon
               :active="false"
@@ -177,10 +153,7 @@ defineExpose({
         </div>
       </template>
       <template #bottom>
-        <ADatatablePagination
-          v-model="pagination"
-          @change="getList"
-        />
+        <ADatatablePagination @change="getList" />
       </template>
     </VDataTableServer>
 

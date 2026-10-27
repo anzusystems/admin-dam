@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import ExternalProviderAssetQueueItemReadonly from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueItemReadonly.vue'
 
@@ -11,9 +13,7 @@ const props = withDefaults(
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(props.queueId))
 
 const removeItem = (index: number) => {
   uploadQueuesStore.removeByIndex(props.queueId, index)
@@ -27,7 +27,7 @@ const removeItem = (index: number) => {
         <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">
           <VCol
             v-for="(item, index) in list"
-            :key="item.assetId + ''"
+            :key="item.key"
             xxl="2"
             xl="3"
             md="4"

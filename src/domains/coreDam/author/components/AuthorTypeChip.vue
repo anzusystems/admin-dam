@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { AChipNoLink, type DamAuthorTypeType, useDamAuthorType } from '@anzusystems/common-admin'
+import { AChipNoLink, useDamAuthorType } from '@anzusystems/common-admin'
+import type { DamAuthorTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
 
 const props = withDefaults(
   defineProps<{
@@ -9,9 +11,7 @@ const props = withDefaults(
 )
 
 const { getAuthorTypeOption } = useDamAuthorType()
-const typeOption = computed(() => {
-  return getAuthorTypeOption(props.type)
-})
+const typeOption = computed(() => getAuthorTypeOption(props.type))
 </script>
 
 <template>

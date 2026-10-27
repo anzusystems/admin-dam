@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ALogoutView } from '@anzusystems/common-admin'
+
 import { envConfig } from '@/shared/EnvConfigService'
 
 definePage({
@@ -9,8 +10,10 @@ definePage({
     layout: 'AppLayoutFullscreen',
   },
 })
+
+const logoutUrl = () => envConfig.logoutCoreDamUrl
 </script>
 
 <template>
-  <ALogoutView :logout-url="() => envConfig.logoutCoreDamUrl" />
+  <ALogoutView :logout-url="logoutUrl" />
 </template>

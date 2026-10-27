@@ -1,11 +1,14 @@
 <script lang="ts" setup>
+import { ADamAssetImage } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import type { ExternalProviderAssetListItem } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
+import type { ExternalProviderAssetListItem } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
 
 const props = withDefaults(
   defineProps<{
@@ -15,19 +18,17 @@ const props = withDefaults(
   {}
 )
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'itemClick', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'toggleSelected', data: { assetId: AssetExternalProviderId; index: number }): void
-  (e: 'selectMultiple', data: { assetId: AssetExternalProviderId; index: number }): void
+  showDetail: [data: { assetId: AssetExternalProviderId; index: number }]
+  itemClick: [data: { assetId: AssetExternalProviderId; index: number }]
+  toggleSelected: [data: { assetId: AssetExternalProviderId; index: number }]
+  selectMultiple: [data: { assetId: AssetExternalProviderId; index: number }]
 }>()
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
 
 const { t } = useI18n()
 
-const asset = computed<AssetExternalProviderListDto>(() => {
-  return props.item.asset
-})
+const asset = computed<AssetExternalProviderListDto>(() => props.item.asset)
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -45,17 +46,11 @@ const selectMultiple = () => {
   emit('selectMultiple', { assetId: asset.value.id, index: props.index })
 }
 
-const backgroundColor = computed(() => {
-  return IMAGE_BG_COLOR_DEFAULT
-})
+const backgroundColor = computed(() => IMAGE_BG_COLOR_DEFAULT)
 
-const imageWidth = computed(() => {
-  return 400
-})
+const imageWidth = computed(() => 400)
 
-const imageHeight = computed(() => {
-  return IMAGE_HEIGHT
-})
+const imageHeight = computed(() => IMAGE_HEIGHT)
 
 const imageSrc = computed(() => {
   if (asset.value.url) {
@@ -87,7 +82,7 @@ const imageSrc = computed(() => {
           size="x-small"
         />
       </div>
-      <AssetImage
+      <ADamAssetImage
         :src="imageSrc"
         :background-color="backgroundColor"
         :width="imageWidth"
@@ -96,11 +91,13 @@ const imageSrc = computed(() => {
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">
+          <div class="text-truncate">
             {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
           </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
+              :aria-label="t('coreDam.asset.list.toggleSelect')"
+              :aria-pressed="item.selected"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"
@@ -127,6 +124,7 @@ const imageSrc = computed(() => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.edit')"
               variant="flat"
               color="secondary"
               class="detail-icon"

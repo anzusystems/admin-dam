@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { envConfig } from '@/shared/EnvConfigService'
 import { AAdminSwitcher } from '@anzusystems/common-admin'
+
 import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
+import { envConfig } from '@/shared/EnvConfigService'
 </script>
 
 <template>

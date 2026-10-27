@@ -1,9 +1,28 @@
-import type { DocId, IntegerId, ValueObjectOption } from '@anzusystems/common-admin'
-import { useAlerts } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { createFilter, createFilterStore, type MakeFilterOption, usePagination } from '@anzusystems/common-admin/labs'
+import {
+  createFilter,
+  createFilterStore,
+  defineRecordLoader,
+  defineRecordSave,
+  syncUserAndTimeTracking,
+  useAlerts,
+  usePageNavigation,
+  usePagination,
+} from '@anzusystems/common-admin'
+import type {
+  DocId,
+  FilterConfig,
+  FilterData,
+  IntegerId,
+  MakeFilterOption,
+  Pagination,
+  ValueObjectOption,
+} from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   ENTITY,
   useCreateVoiceFamily,
@@ -13,15 +32,11 @@ import {
   useFetchVoiceFamilyListByIds,
   useUpdateVoiceFamily,
 } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
-import { storeToRefs } from 'pinia'
 import { useVoiceFamilyOneStore } from '@/domains/coreDam/voiceFamily/store/voiceFamilyStore'
-import useVuelidate from '@vuelidate/core'
-import { useRouter } from 'vue-router'
+import type { VoiceFamily, VoiceFamilyCreate, VoiceFamilyUpdate } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas, showErrorsDefault } = useAlerts()
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -30,13 +45,13 @@ const saveButtonLoading = ref(false)
 
 export const useVoiceFamilyListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
   const listItems = ref<VoiceFamily[]>([])
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -55,7 +70,7 @@ export const useVoiceFamilyListActions = () => {
 }
 
 export const useVoiceFamilyCreateActions = () => {
-  const { executeRequest: createVoiceFamilyRequest } = useCreateVoiceFamily()
+  const { execute: createVoiceFamilyRequest } = useCreateVoiceFamily()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error handling.
   const createVoiceFamily = (voiceFamily: VoiceFamily): Promise<VoiceFamily> => {
@@ -68,7 +83,7 @@ export const useVoiceFamilyCreateActions = () => {
       active: voiceFamily.active,
       keywords: voiceFamily.keywords,
     }
-    return createVoiceFamilyRequest({ object: payload })
+    return createVoiceFamilyRequest({ body: payload })
   }
 
   return {
@@ -77,8 +92,8 @@ export const useVoiceFamilyCreateActions = () => {
 }
 
 export const useVoiceFamilyRemoveActions = () => {
-  const router = useRouter()
-  const { executeRequest: deleteVoiceFamily } = useDeleteVoiceFamily()
+  const { push } = usePageNavigation()
+  const { execute: deleteVoiceFamily } = useDeleteVoiceFamily()
   const removeVoiceFamily = async (id: DocId) => {
     detailLoading.value = true
     try {
@@ -87,7 +102,7 @@ export const useVoiceFamilyRemoveActions = () => {
       // Keep detailLoading=true on success: it hides VoiceBindingsList (v-if="!detailLoading")
       // so it cannot remount and refetch voices for the just-deleted family (404) before the
       // redirect completes. The next detail mount resets the flag via fetchData.
-      router.push({ name: '/(coreDam)/voice-families' })
+      push({ name: '/(coreDam)/voice-families' })
     } catch (error) {
       detailLoading.value = false
       showErrorsDefault(error)
@@ -102,18 +117,11 @@ export const useVoiceFamilyRemoveActions = () => {
 export const useVoiceFamilyDetailActions = () => {
   const voiceFamilyOneStore = useVoiceFamilyOneStore()
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
-  const { executeRequest: fetchVoiceFamily } = useFetchVoiceFamily()
+  const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
 
-  const fetchData = async (id: DocId) => {
-    detailLoading.value = true
-    try {
-      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: DocId, signal) => {
+    voiceFamily.value = await fetchVoiceFamily({ urlParams: { id }, signal })
+  })
 
   return {
     detailLoading,
@@ -127,45 +135,26 @@ export const useVoiceFamilyEditActions = () => {
   const v$ = useVuelidate()
   const voiceFamilyOneStore = useVoiceFamilyOneStore()
   const { voiceFamily } = storeToRefs(voiceFamilyOneStore)
-  const { executeRequest: fetchVoiceFamily } = useFetchVoiceFamily()
-  const { executeRequest: updateVoiceFamily } = useUpdateVoiceFamily()
+  const { execute: fetchVoiceFamily } = useFetchVoiceFamily()
+  const { execute: updateVoiceFamily } = useUpdateVoiceFamily()
 
-  const fetchData = async (id: DocId) => {
-    detailLoading.value = true
-    try {
-      voiceFamily.value = await fetchVoiceFamily({ urlParams: { id } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: DocId, signal) => {
+    voiceFamily.value = await fetchVoiceFamily({ urlParams: { id }, signal })
+  })
 
-  const onUpdate = async () => {
-    try {
-      saveButtonLoading.value = true
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const payload: VoiceFamilyUpdate = {
-        slug: voiceFamily.value.slug,
-        displayName: voiceFamily.value.displayName,
-        language: voiceFamily.value.language,
-        preferredProvider: voiceFamily.value.preferredProvider,
-        active: voiceFamily.value.active,
-        keywords: voiceFamily.value.keywords,
-      }
-      await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, object: payload })
-      showRecordWas('updated')
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
+  const onUpdate = defineRecordSave(saveButtonLoading, v$, async () => {
+    const payload: VoiceFamilyUpdate = {
+      slug: voiceFamily.value.slug,
+      displayName: voiceFamily.value.displayName,
+      language: voiceFamily.value.language,
+      preferredProvider: voiceFamily.value.preferredProvider,
+      active: voiceFamily.value.active,
+      keywords: voiceFamily.value.keywords,
     }
-  }
+    const res = await updateVoiceFamily({ urlParams: { id: voiceFamilyOneStore.voiceFamily.id }, body: payload })
+    syncUserAndTimeTracking(voiceFamilyOneStore.voiceFamily, res)
+    showRecordWas('updated')
+  })
 
   return {
     detailLoading,
@@ -179,12 +168,12 @@ export const useVoiceFamilyEditActions = () => {
 
 export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
   const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
-  const { executeFetch: executeFetchByIds } = useFetchVoiceFamilyListByIds()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
+  const { execute: executeFetchByIds } = useFetchVoiceFamilyListByIds()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     try {
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 
@@ -221,11 +210,11 @@ export const useVoiceFamilySelectActions = (extSystemId: IntegerId | (() => Inte
 // Slug-valued voice-family options for a RemoteAutocomplete (the synthesize request carries the slug).
 export const useVoiceFamilySlugSelectActions = (extSystemId: IntegerId | (() => IntegerId)) => {
   const resolveExtSystemId = () => (typeof extSystemId === 'function' ? extSystemId() : extSystemId)
-  const { executeFetch } = useFetchVoiceFamilyListByExtSystem()
+  const { execute } = useFetchVoiceFamilyListByExtSystem()
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     try {
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 
@@ -253,7 +242,7 @@ export const useVoiceFamilySlugSelectActions = (extSystemId: IntegerId | (() => 
       })
       filterData.slug = slugs
       const { pagination } = usePagination(null)
-      const items = await executeFetch(pagination, filterData, filterConfig, {
+      const items = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: resolveExtSystemId() },
       })
 

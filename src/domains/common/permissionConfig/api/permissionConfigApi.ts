@@ -1,5 +1,5 @@
 import type { PermissionConfig } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
+import { useApiRequest } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
 
 const SYSTEM = 'common'

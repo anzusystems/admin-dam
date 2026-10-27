@@ -1,37 +1,44 @@
 <script lang="ts" setup>
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
+import {
+  ADialogToolbar,
+  DamDistributionServiceType,
+  isNull,
+  isUndefined,
+  useDamConfigState,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import DistributionNewDialogCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogCustom.vue'
 import DistributionNewDialogEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogEmpty.vue'
 import DistributionNewDialogJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogJw.vue'
 import DistributionNewDialogYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionNewDialogYoutube.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
 import {
-  ADialogToolbar,
-  type DamAssetTypeType,
-  DamDistributionServiceType,
-  useDamConfigState,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
+  useAssetDetailDistributionDialog,
+  useDistributionServiceAllowed,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     assetType: DamAssetTypeType
     assetId: DocId
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-  (e: 'reloadList'): void
-}>()
+const emit = defineEmits<{ reloadList: [] }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 const value = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
@@ -51,9 +58,15 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements ?? {}
+)
+
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+// Filters only the tabs. A redistribution opens on its own service.
+const offeredServiceRequirements = computed(() =>
+  Object.fromEntries(Object.entries(serviceRequirements.value).filter(([name]) => isDistributionServiceAllowed(name)))
+)
 
 const activeConfig = computed(() => {
   if (isNull(activeDistributionName.value)) return null
@@ -92,7 +105,7 @@ const componentComputed = computed(() => {
     class="dialog-distribution"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         <span v-if="redistributeMode">{{ t('coreDam.distribution.common.redistributeTitle') }}</span>
         <span v-else>{{ t('coreDam.distribution.common.addTitle') }}</span>
       </ADialogToolbar>
@@ -103,7 +116,7 @@ const componentComputed = computed(() => {
           class="sidebar-info__tabs"
         >
           <VTab
-            v-for="(requirement, key) in serviceRequirements"
+            v-for="(requirement, key) in offeredServiceRequirements"
             :key="key"
             :value="key"
           >

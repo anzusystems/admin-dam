@@ -1,13 +1,18 @@
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+
 import {
   useDeletePodcastEpisode,
   useFetchPodcastEpisode,
   useFetchPodcastEpisodeListByPodcast,
   useUpdatePodcastEpisode,
 } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 import { usePodcastEpisodeOneStore } from '@/domains/coreDam/podcastEpisode/store/podcastEpisodeStore'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -19,7 +24,7 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const usePodcastEpisodeListActions = () => {
   const listItems = ref<PodcastEpisode[]>([])
-  const { executeFetch } = useFetchPodcastEpisodeListByPodcast()
+  const { execute } = useFetchPodcastEpisodeListByPodcast()
 
   const fetchList = async (
     podcastId: DocId,
@@ -29,7 +34,7 @@ export const usePodcastEpisodeListActions = () => {
   ) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, { urlParams: { podcastId } })
+      listItems.value = await execute(pagination, filterData, filterConfig, { urlParams: { podcastId } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -46,7 +51,7 @@ export const usePodcastEpisodeListActions = () => {
 }
 
 export const usePodcastEpisodeRemoveActions = () => {
-  const { executeRequest: deletePodcastEpisode } = useDeletePodcastEpisode()
+  const { execute: deletePodcastEpisode } = useDeletePodcastEpisode()
 
   const deletePodcast = async (id: DocId, onSuccessfulCallback: () => void) => {
     detailLoading.value = true
@@ -68,19 +73,12 @@ export const usePodcastEpisodeRemoveActions = () => {
 export const usePodcastEpisodeDetailActions = () => {
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
-  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
+  const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
 
-  const fetchData = async (id: DocId) => {
-    detailLoading.value = true
-    try {
-      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
-      podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: DocId, signal) => {
+    const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id }, signal })
+    podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
+  })
 
   return {
     podcastEpisode,
@@ -92,23 +90,16 @@ export const usePodcastEpisodeDetailActions = () => {
 
 export const usePodcastEpisodeEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const podcastEpisodeOneStore = usePodcastEpisodeOneStore()
   const { podcastEpisode } = storeToRefs(podcastEpisodeOneStore)
-  const { executeRequest: fetchPodcastEpisode } = useFetchPodcastEpisode()
-  const { executeRequest: updatePodcastEpisode } = useUpdatePodcastEpisode()
+  const { execute: fetchPodcastEpisode } = useFetchPodcastEpisode()
+  const { execute: updatePodcastEpisode } = useUpdatePodcastEpisode()
 
-  const fetchData = async (id: string) => {
-    detailLoading.value = true
-    try {
-      const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id } })
-      podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const podcastEpisode = await fetchPodcastEpisode({ urlParams: { id }, signal })
+    podcastEpisodeOneStore.setPodcastEpisode(podcastEpisode)
+  })
 
   const onUpdate = async (close = false) => {
     try {
@@ -120,13 +111,14 @@ export const usePodcastEpisodeEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updatePodcastEpisode({
+      const res = await updatePodcastEpisode({
         urlParams: { id: podcastEpisodeOneStore.podcastEpisode.id },
-        object: podcastEpisode.value,
+        body: podcastEpisode.value,
       })
+      syncUserAndTimeTracking(podcastEpisodeOneStore.podcastEpisode, res)
       showRecordWas('updated')
       if (!close || !podcastEpisodeOneStore.podcastEpisode.podcast) return
-      router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
+      push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisodeOneStore.podcastEpisode.podcast } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

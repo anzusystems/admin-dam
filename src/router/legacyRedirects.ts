@@ -31,7 +31,6 @@ const RENAMED_ROOTS: Record<string, string> = {
   '/external-provider': '/external-providers',
   '/job': '/jobs',
   '/keyword': '/keywords',
-  '/log': '/logs',
   '/permission-group': '/permission-groups',
   '/podcast': '/podcasts',
   '/public-export': '/public-exports',
@@ -45,6 +44,15 @@ const RENAMED_ROOTS: Record<string, string> = {
 const RENAMED_SEGMENTS: Record<string, string> = {
   episode: 'episodes',
 }
+
+/*
+ * The logs are not a plain rename. The pre-2.0.0 `/log` and 2.x `/logs`
+ * had the list at the root and the detail at `:system/:type/:id`.
+ * The system is now the fixed `dam` segment and the list sits
+ * under its type. Other paths under them go to the catch-all page.
+ */
+const LEGACY_LOG_ROOTS = ['/log', '/logs']
+const LOG_LIST = '/logs/dam/app'
 
 // the legacy paths are not part of the generated route map, so `to.params` is typed as the union of
 // every known route's params and needs narrowing
@@ -65,6 +73,21 @@ export const addLegacyRedirects = (router: Router) => {
       redirect: (to) => {
         const rest = rewriteRest(restOf(to))
         return { path: rest.length > 0 ? `${current}/${rest}` : current, query: to.query, hash: to.hash }
+      },
+    })
+  }
+  for (const legacy of LEGACY_LOG_ROOTS) {
+    router.addRoute({
+      path: legacy,
+      redirect: (to) => ({ path: LOG_LIST, query: to.query, hash: to.hash }),
+    })
+    // The id pattern matches the detail page's. A current `/logs/dam/...` address outranks this
+    // record by its static segment, and an invalid id matches neither, so the redirect never loops.
+    router.addRoute({
+      path: `${legacy}/:system/:type/:id([0-9a-f]{24})`,
+      redirect: (to) => {
+        const { type, id } = to.params as { type: string; id: string }
+        return { path: `/logs/dam/${type}/${id}`, query: to.query, hash: to.hash }
       },
     })
   }

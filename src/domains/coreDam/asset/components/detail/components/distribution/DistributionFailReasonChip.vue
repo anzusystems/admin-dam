@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {
-  type DistributionFailReasonType,
-  useDistributionFailReason,
-} from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
+import { computed } from 'vue'
+
+import { useDistributionFailReason } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
+import type { DistributionFailReasonType } from '@/domains/coreDam/asset/valueObject/DistributionFailReason'
 
 const props = withDefaults(
   defineProps<{
@@ -12,9 +12,7 @@ const props = withDefaults(
 )
 
 const { getDistributionFailReasonOption } = useDistributionFailReason()
-const statusOption = computed(() => {
-  return getDistributionFailReasonOption(props.status)
-})
+const statusOption = computed(() => getDistributionFailReasonOption(props.status))
 </script>
 
 <template>

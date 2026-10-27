@@ -1,16 +1,19 @@
 <script lang="ts" setup>
-import { AAlerts, ASystemBar } from '@anzusystems/common-admin'
-import { envConfig } from '@/shared/EnvConfigService'
-import ActionbarTeleportTarget from '@/domains/system/components/ActionbarTeleportTarget.vue'
+import { AActionbarTarget, ASystemBar, useTheme } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useDisplay } from 'vuetify'
+
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
-import { useDisplay } from 'vuetify'
-import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
-import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
 import SidebarAppendMain from '@/domains/system/components/sidebar/SidebarAppendMain.vue'
 import SidebarAppendRail from '@/domains/system/components/sidebar/SidebarAppendRail.vue'
+import SidebarMain from '@/domains/system/components/sidebar/SidebarMain.vue'
+import SidebarRail from '@/domains/system/components/sidebar/SidebarRail.vue'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const { mobile } = useDisplay()
+const { t } = useI18n()
 
 const drawer = ref(true)
 const rail = ref(false)
@@ -29,7 +32,6 @@ const { theme } = useTheme()
 </script>
 
 <template>
-  <AAlerts />
   <VApp :theme="theme">
     <ASystemBar :current-version="envConfig.appVersion" />
     <VNavigationDrawer
@@ -53,12 +55,14 @@ const { theme } = useTheme()
     <VAppBar
       density="compact"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
       :order="-1"
     >
       <div class="d-flex pr-2 w-100 justify-space-between full-width align-center">
         <div class="d-flex align-center">
           <VAppBarNavIcon
+            :aria-label="t('system.mainBar.mainMenu')"
+            :aria-expanded="drawer && !rail"
             data-cy="navbar-collapse"
             size="small"
             class="mx-1"
@@ -73,18 +77,18 @@ const { theme } = useTheme()
               :src="logoFull"
               alt="Admin"
               class="hidden-xs"
-            >
+            />
             <img
               width="42"
               height="42"
               :src="logoNoText"
               alt="DAM"
               class="hidden-sm-and-up"
-            >
+            />
           </RouterLink>
         </div>
         <KeepAlive>
-          <ActionbarTeleportTarget />
+          <AActionbarTarget />
         </KeepAlive>
       </div>
       <!--      <div class="d-flex justify-space-between w-100 align-center">-->
@@ -112,11 +116,9 @@ const { theme } = useTheme()
     <!--    <VAppBar-->
     <!--      :height="46"-->
     <!--      elevation="0"-->
-    <!--      class="system-border-b"-->
     <!--    >-->
     <!--      <div class="d-flex flex-column w-100 px-1 align-center">-->
     <!--        <KeepAlive>-->
-    <!--          <ActionbarTeleportTarget />-->
     <!--        </KeepAlive>-->
     <!--      </div>-->
     <!--    </VAppBar>-->

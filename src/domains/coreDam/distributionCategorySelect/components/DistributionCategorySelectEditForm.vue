@@ -1,18 +1,23 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { ASortableListEditor, type ListEditorHandle } from '@anzusystems/common-admin/labs'
-import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import { ASortableListEditor, ASystemEntityScope } from '@anzusystems/common-admin'
+import type { ListEditorHandle } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useDistributionCategoryOptionFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryOptionFactory'
-import DistributionCategoryOptionEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
+import DistributionCategoryOptionEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategoryOptionEditForm.vue'
+import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type OptionRowSlotProps = {
   raw: DistributionCategoryOption
   actions: { update: (value: DistributionCategoryOption) => void }
 }
 
+const { t } = useI18n()
 const { distributionCategorySelect } = useDistributionCategorySelectEditActions()
 const { createDefault } = useDistributionCategoryOptionFactory()
 
@@ -41,6 +46,7 @@ defineExpose({
       compact-field="name"
       :factory="optionFactory"
       :validate="validateOption"
+      :unsaved-section-label="t('coreDam.distributionCategorySelect.model.options')"
     >
       <template #item="{ raw, actions }: OptionRowSlotProps">
         <DistributionCategoryOptionEditForm
@@ -49,5 +55,6 @@ defineExpose({
         />
       </template>
     </ASortableListEditor>
+    <DamTrackingFields :data="distributionCategorySelect" />
   </ASystemEntityScope>
 </template>

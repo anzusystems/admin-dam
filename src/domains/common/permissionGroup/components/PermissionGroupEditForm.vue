@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { AFormTextField, ASystemEntityScope } from '@anzusystems/common-admin'
-import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
-import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import type { AxiosInstance } from 'axios'
+
 import PermissionEditor from '@/domains/common/permission/components/PermissionEditor.vue'
 import { ENTITY } from '@/domains/common/permissionGroup/api/permissionGroupApi'
+import { usePermissionGroupActions } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
+import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
 
 defineProps<{
   client: () => AxiosInstance

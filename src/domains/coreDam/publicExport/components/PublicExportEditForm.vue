@@ -1,17 +1,20 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import {
+  ADamAssetLicenceRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import { ENTITY } from '@/domains/coreDam/publicExport/api/publicExportApi'
 import { usePublicExportEditActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import { usePublicExportValidation } from '@/domains/coreDam/publicExport/composables/publicExportValidation'
-import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { publicExport } = usePublicExportEditActions()
 
@@ -49,7 +52,7 @@ const { exportTypeOptions } = useExportTypeTypes()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="publicExport.licences"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"
@@ -57,6 +60,7 @@ const { exportTypeOptions } = useExportTypeTypes()
             data-cy="publicExport-licence"
           />
         </ARow>
+        <DamTrackingFields :data="publicExport" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

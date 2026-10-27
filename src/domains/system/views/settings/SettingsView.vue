@@ -2,18 +2,21 @@
 import {
   ALanguageSelect,
   AThemeSelect,
-  type DamCurrentUserDto,
-  useI18n,
+  defineBreadcrumbs,
   useSentry,
   useUnreleasedFeatures,
 } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAuth } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(computed(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }]))
+const breadcrumbs = defineBreadcrumbs(() => [{ title: t('breadcrumb.settings'), routeName: '/settings' }])
 
 const afterLanguageChange = async () => {
   window.location.reload()
@@ -32,6 +35,10 @@ const logTestError = () => {
 }
 
 const { showUnreleasedFeatures } = useUnreleasedFeatures()
+
+const unreleasedToggleLabel = computed(() =>
+  showUnreleasedFeatures.value ? t('system.settings.debug.unreleasedShow') : t('system.settings.debug.unreleasedHide')
+)
 </script>
 
 <template>
@@ -67,11 +74,11 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Test throw error
+          {{ t('system.settings.debug.throwTitle') }}
         </VCol>
         <VCol>
           <VBtn @click.stop="throwTestError">
-            Throw
+            {{ t('system.settings.debug.throwButton') }}
           </VBtn>
         </VCol>
       </VRow>
@@ -80,11 +87,11 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Test log error
+          {{ t('system.settings.debug.logTitle') }}
         </VCol>
         <VCol>
           <VBtn @click.stop="logTestError">
-            Log
+            {{ t('system.settings.debug.logButton') }}
           </VBtn>
         </VCol>
       </VRow>
@@ -93,12 +100,12 @@ const { showUnreleasedFeatures } = useUnreleasedFeatures()
         class="pb-2 align-center"
       >
         <VCol cols="3">
-          DEBUG: Show unreleased features
+          {{ t('system.settings.debug.unreleasedTitle') }}
         </VCol>
         <VCol>
           <VSwitch
             v-model="showUnreleasedFeatures"
-            :label="showUnreleasedFeatures ? 'Show' : 'Hide'"
+            :label="unreleasedToggleLabel"
           />
         </VCol>
       </VRow>

@@ -3,6 +3,7 @@ import PodcastEditView from '@/domains/coreDam/podcast/components/PodcastEditVie
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/podcasts/:id([0-9a-f-]{36})/edit',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_PODCAST_READ, ACL.DAM_PODCAST_UPDATE],

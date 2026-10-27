@@ -1,24 +1,25 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
 import {
   ACreateDialog,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useVoiceFamilyFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFamilyFactory'
-import type { VoiceFamily } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
+import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import { useVoiceFamilyCreateActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
-import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
+import { useVoiceFamilyFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFamilyFactory'
+import type { VoiceFamily } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 import { useLanguage } from '@/domains/coreDam/voiceFamily/valueObject/Language'
+import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -30,9 +31,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: VoiceFamily): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: VoiceFamily] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -62,9 +61,9 @@ const create = (): Promise<VoiceFamily> => createVoiceFamily(voiceFamily.value)
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.voiceFamily.meta.create') }}
@@ -75,7 +74,7 @@ const create = (): Promise<VoiceFamily> => createVoiceFamily(voiceFamily.value)
         :subject="ENTITY"
       >
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="voiceFamily.extSystem"
             :client="damClient"
             :label="t('coreDam.voiceFamily.model.extSystem')"

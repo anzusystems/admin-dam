@@ -1,35 +1,35 @@
 <script lang="ts" setup>
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
-import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import type { AssetFile } from '@anzusystems/common-admin'
+import {
+  ACopyText,
+  ADamAssetCustomMetadataForm,
+  ADamAuthorRemoteAutocompleteWithCached,
+  ADamKeywordRemoteAutocompleteWithCached,
+  ASystemEntityScope,
+  DamAssetType,
+  DamAssetTypeDefault,
+  assetFileIsAudioFile,
+  assetFileIsImageFile,
+  assetFileIsVideoFile,
+  dateTimePretty,
+  prettyBytes,
+  useDamAuthorAssetTypeConfig,
+  useDamKeywordAssetTypeConfig,
+} from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
-import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import type { AssetFile } from '@anzusystems/common-admin'
-import {
-  ACopyText,
-  assetFileIsAudioFile,
-  assetFileIsImageFile,
-  assetFileIsVideoFile,
-  ASystemEntityScope,
-  DamAssetType,
-  DamAssetTypeDefault,
-  dateTimePretty,
-  prettyBytes,
-} from '@anzusystems/common-admin'
-
-const emit = defineEmits<{
-  (e: 'mainRouteChanged'): void
-  (e: 'mainRouteChanged'): void
-}>()
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const { t } = useI18n()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const panels = ref(['metadata', 'file'])
 
@@ -43,34 +43,32 @@ const {
   ttsAudio,
 } = useAssetDetailActions()
 
-const assetType = computed(() => {
-  return asset.value?.attributes.assetType || DamAssetTypeDefault
-})
+const assetType = computed(() => asset.value?.attributes.assetType || DamAssetTypeDefault)
 
-const isTypeImage = computed(() => {
-  return assetType.value === DamAssetType.Image
-})
+const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
 
-const isTypeAudio = computed(() => {
-  return assetType.value === DamAssetType.Audio
-})
+const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
 
-const isTypeVideo = computed(() => {
-  return assetType.value === DamAssetType.Video
-})
+const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
 
-const assetMainFile = computed<null | AssetFile>(() => {
-  return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
-})
+const assetMainFile = computed<null | AssetFile>(() =>
+  asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
+)
 
 const routableAssetFile = computed(() => {
   if (asset?.value?.mainFile && !assetFileIsVideoFile(asset.value.mainFile)) return asset.value.mainFile
   return null
 })
 
-const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
+// useDamKeywordAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { keywordEnabled, keywordRequired } = useDamKeywordAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
-const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+// useDamAuthorAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { authorEnabled, authorRequired } = useDamAuthorAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
 const onAnyMetadataChange = () => {
   metadataTouch()
@@ -90,10 +88,12 @@ const onAnyMetadataChange = () => {
       value="metadata"
     >
       <VExpansionPanelText>
-        <AssetCustomMetadataForm
+        <ADamAssetCustomMetadataForm
           v-if="asset"
           v-model="asset.metadata.customData"
           :asset-type="assetType"
+          :ext-system="currentExtSystemId"
+          :validation-scope="AssetMetadataValidationScopeSymbol"
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
@@ -107,8 +107,9 @@ const onAnyMetadataChange = () => {
                   subject="keyword"
                   system="dam"
                 >
-                  <KeywordRemoteAutocompleteWithCached
+                  <ADamKeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.keywords')"
                     data-cy="custom-field-keywords"
                     clearable
@@ -130,8 +131,9 @@ const onAnyMetadataChange = () => {
                   subject="author"
                   system="dam"
                 >
-                  <AuthorRemoteAutocompleteWithCached
+                  <ADamAuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
@@ -152,6 +154,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -164,6 +167,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="ttsAudio"
                   :label="t('coreDam.asset.model.ttsAudio')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -176,6 +180,7 @@ const onAnyMetadataChange = () => {
                 <VSwitch
                   v-model="mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -189,11 +194,12 @@ const onAnyMetadataChange = () => {
                   v-model="mainFileInternal"
                   :disabled="!mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.internal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
           </template>
-        </AssetCustomMetadataForm>
+        </ADamAssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
     <VExpansionPanel
@@ -223,16 +229,14 @@ const onAnyMetadataChange = () => {
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9">
-            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
-          </VCol>
+          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
@@ -256,7 +260,7 @@ const onAnyMetadataChange = () => {
                 :asset-file="routableAssetFile"
                 :asset-type="assetType"
                 :title="asset.texts.displayTitle"
-                @main-route-changed="emit('mainRouteChanged')"
+                is-main-file
               />
             </VCol>
           </VRow>

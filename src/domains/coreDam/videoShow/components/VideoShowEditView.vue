@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import VideoShowEditForm from '@/domains/coreDam/videoShow/components/VideoShowEditForm.vue'
+import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -10,12 +20,15 @@ const id = (route.params as { id: string }).id.toString()
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, videoShow } =
   useVideoShowEditActions()
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/video-shows',
+  skipRouteNames: [
+    '/(coreDam)/video-shows/[id]',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -24,16 +37,14 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
-    {
-      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
-      routeName: '/(coreDam)/video-shows/[id]/edit',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+  {
+    title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.edit'),
+    routeName: '/(coreDam)/video-shows/[id]/edit',
+    routeParams: { id },
+  },
+])
 </script>
 
 <template>
@@ -45,7 +56,14 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/video-shows'"
+        :skip-route-names="[
+          '/(coreDam)/video-shows/[id]',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 

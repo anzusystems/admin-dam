@@ -1,8 +1,12 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
-import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
+import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { publicExport } = storeToRefs(usePublicExportOneStore())
 
@@ -32,7 +36,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.publicExport.model.id')">
         <ACopyText :value="publicExport.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="publicExport" />
+      <DamTrackingFields :data="publicExport" />
     </VCol>
   </VRow>
 </template>

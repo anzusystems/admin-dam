@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "types": ["@playwright/test", "node"],
+    "outDir": "./.tsbuildinfo/setup"
+  },
+  "include": ["playwright.config.ts", "setup/**/*.ts"],
+  "exclude": ["node_modules"],
+  "references": [{ "path": "./pages" }]
+}

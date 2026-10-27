@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import PodcastCreateButton from '@/domains/coreDam/podcast/components/PodcastCreateButton.vue'
 import PodcastDatatable from '@/domains/coreDam/podcast/components/PodcastDatatable.vue'
 import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = usePodcastListActions()
 
@@ -16,9 +19,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
+])
 </script>
 
 <template>

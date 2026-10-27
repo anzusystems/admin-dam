@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import { type PodcastModeType, usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 import { AChipNoLink } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
+import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
+import type { PodcastModeType } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 
 const props = withDefaults(
   defineProps<{
@@ -10,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getPodcastModeOption } = usePodcastMode()
-const modeOption = computed(() => {
-  return getPodcastModeOption(props.mode)
-})
+const modeOption = computed(() => getPodcastModeOption(props.mode))
 </script>
 
 <template>

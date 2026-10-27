@@ -1,3 +1,5 @@
+import { isString } from '@anzusystems/common-admin'
+
 import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
 import {
   LinkVariant,

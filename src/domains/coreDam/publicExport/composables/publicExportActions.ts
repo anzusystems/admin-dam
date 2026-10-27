@@ -1,13 +1,19 @@
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
+import { handleRecordLoadError, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import {
   useDeletePublicExport,
   useFetchPublicExport,
   useFetchPublicExportList,
   useUpdatePublicExport,
 } from '@/domains/coreDam/publicExport/api/publicExportApi'
-import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
 import { usePublicExportOneStore } from '@/domains/coreDam/publicExport/store/publicExportStore'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -20,12 +26,12 @@ const saveAndCloseButtonLoading = ref(false)
 export const usePublicExportListActions = () => {
   const listItems = ref<PublicExport[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
-  const { executeFetch } = useFetchPublicExportList()
+  const { execute } = useFetchPublicExportList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await executeFetch(pagination, filterData, filterConfig)
+      const res = await execute(pagination, filterData, filterConfig)
       res.forEach((item) => item.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId)))
       fetchCachedAssetLicences()
       listItems.value = res
@@ -45,14 +51,14 @@ export const usePublicExportListActions = () => {
 }
 
 export const usePublicExportRemoveActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const removePublicExport = async (id: IntegerId) => {
     detailLoading.value = true
     try {
-      const { executeRequest: deletePublicExport } = useDeletePublicExport()
+      const { execute: deletePublicExport } = useDeletePublicExport()
       await deletePublicExport({ urlParams: { id } })
-      showRecordWas('updated')
-      router.push({ name: '/(coreDam)/public-exports' })
+      showRecordWas('deleted')
+      push({ name: '/(coreDam)/public-exports' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -70,18 +76,20 @@ export const usePublicExportDetailActions = () => {
   const { publicExport } = storeToRefs(publicExportOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
-      const res = await fetchPublicExport({ urlParams: { id } })
+      const { execute: fetchPublicExport } = useFetchPublicExport()
+      const res = await fetchPublicExport({ urlParams: { id }, signal: options.signal })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
       publicExport.value = res
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -95,23 +103,24 @@ export const usePublicExportDetailActions = () => {
 
 export const usePublicExportEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const publicExportOneStore = usePublicExportOneStore()
   const { publicExport } = storeToRefs(publicExportOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
-  const fetchData = async (id: IntegerId) => {
+  const fetchData = async (id: IntegerId, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchPublicExport } = useFetchPublicExport()
-      const res = await fetchPublicExport({ urlParams: { id } })
+      const { execute: fetchPublicExport } = useFetchPublicExport()
+      const res = await fetchPublicExport({ urlParams: { id }, signal: options.signal })
       res.licences.forEach((licenceId) => addToCachedAssetLicences(licenceId))
       fetchCachedAssetLicences()
       publicExport.value = res
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -125,14 +134,15 @@ export const usePublicExportEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updatePublicExport } = useUpdatePublicExport()
-      await updatePublicExport({
+      const { execute: updatePublicExport } = useUpdatePublicExport()
+      const res = await updatePublicExport({
         urlParams: { id: publicExportOneStore.publicExport.id },
-        object: publicExport.value,
+        body: publicExport.value,
       })
+      syncUserAndTimeTracking(publicExportOneStore.publicExport, res)
       showRecordWas('updated')
 
-      router.push({
+      push({
         name: '/(coreDam)/public-exports/[id]',
         params: { id: publicExportOneStore.publicExport.id },
       })

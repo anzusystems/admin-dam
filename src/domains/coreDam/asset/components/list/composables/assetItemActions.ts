@@ -1,5 +1,7 @@
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { assetFileIsImageFile } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 
 const IMAGE_HEIGHT = 200
@@ -13,17 +15,11 @@ const DEFAULT_IMAGE_PROPERTIES = {
 }
 
 export function useAssetItemActions(item: AssetListItem) {
-  const asset = computed<AssetSearchListItemDto>(() => {
-    return item.asset
-  })
+  const asset = computed<AssetSearchListItemDto>(() => item.asset)
 
-  const assetType = computed(() => {
-    return asset.value.attributes.assetType
-  })
+  const assetType = computed(() => asset.value.attributes.assetType)
 
-  const assetStatus = computed(() => {
-    return asset.value.attributes.assetStatus
-  })
+  const assetStatus = computed(() => asset.value.attributes.assetStatus)
 
   const imageProperties = computed(() => {
     if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
@@ -49,13 +45,12 @@ export function useAssetItemActions(item: AssetListItem) {
     return DEFAULT_IMAGE_PROPERTIES
   })
 
-  const getBgColor = () => {
-    return assetFileIsImageFile(asset.value.mainFile) &&
-      asset.value.mainFile.imageAttributes &&
-      asset.value.mainFile.imageAttributes.mostDominantColor
+  const getBgColor = () =>
+    assetFileIsImageFile(asset.value.mainFile) &&
+    asset.value.mainFile.imageAttributes &&
+    asset.value.mainFile.imageAttributes.mostDominantColor
       ? asset.value.mainFile.imageAttributes.mostDominantColor
       : IMAGE_BG_COLOR_DEFAULT
-  }
 
   return {
     asset,

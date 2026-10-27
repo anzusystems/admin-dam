@@ -1,26 +1,38 @@
 <script lang="ts" setup>
-import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
-import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import {
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   ADialogToolbar,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
-  type DamCurrentUserDto,
-  DamExtSystemRemoteAutocomplete,
+  isArray,
+  isInt,
+  isNull,
+  isUndefined,
+  useAlerts,
   useDamConfigStore,
+  useValidate,
 } from '@anzusystems/common-admin'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
-import ABtnAdvanced from '@/domains/coreDam/shared/components/ABtnAdvanced.vue'
+import type { DamCurrentUserDto, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { ErrorObject } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
 
-const props = withDefaults(
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
+import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import ABtnAdvanced from '@/domains/coreDam/shared/components/ABtnAdvanced.vue'
+import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
+import { useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
+
+withDefaults(
   defineProps<{
-    modelValue: boolean
     extSystemName: string
     licenceName: string
     dataCy?: string
@@ -29,16 +41,13 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-}>()
-
+const modelValue = defineModel<boolean>({ required: true })
 const dialog = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
@@ -48,6 +57,7 @@ const showAdvanced = ref(false)
 
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const assetDetailStore = useAssetDetailStore()
 const { useCurrentUser } = useAuth()
 const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
@@ -61,12 +71,10 @@ const selectedLicenceSearchByExtId = ref<null | IntegerId>(null)
 
 const extSystemsItems = computed(() => {
   if (currentUser.value && currentUser.value.userToExtSystemsDto.length > 0) {
-    return currentUser.value.userToExtSystemsDto.map((item) => {
-      return {
-        value: item.id,
-        title: item.name,
-      }
-    })
+    return currentUser.value.userToExtSystemsDto.map((item) => ({
+      value: item.id,
+      title: item.name,
+    }))
   }
   return []
 })
@@ -75,12 +83,10 @@ const licenceItems = computed(() => {
   if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
     return currentUser.value.assetLicencesDto
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
-      .map((item) => {
-        return {
-          value: item.id,
-          title: item.name,
-        }
-      })
+      .map((item) => ({
+        value: item.id,
+        title: item.name,
+      }))
   }
   return []
 })
@@ -88,13 +94,27 @@ const licenceItems = computed(() => {
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
-const allowSelect = computed(() => {
-  return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
-})
+const allowSelect = computed(
+  () => damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
+)
 
 const onCancel = () => {
+  /*
+   * The change still goes through. The guard against a second confirm lives in this
+   * dialog, so a reopened dialog would send the change again during the first reload.
+   */
+  if (saving.value) return
   dialog.value = false
 }
+
+/*
+ * Blocks leaving the page while creating. The browser back button to an entry where
+ * ADAM was loaded or reloaded bypasses Vuetify, which otherwise only closes the dialog.
+ * Also blocks address changes: another provider's page is the same
+ * router page and is fully re-rendered. A query-only change is allowed.
+ */
+onBeforeRouteLeave(() => !saving.value)
+onBeforeRouteUpdate((to, from) => to.path === from.path || !saving.value)
 
 const { required, minValue } = useValidate()
 
@@ -115,6 +135,8 @@ const errorMessageLicence = computed(() => {
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  // A second confirm while the first is on its way would send the same change once more.
+  if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
   if (
@@ -126,11 +148,19 @@ const onConfirm = async () => {
     saving.value = false
     return
   }
+  /* The change ends in a page reload, which drops unsaved panel metadata. Ask before anything is sent. */
+  const leavesUnsaved = assetDetailStore.panelHoldsUnsavedMetadata
+  if (leavesUnsaved && !(await assetDetailStore.askToLeaveUnsaved())) {
+    saving.value = false
+    return
+  }
   try {
     await fetchAssetLicence(selectedLicence.value)
     await updateCurrentUser({ selectedLicence: selectedLicence.value })
     dialog.value = false
     showRecordWas('updated')
+    // Already given up above. Reset so the browser does not ask about them again on reload.
+    if (leavesUnsaved) assetDetailStore.reset()
     window.location.reload()
   } catch (error) {
     showErrorsDefault(error)
@@ -158,7 +188,6 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
-  console.log(selectedLicence.value)
 }
 
 const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
@@ -189,7 +218,7 @@ onMounted(async () => {
     <VCard v-if="dialog">
       <ADialogToolbar
         data-cy="button-close"
-        @on-cancel="onCancel"
+        @cancel="onCancel"
       >
         {{ t('system.mainBar.extSystemLicenceSwitch.title') }}
       </ADialogToolbar>
@@ -200,7 +229,7 @@ onMounted(async () => {
         >
           <VRow>
             <VCol class="pt-2">
-              <DamExtSystemRemoteAutocomplete
+              <ADamExtSystemRemoteAutocomplete
                 v-model="selectedExtSystemSearch"
                 :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.extSystemName')"
@@ -213,7 +242,7 @@ onMounted(async () => {
           </VRow>
           <VRow>
             <VCol>
-              <DamAssetLicenceRemoteAutocomplete
+              <ADamAssetLicenceRemoteAutocomplete
                 v-model="selectedLicenceSearch"
                 :client="damClient"
                 :label="t('system.mainBar.extSystemLicenceSwitch.filter.licenceName')"
@@ -239,10 +268,10 @@ onMounted(async () => {
                 <div class="text-body-small">
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
-                  }})<br>
+                  }})<br />
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
                     licenceName
-                  }})<br>
+                  }})<br />
                 </div>
               </VCol>
             </VRow>
@@ -284,7 +313,7 @@ onMounted(async () => {
           @update:model-value="selectedLicence = null"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="required" /></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.extSystem') }}<span class="a-required-mark" /></span>
           </template>
         </VSelect>
         <VSelect
@@ -295,7 +324,7 @@ onMounted(async () => {
           @blur="validateLicence.$touch()"
         >
           <template #label>
-            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="required" /></span>
+            <span>{{ t('system.mainBar.extSystemLicenceSwitch.licence') }}<span class="a-required-mark" /></span>
           </template>
         </VSelect>
       </VCardText>
@@ -312,6 +341,7 @@ onMounted(async () => {
       <VCardActions>
         <VSpacer />
         <ABtnTertiary
+          :disabled="saving"
           data-cy="button-cancel"
           @click.stop="onCancel"
         >
@@ -320,6 +350,7 @@ onMounted(async () => {
         <ABtnPrimary
           v-if="allowSelect"
           :disabled="isNull(selectedLicence)"
+          :loading="saving"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >

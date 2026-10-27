@@ -1,328 +1,49 @@
-import { damClient } from '@/shared/apiClients/damClient'
-import type { AssetFileDownloadLink, AssetFileImage } from '@anzusystems/common-admin'
-import {
-  type AssetFileRoute,
-  damFileTypeFix,
-  HTTP_STATUS_CREATED,
-  HTTP_STATUS_NO_CONTENT,
-  type UploadQueueItem,
-  UploadQueueItemType,
-} from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { HTTP_STATUS_NO_CONTENT, HTTP_STATUS_OK, useApiCommand, useApiRequest } from '@anzusystems/common-admin'
+import type { AssetFileDownloadLink, AssetFileImage, AssetFileRoute, DocId } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
-import type { AxiosProgressEvent } from 'axios'
+import { fileCommand, fileRequest } from '@/domains/coreDam/asset/api/assetFileRequests'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/image'
-const CHUNK_UPLOAD_TIMEOUT = 420
 
 export const useFetchImageFile = () =>
-  useApiRequest<AssetFileImage, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiRequest<AssetFileImage, null>({ ...damApiBase, method: 'GET', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const fetchImageFile = (id: DocId) => {
-  const { executeRequest } = useFetchImageFile()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchImageFile()
+  return execute({ urlParams: { id } })
 }
 
-export const uploadStart = (item: UploadQueueItem) => {
-  return new Promise((resolve, reject) => {
-    let url = END_POINT + '/licence/' + item.licenceId
-    if (item.type === UploadQueueItemType.SlotFile && item.slotName && item.assetId) {
-      url = END_POINT + '/asset/' + item.assetId + '/slot-name/' + item.slotName
-    }
-    damClient()
-      .post(
-        url,
-        JSON.stringify({
-          mimeType: damFileTypeFix(item.file),
-          size: item.file?.size,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_CREATED) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
-
-export const uploadChunk = (
-  item: UploadQueueItem,
-  imageId: DocId,
-  buffer: string,
-  size: number,
-  offset: number,
-  onUploadProgressCallback: ((progressEvent: AxiosProgressEvent) => void) | undefined = undefined
-) => {
-  return new Promise((resolve, reject) => {
-    const formData = new FormData()
-    const url = END_POINT + '/' + imageId + '/chunk'
-    formData.append('file', buffer)
-    formData.append(
-      'chunk',
-      JSON.stringify({
-        offset: offset,
-        size: size,
-      })
-    )
-
-    damClient(CHUNK_UPLOAD_TIMEOUT)
-      .post(url, formData, {
-        cancelToken: item.latestChunkCancelToken ? item.latestChunkCancelToken.token : undefined,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: onUploadProgressCallback,
-      })
-      .then((res) => {
-        if (res.status === HTTP_STATUS_CREATED) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
-
-export const uploadFinish = (item: UploadQueueItem, sha: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + item.fileId + '/uploaded'
-    damClient()
-      .patch(
-        url,
-        JSON.stringify({
-          checksum: sha,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
-
-export const uploadFailed = (imageId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/failed'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
-
-export const externalProviderUpload = (item: UploadQueueItem) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/licence/' + item.licenceId + '/external-provider'
-    damClient()
-      .post(
-        url,
-        JSON.stringify({
-          id: item.externalProviderAssetId,
-          externalProvider: item.externalProviderName,
-        })
-      )
-      .then((res) => {
-        if (res.status === HTTP_STATUS_CREATED) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
-
-export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .delete(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_NO_CONTENT) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const unsetSlot = (imageId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('DELETE', END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName, [
+    HTTP_STATUS_NO_CONTENT,
+  ])
 
 export const useDeleteImage = () =>
-  useApiRequest<void, null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
 export const deleteImage = (imageId: DocId) => {
-  const { executeRequest } = useDeleteImage()
-  return executeRequest({ urlParams: { id: imageId } })
+  const { execute } = useDeleteImage()
+  return execute({ urlParams: { id: imageId } })
 }
 
-export const makeMainFile = (imageId: DocId, assetId: DocId) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/main'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makeMainFile = (imageId: DocId, assetId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + imageId + '/asset/' + assetId + '/main', [HTTP_STATUS_OK])
 
-export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: string) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const existingImageToSlot = (imageId: DocId, assetId: DocId, slotName: string) =>
+  fileCommand('PATCH', END_POINT + '/' + imageId + '/asset/' + assetId + '/slot-name/' + slotName, [HTTP_STATUS_OK])
 
-export const downloadLink = (imageId: DocId) => {
-  return new Promise<AssetFileDownloadLink>((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/download-link'
-    damClient()
-      .get(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const downloadLink = (imageId: DocId) =>
+  fileRequest<AssetFileDownloadLink>('GET', END_POINT + '/' + imageId + '/download-link', [HTTP_STATUS_OK])
 
-export const rotateImage = (imageId: DocId, angle: 90 | 270) => {
-  return new Promise((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/rotate/' + angle
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+// The server returns the rotated file (`ImageFileAdmDetailDto`, same as a file read).
+export const rotateImage = (imageId: DocId, angle: 90 | 270) =>
+  fileRequest<AssetFileImage>('PATCH', END_POINT + '/' + imageId + '/rotate/' + angle, [HTTP_STATUS_OK])
 
-export const makePublic = (imageId: DocId) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/make-public'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+export const makePublic = (imageId: DocId) =>
+  fileRequest<AssetFileRoute>('PATCH', END_POINT + '/' + imageId + '/make-public', [HTTP_STATUS_OK])
 
-export const makePrivate = (imageId: DocId) => {
-  return new Promise<AssetFileRoute>((resolve, reject) => {
-    const url = END_POINT + '/' + imageId + '/make-private'
-    damClient()
-      .patch(url)
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
-  })
-}
+/* The server returns 204 with no body, though it documents a body. Both mean success. The response is not read. */
+export const makePrivate = (imageId: DocId) =>
+  fileCommand('PATCH', END_POINT + '/' + imageId + '/make-private', [HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT])

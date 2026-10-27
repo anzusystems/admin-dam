@@ -1,28 +1,36 @@
 <script lang="ts" setup>
-import { GridView, useGridView } from '@/domains/system/composables/gridView'
+import type { DatatableOrderingOption } from '@anzusystems/common-admin'
+import { ADatatableOrdering, AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
+import { onKeyUp, useEventListener } from '@vueuse/core'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+
+import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
+import { provideAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
+import { provideAssetFileChanged } from '@/domains/coreDam/asset/components/detail/composables/assetDetailFileChange'
+import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
+import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
+import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
+import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue'
+import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
+import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
+import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
 import {
   customSortOptions,
   useAssetListActions,
 } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import MainWrapper from '@/domains/system/components/MainWrapper.vue'
-import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
-import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
 import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
-import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/components/AssetListSidebarFilter.vue'
-import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import AssetFooterSelected from '@/domains/coreDam/asset/components/footer/AssetFooterSelected.vue'
-import AssetFooterSelectedFull from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedFull.vue'
-import AssetFooterUploadOverlayFull from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlayFull.vue'
+import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import { onKeyUp } from '@vueuse/core'
-import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
-import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
-import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
+import MainWrapper from '@/domains/system/components/MainWrapper.vue'
+import { GridView, useGridView } from '@/domains/system/composables/gridView'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { t } = useI18n()
 
@@ -30,6 +38,13 @@ const loadOnScroll = true
 
 const { gridView } = useGridView()
 const { sidebarRight } = useMainWrapper()
+const assetDetailStore = useAssetDetailStore()
+const assetListStore = useAssetListStore()
+/*
+ * Before the first render, not on mount. The detail renders with the page, and another page may have
+ * left one open in the store, for example the asset detail page left with the browser back button.
+ */
+assetDetailStore.reset()
 
 const {
   loader,
@@ -47,6 +62,28 @@ const {
 } = useAssetListActions(sidebarRight)
 
 provide(DatatablePaginationKey, pagination)
+/*
+ * The detail and side panel report file changes of their asset, and it is read again.
+ * Not after the page is left, which the answer can outlast. The
+ * next page reads the asset itself when the server notifies it.
+ * "Left" means unmounted. While asking whether to discard typed data, the page is still here.
+ */
+let pageLeft = false
+onBeforeUnmount(() => {
+  pageLeft = true
+})
+provideAssetFileChanged((byServer) => {
+  if (pageLeft) assetDetailStore.tellPageOfFileChange()
+  else refreshActiveItem(byServer)
+})
+/*
+ * An asset deleted in the detail: mark its tile as deleting, and the asset in the detail or panel too.
+ * Use the deleted asset, not the one the detail may have moved to meanwhile.
+ */
+provideAssetDeleted((assetId) => {
+  assetListStore.setDeletingById(assetId)
+  if (assetDetailStore.asset?.id === assetId) assetDetailStore.setDeleting()
+})
 
 const { footerViewSelected } = useAssetFooterSelectedView()
 const { footerViewUpload } = useAssetFooterUploadView()
@@ -63,6 +100,39 @@ onKeyUp('ArrowRight', async (e) => {
 
 onKeyUp('ArrowLeft', async (e) => {
   await onArrowLeft(e)
+})
+
+/*
+ * Unsaved metadata in the detail or side panel is lost with the page, so ask before leaving.
+ * The URL of an open detail replaces this page's URL. That is not leaving the page and is not asked about.
+ */
+const holdsUnsavedMetadata = () => assetDetailStore.showsUnsavedMetadata || assetDetailStore.panelHoldsUnsavedMetadata
+
+/*
+ * Ask as the last step before navigation settles, not in the page's leave
+ * guard, which runs first. A later guard can still cancel the navigation.
+ * Vuetify adds such a guard for every dialog and menu. Browser back
+ * over an open one only closes it, which is not leaving the page.
+ */
+const router = useRouter()
+const pageOfTheList = useRoute().matched.at(-1)
+const stopAskingOnTheWayOut = router.beforeResolve((to) => {
+  // Another query or hash of the list is the same page still.
+  if (to.matched.some((record) => record === pageOfTheList)) return true
+
+  return !holdsUnsavedMetadata() || assetDetailStore.askToLeaveUnsaved()
+})
+onUnmounted(stopAskingOnTheWayOut)
+
+/*
+ * The page cannot ask on reload or window close, so the browser shows its own prompt.
+ * Downloading a file from the detail does not trigger it, because the link opens in another tab.
+ */
+useEventListener(window, 'beforeunload', (event) => {
+  if (!holdsUnsavedMetadata()) return
+  event.preventDefault()
+  // Older browsers ask only when this is set.
+  event.returnValue = ''
 })
 
 onMounted(async () => {
@@ -126,11 +196,6 @@ onUnmounted(() => {
             class="w-100"
           />
         </div>
-        <AssetDetailDialog
-          @prev-item="prevItem"
-          @next-item="nextItem"
-          @main-route-changed="refreshActiveItem"
-        />
       </div>
       <div
         v-else
@@ -138,6 +203,18 @@ onUnmounted(() => {
       >
         {{ t('coreDam.asset.noItemsFound') }}
       </div>
+      <!--
+        Not inside the rows: the detail can show an asset the list does not hold, and stays while the list reloads.
+      -->
+      <AssetDetailDialog
+        @prev-item="prevItem"
+        @next-item="nextItem"
+      />
+      <!-- For the side panel only. With the detail open, the detail shows the question as a dialog over itself. -->
+      <AUnsavedConfirmDialog
+        :model-value="assetDetailStore.leaveUnsavedQuestion && !assetDetailStore.detail"
+        @resolve="assetDetailStore.answerLeaveUnsaved"
+      />
     </template>
     <template #main-bar-middle>
       <AssetToolbarSearch />
@@ -157,6 +234,7 @@ onUnmounted(() => {
     </template>
     <template #second-bar-right>
       <VBtn
+        :aria-label="t('coreDam.asset.list.refresh')"
         variant="text"
         icon
         size="x-small"
@@ -193,7 +271,7 @@ onUnmounted(() => {
       <AssetListSidebarFilter />
     </template>
     <template #sidebar-right>
-      <AssetListSidebarMetadata @main-route-changed="refreshActiveItem" />
+      <AssetListSidebarMetadata />
     </template>
     <template #custom-footer>
       <AssetFooterSelected />
@@ -208,8 +286,8 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
-// Active-filter chips for the asset grid. FiltersSelected is rendered inside the filter sidebar
-// (where the selected-filters map + provides live) and teleported here, under the toolbar.
+// `AFiltersSelected` renders inside the filter sidebar, where the selected-filters
+// map and provides live, and is teleported here under the toolbar.
 .asset-active-filters {
   display: flex;
   align-items: center;

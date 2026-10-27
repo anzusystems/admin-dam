@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import { useVoiceGoogleTtsValidation } from '@/domains/coreDam/voiceFamily/composables/voiceValidation'
 import type { GoogleTtsVoice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { useGoogleSsmlGender } from '@/domains/coreDam/voiceFamily/valueObject/GoogleSsmlGender'
-import { useVoiceGoogleTtsValidation } from '@/domains/coreDam/voiceFamily/composables/voiceValidation'
 
 withDefaults(
   defineProps<{

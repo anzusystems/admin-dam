@@ -1,32 +1,30 @@
 <script lang="ts" setup>
 import type { AxiosInstance } from 'axios'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 
 const props = defineProps<{
-  modelValue: string[]
   client: () => AxiosInstance
-}>()
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string[]): void
 }>()
 const roles = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newRoles: string[]) {
-    emit('update:modelValue', newRoles)
+    modelValue.value = newRoles
   },
 })
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { permissionConfig, translatePermission } = usePermissionConfigActions(props.client)
 const items = computed(() =>
-  permissionConfig.value.roles.map((role) => {
-    return {
-      title: translatePermission('roles', role),
-      value: role,
-    }
-  })
+  permissionConfig.value.roles.map((role) => ({
+    title: translatePermission('roles', role),
+    value: role,
+  }))
 )
+const modelValue = defineModel<string[]>({ required: true })
 const { t } = useI18n()
 </script>
 

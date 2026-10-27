@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
-import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
-import { DamAssetImageRoiSelect, DamAssetType } from '@anzusystems/common-admin'
+import { ADamAssetImage, DamAssetType, isNull, useTheme } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import AssetDetailDialogLoader from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialogLoader.vue'
+import { useDetailInfoPanel } from '@/domains/coreDam/asset/components/detail/composables/detailInfoPanel'
+import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
+import {
+  EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS,
+  useExternalProviderAssetListActions,
+} from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
-import ExternalProviderAssetDetailDialogSidebar from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailDialogSidebar.vue'
-import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
-const emit = defineEmits<{
-  (e: 'nextItem'): void
-  (e: 'prevItem'): void
-}>()
+const emit = defineEmits<{ nextItem: []; prevItem: [] }>()
 
 const { t } = useI18n()
 
 const { toolbarColor } = useTheme()
 
 const imageLoading = ref(true)
-const { activeTab } = useAssetDetailTab()
 
 const externalProviderAssetDetailStore = useExternalProviderAssetDetailStore()
 const externalProviderAssetListStore = useExternalProviderAssetListStore()
-const { pagination } = useExternalProviderAssetListActions() //todo
+const { pagination, neighbourOfActive } = useExternalProviderAssetListActions() //todo
 const { asset } = storeToRefs(externalProviderAssetDetailStore)
 
 const closeDialog = () => {
@@ -34,6 +35,7 @@ const closeDialog = () => {
 }
 
 const sidebar = ref(true)
+const { wide, panelId } = useDetailInfoPanel()
 
 const toggleSidebar = () => {
   sidebar.value = !sidebar.value
@@ -50,22 +52,12 @@ const prevItem = () => {
   emit('prevItem')
 }
 
-const assetType = computed(() => {
-  return asset.value?.attributes.assetType
-})
+const assetType = computed(() => asset.value?.attributes.assetType)
 
-const isTypeImage = computed(() => {
-  return assetType.value === DamAssetType.Image
-})
-const isTypeVideo = computed(() => {
-  return assetType.value === DamAssetType.Video
-})
-const isTypeAudio = computed(() => {
-  return assetType.value === DamAssetType.Audio
-})
-const isTypeDocument = computed(() => {
-  return assetType.value === DamAssetType.Document
-})
+const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
+const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
+const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
+const isTypeDocument = computed(() => assetType.value === DamAssetType.Document)
 const imageSrc = computed(() => {
   if (asset.value?.url) {
     return asset.value.url
@@ -75,6 +67,13 @@ const imageSrc = computed(() => {
 const toolbarTitle = computed(() => {
   if (!asset.value) return ''
   return asset.value.texts.displayTitle
+})
+// Loader title is the active tile's asset name: every read of this detail is of the active tile.
+const loaderTitle = computed(() => {
+  const active = externalProviderAssetListStore.activeItemIndex
+  if (isNull(active)) return ''
+
+  return externalProviderAssetListStore.list[active]?.asset.texts.displayTitle ?? ''
 })
 const totalCountText = computed(() => {
   if (isNull(externalProviderAssetListStore.activeItemIndex)) return ''
@@ -86,17 +85,24 @@ const totalCountText = computed(() => {
     (pagination.value.hasNextPage ? '+' : '')
   )
 })
-
-const { currentExtSystemId } = useCurrentExtSystem()
 </script>
 
 <template>
   <VDialog
     v-model="externalProviderAssetDetailStore.detail"
     fullscreen
+    :class="EXTERNAL_PROVIDER_DETAIL_DIALOG_CLASS"
   >
+    <!-- The loaded detail bar below always shows both buttons, each disabled at its end of the list. -->
     <AssetDetailDialogLoader
       v-if="externalProviderAssetDetailStore.loader"
+      walks-list
+      :prev-disabled="!neighbourOfActive(-1)"
+      :next-disabled="!neighbourOfActive(1)"
+      :total-count-text="totalCountText"
+      :title="loaderTitle"
+      @prev-item="prevItem"
+      @next-item="nextItem"
       @close-dialog="closeDialog"
     />
     <VCard
@@ -109,15 +115,17 @@ const { currentExtSystemId } = useCurrentExtSystem()
           :color="toolbarColor"
           density="compact"
           :height="64"
-          class="system-border-b"
+          class="border-b"
         >
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.list.prev')"
               variant="text"
               icon
               class="mx-1"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(-1)"
               @click.stop="prevItem"
             >
               <VIcon icon="mdi-chevron-left" />
@@ -129,11 +137,13 @@ const { currentExtSystemId } = useCurrentExtSystem()
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.next')"
               variant="text"
               icon
               class="mr-2"
               :width="36"
               :height="36"
+              :disabled="!neighbourOfActive(1)"
               @click.stop="nextItem"
             >
               <VIcon icon="mdi-chevron-right" />
@@ -154,6 +164,9 @@ const { currentExtSystemId } = useCurrentExtSystem()
           <VSpacer />
           <div>
             <VBtn
+              :aria-label="t('coreDam.asset.detail.toggleInfo')"
+              :aria-expanded="wide ? sidebar : undefined"
+              :aria-controls="wide ? panelId : undefined"
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"
               :color="sidebar ? 'secondary' : ''"
@@ -163,7 +176,18 @@ const { currentExtSystemId } = useCurrentExtSystem()
               :height="36"
               @click.stop="toggleSidebar"
             >
-              <VIcon icon="mdi-information-outline" />
+              <!--
+                Below 840 px the button toggles the image above the panel,
+                so it uses an image icon, as in the library's detail.
+              -->
+              <VIcon
+                icon="mdi-information-outline"
+                class="d-none d-md-flex"
+              />
+              <VIcon
+                icon="mdi-image-outline"
+                class="d-flex d-md-none"
+              />
               <VTooltip
                 activator="parent"
                 location="bottom"
@@ -172,6 +196,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('common.button.close')"
               icon
               variant="text"
               :width="36"
@@ -189,18 +214,9 @@ const { currentExtSystemId } = useCurrentExtSystem()
             </VBtn>
           </div>
         </VToolbar>
-        <div class="d-flex w-100 h-100 position-relative">
+        <div class="d-flex w-100 h-100 position-relative dam-image-detail__content">
           <div class="d-flex w-100 align-center dam-image-detail__left">
-            <div
-              v-if="activeTab === AssetDetailTab.ROI"
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
-              <DamAssetImageRoiSelect :ext-system="currentExtSystemId" />
-            </div>
-            <div
-              v-else
-              class="w-100 h-100 pa-2 d-flex align-center justify-center"
-            >
+            <div class="w-100 h-100 pa-2 d-flex align-center justify-center">
               <div
                 v-if="imageLoading && isTypeImage"
                 class="d-flex w-100 h-100 align-center justify-center"
@@ -210,7 +226,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
                   color="white"
                 />
               </div>
-              <AssetImage
+              <ADamAssetImage
                 :src="imageSrc"
                 use-component
                 @load="onImageLoad"
@@ -218,7 +234,11 @@ const { currentExtSystemId } = useCurrentExtSystem()
               />
             </div>
           </div>
-          <div class="h-100 d-flex dam-image-detail__sidebar system-border-l">
+          <div
+            :id="panelId"
+            class="h-100 d-flex dam-image-detail__sidebar border-s"
+            :inert="wide && !sidebar"
+          >
             <ExternalProviderAssetDetailDialogSidebar
               :is-video="isTypeVideo"
               :is-audio="isTypeAudio"

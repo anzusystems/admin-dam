@@ -1,23 +1,30 @@
 <script lang="ts" setup>
+import { AListEditor, isString, useAlerts, useDamConfigStore } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId, ListViewItem } from '@anzusystems/common-admin'
+import { computed, onBeforeUnmount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
+import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'
+import DistributionManageDialog from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue'
+import { useDistributionServiceAllowed } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
+import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
+import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useDistributionListStore } from '@/domains/coreDam/asset/store/distributionListStore'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AListEditor, type ListViewItem } from '@anzusystems/common-admin/labs'
 import {
-  type DistributionItem,
+  DistributionItemResourceName,
   distributionItemIsCustomItem,
   distributionItemIsJwItem,
   distributionItemIsYoutubeItem,
-  DistributionItemResourceName,
-  type DistributionItemResourceNameType,
-  type DistributionUpdateDto,
 } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionManageDialog from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionManageDialog.vue'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import DistributionItemView from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionItemView.vue'
-import { useDistributionYoutubeFactory } from '@/domains/coreDam/asset/factory/DistributionYoutubeFactory'
-import { useDistributionJwFactory } from '@/domains/coreDam/asset/factory/DistributionJwFactory'
-import { useDistributionCustomFactory } from '@/domains/coreDam/asset/factory/DistributionCustomFactory'
-import { deleteDistribution } from '@/domains/coreDam/asset/api/distributionApi'
+import type {
+  DistributionItem,
+  DistributionItemResourceNameType,
+  DistributionUpdateDto,
+} from '@/domains/coreDam/asset/types/Distribution'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -28,10 +35,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'onDistributionUpsert'): void
-  (e: 'onDistributionDelete'): void
-}>()
+const emit = defineEmits<{ onDistributionDelete: [] }>()
 
 const assetDetailStore = useAssetDetailStore()
 const distributionListStore = useDistributionListStore()
@@ -39,6 +43,13 @@ const distributionListStore = useDistributionListStore()
 const distributionContent = ref<DistributionUpdateDto | null>()
 const distributionManageDialog = ref(false)
 const distributionDialogEdit = ref(false)
+// core-dam checks the service on every write. A service not on the user's account is shown read-only.
+const distributionDialogReadonly = ref(false)
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+const damConfigStore = useDamConfigStore()
+const anyServiceAllowed = computed(() =>
+  Object.keys(damConfigStore.damPrvConfig.distributionServices).some(isDistributionServiceAllowed)
+)
 
 const assetFileId = computed(() => assetDetailStore.asset?.mainFile?.id)
 
@@ -65,53 +76,71 @@ const onAddDistributionItem = () => {
   }
   distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
   distributionDialogEdit.value = false
+  distributionDialogReadonly.value = false
   distributionManageDialog.value = true
 }
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
 const { t } = useI18n()
+const { can } = useAuth()
+
+// The settings can be hidden during a delete, and later emits then reach nobody.
+let closed = false
+onBeforeUnmount(() => {
+  closed = true
+})
 
 const onDeleteDistributionItem = async (item: DistributionItem) => {
   const distributionId = item.id ?? null
   if (!isString(distributionId)) return
 
-  distributionListStore.showLoader()
+  const raised = distributionListStore.showLoader()
   try {
     await deleteDistribution(distributionId)
+    // Removed from the list at once: the reload can fail or have no listener, and the list would keep the deleted row.
+    // The editor does not remove the row either, because it is unmounted under the loader.
+    distributionListStore.removeListItem(distributionId)
+    // The loader stays on until the tab's reload turns it off.
+    // Turning it off here would show a clickable list before that reload answers.
     emit('onDistributionDelete')
     showRecordWas('deleted')
+    // If closed, nobody reloads the list, so the loader would stay on forever.
+    if (closed) distributionListStore.hideLoader(raised)
   } catch (error) {
+    distributionListStore.hideLoader(raised)
     showErrorsDefault(error)
     throw error // :on-delete — re-throw so the editor keeps the row instead of dropping it while it still exists on the server
-  } finally {
-    distributionListStore.hideLoader()
   }
 }
 
 const onEdit = (vi: ListViewItem<DistributionItem>) => {
   distributionContent.value = createUpdateDto(vi.raw)
   distributionDialogEdit.value = true
+  distributionDialogReadonly.value =
+    !isDistributionServiceAllowed(vi.raw.distributionService) || assetDetailStore.isDeleting
   distributionManageDialog.value = true
 }
 
 const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
-  if (!isString(assetFileId.value)) {
+  // The slot select keeps its slot when the type changes, so the new record uses the file it shows.
+  const fileId = distributionContent.value?.assetFile ?? assetFileId.value
+  if (!isString(fileId)) {
     throw new Error('Asset file id is null')
   }
   if (value === DistributionItemResourceName.Jw) {
-    distributionContent.value = createDefaultUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultUpdateDto(props.assetId, fileId)
   }
   if (value === DistributionItemResourceName.Youtube) {
-    distributionContent.value = createDefaultYoutubeUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultYoutubeUpdateDto(props.assetId, fileId)
   }
   if (value === DistributionItemResourceName.Custom) {
-    distributionContent.value = createDefaultCustomUpdateDto(props.assetId, assetFileId.value)
+    distributionContent.value = createDefaultCustomUpdateDto(props.assetId, fileId)
   }
 }
 
+// The tab is notified by the dialog itself, which reloads the list.
 const onDistributionUpsert = () => {
   closeDialog()
-  emit('onDistributionUpsert')
 }
 </script>
 
@@ -129,8 +158,10 @@ const onDistributionUpsert = () => {
     <AListEditor
       v-model="distributionListStore.list"
       :show-add-button="false"
+      :show-delete-button="can(ACL.DAM_DISTRIBUTION_DELETE) && !assetDetailStore.isDeleting"
       :on-delete="onDeleteDistributionItem"
       delete-mode="immediate"
+      disable-unsaved
       @edit="onEdit"
     >
       <template #item-compact="{ raw }: { raw: DistributionItem }">
@@ -141,10 +172,12 @@ const onDistributionUpsert = () => {
       </template>
     </AListEditor>
     <VBtn
+      v-if="anyServiceAllowed"
       color="primary"
       variant="text"
       prepend-icon="mdi-plus"
       data-cy="button-add-distribution"
+      :disabled="assetDetailStore.isDeleting"
       @click="onAddDistributionItem"
     >
       {{ t('coreDam.distribution.meta.create') }}
@@ -156,6 +189,7 @@ const onDistributionUpsert = () => {
     :distribution-manage-dialog="distributionManageDialog"
     :asset-id="assetId"
     :is-edit="distributionDialogEdit"
+    :readonly="distributionDialogReadonly"
     @on-distribution-upsert="onDistributionUpsert"
     @on-cancel="closeDialog"
     @on-distribution-type-select="onDistributionTypeSelect"

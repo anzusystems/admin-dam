@@ -87,7 +87,8 @@
   "anzuUser": {
     "list": "Oprávnenia používateľov",
     "detail": "Používateľ",
-    "edit": "Používateľ"
+    "edit": "Používateľ",
+    "create": "Nový používateľ"
   },
   "log": {
     "list": "Logy",
@@ -96,7 +97,8 @@
   "permissionGroup": {
     "list": "Skupiny oprávnení",
     "detail": "Skupina",
-    "edit": "Skupina"
+    "edit": "Skupina",
+    "create": "Nová skupina"
   },
   "settings": "Nastavenia"
 }

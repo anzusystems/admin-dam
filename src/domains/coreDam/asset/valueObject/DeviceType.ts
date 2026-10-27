@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const DeviceType = {
   All: 'all',
   Ios: 'ios',
@@ -25,9 +29,7 @@ export function useDeviceTypeTypes() {
     },
   ])
 
-  const getDeviceTypeOption = (value: DeviceTypeType) => {
-    return deviceTypeOptions.value.find((item) => item.value === value)
-  }
+  const getDeviceTypeOption = (value: DeviceTypeType) => deviceTypeOptions.value.find((item) => item.value === value)
 
   return {
     deviceTypeOptions,

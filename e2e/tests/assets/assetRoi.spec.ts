@@ -1,0 +1,92 @@
+import { test, expect, type Page } from '@playwright/test'
+import { prepareUser } from '@pages/shared/login'
+import { ADMIN_SUITE } from '@pages/shared/constants'
+import { assetTypeConfig, cleanupAssets, getAsset, waitForAssetProcessed } from '@pages/shared/api'
+import { uploadFile, waitForAssetList } from '@pages/shared/upload'
+import { uniqueFixtureCopy } from '@pages/shared/fixtures'
+import {
+  detailSidebar,
+  expectRoiPreviewsLoaded,
+  openAssetTab,
+  refreshRoiPreviews,
+  roiPreviewSources,
+  roiPreviewTitles,
+} from '@pages/assets/assetDetailPage'
+
+/**
+ * The "Fókus" tab of an image detail: the crop previews and their reload.
+ * No crop ratio can be chosen. The tab shows a read-only preview per ratio the ext system configures, a slot picker,
+ * the reload button and two rotate buttons. For users who may change the region of interest, the image is the
+ * library's cropper, and dragging its frame writes the region through `PUT /roi/<id>`. This spec does not drag it.
+ * Rotation is covered by `imageAsset.spec.ts`.
+ */
+
+let page: Page
+let ASSET_ID = ''
+let MAIN_FILE_ID = ''
+
+test.describe.serial(`${ADMIN_SUITE} - Asset detail Fókus`, () => {
+  test.beforeAll(async ({ browser }) => {
+    const ctx = await browser.newContext()
+    page = await ctx.newPage()
+    await prepareUser(page)
+  })
+
+  test.afterAll(async () => {
+    await cleanupAssets(page, [ASSET_ID])
+    await page.context().close()
+  })
+
+  test('uploads the image test asset', async () => {
+    const listLoaded = waitForAssetList(page)
+    await page.goto('/assets')
+    await listLoaded
+    ASSET_ID = await uploadFile(page, uniqueFixtureCopy('image/sample.png'))
+    MAIN_FILE_ID = (await waitForAssetProcessed(page, ASSET_ID)).mainFile.id
+  })
+
+  test('shows one crop preview per configured ratio, and each one loads', async () => {
+    const config = await assetTypeConfig(page, 'image')
+    await openAssetTab(page, ASSET_ID, 'button-focus')
+
+    const titles = await roiPreviewTitles(page)
+    expect(titles[0]).toBe(`${config.roiWidth}:${config.roiHeight}`)
+    expect(titles).toEqual(['3:2', '1:1'])
+
+    const sources = await roiPreviewSources(page)
+    expect(sources).toHaveLength(titles.length)
+    for (const source of sources) {
+      expect(source).toContain(MAIN_FILE_ID)
+    }
+    expect(sources[0]).toContain('/w300-h200-')
+    expect(sources[1]).toContain('/w200-h200-')
+
+    await expectRoiPreviewsLoaded(page)
+  })
+
+  test('the slot picker is disabled for an image, which has a single slot', async () => {
+    const config = await assetTypeConfig(page, 'image')
+    expect(config.slots).toEqual(['default'])
+
+    await openAssetTab(page, ASSET_ID, 'button-focus')
+    const picker = detailSidebar(page).getByRole('combobox').first()
+    await expect(picker).toContainText(config.defaultSlotName)
+    await expect(detailSidebar(page).locator('.v-field--disabled')).toHaveCount(1)
+  })
+
+  test('"Znovu načítať náhľady" refreshes the crop previews', async () => {
+    await openAssetTab(page, ASSET_ID, 'button-focus')
+    await expectRoiPreviewsLoaded(page)
+    const before = await roiPreviewSources(page)
+
+    // The previews are cached by URL, so a reload can only reach the image server by changing it.
+    await refreshRoiPreviews(page)
+    await expect.poll(() => roiPreviewSources(page)).not.toEqual(before)
+  })
+
+  test('the asset keeps its main file through a visit to the tab', async () => {
+    await openAssetTab(page, ASSET_ID, 'button-focus')
+    await refreshRoiPreviews(page)
+    expect((await getAsset(page, ASSET_ID)).mainFile.id).toBe(MAIN_FILE_ID)
+  })
+})

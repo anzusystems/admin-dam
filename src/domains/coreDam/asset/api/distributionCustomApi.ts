@@ -1,34 +1,32 @@
-import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { useApiRequest } from '@anzusystems/common-admin/labs'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import type { DamDistributionServiceName, DocId } from '@anzusystems/common-admin'
+import { useApiCommand, useApiRequest } from '@anzusystems/common-admin'
+
 import type {
   DistributionCustomCreateRedistributeDto,
   DistributionCustomItem,
 } from '@/domains/coreDam/asset/types/Distribution'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 const END_POINT = '/adm/v1/custom-distribution'
 export const ENTITY = 'customDistribution'
 
 export const useCreateCustomDistribution = () =>
   useApiRequest<DistributionCustomCreateRedistributeDto, DistributionCustomCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
   })
 
 export const createCustomDistribution = (assetFileId: DocId, data: DistributionCustomCreateRedistributeDto) => {
-  const { executeRequest } = useCreateCustomDistribution()
-  return executeRequest({ urlParams: { assetFileId }, object: data })
+  const { execute } = useCreateCustomDistribution()
+  return execute({ urlParams: { assetFileId }, body: data })
 }
 
 export const useRedistributeCustomDistribution = () =>
   useApiRequest<DistributionCustomCreateRedistributeDto, DistributionCustomCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionId/redistribute',
   })
@@ -37,15 +35,14 @@ export const redistributeCustomDistribution = (
   distributionId: DocId,
   data: DistributionCustomCreateRedistributeDto
 ) => {
-  const { executeRequest } = useRedistributeCustomDistribution()
-  return executeRequest({ urlParams: { distributionId }, object: data })
+  const { execute } = useRedistributeCustomDistribution()
+  return execute({ urlParams: { distributionId }, body: data })
 }
 
 export const usePrepareFormDataCustomDistribution = () =>
   useApiRequest<DistributionCustomItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
   })
@@ -54,20 +51,14 @@ export const prepareFormDataCustomDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
 ) => {
-  const { executeRequest } = usePrepareFormDataCustomDistribution()
-  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+  const { execute } = usePrepareFormDataCustomDistribution()
+  return execute({ urlParams: { assetFileId, distributionServiceName } })
 }
 
 export const useCancelCustomDistribution = () =>
-  useApiRequest<void, null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:distributionId',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:distributionId' })
 
 export const cancelCustomDistribution = (distributionId: DocId) => {
-  const { executeRequest } = useCancelCustomDistribution()
-  return executeRequest({ urlParams: { distributionId } })
+  const { execute } = useCancelCustomDistribution()
+  return execute({ urlParams: { distributionId } })
 }

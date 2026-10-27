@@ -5,8 +5,20 @@ export interface AssetLicenceInternalRule {
   markAsInternalSince: DatetimeUTCNullable
 }
 
+export interface AssetLicenceFlags {
+  manualUploadAllowed: boolean
+  directUseAllowed: boolean
+}
+
+export interface AssetLicenceAutoDelete {
+  active: boolean
+  olderThanDays: number
+}
+
 export interface DamAssetLicenceExtended extends DamAssetLicence {
   internalRule: AssetLicenceInternalRule
   internalRuleAuthors: DocId[]
   internalRuleUsers: IntegerId[]
+  flags: AssetLicenceFlags
+  autoDelete: AssetLicenceAutoDelete
 }

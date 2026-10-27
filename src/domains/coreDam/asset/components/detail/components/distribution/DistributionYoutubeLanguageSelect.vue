@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { fetchYoutubeLanguages } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
+
+import { fetchYoutubeLanguages } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubeLanguage } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string
     distributionServiceName: DamDistributionServiceName
     label?: string
   }>(),
@@ -13,16 +15,13 @@ const props = withDefaults(
     label: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string): void
-}>()
-
+const modelValue = defineModel<string>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: string) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
@@ -31,11 +30,7 @@ const { showErrorsDefault } = useAlerts()
 const items = ref<YoutubeLanguage[]>([])
 const loading = ref(false)
 
-const itemsComputed = computed(() => {
-  return items.value.map((item) => {
-    return { title: item.title, value: item.id }
-  })
-})
+const itemsComputed = computed(() => items.value.map((item) => ({ title: item.title, value: item.id })))
 
 const fetchItems = async () => {
   loading.value = true

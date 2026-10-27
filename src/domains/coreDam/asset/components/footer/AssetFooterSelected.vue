@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { useTheme } from '@anzusystems/common-admin'
+import { computed, onMounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
+import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
+import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueMassEditSimple from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSimple.vue'
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
-import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 
 const { t } = useI18n()
 
@@ -24,9 +28,7 @@ const {
 const uploadQueuesStore = useUploadQueuesStore()
 const assetListStore = useAssetListStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_MASS_EDIT))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue === oldValue) return
@@ -38,6 +40,15 @@ watch(queueTotalCount, (newValue, oldValue) => {
     hideSelected()
     return
   }
+})
+
+/*
+ * The count can drop to 0 while a full-page queue replaces this
+ * component, for example when an asset row is deleted there.
+ * The watch was not mounted then, so hide an empty strip on mount.
+ */
+onMounted(() => {
+  if (queueTotalCount.value === 0 && footerViewSelected.value !== FooterViewSelected.Hidden) hideSelected()
 })
 
 const onClearConfirm = async () => {
@@ -85,6 +96,7 @@ const onClearConfirm = async () => {
           />
           <VBtn
             v-show="showMinimalSelected"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="26"
@@ -103,6 +115,7 @@ const onClearConfirm = async () => {
           </VBtn>
           <VBtn
             v-show="showCompactSelected"
+            :aria-label="t('common.system.modal.show')"
             icon
             variant="flat"
             :height="26"

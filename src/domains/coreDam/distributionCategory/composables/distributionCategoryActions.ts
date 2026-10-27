@@ -1,7 +1,26 @@
+import type {
+  DamAssetTypeType,
+  DocId,
+  FilterConfig,
+  FilterData,
+  Pagination,
+  ValueObjectOption,
+} from '@anzusystems/common-admin'
+import {
+  handleRecordLoadError,
+  isUndefined,
+  syncUserAndTimeTracking,
+  useAlerts,
+  useDamConfigState,
+  usePageNavigation,
+  usePagination,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import type { Ref } from 'vue'
+import { ref } from 'vue'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
-import { useDistributionCategorySelectListFilter } from '@/domains/coreDam/distributionCategorySelect/filter/DistributionCategorySelectFilter'
-import { damClient } from '@/shared/apiClients/damClient'
 import {
   useCreateDistributionCategory,
   useFetchDistributionCategory,
@@ -9,14 +28,12 @@ import {
   useFetchDistributionCategoryListByIds,
   useUpdateDistributionCategory,
 } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { useFetchDistributionCategorySelectList } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
+import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
 import { useDistributionCategoryOneStore } from '@/domains/coreDam/distributionCategory/store/distributionCategoryStore'
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { useDamConfigState } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { usePagination } from '@anzusystems/common-admin/labs'
-import type { Ref } from 'vue'
+import { useFetchDistributionCategorySelectList } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
+import { useDistributionCategorySelectListFilter } from '@/domains/coreDam/distributionCategorySelect/filter/DistributionCategorySelectFilter'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -32,12 +49,12 @@ const { currentExtSystemId } = useCurrentExtSystem()
 
 export const useDistributionCategoryListActions = () => {
   const listItems = ref<DistributionCategory[]>([])
-  const { executeFetch } = useFetchDistributionCategoryList()
+  const { execute } = useFetchDistributionCategoryList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -61,17 +78,28 @@ export const useDistributionCategoryDetailActions = () => {
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
-      const distributionCategory = await fetchDistributionCategory({ urlParams: { id } })
-      const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
-      distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
+      const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
+      distributionCategoryOneStore.setDistributionCategory(distributionCategory, [])
+      // The category is loaded by now. If the selects fail, it shows without its selected options.
+      try {
+        // The selects request takes no signal, so an answer for a left page is ignored here.
+        const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
+        if (options.signal?.aborted) return undefined
+        distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      } catch (error) {
+        if (options.signal?.aborted) return undefined
+        showErrorsDefault(error)
+      }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -109,8 +137,8 @@ export const useDistributionCategoryManageActions = () => {
     const { filterData, filterConfig } = useDistributionCategorySelectListFilter()
     filterData.serviceSlug = getAvailableDistributionServiceSlugs(assetType)
     filterData.type = assetType
-    const { executeFetch } = useFetchDistributionCategorySelectList()
-    return await executeFetch(pagination, filterData, filterConfig, {
+    const { execute } = useFetchDistributionCategorySelectList()
+    return await execute(pagination, filterData, filterConfig, {
       urlParams: { extSystemId: currentExtSystemId.value },
     })
   }
@@ -122,7 +150,7 @@ export const useDistributionCategoryManageActions = () => {
 }
 
 export const useDistributionCategoryCreateActions = () => {
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
   const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
@@ -150,11 +178,11 @@ export const useDistributionCategoryCreateActions = () => {
       distributionCategory.value.selectedOptions = Object.values(distributionCategorySelectedOptions.value)
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
-      const { executeRequest: createDistributionCategory } = useCreateDistributionCategory()
-      const res = await createDistributionCategory({ object: distributionCategory.value })
+      const { execute: createDistributionCategory } = useCreateDistributionCategory()
+      const res = await createDistributionCategory({ body: distributionCategory.value })
       showRecordWas('created')
       if (successCallbackAction) successCallbackAction() // dialog.value = false
-      router.push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: res.id } })
+      push({ name: '/(coreDam)/distribution-categories/[id]', params: { id: res.id } })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -176,23 +204,31 @@ export const useDistributionCategoryCreateActions = () => {
 
 export const useDistributionCategoryEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const distributionCategoryOneStore = useDistributionCategoryOneStore()
   const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
     storeToRefs(distributionCategoryOneStore)
   const { fetchDistributionCategorySelectsData } = useDistributionCategoryManageActions()
 
-  const fetchData = async (id: string) => {
+  const fetchData = async (id: string, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
-      const distributionCategory = await fetchDistributionCategory({ urlParams: { id } })
-      const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
-      distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
+      const distributionCategory = await fetchDistributionCategory({ urlParams: { id }, signal: options.signal })
+      try {
+        // The selects request takes no signal, so an answer for a left page is ignored here.
+        const distributionCategorySelects = await fetchDistributionCategorySelectsData(distributionCategory.type)
+        if (options.signal?.aborted) return undefined
+        distributionCategoryOneStore.setDistributionCategory(distributionCategory, distributionCategorySelects)
+      } catch (error) {
+        // Not editable without its selects: Save would rebuild the selected options from them as empty.
+        return handleRecordLoadError(error) ? false : undefined
+      }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -209,14 +245,15 @@ export const useDistributionCategoryEditActions = () => {
       distributionCategory.value.selectedOptions = Object.values(distributionCategorySelectedOptions.value)
         .map((option) => option?.id)
         .filter((id) => !!id) as string[]
-      const { executeRequest: updateDistributionCategory } = useUpdateDistributionCategory()
-      await updateDistributionCategory({
+      const { execute: updateDistributionCategory } = useUpdateDistributionCategory()
+      const res = await updateDistributionCategory({
         urlParams: { id: distributionCategoryOneStore.distributionCategory.id },
-        object: distributionCategory.value,
+        body: distributionCategory.value,
       })
+      syncUserAndTimeTracking(distributionCategoryOneStore.distributionCategory, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/distribution-categories' })
+      push({ name: '/(coreDam)/distribution-categories' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -239,25 +276,24 @@ export const useDistributionCategoryEditActions = () => {
 }
 
 export const useDistributionCategorySelectActions = () => {
-  const mapToValueObjectOption = (categories: DistributionCategory[]): ValueObjectOption<DocId>[] => {
-    return categories.map((category: DistributionCategory) => ({
+  const mapToValueObjectOption = (categories: DistributionCategory[]): ValueObjectOption<DocId>[] =>
+    categories.map((category: DistributionCategory) => ({
       title: category.name,
       value: category.id,
     }))
-  }
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const { executeFetch } = useFetchDistributionCategoryList()
+    const { execute } = useFetchDistributionCategoryList()
     return mapToValueObjectOption(
-      await executeFetch(pagination, filterData, filterConfig, {
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
   }
 
   const fetchItemsByIds = async (ids: DocId[]) => {
-    const { executeFetch } = useFetchDistributionCategoryListByIds()
-    return mapToValueObjectOption(await executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } }))
+    const { execute } = useFetchDistributionCategoryListByIds()
+    return mapToValueObjectOption(await execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } }))
   }
 
   return {

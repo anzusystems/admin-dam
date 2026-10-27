@@ -1,15 +1,25 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
+import {
+  AFormRemoteAutocomplete,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  ASystemEntityScope,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+} from '@anzusystems/common-admin'
+import { provide } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AFormTextField, AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
-import { useVoiceFamilyEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
-import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
-import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
-import { useLanguage } from '@/domains/coreDam/voiceFamily/valueObject/Language'
+
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
+import { useVoiceFamilyEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
+import { useVoiceFamilyValidation } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyValidation'
+import { useLanguage } from '@/domains/coreDam/voiceFamily/valueObject/Language'
+import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { voiceFamily } = useVoiceFamilyEditActions()
 
@@ -91,6 +101,7 @@ const { t } = useI18n()
             data-cy="voice-family-is-active"
           />
         </ARow>
+        <DamTrackingFields :data="voiceFamily" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

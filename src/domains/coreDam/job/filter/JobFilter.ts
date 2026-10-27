@@ -1,4 +1,6 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const filterFields = [
@@ -38,13 +40,8 @@ const filterFields = [
 const listFiltersStore = createFilterStore(filterFields)
 
 export function useJobListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, listFiltersStore, {
+  return createFilter(filterFields, listFiltersStore, {
     system: SYSTEM_CORE_DAM,
     subject: 'job',
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

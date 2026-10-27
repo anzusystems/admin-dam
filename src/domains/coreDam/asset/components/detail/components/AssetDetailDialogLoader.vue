@@ -1,11 +1,23 @@
 <script setup lang="ts">
-import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useTheme } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
-const emit = defineEmits<{
-  (e: 'closeDialog'): void
-}>()
+/*
+ * Detail bar shown while the asset loads. It knows no list.
+ * The parent passes what its bar has: list navigation buttons, which one is
+ * disabled, the asset position and name. Clicks are emitted as that bar would.
+ */
+withDefaults(
+  defineProps<{
+    walksList: boolean
+    prevDisabled: boolean
+    nextDisabled: boolean
+    totalCountText: string
+    title?: string
+  }>(),
+  { title: '' }
+)
+const emit = defineEmits<{ closeDialog: []; prevItem: []; nextItem: [] }>()
 
 const { t } = useI18n()
 
@@ -14,17 +26,6 @@ const { toolbarColor } = useTheme()
 const closeDialog = () => {
   emit('closeDialog')
 }
-
-const assetListStore = useAssetListStore()
-const assetDetailStore = useAssetDetailStore()
-const { pagination } = useAssetListActions() // todo
-
-const totalCountText = computed(() => {
-  if (!assetListStore.activeItemIndex) return ''
-  return (
-    assetListStore.activeItemIndex + 1 + ' / ' + assetListStore.list.length + (pagination.value.hasNextPage ? '+' : '')
-  )
-})
 </script>
 
 <template>
@@ -34,16 +35,18 @@ const totalCountText = computed(() => {
         :color="toolbarColor"
         density="compact"
         :height="64"
-        class="system-border-b"
+        class="border-b"
       >
-        <div v-if="assetDetailStore.view === 'list'">
+        <div v-if="walksList">
           <VBtn
+            :aria-label="t('coreDam.asset.list.prev')"
             variant="text"
             icon
             class="mx-1"
             :width="36"
             :height="36"
-            @click.stop=""
+            :disabled="prevDisabled"
+            @click.stop="emit('prevItem')"
           >
             <VIcon icon="mdi-chevron-left" />
             <VTooltip
@@ -54,12 +57,14 @@ const totalCountText = computed(() => {
             </VTooltip>
           </VBtn>
           <VBtn
+            :aria-label="t('coreDam.asset.list.next')"
             variant="text"
             icon
             class="mr-2"
             :width="36"
             :height="36"
-            @click.stop=""
+            :disabled="nextDisabled"
+            @click.stop="emit('nextItem')"
           >
             <VIcon icon="mdi-chevron-right" />
             <VTooltip
@@ -71,16 +76,21 @@ const totalCountText = computed(() => {
           </VBtn>
         </div>
         <div
-          v-if="assetDetailStore.view === 'list'"
           class="text-label-large d-flex"
+          :class="{ 'pl-2': !walksList }"
         >
-          <div class="pr-4">
+          <div
+            v-if="walksList"
+            class="pr-4"
+          >
             {{ totalCountText }}
           </div>
+          <div v-if="title">{{ title }}</div>
         </div>
         <VSpacer />
         <div>
           <VBtn
+            :aria-label="t('common.button.close')"
             icon
             variant="text"
             :width="36"
@@ -89,6 +99,12 @@ const totalCountText = computed(() => {
             @click.stop="closeDialog"
           >
             <VIcon icon="mdi-close" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.close') }}
+            </VTooltip>
           </VBtn>
         </div>
       </VToolbar>

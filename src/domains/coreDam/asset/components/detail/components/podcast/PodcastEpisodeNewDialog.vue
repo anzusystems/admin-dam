@@ -1,20 +1,32 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextarea, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import {
+  ADialogToolbar,
+  AFormTextField,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  defineRecordSave,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
+import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
 import {
   ENTITY,
   useCreatePodcastEpisode,
   usePrepareFormDataPodcastEpisode,
 } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
-import PodcastRemoteAutocomplete from '@/domains/coreDam/podcast/components/PodcastRemoteAutocomplete.vue'
+import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     dataCy?: string
     assetId: DocId
   }>(),
@@ -22,28 +34,27 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-  (e: 'reloadList'): void
-}>()
+const emit = defineEmits<{ reloadList: [] }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 const value = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
 const { createDefault } = usePodcastEpisodeFactory()
 const podcastEpisode = ref<PodcastEpisode>(createDefault(currentExtSystemId.value))
 
-const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
-const { executeRequest: prepareFormDataPodcastEpisode } = usePrepareFormDataPodcastEpisode()
+const { execute: createPodcastEpisode } = useCreatePodcastEpisode()
+const { execute: prepareFormDataPodcastEpisode } = usePrepareFormDataPodcastEpisode()
 
 const saving = ref(false)
 const loadingFormData = ref(false)
@@ -55,24 +66,11 @@ const closeDialog = (reloadList = false) => {
   if (reloadList) emit('reloadList')
 }
 
-const submit = async () => {
-  try {
-    saving.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      saving.value = false
-      return
-    }
-    await createPodcastEpisode({ object: podcastEpisode.value })
-    showRecordWas('created')
-    closeDialog(true)
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saving.value = false
-  }
-}
+const submit = defineRecordSave(saving, v$, async () => {
+  await createPodcastEpisode({ body: podcastEpisode.value })
+  showRecordWas('created')
+  closeDialog(true)
+})
 
 const loadFormData = async () => {
   if (!podcastEpisode.value.podcast) return
@@ -90,9 +88,7 @@ const loadFormData = async () => {
   loadingFormData.value = false
 }
 
-const podcastEpisodePodcast = computed(() => {
-  return podcastEpisode.value.podcast
-})
+const podcastEpisodePodcast = computed(() => podcastEpisode.value.podcast)
 
 watch(podcastEpisodePodcast, (newValue, oldValue) => {
   if (newValue !== oldValue && !isNull(newValue)) {
@@ -111,7 +107,7 @@ onMounted(async () => {
     :width="500"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog(false)">
+      <ADialogToolbar @cancel="closeDialog(false)">
         {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
       </ADialogToolbar>
       <VCardText>

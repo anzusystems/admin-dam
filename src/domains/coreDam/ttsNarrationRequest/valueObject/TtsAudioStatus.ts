@@ -1,10 +1,9 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
-import {
-  TtsAudioStatus,
-  type TtsAudioStatusType,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+
+import { TtsAudioStatus } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type { TtsAudioStatusType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 
 export function useTtsAudioStatus() {
   const { t } = useI18n()
@@ -29,9 +28,8 @@ export function useTtsAudioStatus() {
     },
   ])
 
-  const getTtsAudioStatusOption = (value: TtsAudioStatusType) => {
-    return ttsAudioStatusOptions.value.find((item) => item.value === value)
-  }
+  const getTtsAudioStatusOption = (value: TtsAudioStatusType) =>
+    ttsAudioStatusOptions.value.find((item) => item.value === value)
 
   return {
     ttsAudioStatusOptions,

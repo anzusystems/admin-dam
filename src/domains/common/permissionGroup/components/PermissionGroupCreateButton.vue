@@ -4,12 +4,19 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  type PermissionGroup,
+  defineRecordSave,
+  isUndefined,
+  useAlerts,
+  usePageNavigation,
   usePermissionGroupFactory,
 } from '@anzusystems/common-admin'
+import type { PermissionGroup } from '@anzusystems/common-admin'
+import type { AxiosInstance } from 'axios'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { ENTITY, useCreatePermissionGroup } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 import { usePermissionGroupValidation } from '@/domains/common/permissionGroup/composables/permissionGroupValidations'
-import type { AxiosInstance } from 'axios'
 
 const props = withDefaults(
   defineProps<{
@@ -28,12 +35,10 @@ const props = withDefaults(
     disabled: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'afterCreate', data: PermissionGroup): void
-}>()
+const emit = defineEmits<{ afterCreate: [data: PermissionGroup] }>()
 
 const { createPermissionGroup } = usePermissionGroupFactory()
-const { executeRequest: apiCreatePermissionGroup } = useCreatePermissionGroup()
+const { execute: apiCreatePermissionGroup } = useCreatePermissionGroup()
 const permissionGroup = ref<PermissionGroup>(createPermissionGroup())
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -47,33 +52,20 @@ const onCancel = () => {
   dialog.value = false
 }
 
-const router = useRouter()
+const { push } = usePageNavigation()
 const { v$ } = usePermissionGroupValidation(permissionGroup)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
-const onConfirm = async () => {
-  try {
-    buttonLoading.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      buttonLoading.value = false
-      return
-    }
-    const res = await apiCreatePermissionGroup({ object: permissionGroup.value })
-    emit('afterCreate', res)
-    showRecordWas('created')
-    dialog.value = false
-    if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
-    }
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    buttonLoading.value = false
+const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
+  const res = await apiCreatePermissionGroup({ body: permissionGroup.value })
+  emit('afterCreate', res)
+  showRecordWas('created')
+  dialog.value = false
+  if (!isUndefined(res.id) && !props.disableRedirect) {
+    push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
   }
-}
+})
 </script>
 
 <template>
@@ -93,7 +85,7 @@ const onConfirm = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('common.permissionGroup.meta.create') }}
       </ADialogToolbar>
       <VCardText>

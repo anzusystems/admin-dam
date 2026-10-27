@@ -1,19 +1,23 @@
 <script lang="ts" setup>
-import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import {
   AChipNoLink,
+  ADamAssetImage,
+  ADamAssetImageMetaIcons,
   ADatetime,
   ATableCopyIdButton,
   ATableEditButton,
   prettyBytes,
   useDamCachedUsers,
 } from '@anzusystems/common-admin'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import type { DocId } from '@anzusystems/common-admin'
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
-import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -27,10 +31,10 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'showDetail', data: { assetId: DocId; index: number }): void
-  (e: 'itemClick', data: { assetId: DocId; index: number }): void
-  (e: 'toggleSelected', data: { assetId: DocId; index: number }): void
-  (e: 'selectMultiple', data: { assetId: DocId; index: number }): void
+  showDetail: [data: { assetId: DocId; index: number }]
+  itemClick: [data: { assetId: DocId; index: number; tile: Element | null }]
+  toggleSelected: [data: { assetId: DocId; index: number }]
+  selectMultiple: [data: { assetId: DocId; index: number }]
 }>()
 
 const { t } = useI18n()
@@ -49,8 +53,9 @@ const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
 }
 
-const onItemClick = () => {
-  emit('itemClick', { assetId: asset.value.id, index: props.index })
+// Pass the clicked element so a double click started on it can be told from one started elsewhere.
+const onItemClick = (event: MouseEvent) => {
+  emit('itemClick', { assetId: asset.value.id, index: props.index, tile: event.currentTarget as Element | null })
 }
 
 const toggleSelected = () => {
@@ -81,6 +86,7 @@ onMounted(() => {
     <td>
       <div class="d-flex a-table__row--toggle">
         <VCheckboxBtn
+          :aria-label="t('coreDam.asset.list.toggleSelect')"
           :model-value="item.selected"
           @click.stop="toggleSelected"
         />
@@ -88,7 +94,7 @@ onMounted(() => {
     </td>
     <td>
       <div class="d-flex align-center">
-        <AssetImage
+        <ADamAssetImage
           :asset-type="assetType"
           :asset-status="assetStatus"
           :src="tableImageProperties.url"
@@ -108,17 +114,17 @@ onMounted(() => {
       <ADatetime :date-time="item.asset.createdAt" />
     </td>
     <td>
-      <AssetImageMetaIcons
+      <ADamAssetImageMetaIcons
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         disable-absolute
+        show-tts
       />
       <CachedPodcastChip
         v-for="podcastItem in item.asset.podcasts"
         :id="podcastItem"
         :key="podcastItem"
         class="pr-1"
-        :item="podcastItem"
       />
     </td>
     <td>
@@ -142,10 +148,16 @@ onMounted(() => {
     <td>
       <div class="d-flex justify-end">
         <ATableCopyIdButton :id="asset.id" />
+        <!--
+          A link, so the router or browser handles its clicks. A plain click opens
+          the detail page. A modifier key or another button opens it elsewhere.
+          The list ignores both, and a double click here is two link clicks, not the row's double click.
+        -->
         <ATableEditButton
           :record-id="asset.id"
           :route-name="'/(coreDam)/assets/[id]'"
-          @click.stop="showDetail"
+          @click.stop=""
+          @dblclick.stop=""
         />
       </div>
     </td>

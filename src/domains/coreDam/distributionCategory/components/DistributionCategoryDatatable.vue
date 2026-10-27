@@ -1,30 +1,27 @@
 <script lang="ts" setup>
-import { ACL, useAuth } from '@/domains/system/auth/auth'
-import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import DistributionCategoryFilter from '@/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
-import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
-import DistributionCategorySelectedOptionChip from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
   createDatatableColumnsConfig,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import { useDebounceFn } from '@vueuse/core'
+} from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import DistributionCategoryFilter from '@/domains/coreDam/distributionCategory/components/DistributionCategoryFilter.vue'
+import { useDistributionCategoryListActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryListFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import DistributionCategorySelectedOptionChip from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectedOptionChip.vue'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DistributionCategory
 
@@ -40,21 +37,18 @@ const props = withDefaults(
 const router = useRouter()
 
 const { filterData, filterConfig } = useDistributionCategoryListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useDistributionCategoryListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination('createdAt')
-provide(DatatablePaginationKey, pagination)
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 
 const distributionServicesTableColumns = computed(() =>
   props.distributionServiceSlugs.map((serviceSlug) => ({ key: serviceSlug, title: serviceSlug }))
@@ -70,40 +64,27 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
 
 const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
-    ...[{ key: 'id' }, { key: 'name' }, { key: 'type' }],
+    { key: 'id' },
+    { key: 'name' },
+    { key: 'type' },
 
+    // createDatatableColumnsConfig takes a plain ColumnConfig[], not a ref, so the columns
+    // are fixed at setup by its signature.
+    // eslint-disable-next-line vue/no-ref-object-reactivity-loss
     ...distributionServicesTableColumns.value,
-    ...[{ key: 'createdAt' }, { key: 'modifiedAt' }],
+    { key: 'createdAt' },
+    { key: 'modifiedAt' },
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
   ENTITY
 )
 
-const sortByChange = () => {
-  filterConfig.touched = false
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
-
 defineExpose({
   refresh: getList,
 })
 
-const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => {
-  return 'item.' + distributionServiceSlug
-}
+const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 'item.' + distributionServiceSlug
 </script>
 
 <template>
@@ -129,7 +110,6 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template
@@ -166,10 +146,7 @@ const dynamicDistributionServiceSlugSlot = (distributionServiceSlug: string) => 
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

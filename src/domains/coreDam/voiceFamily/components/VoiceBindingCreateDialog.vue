@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import useVuelidate from '@vuelidate/core'
 import { ACreateDialog } from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import VoiceManage from '@/domains/coreDam/voiceFamily/components/VoiceManage.vue'
+import { useVoiceCreateActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
 import { useVoiceKindFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFactory'
 import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { VoiceDiscriminatorDefault } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceCreateActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
-import VoiceManage from '@/domains/coreDam/voiceFamily/components/VoiceManage.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -22,9 +23,7 @@ const props = withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'onSuccess', data: Voice): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: Voice] }>()
 
 const { t } = useI18n()
 const { createVoiceKind } = useVoiceKindFactory()
@@ -51,9 +50,9 @@ const create = (): Promise<Voice> => createVoice(voice.value)
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="600"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.voice.meta.create') }}

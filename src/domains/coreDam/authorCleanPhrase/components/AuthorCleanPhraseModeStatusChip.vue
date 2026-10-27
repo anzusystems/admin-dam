@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import {
-  type AuthorCleanPhraseModeType,
-  useAuthorCleanPhraseModeTypes,
-} from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
+import { computed } from 'vue'
+
+import { useAuthorCleanPhraseModeTypes } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
+import type { AuthorCleanPhraseModeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
 
 const props = withDefaults(
   defineProps<{
@@ -13,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getAuthorCleanPhraseModeOption } = useAuthorCleanPhraseModeTypes()
-const statusOption = computed(() => {
-  return getAuthorCleanPhraseModeOption(props.status)
-})
+const statusOption = computed(() => getAuthorCleanPhraseModeOption(props.status))
 </script>
 
 <template>

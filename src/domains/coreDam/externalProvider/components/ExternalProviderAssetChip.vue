@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import { useExternalProviderAssetType } from '@/domains/coreDam/externalProvider/valueObject/ExternalProviderAssetType'
 
 const props = defineProps<{
@@ -7,9 +9,7 @@ const props = defineProps<{
 
 const { getExternalProviderAssetTypeOption } = useExternalProviderAssetType()
 
-const item = computed(() => {
-  return getExternalProviderAssetTypeOption(props.providerName)
-})
+const item = computed(() => getExternalProviderAssetTypeOption(props.providerName))
 </script>
 
 <template>

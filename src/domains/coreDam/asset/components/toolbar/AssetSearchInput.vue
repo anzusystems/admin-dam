@@ -1,24 +1,21 @@
 <script lang="ts" setup>
-const props = withDefaults(
-  defineProps<{
-    modelValue: string | null
-  }>(),
-  {}
-)
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string): void
-  (e: 'submit'): void
-}>()
+withDefaults(defineProps<{}>(), {})
+
+const emit = defineEmits<{ submit: [] }>()
+
+const modelValue = defineModel<string | null>({ required: true })
 
 const { t } = useI18n()
 
 const modelValueComputed = computed({
   get() {
-    return props.modelValue ?? ''
+    return modelValue.value ?? ''
   },
   set(newValue: string) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 </script>
@@ -35,9 +32,18 @@ const modelValueComputed = computed({
     clearable
   >
     <template #append-inner>
+      <!--
+        Enter triggers a button on keydown and Space on keyup. Neither
+        key reaches the field or its form, so the search runs once.
+      -->
       <VIcon
+        :aria-label="t('system.mainBar.search')"
         icon="mdi-magnify"
         @click="emit('submit')"
+        @keydown.enter.prevent.stop="emit('submit')"
+        @keyup.enter.prevent.stop
+        @keydown.space.prevent.stop
+        @keyup.space.prevent.stop="emit('submit')"
       />
     </template>
   </VTextField>
@@ -45,7 +51,7 @@ const modelValueComputed = computed({
 
 <style lang="scss" scoped>
 @use 'sass:map';
-@use 'vuetify/lib/styles/settings/_variables.scss' as vars;
+@use 'vuetify/lib/styles/settings/variables' as vars;
 
 .v-text-field--pill {
   min-width: 120px;

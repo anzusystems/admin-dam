@@ -1,27 +1,41 @@
+<script lang="ts">
+/*
+ * File ids whose address is being requested. Module-level because a redrawn row is a new instance.
+ * Per-row state let a press in the new row open a second tab and request again.
+ */
+const downloadsOnTheirWay = new Set<string>()
+</script>
+
 <script setup lang="ts">
+import {
+  ADamAssetFileFailReasonChip,
+  AssetFileProcessStatus,
+  DamAssetType,
+  UploadQueueItemStatus,
+  assetFileIsVideoFile,
+  isUndefined,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { AssetFileFailReasonType, DamAssetTypeType, DocId, UploadQueueItem } from '@anzusystems/common-admin'
+import { useClipboard } from '@vueuse/core'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { fileDownloadLink } from '@/domains/coreDam/asset/api/fileApi'
-import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileDuplicateChip from '@/domains/coreDam/asset/components/AssetFileDuplicateChip.vue'
-import AssetFileFailReasonChip from '@/domains/coreDam/asset/components/AssetFileFailReasonChip.vue'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
-import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import AssetSlotListItemDuplicate from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemDuplicate.vue'
 import AssetSlotListItemRemove from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemRemove.vue'
 import AssetSlotListItemSwitch from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItemSwitch.vue'
+import ImageFile from '@/domains/coreDam/asset/components/ImageFile.vue'
+import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
+import { openTabForAddress } from '@/domains/coreDam/asset/composables/assetInNewTab'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
-import {
-  type AssetFileFailReasonType,
-  assetFileIsVideoFile,
-  AssetFileProcessStatus,
-  DamAssetType,
-  type DamAssetTypeType,
-  type UploadQueueItem,
-  UploadQueueItemStatus,
-} from '@anzusystems/common-admin'
-import { useClipboard } from '@vueuse/core'
+import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -39,20 +53,23 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'removeFile', fileId: DocId): void
-  (e: 'makeMainFile', fileId: DocId): void
-  (e: 'unsetSlot', data: { fileId: DocId; slotName: string }): void
-  (e: 'duplicateSlot', data: { fileId: DocId; targetSlotName: string }): void
-  (e: 'switchSlot', data: { sourceSlotName: string; targetSlotName: string }): void
-  (e: 'refreshList'): void
+  removeFile: [fileId: DocId]
+  makeMainFile: [fileId: DocId]
+  unsetSlot: [data: { fileId: DocId; slotName: string }]
+  duplicateSlot: [data: { fileId: DocId; targetSlotName: string }]
+  switchSlot: [data: { sourceSlotName: string; targetSlotName: string }]
+  refreshList: []
 }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const uploadQueuesStore = useUploadQueuesStore()
+const { can, canForAll } = useAuth()
 
-const itemHasFile = computed(() => {
-  return props.item && props.item.assetFile
-})
+const canUpdateAssetAndFile = computed(() => canForAll([ACL.DAM_ASSET_UPDATE, assetTypeAcl(props.assetType, 'update')]))
+
+const itemHasFile = computed(() => props.item && props.item.assetFile)
 
 const fileTitle = computed(() => {
   if (!props.item || !props.item.assetFile) return ''
@@ -61,26 +78,15 @@ const fileTitle = computed(() => {
     : props.item.assetFile.id
 })
 
+// Item and index together, from one lookup, so they cannot drift apart: the row is rendered with
+// the index and the progress from the item, and both have to mean the same upload.
 const uploadQueueItemInAnyProgress = computed(() => {
-  const item = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
-  if (item && item.status !== UploadQueueItemStatus.Uploaded) return item
+  const found = uploadQueuesStore.getQueueItemForSlotItem(QUEUE_ID_UPLOAD_SLOTS, props.slotName, props.assetId)
+  if (found && found.item.status !== UploadQueueItemStatus.Uploaded) return found
   return undefined
 })
 
-const uploadQueueItemInAnyProgressIndex = computed(() => {
-  if (isUndefined(uploadQueueItemInAnyProgress.value)) return -1
-  return uploadQueuesStore
-    .getQueueItems(QUEUE_ID_UPLOAD_SLOTS)
-    .findIndex(
-      (item) =>
-        item.assetId === uploadQueueItemInAnyProgress.value?.assetId &&
-        item.slotName === uploadQueueItemInAnyProgress.value?.slotName
-    )
-})
-
-const statusComputed = computed(() => {
-  return props.item?.assetFile?.fileAttributes.status
-})
+const statusComputed = computed(() => props.item?.assetFile?.fileAttributes.status)
 
 const routableAssetFile = computed(() => {
   if (props.item?.assetFile && !assetFileIsVideoFile(props.item.assetFile)) return props.item.assetFile
@@ -98,14 +104,32 @@ const removeAssetFile = () => {
   emit('removeFile', props.item.assetFile.id)
 }
 
+const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
+const { showSuccess, showErrorsDefault, showUnknownError } = useAlerts()
+
+/*
+ * The address is fetched on each press because it is signed for a limited time.
+ * The tab is opened at the press: browsers may silently block a tab opened after the request.
+ */
+// While the address is asked for, a second press opens no second tab and asks nothing.
 const downloadFile = async () => {
   if (!props.item || !props.item.assetFile) return
-  const res = await fileDownloadLink(props.assetType, props.item.assetFile.id)
-  window.open(res.link)
+  const fileId = props.item.assetFile.id
+  if (downloadsOnTheirWay.has(fileId)) return
+  const tab = openTabForAddress()
+  if (!tab.opened) return
+  downloadsOnTheirWay.add(fileId)
+  try {
+    const res = await fileDownloadLink(props.assetType, fileId)
+    tab.show(res.link)
+  } catch (e) {
+    tab.close()
+    // Shows the server's refusal reason, otherwise an unknown error.
+    if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    downloadsOnTheirWay.delete(fileId)
+  }
 }
-
-const { copy, isSupported: clipboardCopyIsSupported } = useClipboard()
-const { showSuccess } = useAlerts()
 
 const copyFileId = async () => {
   if (!props.item || !props.item.assetFile) return
@@ -134,7 +158,7 @@ const switchSlot = (targetName: string) => {
 }
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
 }
 </script>
 
@@ -147,10 +171,9 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
         </div>
         <div class="dam-upload-queue dam-upload-queue--list w-100 h-100 d-block">
           <AssetQueueItemList
-            v-if="uploadQueueItemInAnyProgressIndex > -1"
-            :key="uploadQueueItemInAnyProgress.key"
-            :index="uploadQueueItemInAnyProgressIndex"
-            :item="uploadQueueItemInAnyProgress"
+            :key="uploadQueueItemInAnyProgress.item.key"
+            :index="uploadQueueItemInAnyProgress.index"
+            :item="uploadQueueItemInAnyProgress.item"
             :queue-id="QUEUE_ID_UPLOAD_SLOTS"
             @cancel-item="cancelItem"
           />
@@ -167,7 +190,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           />
           <div v-if="statusComputed === AssetFileProcessStatus.Failed">
             {{ t('coreDam.distribution.common.failReason') }}:
-            <AssetFileFailReasonChip
+            <ADamAssetFileFailReasonChip
               class="ml-2"
               :reason="item?.assetFile?.fileAttributes.failReason as AssetFileFailReasonType"
             />
@@ -179,6 +202,7 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :asset-file="routableAssetFile"
           :asset-type="assetType"
           :title="title"
+          :is-main-file="item.main"
           @main-route-changed="emit('refreshList')"
         />
         <ImageFile
@@ -207,9 +231,11 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
           :slot-name="slotName"
           :multiple="false"
           :asset-type="assetType"
+          :disabled="assetDetailStore.isDeleting"
         />
         <VBtn
           v-if="itemHasFile"
+          :aria-label="t('coreDam.asset.slots.actions.slotOptions')"
           variant="text"
           icon
           size="small"
@@ -233,25 +259,37 @@ const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: strin
                   data-cy="button-slot-download"
                   @click.stop="downloadFile"
                 />
+                <!--
+                  Only for a processed file. The server accepts any file, which
+                  could leave a main file with no image or one still processing.
+                -->
                 <VListItem
-                  v-if="totalSlotCount > 1 && item && !item.main"
+                  v-if="
+                    totalSlotCount > 1 &&
+                    item &&
+                    !item.main &&
+                    canUpdateAssetAndFile &&
+                    statusComputed === AssetFileProcessStatus.Processed
+                  "
                   :title="t('coreDam.asset.slots.actions.makeMainFile')"
+                  :disabled="assetDetailStore.isDeleting"
                   @click.stop="makeMainFile"
                 />
                 <AssetSlotListItemDuplicate
-                  v-if="totalSlotCount > 1"
+                  v-if="totalSlotCount > 1 && canUpdateAssetAndFile"
                   :item="item"
                   :file-title="fileTitle"
                   @duplicate-slot="duplicateSlot"
                 />
                 <AssetSlotListItemSwitch
-                  v-if="totalSlotCount > 1"
+                  v-if="totalSlotCount > 1 && can(ACL.DAM_ASSET_UPDATE)"
                   :item="item"
                   :file-title="fileTitle"
                   @switch-slot="switchSlot"
                 />
                 <AssetSlotListItemRemove
                   :item="item"
+                  :asset-type="assetType"
                   :file-title="fileTitle"
                   @remove-file="removeAssetFile"
                   @unset-slot="unsetSlot"

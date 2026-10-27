@@ -1,23 +1,22 @@
 <script lang="ts" setup>
-import FilterClosestColor from '@/domains/coreDam/shared/components/FilterClosestColor.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useAssetStatus } from '@/domains/coreDam/asset/valueObject/DamAssetStatus'
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { useImageOrientation } from '@/domains/coreDam/asset/valueObject/ImageOrientation'
-import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
-import DistributionServiceNameFilter from '@/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue'
 import {
-  DamAuthorFilterRemoteAutocomplete,
-  DamKeywordFilterRemoteAutocomplete,
-  DamUserFilterRemoteAutocomplete,
-} from '@anzusystems/common-admin'
-import {
+  ADamAuthorFilterRemoteAutocomplete,
+  ADamKeywordFilterRemoteAutocomplete,
+  ADamUserFilterRemoteAutocomplete,
   AFilterBooleanSelect,
   AFilterInteger,
   AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+
+import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetStatus } from '@/domains/coreDam/asset/valueObject/DamAssetStatus'
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { useImageOrientation } from '@/domains/coreDam/asset/valueObject/ImageOrientation'
+import FilterClosestColor from '@/domains/coreDam/shared/components/FilterClosestColor.vue'
+import DistributionServiceNameFilter from '@/domains/coreDam/shared/distribution/components/DistributionServiceNameFilter.vue'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 
 const { assetTypeOptions } = useAssetType()
@@ -39,7 +38,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamKeywordFilterRemoteAutocomplete
+      <ADamKeywordFilterRemoteAutocomplete
         name="keywordIds"
         :ext-system="currentExtSystemId"
       />
@@ -47,7 +46,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamAuthorFilterRemoteAutocomplete
+      <ADamAuthorFilterRemoteAutocomplete
         name="authorIds"
         :ext-system="currentExtSystemId"
       />
@@ -55,7 +54,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <DamUserFilterRemoteAutocomplete name="createdByIds" />
+      <ADamUserFilterRemoteAutocomplete name="createdByIds" />
     </VCol>
   </VRow>
   <VRow>
@@ -214,6 +213,15 @@ const { currentExtSystemId } = useCurrentExtSystem()
       <AFilterTimeInterval
         name-from="createdAtFrom"
         name-until="createdAtUntil"
+        :allowed="allowedTimeIntervalValuesSubject"
+      />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>
+      <AFilterTimeInterval
+        name-from="uploadedAtFrom"
+        name-until="uploadedAtUntil"
         :allowed="allowedTimeIntervalValuesSubject"
       />
     </VCol>

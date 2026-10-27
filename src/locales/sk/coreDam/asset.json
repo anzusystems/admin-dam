@@ -44,22 +44,13 @@
     "slotsCountUntil": "Počet slotov do",
     "createdAtFrom": "Vytvorené od - do",
     "createdAtUntil": "Vytvorené do",
+    "uploadedAtFrom": "Nahraté od",
+    "uploadedAtUntil": "Nahraté do",
     "mainFileSingleUse": "Jednorazová licencia",
     "mainFileInternal": "Interný"
   },
   "meta": {
     "createEmpty": "Vytvoriť prázdny asset"
-  },
-  "metaIcons": {
-    "low": "Nízka kvalita",
-    "slots": "Sloty",
-    "rss": "RSS",
-    "tts": "Syntetické (TTS)",
-    "fullHd": "FullHD",
-    "2k": "2K",
-    "qhd": "QHD",
-    "4k": "4K",
-    "8k": "8K"
   },
   "filterTitle": "Filter",
   "noItemsFound": "Žiadne nájdené assety",
@@ -79,13 +70,17 @@
     "withFile": "Obsahuje súbor",
     "deleting": "Vymazávaný"
   },
-  "assetFileFailReason": {
-    "none": "Žiadny",
-    "unknown": "Neznámy",
-    "invalidChecksum": "Neplatný kontrolný súčet",
-    "invalidMimeType": "Neplatný typ súboru",
-    "downloadFailed": "Sťahovanie zlyhalo",
-    "invalidSize": "Neplatná veľkosť"
+  "color": {
+    "red": "Červená",
+    "yellow": "Žltá",
+    "blue": "Modrá",
+    "orange": "Oranžová",
+    "green": "Zelená",
+    "purple": "Fialová",
+    "white": "Biela",
+    "black": "Čierna",
+    "pink": "Ružová",
+    "brown": "Hnedá"
   },
   "imageOrientation": {
     "landscape": "šírkový",
@@ -122,6 +117,7 @@
     "next": "Nasledujúci asset",
     "refresh": "Znovu načítať zoznam"
   },
+  "newTabBlocked": "Prehliadač neotvoril novú kartu. Povoľte pre túto stránku vyskakovacie okná a skúste znova.",
   "detail": {
     "incorrectId": "Nesprávne ID assetu alebo neoprávnený prístup",
     "licenceMismatch": "Aktívna licencia a licencia assetu sa nezhodujú",
@@ -131,6 +127,10 @@
       "hide": "Zobraziť viac detailov"
     },
     "noAssetSelected": "Žiadne vybrané assety",
+    "fileStillProcessing": "Súbor sa ešte spracúva. Uložiť pôjde po spracovaní; asset potom otvorte znova.",
+    "fileFailedOpenAgain": "Spracovanie súboru zlyhalo. Uložiť pôjde po novom otvorení assetu.",
+    "fileProcessedOpenAgain": "Súbor je spracovaný. Uložiť bude možné po novom otvorení detailu.",
+    "deletedMeanwhile": "Asset bol medzitým zmazaný.",
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
@@ -183,6 +183,7 @@
       "title": "Náhľady",
       "description": "Náhľady sú určené pre hlavný obrázok v článku, zoznamy článkov, titulky a rubriky. V tele článku sa zobrazuje formát bez orezania.",
       "refresh": "Znovu načítať náhľady",
+      "slotWithoutImage": "Slot nemá obrázok.",
       "rotate": {
         "rotateMainFileImage": "Otočenie obrázka (hlavného súboru)",
         "rotateClockwise": "Otočiť doprava",
@@ -207,6 +208,7 @@
   },
   "selected": {
     "selectedFiles": "Vybrané súbory",
+    "remove": "Odobrať z výberu",
     "edit": "Upraviť",
     "clear": "Vyčistiť",
     "more": "Viac detailov",
@@ -221,14 +223,7 @@
     "saveAndClose": "Uložiť a ukončiť"
   },
   "massOperations": {
-    "title": "Hromadné operácie",
-    "description": "Hromadná úprava metaúdajov. Ak chcete upravovať metaúdaje po riadkoch, použite tlačidlo vedľa riadka. Ak chcete upraviť všetky riadky naraz, použite tlačidlá úplne dole.",
-    "fillOneEmpty": "Vyplňte prázdne pole",
-    "fillAllEmpty": "Vyplniť len prázdne",
-    "replaceOne": "Nahradiť všade",
-    "replaceAll": "Nahradiť všetko",
-    "clearForm": "Vyčistiť",
-    "general": "Hlavné"
+    "title": "Hromadné operácie"
   },
   "externalProvider": {
     "importToDam": "Nahrať do ADAM",
@@ -239,10 +234,7 @@
   "queueItem": {
     "edit": "Upraviť",
     "duplicate": "Duplikát",
-    "viewOriginal": "Zobraziť originál",
-    "displayTitle": "Názov originálu",
-    "error": "Chyba",
-    "copyAssetId": "Kopírovať asset ID"
+    "viewOriginal": "Zobraziť originál"
   },
   "assetFilePublicLink": {
     "model": {
@@ -280,6 +272,7 @@
     "remove": {
       "descriptionBothOptions": "Súbor sa používa vo viacerých slotoch. Chcete zrušiť nastavenie súboru iba z vybraného slotu alebo súbor natrvalo odstrániť?",
       "descriptionOnlyRemove": "Súbor bude natrvalo odstránený zo systému. Chcete pokračovať?",
+      "descriptionOnlyUnset": "Súbor sa používa vo viacerých slotoch. Chcete zrušiť nastavenie súboru z vybraného slotu?",
       "removeFile": "Odstrániť súbor natrvalo",
       "unsetSlot": "Odstrániť len prepojenie z daného slotu"
     },

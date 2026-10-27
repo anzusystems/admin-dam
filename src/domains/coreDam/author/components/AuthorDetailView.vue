@@ -1,33 +1,40 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAuthorDetailActions } from '@/domains/coreDam/author/composables/authorActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AuthorDetail from '@/domains/coreDam/author/components/AuthorDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useAuthorDetailActions } from '@/domains/coreDam/author/composables/authorActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, author } = useAuthorDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
-    {
-      title: author.value.name || t('breadcrumb.coreDam.author.detail'),
-      routeName: '/(coreDam)/authors/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+  {
+    title: author.value.name || t('breadcrumb.coreDam.author.detail'),
+    routeName: '/(coreDam)/authors/[id]',
+  },
+])
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/authors',
+  skipRouteNames: ['/(coreDam)/authors/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -45,7 +52,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/authors/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/authors'"
+        :skip-route-names="['/(coreDam)/authors/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 
