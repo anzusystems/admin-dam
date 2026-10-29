@@ -2,6 +2,10 @@
 # Script used to run build in the application container
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+ARGS="$*"
+RUN_YARN_INSTALL=true
+CLEAR_VITE_DEPS=false
+
 cd "${PROJECT_ROOT}" || exit 1
 # Initialize default variables
 # shellcheck disable=SC1091
@@ -11,14 +15,52 @@ cd "${PROJECT_ROOT}" || exit 1
 . ./bin/docker-libfunctions
 docker_env_vars
 
+function help() {
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
+    \nBash script used to build app in the application container.
+
+    Options:
+        -ni | --no-install (Optional) Run build without 'yarn install'
+
+    Examples:
+        $(printf %q "${BASH_SOURCE[0]}") --no-install
+    \n"
+}
+
+# Go through all command line arguments and setup variables accordingly
+while [ "$#" -gt 0 ]; do
+    case $1 in
+    -ni | --no-install)
+        RUN_YARN_INSTALL=false
+        CLEAR_VITE_DEPS=true
+        shift 1
+        continue
+        ;;
+    -h | --help)
+        help
+        exit
+        ;;
+    *)
+        echo "[WARN] Unknown command line switch: $1"
+        shift 1
+        ;;
+    esac
+done
+
 if [ -f /.dockerenv ]; then
     env-config
-    echo "[INFO] Starting yarn install"
-    yes | yarn install || exit 1
-    echo "[INFO] Starting yarn build"
-    yarn build || exit 1
+    if ${RUN_YARN_INSTALL}; then
+        echo "[INFO] Starting yarn install"
+        yes | yarn install || exit 1
+    fi
+    if ${CLEAR_VITE_DEPS}; then
+        rm -rf node_modules/.vite/deps/
+    fi
+    echo "[INFO] Starting yarn build:dev"
+    yarn build:dev || exit 1
     echo -e "\n\033[1;33m[INFO] Build ready:\033[0m http://$(hostname):${NGINX_PORT}\n"
     exit
 fi
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/build\'
+# the options travel to the container side, which parses them again
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/build "${ARGS}"\'

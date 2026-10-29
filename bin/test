@@ -1,118 +1,95 @@
 #!/bin/bash
 # Run the project's tests: vitest (src/test) and Playwright e2e (e2e/), both by default.
-# Outside Docker: delegates to the application container.
-# Inside Docker: installs dependencies and runs tests directly.
+# By default inside the application container; --local runs them on this machine.
+# Only the project settings below differ between the admins.
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 E2E_DIR="${PROJECT_ROOT}/e2e"
-ENV="devel"
+cd "${PROJECT_ROOT}" || exit 1
+
+# Project settings
+APP_NAME="admin-dam"
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
+E2E_ENV_VAR="ADAM_ENV"      # e2e/playwright.config.ts loads e2e/.env.<env> by this variable
+E2E_ENVS="local devel staging"
+E2E_ENV="devel"
+
 FILTER=""
 FILTER_INVERT=""
+BROWSER=""
 SPEC=""
+PROJECTS=()
 HEADED=false
 UI=false
+DEBUG=false
+CLEAR_STATE=false
 INSTALL_DEPENDENCIES=true
-PASSTHROUGH=()
+RUN_LOCAL=false
 RUN_UNIT=true
 RUN_E2E=true
+PASSTHROUGH=()
 
 function help() {
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPTIONS]...
-    \nRun the tests for admin-dam: vitest and Playwright e2e, both unless one is selected
+    \nRun the tests for ${APP_NAME}: vitest and Playwright e2e, both unless one is selected.
+    They run in the ${SERVICE} container unless --local is given.
 
     Options:
         --unit             (Optional) Run only the vitest suite (src/test), skip e2e
         --e2e              (Optional) Run only the Playwright e2e suite, skip vitest
-        -e --env           (Optional) Target environment (Allowed: local | devel | staging, Default: devel)
-        -f --filter        (Optional) Grep pattern for test names or tags (e.g. @smoke)
-        -i --filter-invert (Optional) Skip tests matching the grep pattern (e.g. @destructive)
-        --spec             (Optional) Test file or glob pattern (e.g. tests/settings/author.spec.ts)
+        -e --env           (Optional) Target environment, loads e2e/.env.<env> (Allowed: ${E2E_ENVS// / | }, Default: ${E2E_ENV})
+        -f --filter        (Optional) Run only tests whose title or tag matches (e.g. @smoke); also -g --grep
+        -i --filter-invert (Optional) Skip tests whose title or tag matches (e.g. @destructive)
+        -b --browser       (Optional) Browser (Allowed: chromium | firefox | webkit); not for a config with projects
+        --spec             (Optional) Test file or glob pattern (e.g. tests/example.spec.ts)
+        --project          (Optional) Only these Playwright projects, comma-separated, without their dependencies
         --headed           (Optional) Run with visible browser window
         --ui               (Optional) Open Playwright UI mode
+        --debug            (Optional) Run Playwright in debug mode
+        --clear-state      (Optional) Remove e2e/.state/global-state.json first (done anyway for a full run)
         --no-install       (Optional) Skip yarn install
-        --                 (Optional) Pass remaining args directly to Playwright (e.g. -- --retries=0 --workers=2)
+        --local            (Optional) Run on this machine instead of the container
+        --docker           (Optional) Run in the container (the default)
+        --                 (Optional) Pass the rest to Playwright, or to vitest with --unit (e.g. -- --retries=0)
 
     Examples:
         $(printf %q "${BASH_SOURCE[0]}")
         $(printf %q "${BASH_SOURCE[0]}") --unit
-        $(printf %q "${BASH_SOURCE[0]}") --e2e -e staging -f @smoke
-        $(printf %q "${BASH_SOURCE[0]}") -i \"@destructive|@integration\"
-        $(printf %q "${BASH_SOURCE[0]}") --spec tests/settings/author.spec.ts
-        $(printf %q "${BASH_SOURCE[0]}") -e devel --headed
-        $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0
+        $(printf %q "${BASH_SOURCE[0]}") --e2e -e ${E2E_ENV} -f @smoke
+        $(printf %q "${BASH_SOURCE[0]}") --local --ui
+        $(printf %q "${BASH_SOURCE[0]}") --spec tests/example.spec.ts --headed
+        $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0 --workers=2
     \n"
 }
 
 #######################################################################################################################
-# Parse arguments
+# Parse arguments (both "--option value" and "--option=value")
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    -e)
-        ENV=$2
-        shift; shift
-        continue
-        ;;
-    --env*)
-        ENV=${1#*=}
-        shift 1
-        continue
-        ;;
-    -f)
-        FILTER=$2
-        shift; shift
-        continue
-        ;;
-    --filter-invert*)
-        FILTER_INVERT=${1#*=}
-        shift 1
-        continue
-        ;;
-    --filter*)
-        FILTER=${1#*=}
-        shift 1
-        continue
-        ;;
-    -i)
-        FILTER_INVERT=$2
-        shift; shift
-        continue
-        ;;
-    --spec)
-        SPEC=$2
-        shift; shift
-        continue
-        ;;
-    --spec=*)
-        SPEC=${1#*=}
-        shift 1
-        continue
-        ;;
-    --headed)
-        HEADED=true
-        shift 1
-        continue
-        ;;
-    --ui)
-        UI=true
-        shift 1
-        continue
-        ;;
-    --no-install)
-        INSTALL_DEPENDENCIES=false
-        shift 1
-        continue
-        ;;
-    --unit)
-        RUN_E2E=false
-        shift 1
-        continue
-        ;;
-    --e2e)
-        RUN_UNIT=false
-        shift 1
-        continue
-        ;;
+    --unit) RUN_E2E=false; shift ;;
+    --e2e) RUN_UNIT=false; shift ;;
+    -e | --env) E2E_ENV="$2"; shift 2 ;;
+    --env=*) E2E_ENV="${1#*=}"; shift ;;
+    -f | --filter | -g | --grep) FILTER="$2"; shift 2 ;;
+    --filter=* | --grep=*) FILTER="${1#*=}"; shift ;;
+    -i | --filter-invert) FILTER_INVERT="$2"; shift 2 ;;
+    --filter-invert=*) FILTER_INVERT="${1#*=}"; shift ;;
+    -b | --browser) BROWSER="$2"; shift 2 ;;
+    --browser=*) BROWSER="${1#*=}"; shift ;;
+    --spec) SPEC="$2"; shift 2 ;;
+    --spec=*) SPEC="${1#*=}"; shift ;;
+    --project) IFS=',' read -ra P <<< "$2"; PROJECTS+=("${P[@]}"); shift 2 ;;
+    --project=*) IFS=',' read -ra P <<< "${1#*=}"; PROJECTS+=("${P[@]}"); shift ;;
+    --headed) HEADED=true; shift ;;
+    --ui) UI=true; shift ;;
+    --debug) DEBUG=true; shift ;;
+    --clear-state) CLEAR_STATE=true; shift ;;
+    --no-install) INSTALL_DEPENDENCIES=false; shift ;;
+    --local) RUN_LOCAL=true; shift ;;
+    --docker) RUN_LOCAL=false; shift ;;
     -h | --help)
         help
         exit 0
@@ -123,7 +100,7 @@ while [ "$#" -gt 0 ]; do
         break
         ;;
     *)
-        echo "[WARN] Unknown command line switch: $1"
+        echo "[ERROR] Unknown option: $1"
         help
         exit 1
         ;;
@@ -135,83 +112,100 @@ done
 #######################################################################################################################
 if [ "${RUN_UNIT}" = "false" ] && [ "${RUN_E2E}" = "false" ]; then
     echo "[ERROR] '--unit' and '--e2e' select a single suite each; passing both leaves nothing to run"
-    help
     exit 1
 fi
 
-if [[ ! ${ENV} =~ ^local$|^devel$|^staging$ ]]; then
-    echo "[ERROR] Invalid value: '${ENV}' for '-e, --env' option. Allowed: local | devel | staging"
-    help
+if [[ " ${E2E_ENVS} " != *" ${E2E_ENV} "* ]]; then
+    echo "[ERROR] Invalid value: '${E2E_ENV}' for '-e, --env' option. Allowed: ${E2E_ENVS// / | }"
+    exit 1
+fi
+
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^(chromium|firefox|webkit)$ ]]; then
+    echo "[ERROR] Invalid value: '${BROWSER}' for '-b, --browser' option. Allowed: chromium | firefox | webkit"
     exit 1
 fi
 
 #######################################################################################################################
-# Inside Docker: run tests directly
+# Outside Docker without --local: hand the run over to the application container
 #######################################################################################################################
-if [ -f /.dockerenv ]; then
-    STATUS=0
+if [ ! -f /.dockerenv ] && [ "${RUN_LOCAL}" = "false" ]; then
+    # Rebuilt from the parsed values so that every value stays one argument
+    DELEGATE=(-e "${E2E_ENV}")
+    [ "${RUN_E2E}" = "false" ]              && DELEGATE+=(--unit)
+    [ "${RUN_UNIT}" = "false" ]             && DELEGATE+=(--e2e)
+    [ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
+    [ -n "${FILTER}" ]                      && DELEGATE+=(-f "${FILTER}")
+    [ -n "${FILTER_INVERT}" ]               && DELEGATE+=(-i "${FILTER_INVERT}")
+    [ -n "${BROWSER}" ]                     && DELEGATE+=(-b "${BROWSER}")
+    [ -n "${SPEC}" ]                        && DELEGATE+=(--spec "${SPEC}")
+    [ ${#PROJECTS[@]} -gt 0 ]               && DELEGATE+=("--project=$(IFS=','; echo "${PROJECTS[*]}")")
+    [ "${HEADED}" = "true" ]                && DELEGATE+=(--headed)
+    [ "${UI}" = "true" ]                    && DELEGATE+=(--ui)
+    [ "${DEBUG}" = "true" ]                 && DELEGATE+=(--debug)
+    [ "${CLEAR_STATE}" = "true" ]           && DELEGATE+=(--clear-state)
+    [ ${#PASSTHROUGH[@]} -gt 0 ]            && DELEGATE+=(-- "${PASSTHROUGH[@]}")
 
-    # vitest first: it needs no environment and no browser, so its result is on screen within seconds.
-    if [ "${RUN_UNIT}" = "true" ]; then
-        cd "${PROJECT_ROOT}" || exit 1
-        UNIT_CMD=(yarn test)
-        [ ${#PASSTHROUGH[@]} -gt 0 ] && [ "${RUN_E2E}" = "false" ] && UNIT_CMD+=("${PASSTHROUGH[@]}")
-        echo "[INFO] ${UNIT_CMD[*]}"
-        "${UNIT_CMD[@]}" || STATUS=1
-    fi
+    # bin/docker-compose joins its arguments with `$*` and hands the result to `eval`, so a value with
+    # spaces would arrive as several arguments. Quote each one for that round trip; eval undoes it.
+    QUOTED=()
+    for ARG in "${DELEGATE[@]}"; do QUOTED+=("$(printf %q "${ARG}")"); done
 
-    if [ "${RUN_E2E}" = "false" ]; then
-        exit ${STATUS}
-    fi
+    bin/docker-compose exec --user node "${SERVICE}" /var/www/html/bin/test "${QUOTED[@]}"
+    exit
+fi
 
-    cd "${E2E_DIR}" || exit 1
+#######################################################################################################################
+# Run here: inside the container, or on this machine with --local
+#######################################################################################################################
+STATUS=0
+RUN_ENV=()
+# a browser on a desktop: colored output and a dark GTK theme for --headed and --ui
+[ -f /.dockerenv ] || RUN_ENV=(FORCE_COLOR=1 GTK_THEME=Adwaita:dark)
 
-    if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
-        yarn install
-    fi
+# vitest first: it needs no environment and no browser, so its result is on screen within seconds
+if [ "${RUN_UNIT}" = "true" ]; then
+    UNIT_CMD=(yarn test)
+    [ ${#PASSTHROUGH[@]} -gt 0 ] && [ "${RUN_E2E}" = "false" ] && UNIT_CMD+=("${PASSTHROUGH[@]}")
+    echo "[INFO] ${UNIT_CMD[*]}"
+    "${UNIT_CMD[@]}" || STATUS=1
+fi
 
-    # Chromium only: the drag-and-drop uploads drive it over CDP, which the other browsers do not speak.
-    # Idempotent — skips if already installed.
-    yarn playwright install chromium
-
-    # An array, not a string: a value with spaces -- `-f "two words"`, or anything after `--` --
-    # survives as one argument, which `eval` on a flattened string cannot guarantee.
-    CMD=(yarn playwright test --config playwright.config.ts)
-
-    [ -n "${FILTER}" ]        && CMD+=(--grep "${FILTER}")
-    [ -n "${FILTER_INVERT}" ] && CMD+=(--grep-invert "${FILTER_INVERT}")
-    [ "${HEADED}" = "true" ]  && CMD+=(--headed)
-    [ "${UI}" = "true" ]      && CMD+=(--ui)
-    [ -n "${SPEC}" ]          && CMD+=("${SPEC}")
-    [ ${#PASSTHROUGH[@]} -gt 0 ] && CMD+=("${PASSTHROUGH[@]}")
-
-    echo "[INFO] ADAM_ENV=${ENV} ${CMD[*]}"
-    ADAM_ENV="${ENV}" "${CMD[@]}" || STATUS=1
+if [ "${RUN_E2E}" = "false" ]; then
     exit ${STATUS}
 fi
 
-#######################################################################################################################
-# Outside Docker: delegate to the application container
-#######################################################################################################################
-cd "${PROJECT_ROOT}" || exit 1
-# shellcheck disable=SC1091
-. ./bin/docker-libvariables
+cd "${E2E_DIR}" || exit 1
 
-# Reconstruct args from parsed variables so each is a proper separate token.
-DELEGATE=(-e "${ENV}")
-[ "${RUN_E2E}" = "false" ]               && DELEGATE+=(--unit)
-[ "${RUN_UNIT}" = "false" ]              && DELEGATE+=(--e2e)
-[ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
-[ -n "${FILTER}" ]                       && DELEGATE+=(-f "${FILTER}")
-[ -n "${FILTER_INVERT}" ]                && DELEGATE+=(-i "${FILTER_INVERT}")
-[ "${HEADED}" = "true" ]                 && DELEGATE+=(--headed)
-[ "${UI}" = "true" ]                     && DELEGATE+=(--ui)
-[ -n "${SPEC}" ]                         && DELEGATE+=(--spec "${SPEC}")
-[ ${#PASSTHROUGH[@]} -gt 0 ] && DELEGATE+=(-- "${PASSTHROUGH[@]}")
+if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
+    yarn install || exit 1
+fi
 
-# bin/docker-compose joins its arguments with `$*` and hands the result to `eval`, so a value with
-# spaces would arrive as several arguments. Quote each one for that round trip; eval undoes it.
-QUOTED=()
-for ARG in "${DELEGATE[@]}"; do QUOTED+=("$(printf %q "${ARG}")"); done
+# Install Playwright browser binaries (idempotent, skips the ones already installed)
+yarn playwright install chromium
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" /var/www/html/bin/test "${QUOTED[@]}"
+# A full run starts without the state an earlier run left behind (e.g. registered test users)
+STATE_FILE="${E2E_DIR}/.state/global-state.json"
+if [ ${#PROJECTS[@]} -eq 0 ] && [ -z "${FILTER}" ] && [ -z "${SPEC}" ]; then
+    CLEAR_STATE=true
+fi
+if [ "${CLEAR_STATE}" = "true" ] && [ -f "${STATE_FILE}" ]; then
+    rm -f "${STATE_FILE:?}"
+    echo "[INFO] Cleared state file: ${STATE_FILE}"
+fi
+
+# An array, not a string: a value with spaces (`-f "two words"`, anything after `--`) stays one argument
+CMD=(yarn playwright test --config playwright.config.ts)
+[ -n "${FILTER}" ]        && CMD+=(--grep "${FILTER}")
+[ -n "${FILTER_INVERT}" ] && CMD+=(--grep-invert "${FILTER_INVERT}")
+[ -n "${BROWSER}" ]       && CMD+=(--browser "${BROWSER}")
+for P in "${PROJECTS[@]}"; do CMD+=("--project=${P}"); done
+[ ${#PROJECTS[@]} -gt 0 ] && CMD+=(--no-deps)
+[ "${HEADED}" = "true" ]  && CMD+=(--headed)
+[ "${UI}" = "true" ]      && CMD+=(--ui)
+[ "${DEBUG}" = "true" ]   && CMD+=(--debug)
+[ -n "${SPEC}" ]          && CMD+=("${SPEC}")
+[ ${#PASSTHROUGH[@]} -gt 0 ] && CMD+=("${PASSTHROUGH[@]}")
+
+echo "[INFO] ${E2E_ENV_VAR}=${E2E_ENV} ${CMD[*]}"
+env "${RUN_ENV[@]}" "${E2E_ENV_VAR}=${E2E_ENV}" "${CMD[@]}" || STATUS=1
+exit ${STATUS}
