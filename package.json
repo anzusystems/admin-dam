@@ -15,7 +15,7 @@
     "development": "vite build --mode development --sourcemap",
     "preview": "vite preview",
     "lint": "[ \"$*\" = \"--fix\" ] && yarn lint:fix || yarn ci",
-    "lint:fix": "run-s --print-name generate:dts lint:oxlint:fix lint:eslint:fix lint:stylelint:fix format",
+    "lint:fix": "run-s --continue-on-error --print-name generate:dts lint:oxlint:fix lint:eslint:fix lint:stylelint:fix format",
     "lint:tsc": "NODE_OPTIONS=--max-old-space-size=4096 vue-tsc --build",
     "generate:dts": "node scripts/generate-dts.mjs",
     "ci": "run-s --print-name generate:dts ci:checks",
