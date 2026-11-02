@@ -43,6 +43,8 @@ export const filterFieldsList = [
   { name: 'slotsCountUntil' as const, default: null, type: 'integer' },
   { name: 'createdAtFrom' as const, default: null, type: 'timeInterval', related: 'createdAtUntil' },
   { name: 'createdAtUntil' as const, default: null, type: 'timeInterval', exclude: true, render: { skip: true } },
+  { name: 'uploadedAtFrom' as const, default: null, type: 'timeInterval', related: 'uploadedAtUntil' },
+  { name: 'uploadedAtUntil' as const, default: null, type: 'timeInterval', exclude: true, render: { skip: true } },
   { name: 'mainFileSingleUse' as const, default: null, type: 'boolean' },
   { name: 'mainFileInternal' as const, default: null, type: 'boolean' },
 ] satisfies readonly MakeFilterOption[]

@@ -29,6 +29,9 @@ const props = withDefaults(
     hideIcon?: boolean
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
+    licenceBadge?: string
+    singleUse?: boolean
+    autoDeleteAt?: Date | null
   }>(),
   {
     assetType: DamAssetType.Image,
@@ -54,6 +57,9 @@ const props = withDefaults(
     hideIcon: false,
     showMetaIcons: false,
     assetFileProperties: undefined,
+    licenceBadge: '',
+    singleUse: false,
+    autoDeleteAt: null,
   }
 )
 const emit = defineEmits<{
@@ -231,6 +237,9 @@ const { remainingTimeShort } = useRemainingTime()
         v-if="showMetaIcons && assetFileProperties"
         :asset-file-properties="assetFileProperties"
         :asset-type="assetType"
+        :licence-badge="licenceBadge"
+        :single-use="singleUse"
+        :auto-delete-at="autoDeleteAt"
       />
     </template>
   </VImg>
@@ -267,6 +276,9 @@ const { remainingTimeShort } = useRemainingTime()
       v-if="showMetaIcons && assetFileProperties"
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
+      :licence-badge="licenceBadge"
+      :single-use="singleUse"
+      :auto-delete-at="autoDeleteAt"
     />
   </div>
   <div
@@ -308,6 +320,9 @@ const { remainingTimeShort } = useRemainingTime()
       v-if="showMetaIcons && assetFileProperties"
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
+      :licence-badge="licenceBadge"
+      :single-use="singleUse"
+      :auto-delete-at="autoDeleteAt"
     />
   </div>
 </template>

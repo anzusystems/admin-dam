@@ -111,7 +111,7 @@ const { currentExtSystemId } = useCurrentExtSystem()
           :height="64"
           class="system-border-b"
         >
-          <div>
+          <div class="flex-shrink-0">
             <VBtn
               variant="text"
               icon
@@ -145,14 +145,22 @@ const { currentExtSystemId } = useCurrentExtSystem()
               </VTooltip>
             </VBtn>
           </div>
-          <div class="text-label-large d-flex">
-            <div class="pr-4">
+          <div class="text-label-large d-flex min-width-0 overflow-hidden">
+            <div class="pr-4 flex-shrink-0">
               {{ totalCountText }}
             </div>
-            <div>{{ toolbarTitle }}</div>
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :active="sidebar"
               :variant="sidebar ? 'flat' : 'text'"

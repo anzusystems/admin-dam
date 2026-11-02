@@ -48,12 +48,66 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
+          <AFormTextField
+            :model-value="assetLicence.badge"
+            :label="t('coreDam.assetLicence.model.badge')"
+            :v="v$.assetLicence.badge"
+            :maxlength="3"
+            data-cy="asset-licence-badge"
+            @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
+          />
+        </ARow>
+        <ARow>
           <DamExtSystemRemoteAutocomplete
             v-model="assetLicence.extSystem"
             :client="damClient"
             :label="t('coreDam.assetLicence.model.extSystem')"
             :v="v$.assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.manualUploadAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.manualUploadAllowed')"
+            data-cy="asset-licence-manual-upload-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.directUseAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.directUseAllowed')"
+            data-cy="asset-licence-direct-use-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.singleUseEnforced"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.singleUseEnforced')"
+            :hint="t('coreDam.assetLicence.model.flags.singleUseEnforcedHint')"
+            persistent-hint
+            data-cy="asset-licence-single-use-enforced"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.autoDelete.active"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.autoDelete.active')"
+            data-cy="asset-licence-auto-delete-active"
+          />
+        </ARow>
+        <ARow v-if="assetLicence.autoDelete.active">
+          <AFormTextField
+            v-model="assetLicence.autoDelete.olderThanDays"
+            :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+            :v="v$.assetLicence.autoDelete.olderThanDays"
+            type="number"
+            :step="1"
+            data-cy="asset-licence-auto-delete-older-than-days"
           />
         </ARow>
         <ARow>
@@ -88,6 +142,18 @@ const { t } = useI18n()
             :label="t('coreDam.assetLicence.model.internalRuleUsers')"
             multiple
             data-cy="asset-licence-internal-rule-users"
+          />
+        </ARow>
+        <!-- Picker searches/creates authors in the globally selected ext system (useAuthorSelectActions →
+             currentExtSystemId, AuthorCreateButton → createDefault(currentExtSystemId)), not the licence's
+             own ext system. Same pre-existing limitation as internalRuleAuthors above; out of scope here. -->
+        <ARow>
+          <AuthorRemoteAutocompleteWithCached
+            v-model="assetLicence.defaultAuthor"
+            :label="t('coreDam.assetLicence.model.defaultAuthor')"
+            :validation-scope="false"
+            clearable
+            data-cy="asset-licence-default-author"
           />
         </ARow>
       </VCol>

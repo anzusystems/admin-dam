@@ -1,5 +1,6 @@
 {
   "error_invalid_key": "Invalid key.",
   "error_invalid_licence": "Invalid licence.",
-  "error_invalid_ext_system": "Invalid external system."
+  "error_invalid_ext_system": "Invalid external system.",
+  "error_licence_required_by_list_view": "The licence is used by an asset list view, remove it from the list view first."
 }

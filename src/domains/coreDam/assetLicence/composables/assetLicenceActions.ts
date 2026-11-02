@@ -62,6 +62,7 @@ export const useAssetLicenceDetailActions = () => {
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      if (assetLicence.defaultAuthor) addToCachedAuthors(assetLicence.defaultAuthor)
       addToCachedUsers(...assetLicence.internalRuleUsers)
       fetchCachedAuthors()
       fetchCachedUsers()
@@ -95,6 +96,7 @@ export const useAssetLicenceEditActions = () => {
       addToCachedExtSystems(assetLicence.extSystem)
       fetchCachedExtSystems()
       addToCachedAuthors(...assetLicence.internalRuleAuthors)
+      if (assetLicence.defaultAuthor) addToCachedAuthors(assetLicence.defaultAuthor)
       addToCachedUsers(...assetLicence.internalRuleUsers)
       fetchCachedAuthors()
       fetchCachedUsers()
@@ -140,6 +142,30 @@ export const useAssetLicenceEditActions = () => {
     fetchData,
     onUpdate,
     resetStore: assetLicenceOneStore.reset,
+  }
+}
+
+export const useAssetLicenceSelectActions = () => {
+  const { executeFetch } = useFetchDamAssetLicenceList(damClient)
+
+  const mapToValueObjectOption = (assetLicences: DamAssetLicence[]): ValueObjectOption<number>[] => {
+    return assetLicences.map((assetLicence: DamAssetLicence) => ({
+      title: assetLicence.name,
+      value: assetLicence.id,
+    }))
+  }
+
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
+    return mapToValueObjectOption(await executeFetch(pagination, filterData, filterConfig))
+  }
+
+  const fetchItemsByIds = async (ids: number[]) => {
+    return mapToValueObjectOption(await fetchDamAssetLicenceListByIds(damClient, ids))
+  }
+
+  return {
+    fetchItems,
+    fetchItemsByIds,
   }
 }
 

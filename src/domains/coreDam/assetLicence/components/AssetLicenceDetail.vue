@@ -21,9 +21,30 @@ const { t } = useI18n()
         :title="t('coreDam.assetLicence.model.extId')"
         :value="assetLicence.extId"
       />
+      <ARow
+        :title="t('coreDam.assetLicence.model.badge')"
+        :value="assetLicence.badge"
+      />
       <ARow :title="t('coreDam.assetLicence.model.extSystem')">
         <CachedExtSystemChip :id="assetLicence.extSystem" />
       </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.manualUploadAllowed')">
+        <ABooleanValue :value="assetLicence.flags.manualUploadAllowed" />
+      </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.directUseAllowed')">
+        <ABooleanValue :value="assetLicence.flags.directUseAllowed" />
+      </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.singleUseEnforced')">
+        <ABooleanValue :value="assetLicence.flags.singleUseEnforced" />
+      </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.autoDelete.active')">
+        <ABooleanValue :value="assetLicence.autoDelete.active" />
+      </ARow>
+      <ARow
+        v-if="assetLicence.autoDelete.active"
+        :title="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+        :value="assetLicence.autoDelete.olderThanDays"
+      />
       <ARow :title="t('coreDam.assetLicence.model.internalRule.active')">
         <ABooleanValue :value="assetLicence.internalRule.active" />
       </ARow>
@@ -47,6 +68,12 @@ const { t } = useI18n()
           :key="userId"
           class="mr-2 mt-2"
         />
+      </ARow>
+      <ARow
+        v-if="assetLicence.defaultAuthor"
+        :title="t('coreDam.assetLicence.model.defaultAuthor')"
+      >
+        <AuthorRemoteAutocompleteCachedAuthorChip :id="assetLicence.defaultAuthor" />
       </ARow>
     </VCol>
     <VCol cols="4">

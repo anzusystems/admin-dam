@@ -1,0 +1,20 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Názov",
+    "extSystem": "Externý systém",
+    "position": "Poradie",
+    "groups": "Skupiny licencií",
+    "licences": "Licencie",
+    "uploadLicence": "Licencia pre nahrávanie"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Vytvoriť výlist"
+  },
+  "validation": {
+    "uploadLicence": "Licencia pre nahrávanie musí byť jedna z vybraných licencií."
+  }
+}

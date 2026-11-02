@@ -4,12 +4,24 @@
     "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
+    "badge": "Badge",
+    "flags": {
+      "manualUploadAllowed": "Povolený manuálny upload",
+      "directUseAllowed": "Povolené priame použitie",
+      "singleUseEnforced": "Vynútené jednorazové použitie",
+      "singleUseEnforcedHint": "Platí pre nové a upravené súbory. Existujúce súbory licencie prepne príkaz anzu-dam:asset-licence:enforce-single-use."
+    },
+    "autoDelete": {
+      "active": "Automatické mazanie",
+      "olderThanDays": "Mazať staršie ako (dní)"
+    },
     "internalRule": {
       "active": "Automaticky označovať ako interné",
       "markAsInternalSince": "Označovať ako interné od"
     },
     "internalRuleAuthors": "Interní autori",
-    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky"
+    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky",
+    "defaultAuthor": "Predvolený autor"
   },
   "filter": {
     "id": "ID",
