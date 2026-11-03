@@ -108,14 +108,17 @@ const data = computed(() => {
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
-    <span
+    <VChip
       v-if="autoDeleteBadge"
-      class="asset-image__auto-delete-badge"
+      size="x-small"
+      variant="flat"
+      color="warning"
+      class="ma-1 align-self-center"
       :title="autoDeleteBadge.title"
       data-cy="asset-auto-delete-badge"
     >
       {{ autoDeleteBadge.text }}
-    </span>
+    </VChip>
     <img
       v-for="(item, index) in data.icons"
       :key="item"
@@ -140,22 +143,6 @@ const data = computed(() => {
   img.img-svg {
     height: 30px;
     padding: 2px;
-  }
-
-  .asset-image__auto-delete-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 26px;
-    margin: 2px;
-    padding: 0 8px;
-    border-radius: 13px;
-    background-color: rgb(0 0 0 / 50%);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
   }
 }
 </style>
