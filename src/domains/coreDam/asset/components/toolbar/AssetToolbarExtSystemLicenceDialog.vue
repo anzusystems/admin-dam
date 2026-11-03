@@ -115,6 +115,7 @@ const errorMessageLicence = computed(() => {
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
   if (
@@ -158,7 +159,6 @@ const onSelectedLicenceSearchChange = (value: IntegerIdNullable | IntegerId[]) =
     return
   }
   if (isInt(value) || isNull(value)) selectedLicence.value = value
-  console.log(selectedLicence.value)
 }
 
 const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | IntegerId[]) => {
@@ -320,6 +320,7 @@ onMounted(async () => {
         <ABtnPrimary
           v-if="allowSelect"
           :disabled="isNull(selectedLicence)"
+          :loading="saving"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >
