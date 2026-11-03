@@ -115,7 +115,6 @@ const errorMessageLicence = computed(() => {
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
-  if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
   if (
