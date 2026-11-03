@@ -37,9 +37,9 @@ export default defineConfig({
               tags: ['$initial'],
               priority: 100,
               includeDependenciesRecursively: true,
-              // Split into chunks under Vite's 500 kB warning. The limit counts modules
-              // before minification: 900 KiB came out at most 480 kB in admin-cms.
-              maxSize: 900 * 1024,
+              // No `maxSize`: rolldown splits by size, not by import order, and the pieces imported each
+              // other. One ran Vue's lazy init before the piece defining it had run, and the build
+              // stopped on a blank page (`init_runtime_core_esm_bundler is not a function`).
             },
             {
               name: (id) => {
