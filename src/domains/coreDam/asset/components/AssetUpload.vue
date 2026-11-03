@@ -105,12 +105,13 @@ if (isUndefined(configExtSystem)) {
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
 const { uploadAllowed } = useCurrentListView()
+const uploadVisible = computed(() => props.type === 'slots' || uploadAllowed.value)
 
 const { t } = useI18n()
 </script>
 
 <template>
-  <template v-if="uploadAllowed">
+  <template v-if="uploadVisible">
     <FileUpload
       :variant="variant"
       :button-text="buttonText"

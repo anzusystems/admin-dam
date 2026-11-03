@@ -7,12 +7,15 @@ import {
   ICON_TTS,
   LOW_DIMENSION,
 } from '@/domains/coreDam/asset/components/assetImageIconsConfig'
-import { useAssetAutoDelete } from '@/domains/coreDam/asset/composables/assetAutoDelete'
 import {
   type AssetFileProperties,
   DamAssetType,
   type DamAssetTypeType,
+  dateDiff,
+  dateNow,
   dateTimeFriendly,
+  dateTimeToDate,
+  type DatetimeUTCNullable,
   useDamConfigStore,
   useRemainingTime,
 } from '@anzusystems/common-admin'
@@ -24,7 +27,7 @@ const props = withDefaults(
     disableAbsolute?: boolean
     licenceBadge?: string
     singleUse?: boolean
-    autoDeleteAt?: Date | null
+    autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
     disableAbsolute: false,
@@ -36,13 +39,12 @@ const props = withDefaults(
 
 const { t } = useI18n()
 const { remainingTimeShort } = useRemainingTime()
-const { remainingSeconds } = useAssetAutoDelete()
 
 const autoDeleteBadge = computed(() => {
   if (!props.autoDeleteAt) return null
   return {
-    text: remainingTimeShort(remainingSeconds(props.autoDeleteAt)),
-    title: t('coreDam.asset.metaIcons.autoDeleteAt', { date: dateTimeFriendly(props.autoDeleteAt.toISOString()) }),
+    text: remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(props.autoDeleteAt), dateNow(), 's'))),
+    title: t('coreDam.asset.metaIcons.autoDeleteAt', { date: dateTimeFriendly(props.autoDeleteAt) }),
   }
 })
 

@@ -14,14 +14,12 @@ withDefaults(
     buttonT?: string
     buttonClass?: string
     dataCy?: string
-    disabled?: boolean | undefined
   }>(),
   {
     disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
-    disabled: undefined,
   }
 )
 const emit = defineEmits<{
@@ -54,7 +52,7 @@ const create = async () => {
     v-model="dialog"
     :v="v$"
     :call-create="create"
-    :disabled="disabled ?? !uploadAllowed"
+    :disabled="!uploadAllowed"
     disable-redirect
     :button-class="buttonClass"
     :data-cy="dataCy"

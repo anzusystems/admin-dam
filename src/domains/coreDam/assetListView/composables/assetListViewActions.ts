@@ -8,6 +8,7 @@ import {
   useUpdateAssetListView,
 } from '@/domains/coreDam/assetListView/api/assetListViewApi'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedAssetLicenceGroups } from '@/domains/coreDam/assetLicenceGroup/composables/cachedAssetLicenceGroups'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -76,6 +77,7 @@ export const useAssetListViewDetailActions = () => {
   const assetListViewOneStore = useAssetListViewOneStore()
   const { assetListView } = storeToRefs(assetListViewOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+  const { addToCachedAssetLicenceGroups, fetchCachedAssetLicenceGroups } = useCachedAssetLicenceGroups()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
   const { executeRequest: fetchAssetListView } = useFetchAssetListView()
 
@@ -84,9 +86,11 @@ export const useAssetListViewDetailActions = () => {
     try {
       const res = await fetchAssetListView({ urlParams: { id } })
       addToCachedAssetLicences(res.licences)
+      addToCachedAssetLicenceGroups(res.groups)
       addToCachedExtSystems(res.extSystem)
       assetListView.value = res
       fetchCachedAssetLicences()
+      fetchCachedAssetLicenceGroups()
       fetchCachedExtSystems()
     } catch (error) {
       showErrorsDefault(error)

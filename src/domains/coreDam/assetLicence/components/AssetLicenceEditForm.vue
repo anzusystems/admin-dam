@@ -9,7 +9,7 @@ import {
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import { BADGE_MAX_LENGTH, useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import { damClient } from '@/shared/apiClients/damClient'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
@@ -52,7 +52,7 @@ const { t } = useI18n()
             :model-value="assetLicence.badge"
             :label="t('coreDam.assetLicence.model.badge')"
             :v="v$.assetLicence.badge"
-            :maxlength="3"
+            :maxlength="BADGE_MAX_LENGTH"
             data-cy="asset-licence-badge"
             @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
           />

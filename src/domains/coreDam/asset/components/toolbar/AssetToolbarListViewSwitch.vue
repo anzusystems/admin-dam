@@ -1,12 +1,8 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
 import { SYSTEM_DAM } from '@/shared/systems'
-import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
 
 const { t } = useI18n()
@@ -16,41 +12,13 @@ const router = useRouter()
 const { useCurrentUser } = useAuth()
 const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
 
-const { currentExtSystemId } = useCurrentExtSystem()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { availableListViews, currentListView } = useCurrentListView()
 
 const { showErrorsDefault } = useAlerts()
 
-const displayTextExtSystem = ref('')
-const displayTextLicence = ref('')
-
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
-
-onMounted(async () => {
-  displayTextExtSystem.value = currentExtSystemId.value + ''
-  displayTextLicence.value = currentAssetLicenceId.value + ''
-  if (currentAssetLicenceId.value > 0 && currentExtSystemId.value > 0) {
-    try {
-      const [assetLicence, extSystem] = await Promise.all([
-        fetchAssetLicence(currentAssetLicenceId.value),
-        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
-      ])
-      displayTextLicence.value = assetLicence.name
-      displayTextExtSystem.value = extSystem.name
-    } catch (error) {
-      showErrorsDefault(error)
-    }
-  }
-})
-
-const activeDisplayText = computed(() => currentListView.value?.name ?? displayTextLicence.value)
-
-const licenceDialog = ref(false)
-
-const openLicenceDialog = () => {
-  licenceDialog.value = true
-}
+const activeDisplayText = computed(
+  () => currentListView.value?.name ?? currentUser.value?.selectedLicenceDto?.name ?? ''
+)
 
 const saving = ref(false)
 
@@ -69,7 +37,10 @@ const onSelectView = async (id: IntegerId) => {
 </script>
 
 <template>
-  <VMenu location="bottom">
+  <VMenu
+    v-if="availableListViews.length > 0"
+    location="bottom"
+  >
     <template #activator="{ props }">
       <VBtn
         variant="text"
@@ -97,18 +68,6 @@ const onSelectView = async (id: IntegerId) => {
         :title="listView.name"
         @click.stop="onSelectView(listView.id)"
       />
-      <VDivider v-if="availableListViews.length" />
-      <VListItem
-        :title="t('system.mainBar.extSystemLicenceSwitch.chooseLicence')"
-        data-cy="button-switch-licence"
-        @click.stop="openLicenceDialog"
-      />
     </VList>
   </VMenu>
-  <AssetToolbarExtSystemLicenceDialog
-    v-if="licenceDialog"
-    v-model="licenceDialog"
-    :ext-system-name="displayTextExtSystem"
-    :licence-name="displayTextLicence"
-  />
 </template>

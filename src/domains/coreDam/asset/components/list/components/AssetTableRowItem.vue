@@ -15,7 +15,6 @@ import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMe
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useAssetAutoDelete } from '@/domains/coreDam/asset/composables/assetAutoDelete'
 
 const props = withDefaults(
   defineProps<{
@@ -46,8 +45,6 @@ const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)
 const { getCachedAssetLicence } = useCachedAssetLicences()
 const licenceBadge = computed(() => getCachedAssetLicence(asset.value.licence)?.badge ?? '')
-const { autoDeleteAt } = useAssetAutoDelete()
-const assetAutoDeleteAt = computed(() => autoDeleteAt(asset.value.licence, asset.value.createdAt))
 
 const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 
@@ -108,14 +105,13 @@ onMounted(() => {
       </div>
     </td>
     <td>
-      <VChip
+      <AChipNoLink
         v-if="licenceBadge.length > 0"
         size="x-small"
-        variant="flat"
         class="mr-1"
       >
         {{ licenceBadge }}
-      </VChip>
+      </AChipNoLink>
       {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
     </td>
     <td>
@@ -126,7 +122,7 @@ onMounted(() => {
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         :single-use="item.asset.mainFileSingleUse === true"
-        :auto-delete-at="assetAutoDeleteAt"
+        :auto-delete-at="asset.autoDeleteAt"
         disable-absolute
       />
       <CachedPodcastChip

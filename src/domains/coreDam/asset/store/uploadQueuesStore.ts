@@ -1,4 +1,5 @@
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
 import { damClient } from '@/shared/apiClients/damClient'
 import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
@@ -122,8 +123,9 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function addByFiles(queueId: string, files: File[]) {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentAssetLicenceId } = useCurrentAssetLicence()
+    const { uploadAllowed } = useCurrentListView()
     const { currentExtSystemId } = useCurrentExtSystem()
-    if (currentAssetLicenceId.value === 0) {
+    if (!uploadAllowed.value) {
       showErrorT('coreDam.asset.upload.notAllowed')
       return
     }
@@ -159,10 +161,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     assetType: DamAssetTypeType
   ) {
     const { currentAssetLicenceId } = useCurrentAssetLicence()
-    if (currentAssetLicenceId.value === 0) {
-      showErrorT('coreDam.asset.upload.notAllowed')
-      return
-    }
     for await (const file of files) {
       const queueItem = createDefault(
         'file_' + file.name,
@@ -216,10 +214,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     importAsset = false
   ) {
     const { currentAssetLicenceId } = useCurrentAssetLicence()
-    if (importAsset && currentAssetLicenceId.value === 0) {
-      showErrorT('coreDam.asset.upload.notAllowed')
-      return
-    }
     const { activeExternalProvider } = useExternalProviders()
     for await (const asset of assets) {
       const queueItem = createDefault(

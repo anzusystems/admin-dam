@@ -8,7 +8,6 @@ import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/Ass
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import { useAssetAutoDelete } from '@/domains/coreDam/asset/composables/assetAutoDelete'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
@@ -24,7 +23,10 @@ import {
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
+  dateDiff,
+  dateNow,
   dateTimePretty,
+  dateTimeToDate,
   prettyBytes,
   useRemainingTime,
 } from '@anzusystems/common-admin'
@@ -65,11 +67,11 @@ const isTypeVideo = computed(() => {
 })
 
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
-const { autoDeleteAt, remainingSeconds } = useAssetAutoDelete()
 const { remainingTimeLong } = useRemainingTime()
-const assetAutoDeleteAt = computed(() => {
-  if (!asset.value) return null
-  return autoDeleteAt(asset.value.licence, asset.value.createdAt)
+const autoDeleteIn = computed(() => {
+  const autoDeleteAt = asset.value?.autoDeleteAt
+  if (!autoDeleteAt) return null
+  return remainingTimeLong(Math.max(0, dateDiff(dateTimeToDate(autoDeleteAt), dateNow(), 's')))
 })
 
 watch(
@@ -179,20 +181,6 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
             <VRow
-              v-if="assetAutoDeleteAt"
-              density="compact"
-              class="my-2"
-            >
-              <VCol
-                class="text-body-small"
-                data-cy="asset-auto-delete-at"
-              >
-                {{ t('coreDam.asset.detail.info.autoDeleteAt') }}:
-                <ADatetime :date-time="assetAutoDeleteAt.toISOString()" />
-                ({{ remainingTimeLong(remainingSeconds(assetAutoDeleteAt)) }})
-              </VCol>
-            </VRow>
-            <VRow
               v-if="isTypeAudio"
               density="compact"
               class="my-2"
@@ -278,6 +266,18 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+          </VCol>
+        </VRow>
+        <VRow
+          v-if="asset.autoDeleteAt"
+          data-cy="asset-auto-delete-at"
+        >
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.autoDeleteAt') }}
+          </VCol>
+          <VCol cols="9">
+            <ADatetime :date-time="asset.autoDeleteAt" /><br>
+            {{ autoDeleteIn }}
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

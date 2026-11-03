@@ -12,7 +12,7 @@
     "id": "ID"
   },
   "meta": {
-    "create": "Vytvoriť výlist"
+    "create": "Vytvoriť výber"
   },
   "validation": {
     "uploadLicence": "Licencia pre nahrávanie musí byť jedna z vybraných licencií."
