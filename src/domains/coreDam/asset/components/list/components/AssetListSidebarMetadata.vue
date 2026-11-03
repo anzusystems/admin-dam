@@ -5,7 +5,6 @@ import { browserHistoryReplaceUrlByRouter, DamAssetStatus, useDamCachedUsers } f
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
-import AssetFileExifPanel from '@/domains/coreDam/asset/components/detail/components/AssetFileExifPanel.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { ACL } from '@/domains/system/auth/auth'
@@ -125,7 +124,6 @@ watch(
         :asset-main-file-fail-reason="assetMainFile ? assetMainFile.fileAttributes.failReason : undefined"
       />
       <AssetMetadata @main-route-changed="emit('mainRouteChanged')" />
-      <AssetFileExifPanel :asset-file="assetMainFile" />
     </div>
     <template
       v-if="!loader && asset"

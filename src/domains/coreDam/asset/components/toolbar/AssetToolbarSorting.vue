@@ -24,39 +24,29 @@ const onSortByChange = (option: DatatableOrderingOption) => {
   pagination.value.sortBy = option.sortBy
   fetchAssetList()
 }
-
-const onToggle = (id: number) => {
-  const option = customSortOptions.find((item) => item.id === id)
-  if (option && option.id !== activeId.value) onSortByChange(option)
-}
 </script>
 
 <template>
   <div
     v-if="mdAndUp"
     class="d-flex align-center"
+    data-cy="asset-sorting"
   >
     <div class="text-body-small mr-2">
       {{ t('common.system.datatable.ordering.title') }}:
     </div>
-    <VBtnToggle
-      :model-value="activeId"
-      density="compact"
-      mandatory
-      data-cy="asset-sorting"
-      @update:model-value="onToggle"
+    <VBtn
+      v-for="option in customSortOptions"
+      :key="option.id"
+      size="small"
+      class="mr-1"
+      :active="option.id === activeId"
+      :color="option.id === activeId ? 'secondary' : ''"
+      :variant="option.id === activeId ? 'flat' : 'text'"
+      @click.stop="onSortByChange(option)"
     >
-      <VBtn
-        v-for="option in customSortOptions"
-        :key="option.id"
-        :value="option.id"
-        :color="option.id === activeId ? 'secondary' : ''"
-        size="small"
-        density="compact"
-      >
-        {{ t(option.titleT) }}
-      </VBtn>
-    </VBtnToggle>
+      {{ t(option.titleT) }}
+    </VBtn>
   </div>
   <ADatatableOrdering
     v-else

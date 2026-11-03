@@ -3,6 +3,7 @@ import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUser
 import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
+import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
@@ -294,5 +295,9 @@ const onAnyMetadataChange = () => {
         </div>
       </VExpansionPanelText>
     </VExpansionPanel>
+    <AssetMetadataExif
+      v-if="assetMainFile"
+      :file="assetMainFile"
+    />
   </VExpansionPanels>
 </template>
