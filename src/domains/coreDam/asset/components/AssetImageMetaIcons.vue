@@ -11,7 +11,13 @@ import {
   type AssetFileProperties,
   DamAssetType,
   type DamAssetTypeType,
+  dateDiff,
+  dateNow,
+  dateTimeFriendly,
+  dateTimeToDate,
+  type DatetimeUTCNullable,
   useDamConfigStore,
+  useRemainingTime,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -19,13 +25,24 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
+    autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
     disableAbsolute: false,
+    autoDeleteAt: null,
   }
 )
 
 const { t } = useI18n()
+const { remainingTimeShort } = useRemainingTime()
+
+const autoDeleteBadge = computed(() => {
+  if (!props.autoDeleteAt) return null
+  return {
+    text: remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(props.autoDeleteAt), dateNow(), 's'))),
+    title: t('coreDam.asset.metaIcons.autoDeleteAt', { date: dateTimeFriendly(props.autoDeleteAt) }),
+  }
+})
 
 const checkDimensions = (icons: string[], titles: string[]) => {
   if (props.assetFileProperties.width === 0 || props.assetFileProperties.height === 0) {
@@ -87,10 +104,18 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0"
+    v-show="data.icons.length > 0 || autoDeleteBadge"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
+    <span
+      v-if="autoDeleteBadge"
+      class="asset-image__auto-delete-badge"
+      :title="autoDeleteBadge.title"
+      data-cy="asset-auto-delete-badge"
+    >
+      {{ autoDeleteBadge.text }}
+    </span>
     <img
       v-for="(item, index) in data.icons"
       :key="item"
@@ -115,6 +140,22 @@ const data = computed(() => {
   img.img-svg {
     height: 30px;
     padding: 2px;
+  }
+
+  .asset-image__auto-delete-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+    margin: 2px;
+    padding: 0 8px;
+    border-radius: 13px;
+    background-color: rgb(0 0 0 / 50%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
   }
 }
 </style>
