@@ -4,6 +4,7 @@ import { damClient } from '@/shared/apiClients/damClient'
 import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import {
   AFormTextField,
   ARow,
@@ -17,7 +18,7 @@ import {
   UserAuthType,
 } from '@anzusystems/common-admin'
 
-const { userUpdate } = useUserEditActions()
+const { user, userUpdate } = useUserEditActions()
 const damConfigStore = useDamConfigStore()
 const { damPubConfig } = storeToRefs(damConfigStore)
 
@@ -74,6 +75,14 @@ const { t } = useI18n()
             multiple
             clearable
             data-cy="user-admin-to-ext-systems"
+          />
+        </ARow>
+        <ARow :title="t('coreDam.user.model.userToExtSystems')">
+          <CachedExtSystemChip
+            v-for="userToExtSystem in user.userToExtSystems"
+            :id="userToExtSystem"
+            :key="userToExtSystem"
+            class="mr-1"
           />
         </ARow>
         <ARow>
