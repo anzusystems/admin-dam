@@ -77,16 +77,6 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
-            v-model="userUpdate.userToExtSystems"
-            :client="damClient"
-            :label="t('coreDam.user.model.userToExtSystems')"
-            multiple
-            clearable
-            data-cy="user-user-to-ext-systems"
-          />
-        </ARow>
-        <ARow>
           <DamExternalProviderAssetSelect
             v-model="userUpdate.allowedAssetExternalProviders"
             :client="damClient"
