@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ACopyText, type AssetFile, assetFileIsImageFile } from '@anzusystems/common-admin'
+import type { AssetFileImage } from '@anzusystems/common-admin'
 
 const props = defineProps<{
-  file: AssetFile
+  file: AssetFileImage
 }>()
 
 type ExifData = Record<string, string | number | boolean | null>
@@ -15,11 +15,8 @@ interface ExifEntry {
 
 const { t } = useI18n()
 
-const exifData = computed<ExifData | undefined>(() => {
-  if (!assetFileIsImageFile(props.file)) return undefined
-  // common-admin types exifData as an empty array, DAM sends an object
-  return props.file.metadata?.exifData as unknown as ExifData | undefined
-})
+// Until a common-admin release types exifData as the object DAM sends, not an empty array.
+const exifData = computed(() => props.file.metadata?.exifData as unknown as ExifData | undefined)
 
 const entries = computed<ExifEntry[]>(() => {
   if (!exifData.value) return []
@@ -31,12 +28,16 @@ const entries = computed<ExifEntry[]>(() => {
     }))
     .sort((a, b) => a.key.localeCompare(b.key))
 })
+
+const hasEntries = computed(() => entries.value.length > 0)
 </script>
 
 <template>
   <VExpansionPanel
-    v-if="entries.length > 0"
     elevation="0"
+    :readonly="!hasEntries"
+    :hover="hasEntries"
+    :class="{ 'text-disabled': !hasEntries }"
     :title="t('coreDam.asset.detail.exif.title', { count: entries.length })"
     value="exif"
     data-cy="asset-exif-panel"
@@ -53,7 +54,7 @@ const entries = computed<ExifEntry[]>(() => {
           {{ entry.label }}
         </VCol>
         <VCol cols="9">
-          <ACopyText :value="entry.value" />
+          {{ entry.value }}
         </VCol>
       </VRow>
     </VExpansionPanelText>

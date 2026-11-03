@@ -296,7 +296,7 @@ const onAnyMetadataChange = () => {
       </VExpansionPanelText>
     </VExpansionPanel>
     <AssetMetadataExif
-      v-if="assetMainFile"
+      v-if="isTypeImage && assetMainFile && assetFileIsImageFile(assetMainFile)"
       :file="assetMainFile"
     />
   </VExpansionPanels>
