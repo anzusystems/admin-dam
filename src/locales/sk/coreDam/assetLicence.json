@@ -4,6 +4,7 @@
     "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
+    "badge": "Badge",
     "flags": {
       "manualUploadAllowed": "Povolený manuálny upload",
       "directUseAllowed": "Povolené priame použitie"

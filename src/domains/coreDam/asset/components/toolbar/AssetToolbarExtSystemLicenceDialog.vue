@@ -114,25 +114,23 @@ const errorMessageLicence = computed(() => {
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const router = useRouter()
+
 const onConfirm = async () => {
   if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
-  if (
-    validateLicence.value.$invalid ||
-    !selectedLicence.value ||
-    currentAssetLicenceId.value === selectedLicence.value
-  ) {
+  if (validateLicence.value.$invalid || !selectedLicence.value) {
     showValidationError()
     saving.value = false
     return
   }
   try {
     await fetchAssetLicence(selectedLicence.value)
-    await updateCurrentUser({ selectedLicence: selectedLicence.value })
+    await updateCurrentUser({ selectedLicence: selectedLicence.value, selectedListView: null })
     dialog.value = false
     showRecordWas('updated')
-    window.location.reload()
+    window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
   } catch (error) {
     showErrorsDefault(error)
   } finally {

@@ -11,7 +11,8 @@ import AssetDetailDialogSidebar from '@/domains/coreDam/asset/components/detail/
 import { fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 defineEmits<{
   (e: 'mainRouteChanged'): void
@@ -26,7 +27,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { listLicenceIds } = useCurrentListView()
 const {
   toggleSidebar,
   sidebar,
@@ -69,7 +70,7 @@ const getDetail = async () => {
   assetDetailStore.showDetail()
   try {
     const res = await fetchAssetByFileId(assetFileId.value)
-    if (currentAssetLicenceId.value !== res.licence) {
+    if (!listLicenceIds.value.includes(res.licence)) {
       showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
       return

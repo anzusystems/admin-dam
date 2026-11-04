@@ -14,6 +14,7 @@ import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/com
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
 import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const props = withDefaults(
   defineProps<{
@@ -42,6 +43,8 @@ const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { asset, assetType, assetStatus, tableImageProperties } = useAssetItemActions(props.item)
+const { getCachedAssetLicence } = useCachedAssetLicences()
+const licenceBadge = computed(() => getCachedAssetLicence(asset.value.licence)?.badge ?? '')
 
 const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 
@@ -102,6 +105,13 @@ onMounted(() => {
       </div>
     </td>
     <td>
+      <AChipNoLink
+        v-if="licenceBadge.length > 0"
+        size="x-small"
+        class="mr-1"
+      >
+        {{ licenceBadge }}
+      </AChipNoLink>
       {{ asset.texts.displayTitle || t('coreDam.asset.list.noTitle') }}
     </td>
     <td>

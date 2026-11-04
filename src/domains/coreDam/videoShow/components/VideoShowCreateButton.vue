@@ -6,6 +6,7 @@ import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoSh
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 withDefaults(
   defineProps<{
@@ -13,14 +14,12 @@ withDefaults(
     buttonT?: string
     buttonClass?: string
     dataCy?: string
-    disabled?: boolean | undefined
   }>(),
   {
     disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
-    disabled: undefined,
   }
 )
 const emit = defineEmits<{
@@ -28,6 +27,7 @@ const emit = defineEmits<{
 }>()
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { uploadAllowed } = useCurrentListView()
 
 const { createDefault } = useVideoShowFactory()
 const videoShow = ref<VideoShow>(createDefault(currentAssetLicenceId.value))
@@ -52,6 +52,7 @@ const create = async () => {
     v-model="dialog"
     :v="v$"
     :call-create="create"
+    :disabled="!uploadAllowed"
     disable-redirect
     :button-class="buttonClass"
     :data-cy="dataCy"
