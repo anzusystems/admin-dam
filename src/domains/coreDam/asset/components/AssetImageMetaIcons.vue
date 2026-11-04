@@ -11,7 +11,13 @@ import {
   type AssetFileProperties,
   DamAssetType,
   type DamAssetTypeType,
+  dateDiff,
+  dateNow,
+  dateTimeFriendly,
+  dateTimeToDate,
+  type DatetimeUTCNullable,
   useDamConfigStore,
+  useRemainingTime,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -19,13 +25,24 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
+    autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
     disableAbsolute: false,
+    autoDeleteAt: null,
   }
 )
 
 const { t } = useI18n()
+const { remainingTimeShort } = useRemainingTime()
+
+const autoDeleteBadge = computed(() => {
+  if (!props.autoDeleteAt) return null
+  return {
+    text: remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(props.autoDeleteAt), dateNow(), 's'))),
+    title: t('coreDam.asset.metaIcons.autoDeleteAt', { date: dateTimeFriendly(props.autoDeleteAt) }),
+  }
+})
 
 const checkDimensions = (icons: string[], titles: string[]) => {
   if (props.assetFileProperties.width === 0 || props.assetFileProperties.height === 0) {
@@ -87,10 +104,21 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0"
+    v-show="data.icons.length > 0 || autoDeleteBadge"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
+    <VChip
+      v-if="autoDeleteBadge"
+      size="x-small"
+      variant="flat"
+      color="warning"
+      class="ma-1 align-self-center"
+      :title="autoDeleteBadge.title"
+      data-cy="asset-auto-delete-badge"
+    >
+      {{ autoDeleteBadge.text }}
+    </VChip>
     <img
       v-for="(item, index) in data.icons"
       :key="item"
