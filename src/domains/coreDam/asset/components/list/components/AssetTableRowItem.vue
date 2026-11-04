@@ -111,6 +111,7 @@ onMounted(() => {
       <AssetImageMetaIcons
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
+        :auto-delete-at="asset.autoDeleteAt"
         disable-absolute
       />
       <CachedPodcastChip

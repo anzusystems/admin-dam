@@ -15,6 +15,7 @@ import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
+  ADatetime,
   assetFileIsAudioFile,
   assetFileIsImageFile,
   assetFileIsVideoFile,
@@ -234,6 +235,17 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+          </VCol>
+        </VRow>
+        <VRow
+          v-if="asset.autoDeleteAt"
+          data-cy="asset-auto-delete-at"
+        >
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.autoDeleteAt') }}
+          </VCol>
+          <VCol cols="9">
+            <ADatetime :date-time="asset.autoDeleteAt" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
