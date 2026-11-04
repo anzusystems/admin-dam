@@ -134,6 +134,9 @@
       "hide": "Show more metadata"
     },
     "noAssetSelected": "No asset selected",
+    "exif": {
+      "title": "Main file EXIF ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Focus",

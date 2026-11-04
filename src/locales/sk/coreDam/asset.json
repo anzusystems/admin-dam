@@ -134,6 +134,9 @@
       "hide": "Zobraziť viac detailov"
     },
     "noAssetSelected": "Žiadne vybrané assety",
+    "exif": {
+      "title": "EXIF hlavného súboru ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
