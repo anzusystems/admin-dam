@@ -1,12 +1,9 @@
 <script lang="ts" setup>
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { ACL } from '@/domains/system/auth/auth'
-import { type DamAssetLicence, type DamExtSystem, useDamConfigState } from '@anzusystems/common-admin'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { useDamConfigState } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
-import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 
 withDefaults(
   defineProps<{
@@ -22,7 +19,7 @@ withDefaults(
 const { t } = useI18n()
 
 const { currentExtSystemId } = useCurrentExtSystem()
-const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
@@ -31,48 +28,6 @@ if (isUndefined(configExtSystem)) {
 }
 
 const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
-
-const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
-const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
-
-const displayTextExtSystem = computed(() => {
-  if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
-    return currentExtSystem.value.name
-  }
-  return currentExtSystemId.value + ''
-})
-
-const displayTextLicence = computed(() => {
-  if (currentAssetLicence.value && currentAssetLicence.value.name.length > 0) {
-    return currentAssetLicence.value.name
-  }
-  return currentAssetLicenceId.value + ''
-})
-
-const dialog = ref(false)
-
-const openDialog = () => {
-  dialog.value = true
-}
-
-const { showErrorsDefault } = useAlerts()
-
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
-
-onMounted(async () => {
-  if (currentExtSystemId.value > 0) {
-    try {
-      const [extSystem, assetLicence] = await Promise.all([
-        fetchExtSystem({ urlParams: { id: currentExtSystemId.value } }),
-        currentAssetLicenceId.value > 0 ? fetchAssetLicence(currentAssetLicenceId.value) : undefined,
-      ])
-      currentExtSystem.value = extSystem
-      currentAssetLicence.value = assetLicence
-    } catch (error) {
-      showErrorsDefault(error)
-    }
-  }
-})
 </script>
 
 <template>
@@ -122,15 +77,6 @@ onMounted(async () => {
           <VDivider />
           <VListItem
             v-show="variant === 'main'"
-            :title="t('system.mainBar.extSystemLicenceSwitch.changeLicence')"
-            :subtitle="displayTextExtSystem + '/' + displayTextLicence"
-            data-cy="button-switch-licence"
-            prepend-icon="mdi-key-arrow-right"
-            @click.stop="openDialog"
-          />
-          <VDivider />
-          <VListItem
-            v-show="variant === 'main'"
             to="/settings"
             :title="t('system.currentUser.settings')"
             prepend-icon="mdi-cog"
@@ -152,10 +98,4 @@ onMounted(async () => {
       {{ t('system.mainBar.options') }}
     </VTooltip>
   </VBtn>
-  <AssetToolbarExtSystemLicenceDialog
-    v-if="dialog"
-    v-model="dialog"
-    :ext-system-name="displayTextExtSystem"
-    :licence-name="displayTextLicence"
-  />
 </template>

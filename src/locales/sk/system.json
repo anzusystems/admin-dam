@@ -67,11 +67,13 @@
       "title": "Prepnutie externého systému a licencie",
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
-      "changeToLicenceId": "Zmena na ID licencie",
-      "changeLicence": "Zmeniť licenciu:"
+      "changeToLicenceId": "Zmena na ID licencie"
     },
     "listViewSwitch": {
-      "title": "Výber a licencia"
+      "title": "Výber a licencia",
+      "listViews": "Výbery",
+      "licences": "Licencie",
+      "changeLicence": "Zmeniť licenciu…"
     }
   },
   "settings": {
