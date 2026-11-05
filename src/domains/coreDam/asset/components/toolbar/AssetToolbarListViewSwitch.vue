@@ -5,6 +5,7 @@ import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/a
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
@@ -23,6 +24,7 @@ const { availableListViews, currentListView } = useCurrentListView()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const uploadQueuesStore = useUploadQueuesStore()
+const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
 const { showErrorsDefault } = useAlerts()
 
@@ -40,8 +42,9 @@ const activeDisplayText = computed(() => currentListView.value?.name || currentA
 
 const uploadLicenceText = (uploadLicence: IntegerIdNullable) => {
   if (isNull(uploadLicence)) return t('system.mainBar.listViewSwitch.readOnly')
-  const licence = currentUser.value?.resolvedAssetLicences.find((item) => item.id === uploadLicence)
-  return t('system.mainBar.listViewSwitch.uploadsTo', { licence: licence?.name || uploadLicence })
+  return t('system.mainBar.listViewSwitch.uploadsTo', {
+    licence: getCachedAssetLicence(uploadLicence)?.name || uploadLicence,
+  })
 }
 
 const displayTextExtSystem = computed(() => {
@@ -103,6 +106,10 @@ const onConfirmPending = () => {
 }
 
 onMounted(async () => {
+  availableListViews.value.forEach((listView) => {
+    if (listView.uploadLicence) addToCachedAssetLicences(listView.uploadLicence)
+  })
+  fetchCachedAssetLicences()
   if (currentExtSystemId.value > 0) {
     try {
       const [extSystem, assetLicence] = await Promise.all([
