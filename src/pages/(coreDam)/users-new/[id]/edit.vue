@@ -40,6 +40,8 @@ const { anzuUser, loadingAnzuUser, loadingUpdateAnzuUser, fetchAnzuUser, updateA
     system: 'dam',
     entity: damUserSystemDescriptor.entity,
     endPoint: damUserSystemDescriptor.endpoints.list,
+    // DAM recalculates "User in external systems" on save; the form shows it read-only.
+    updateResponseFields: ['userToExtSystems'],
   })
 
 // The store types the record as the library's `AnzuUser`. In dam the same row also
@@ -57,20 +59,12 @@ const breadcrumbs = defineBreadcrumbs(() => [
   },
 ])
 
-const { signal, leave } = useRecordPage({
+useRecordPage({
   fallbackRouteName: '/(coreDam)/users-new',
   skipRouteNames: ['/(coreDam)/users-new/[id]', '/(coreDam)/users-new/new'],
   loading: loadingAnzuUser,
   load: (signal) => fetchAnzuUser(id, { signal }),
 })
-
-// DAM recalculates "User in external systems" on save, and the update keeps only the tracking fields of its answer.
-// Not once the page is left: a reload started then would empty the store of the page that follows.
-// A failed reload empties the record, so it leaves the page like a failed first load.
-const onSave = async () => {
-  if (!(await updateAnzuUser()) || signal.aborted) return
-  if ((await fetchAnzuUser(id, { signal })) === false) await leave()
-}
 
 onBeforeUnmount(() => {
   resetAnzuUserStore('dam')
@@ -83,7 +77,7 @@ onBeforeUnmount(() => {
       <AActionSaveButton
         v-if="!loadingAnzuUser"
         :loading="loadingUpdateAnzuUser"
-        @save-record="onSave"
+        @save-record="updateAnzuUser"
       />
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/users-new'"
