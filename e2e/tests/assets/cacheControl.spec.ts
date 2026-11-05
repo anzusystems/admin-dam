@@ -1,6 +1,6 @@
 import { test, expect, type APIResponse, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, CORE_DAM_API, LICENCE_ID } from '@pages/shared/constants'
+import { ADMIN_SUITE, CORE_DAM_API, IS_LOCAL, LICENCE_ID } from '@pages/shared/constants'
 
 let page: Page
 
@@ -12,6 +12,10 @@ function maxAge(response: APIResponse, header: string): number {
 }
 
 test.describe.serial(`${ADMIN_SUITE} - Image cache control`, { tag: '@integration' }, () => {
+  // The caching is that of a deployed environment: Cloudflare in front of the image servers, https, a public
+  // `image.` host. Locally, imported assets also have no files, and the image server answers them 500.
+  test.skip(IS_LOCAL, 'the image servers of a deployed environment')
+
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()

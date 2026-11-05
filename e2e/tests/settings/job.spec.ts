@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, NO_JOB_RUNNER_LOCALLY } from '@pages/shared/constants'
 import { cleanupAssets, deleteAsset } from '@pages/shared/api'
 import { uploadAndDescribe } from '@pages/shared/upload'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
@@ -26,6 +26,9 @@ let PODCAST_TITLE = ''
 // Destructive: every run deletes one RSS-imported episode asset on the target environment so the synchronizer
 // has something to re-import. Skip it with `--grep-invert @destructive` when that data matters.
 test.describe.serial(`${ADMIN_SUITE} - System jobs`, { tag: '@destructive' }, () => {
+  // All of it: the steps before the synchronization only prepare it, and would delete an episode for nothing.
+  test.skip(IS_LOCAL, NO_JOB_RUNNER_LOCALLY)
+
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()

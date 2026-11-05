@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, NO_JW_PLAYER_LOCALLY, RAND_NUM } from '@pages/shared/constants'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { uploadAndDescribe } from '@pages/shared/upload'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
@@ -35,6 +35,8 @@ const ARTICLE_TITLE = `[E2E] DAM to CMS Video-${RAND_NUM}`
 const ASSET_TITLE = `TestAssetTitle${RAND_NUM}`
 
 test.describe.serial(`${ADMIN_SUITE} - DAM to CMS video distribution`, { tag: '@integration' }, () => {
+  test.skip(IS_LOCAL, NO_JW_PLAYER_LOCALLY)
+
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()

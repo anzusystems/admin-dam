@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, ALERT_UPDATE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, ALERT_DELETE, RAND_NUM } from '@pages/shared/constants'
 import {
   createPublicExport,
   deletePublicExport,
@@ -40,8 +40,8 @@ test.describe.serial(`${ADMIN_SUITE} - Public export`, () => {
   })
 
   test('deletes the public export', async () => {
-    // The app confirms a public export deletion with the generic update alert.
-    await deletePublicExport(page, PUBLIC_EXPORT_ID, ALERT_UPDATE)
+    // Until 3.0 the app confirmed it with the update alert.
+    await deletePublicExport(page, PUBLIC_EXPORT_ID, ALERT_DELETE)
     DELETED = true
     expect(await apiStatus(page, `public-export/${PUBLIC_EXPORT_ID}`)).toBe(404)
   })

@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test'
-import { cardLoad, filterBy } from '@pages/shared/admin'
+import { cardLoad, exactTextMatch, filterBy } from '@pages/shared/admin'
 import { CORE_DAM_API } from '@pages/shared/constants'
 import { closeDetail, confirmCreate, createDialog, saveEdit, visibleCy } from '@pages/shared/crud'
 
@@ -101,7 +101,7 @@ async function toggleMultiselect(page: Page, dataCy: string, options: string[]):
   await field.locator('.v-field').click()
   await expect(menuOptions(page).first()).toBeVisible()
   for (const option of options) {
-    const chip = field.locator('.v-chip').filter({ hasText: new RegExp(`^\\s*${option}\\s*$`) })
+    const chip = field.locator('.v-chip').filter({ hasText: exactTextMatch(option) })
     const selected = (await chip.count()) > 0
     await clickOption(page, option)
     await expect(chip).toHaveCount(selected ? 0 : 1)
@@ -112,7 +112,8 @@ async function toggleMultiselect(page: Page, dataCy: string, options: string[]):
 
 /** Running it twice with the same data restores the original access. */
 export async function toggleUserAccess(page: Page, data: UserAccessData): Promise<void> {
-  const licenceInput = page.locator('[data-cy="user-asset-licences"] input')
+  // A picked licence also gets a hidden input of its own.
+  const licenceInput = page.locator('[data-cy="user-asset-licences"] input:not([type="hidden"])')
   for (const licence of data.licences) {
     await licenceInput.click()
     await licenceInput.fill(licence)
@@ -128,6 +129,17 @@ export async function openUserEdit(page: Page, id: string): Promise<void> {
   await page.goto(`/users/${id}/edit`)
   await cardLoad(page)
   await expect(visibleCy(page, 'button-save')).toBeVisible()
+}
+
+/** The titles the user form lists the distribution services by. They differ per environment ("Youtube CMS" locally). */
+export async function distributionServiceTitles(page: Page): Promise<string[]> {
+  const response = await page.request.get(`${CORE_DAM_API}/configuration`)
+  expect(response.status(), 'GET configuration').toBe(200)
+  const services: Record<string, { title: string }> = (await response.json()).distributionServices
+  // Two services may share a title, and the form tells them apart by nothing else.
+  const titles = [...new Set(Object.values(services).map((service) => service.title))]
+  expect(titles, 'distribution services of the environment').not.toHaveLength(0)
+  return titles
 }
 
 export async function fetchUser(page: Page, id: string): Promise<Record<string, any>> {

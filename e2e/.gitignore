@@ -45,6 +45,8 @@ blob-report/
 # New Playwright (migrated tests) artifacts
 .report/
 .results/
+.report-routes/
+.results-routes/
 .state/
 
 # playwright-cli skill session artifacts (DOM snapshots + console logs)

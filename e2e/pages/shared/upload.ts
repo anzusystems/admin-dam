@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import { type Page, type Response, expect } from '@playwright/test'
-import { ALERT_UPLOAD, CORE_DAM_API } from '@pages/shared/constants'
+import { ALERT_UPLOAD, CORE_DAM_API, isAssetListSearch } from '@pages/shared/constants'
 import { fixture } from '@pages/shared/fixtures'
 
 export type UploadMode = 'select' | 'drag-drop'
@@ -133,7 +133,5 @@ export async function uploadAndDescribe(page: Page, file: string, assetName?: st
 }
 
 export async function waitForAssetList(page: Page): Promise<void> {
-  await page.waitForResponse((response) => response.url().startsWith(`${CORE_DAM_API}/asset/licence/search`), {
-    timeout: 30000,
-  })
+  await page.waitForResponse((response) => isAssetListSearch(response.url()), { timeout: 30000 })
 }

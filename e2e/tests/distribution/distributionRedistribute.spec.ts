@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, NO_JW_PLAYER_LOCALLY, RAND_NUM } from '@pages/shared/constants'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { uploadFile, waitForAssetList } from '@pages/shared/upload'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
@@ -45,6 +45,8 @@ const SERVICE = 'JW Player Video'
 const SOURCE_URL = 'https://example.com/e2e-direct-source.mp4'
 
 test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
+  test.skip(IS_LOCAL, NO_JW_PLAYER_LOCALLY)
+
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()

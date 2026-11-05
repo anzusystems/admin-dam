@@ -108,10 +108,7 @@ export async function openCleanPhraseDetail(page: Page, id: string): Promise<voi
   expect(await detailId(page)).toBe(id)
 }
 
-/**
- * Returns the text of the alert the app raises, which the caller asserts.
- * It is wrong today (DAM-B4): the delete reports `Záznam bol upravený.`.
- */
+/** Returns the text of the alert the app raises, which the caller asserts. */
 export async function deleteOpenCleanPhrase(page: Page): Promise<string> {
   await visibleCy(page, 'button-delete').click()
   const dialog = page.locator('.v-overlay--active').filter({ hasText: 'Odstrániť?' }).first()

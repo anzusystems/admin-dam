@@ -1,5 +1,5 @@
 import { type Locator, type Page, expect } from '@playwright/test'
-import { CORE_DAM_API } from '@pages/shared/constants'
+import { isAssetListSearch } from '@pages/shared/constants'
 import { exactTextMatch } from '@pages/shared/admin'
 import { tileSelector, tiles } from '@pages/assets/assetBulkEditPage'
 
@@ -93,8 +93,11 @@ export async function pickFilterKeyword(page: Page, name: string): Promise<void>
   await expect(field.locator('.v-chip')).toContainText([name])
 }
 
+/** A swatch is a button named by its colour's translated name ("Červená"); it has no title. */
 export function colourSwatch(page: Page, colour: string): Locator {
-  return filterDrawer(page).locator(`.color-swatches__item[title="${colour}"]`)
+  return filterDrawer(page)
+    .locator('.color-swatches__item')
+    .and(page.getByRole('button', { name: colour, exact: true }))
 }
 
 /** The hex is read back from the swatch itself so no assertion hardcodes the palette. */
@@ -110,10 +113,7 @@ export async function pickColourSwatch(page: Page, colour: string): Promise<stri
 
 /** The query string shows which filter a control actually sent. The rendered list cannot show that on shared data. */
 export async function searchParams(page: Page, action: () => Promise<unknown>): Promise<URLSearchParams> {
-  const searched = page.waitForResponse(
-    (response) => response.url().startsWith(`${CORE_DAM_API}/asset/licence/search`),
-    { timeout: 30000 }
-  )
+  const searched = page.waitForResponse((response) => isAssetListSearch(response.url()), { timeout: 30000 })
   await action()
   const params = new URL((await searched).url()).searchParams
   await expect(page.locator('.v-progress-linear--active'))
@@ -195,9 +195,7 @@ export async function loadNextPage(page: Page): Promise<URLSearchParams> {
   let arrived = false
   const nextPage = page
     .waitForResponse(
-      (response) =>
-        response.url().startsWith(`${CORE_DAM_API}/asset/licence/search`) &&
-        new URL(response.url()).searchParams.get('offset') !== '0',
+      (response) => isAssetListSearch(response.url()) && new URL(response.url()).searchParams.get('offset') !== '0',
       { timeout: 60000 }
     )
     .then((response) => {

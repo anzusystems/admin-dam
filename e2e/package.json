@@ -10,13 +10,14 @@
     "test:run:local": "ADAM_ENV=local playwright test --config playwright.config.ts",
     "test:run:devel": "ADAM_ENV=devel playwright test --config playwright.config.ts",
     "test:run:staging": "ADAM_ENV=staging playwright test --config playwright.config.ts",
+    "test:routes": "playwright test --config playwright.routes.config.ts",
     "lint": "yarn ci",
     "lint:fix": "yarn lint:oxlint:fix && yarn format",
     "lint:tsc": "tsc -b",
     "lint:oxlint": "oxlint . --disable-nested-config",
     "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
-    "format": "oxfmt --disable-nested-config pages setup tests playwright.config.ts",
-    "format:check": "oxfmt --disable-nested-config pages setup tests playwright.config.ts --check",
+    "format": "oxfmt --disable-nested-config pages setup tests playwright.config.ts playwright.routes.config.ts",
+    "format:check": "oxfmt --disable-nested-config pages setup tests playwright.config.ts playwright.routes.config.ts --check",
     "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint"
   },
   "devDependencies": {

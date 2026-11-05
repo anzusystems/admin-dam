@@ -7,7 +7,7 @@
     "types": ["@playwright/test", "node"],
     "outDir": "./.tsbuildinfo/setup"
   },
-  "include": ["playwright.config.ts", "setup/**/*.ts"],
+  "include": ["playwright.config.ts", "playwright.routes.config.ts", "setup/**/*.ts"],
   "exclude": ["node_modules"],
   "references": [{ "path": "./pages" }]
 }

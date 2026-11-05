@@ -12,7 +12,10 @@
     "noEmit": true,
     "types": ["node"],
     "paths": {
-      "@pages/*": ["./pages/*"]
+      "@pages/*": ["./pages/*"],
+      // The types of common-admin's route walk (`@anzusystems/common-admin/e2e`), which is out of reach of this
+      // project's node_modules. The file itself: its declarations are ES modules, which add no extension.
+      "playwright/test": ["./node_modules/playwright/test.d.ts"]
     }
   },
   "files": [],

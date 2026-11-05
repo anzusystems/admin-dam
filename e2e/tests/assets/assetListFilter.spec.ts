@@ -192,9 +192,9 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
 
   test('sends the picked colour swatch as the dominant colour', async () => {
     await resetFilter(page)
-    await expect(colourSwatch(page, 'red').locator('.mdi-check')).toBeHidden()
+    await expect(colourSwatch(page, 'Červená').locator('.mdi-check')).toBeHidden()
 
-    const hex = await pickColourSwatch(page, 'red')
+    const hex = await pickColourSwatch(page, 'Červená')
     // Which assets are closest to a palette colour is the backend's judgement and cannot be
     // set up in a fixture. This asserts the query the palette builds, not the assets returned.
     expect((await submitFilter(page)).get('closestMostDominantColor')).toBe(hex)
@@ -210,7 +210,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     expect(params.get('type'), 'the quick type button is cleared too').toBeNull()
     expect(params.get('closestMostDominantColor')).toBeNull()
     expect(params.get('order[score_date]'), 'the ordering survives a filter reset').toBe('asc')
-    await expect(colourSwatch(page, 'red').locator('.mdi-check')).toBeHidden()
+    await expect(colourSwatch(page, 'Červená').locator('.mdi-check')).toBeHidden()
   })
 
   test('limits the list with the quick asset type buttons', async () => {

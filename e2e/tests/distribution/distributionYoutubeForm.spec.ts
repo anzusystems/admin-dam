@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, RAND_NUM } from '@pages/shared/constants'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { uploadFile, waitForAssetList } from '@pages/shared/upload'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
@@ -34,6 +34,9 @@ let ASSET_ID = ''
 const TITLE = `TestYoutubeForm${RAND_NUM}`
 
 test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
+  // Signing a channel in is a Google OAuth consent, done by hand; without it the tab shows only "Prihlásenie".
+  test.skip(IS_LOCAL, 'the local core-dam has no YouTube channel signed in')
+
   test.beforeAll(async ({ browser }) => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()

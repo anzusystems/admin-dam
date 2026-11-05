@@ -190,8 +190,10 @@ test.describe.serial(`${ADMIN_SUITE} - Error paths`, () => {
 
       // And the reason is readable — the editable queue is the only place that renders the message.
       await page.locator('[data-cy="button-add-description"]').click()
-      await expect(page.locator('.v-overlay--active').getByText(WRONG_MIME)).toBeVisible()
-      await page.locator('.v-overlay--active [data-cy="button-close"]').first().click()
+      // The failure is also announced in an alert, an overlay of its own, so the dialog is named.
+      const dialog = page.getByRole('dialog')
+      await expect(dialog.getByText(WRONG_MIME)).toBeVisible()
+      await dialog.locator('[data-cy="button-close"]').first().click()
     } finally {
       await stub.stop()
     }

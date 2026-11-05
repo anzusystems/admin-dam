@@ -23,8 +23,7 @@ import {
  * Author clean phrases: rules that turn the free-text author line of an imported asset into DAM authors.
  * After creating a rule, the spec runs the section's playground,
  * which is the same call the import makes, and asserts the result.
- * Known bugs: DAM-B4 (delete reports `Záznam bol upravený.`) and DAM-B5 (a
- * rule switched to `Nahradenie` stores its author but never applies it).
+ * Known bug: DAM-B5 (a rule switched to `Nahradenie` stores its author but never applies it).
  */
 
 let page: Page
@@ -137,10 +136,8 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
     PHRASE_ID = ''
   })
 
-  test('reports a deleted rule as deleted @bug', async () => {
-    test.fail() // DAM-B4: the delete raises the update alert instead
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B4' })
-
+  // DAM-B4, fixed in 3.0: the delete raised the update alert, `Záznam bol upravený.`.
+  test('reports a deleted rule as deleted', async () => {
     // The alert is the one the test above caught; deleting again would need another fixture.
     expect(DELETE_ALERT, 'an alert was raised by the delete').not.toBe('')
     expect(DELETE_ALERT).toContain(ALERT_DELETE)

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, NO_JOB_RUNNER_LOCALLY, RAND_NUM } from '@pages/shared/constants'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { uploadAndDescribe } from '@pages/shared/upload'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
@@ -45,6 +45,9 @@ test.describe.serial(
   `${ADMIN_SUITE} - DAM to CMS audio distribution`,
   { tag: ['@integration', '@destructive'] },
   () => {
+    // The re-import is a podcast synchronization job.
+    test.skip(IS_LOCAL, NO_JOB_RUNNER_LOCALLY)
+
     test.beforeAll(async ({ browser }) => {
       const ctx = await browser.newContext()
       page = await ctx.newPage()

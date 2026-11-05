@@ -4,9 +4,12 @@ const APPS_MENU_BUTTON = '.v-btn:has(.mdi-view-grid-plus-outline)'
 
 export async function openAppsMenu(page: Page): Promise<void> {
   const settingsEntry = page.locator('.v-overlay--active [data-cy="button-settings"]')
-  // Closing a dialog opened from the menu can leave the menu open, and clicking the button again would close it.
   await expect(page.locator('.v-dialog.v-overlay--active')).toHaveCount(0)
-  if (!(await settingsEntry.isVisible())) await page.locator(APPS_MENU_BUTTON).click()
+  // Closing a dialog opened from the menu can leave the menu open, but for a moment only: taken as open, it then
+  // closes under the next click. So an open menu is closed first and the menu is opened afresh.
+  if (await settingsEntry.isVisible()) await page.keyboard.press('Escape')
+  await expect(settingsEntry).toBeHidden()
+  await page.locator(APPS_MENU_BUTTON).click()
   await expect(settingsEntry).toBeVisible()
 }
 

@@ -3,6 +3,7 @@ import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
 import {
   createAnzuUser,
+  distributionServiceTitles,
   fetchUser,
   openUserByEmail,
   openUserEdit,
@@ -24,7 +25,8 @@ const ACCESS: UserAccessData = {
   licences: ['Novyny', 'Sme Family'],
   adminToExtSystems: ['cms', 'blog', 'tools'],
   externalProviders: ['Unsplash'],
-  distributionServices: ['Youtube', 'JwVideo'],
+  // All the environment has, read from its configuration in `beforeAll`.
+  distributionServices: [],
 }
 
 test.describe.serial(`${ADMIN_SUITE} - User`, () => {
@@ -32,6 +34,7 @@ test.describe.serial(`${ADMIN_SUITE} - User`, () => {
     const ctx = await browser.newContext()
     page = await ctx.newPage()
     await prepareUser(page)
+    ACCESS.distributionServices = await distributionServiceTitles(page)
   })
 
   test.afterAll(async () => {
