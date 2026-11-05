@@ -2,5 +2,5 @@
   "error_invalid_key": "Invalid key.",
   "error_invalid_licence": "Invalid licence.",
   "error_invalid_ext_system": "Invalid external system.",
-  "error_ext_system_locked_by_list_view": "The licence is used by an asset list view, remove it from the list view first."
+  "error_ext_system_locked": "The licence is used by an asset list view or a licence group, remove it from them first."
 }
