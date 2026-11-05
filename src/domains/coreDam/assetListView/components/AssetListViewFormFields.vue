@@ -3,11 +3,11 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  DamAssetLicenceGroupRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import AssetLicenceByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtSystemRemoteAutocomplete.vue'
+import AssetLicenceGroupByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupByExtSystemRemoteAutocomplete.vue'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
 import { useAssetListViewFormOptions } from '@/domains/coreDam/assetListView/composables/assetListViewFormOptions'
 import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
@@ -15,8 +15,7 @@ import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/comp
 const assetListView = defineModel<AssetListView>({ required: true })
 
 const { v$ } = useAssetListViewValidation(assetListView)
-const { groupLicenceOptions, uploadLicenceOptions, targetedByGroups } =
-  useAssetListViewFormOptions(assetListView)
+const { groupLicenceOptions, uploadLicenceOptions, targetedByGroups } = useAssetListViewFormOptions(assetListView)
 
 const { t } = useI18n()
 
@@ -47,12 +46,10 @@ const onExtSystemChange = () => {
     />
   </ARow>
   <ARow>
-    <DamAssetLicenceGroupRemoteAutocomplete
+    <AssetLicenceGroupByExtSystemRemoteAutocomplete
       v-model="assetListView.groups"
-      :client="damClient"
+      :ext-system-id="assetListView.extSystem"
       :label="t('coreDam.assetListView.model.groups')"
-      multiple
-      clearable
       data-cy="asset-list-view-groups"
     />
   </ARow>
@@ -83,7 +80,6 @@ const onExtSystemChange = () => {
       v-model="assetListView.uploadLicence"
       :label="t('coreDam.assetListView.model.uploadLicence')"
       :items="uploadLicenceOptions"
-      :v="v$.assetListView.uploadLicence"
       clearable
       data-cy="asset-list-view-upload-licence"
     />

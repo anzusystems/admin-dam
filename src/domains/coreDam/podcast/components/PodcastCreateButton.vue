@@ -15,7 +15,6 @@ import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 withDefaults(
   defineProps<{
@@ -35,8 +34,7 @@ const { t } = useI18n()
 
 const dialog = ref(false)
 
-const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { uploadAllowed } = useCurrentListView()
+const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
 
 const { createDefault } = usePodcastFactory()
 const podcast = ref<Podcast>(createDefault(currentAssetLicenceId.value))

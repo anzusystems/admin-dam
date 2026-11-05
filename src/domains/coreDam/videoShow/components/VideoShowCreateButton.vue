@@ -6,7 +6,6 @@ import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoSh
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 
 withDefaults(
   defineProps<{
@@ -26,8 +25,7 @@ const emit = defineEmits<{
   (e: 'onSuccess', data: VideoShow): void
 }>()
 
-const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { uploadAllowed } = useCurrentListView()
+const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
 
 const { createDefault } = useVideoShowFactory()
 const videoShow = ref<VideoShow>(createDefault(currentAssetLicenceId.value))

@@ -2,7 +2,6 @@
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import { useAssetItemActions } from '@/domains/coreDam/asset/components/list/composables/assetItemActions'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const props = withDefaults(
   defineProps<{
@@ -27,9 +26,7 @@ const { t } = useI18n()
 const IMAGE_HEIGHT = 200
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
-const { getCachedAssetLicence } = useCachedAssetLicences()
-const licenceBadge = computed(() => getCachedAssetLicence(asset.value.licence)?.badge ?? '')
+const { asset, assetType, assetStatus, imageProperties, licenceBadge } = useAssetItemActions(props.item)
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })

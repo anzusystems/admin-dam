@@ -4,14 +4,14 @@ import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externa
 import ExternalProviderAssetMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadata.vue'
 import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const { t } = useI18n()
 
 const { sidebarRight } = useMainWrapper()
 
 const { asset, loader } = useExternalProviderAssetDetailActions()
-const { uploadAllowed } = useCurrentListView()
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const assetDetailStore = useExternalProviderAssetDetailStore()
 

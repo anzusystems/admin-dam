@@ -211,8 +211,7 @@
       "confirm": "Stop upload"
     },
     "newAssetsUploadOverlayTitle": "New assets upload",
-    "slotsUploadOverlayTitle": "Asset slots upload",
-    "notAllowed": "Upload is not allowed for the current licence selection."
+    "slotsUploadOverlayTitle": "Asset slots upload"
   },
   "selected": {
     "selectedFiles": "Selected files",

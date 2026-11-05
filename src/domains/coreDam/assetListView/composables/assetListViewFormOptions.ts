@@ -1,6 +1,5 @@
-import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
+import { fetchDamAssetLicenceGroupListByIds, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
-import { useFetchAssetLicenceGroup } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
 
 /**
@@ -9,7 +8,6 @@ import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetL
  */
 export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   const { showErrorsDefault } = useAlerts()
-  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
   const groupLicenceOptions = ref<ValueObjectOption<IntegerId>[]>([])
   const uploadLicenceOptions = ref<ValueObjectOption<IntegerId>[]>([])
@@ -21,9 +19,7 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   const loadGroupLicenceOptions = async (): Promise<boolean> => {
     const sequence = ++requestSequence
     try {
-      const groups = await Promise.all(
-        assetListView.value.groups.map((id) => fetchAssetLicenceGroup({ urlParams: { id } }))
-      )
+      const groups = await fetchDamAssetLicenceGroupListByIds(damClient, assetListView.value.groups)
       const licenceIds = [...new Set(groups.flatMap((group) => group.licences))]
       const licences = await fetchDamAssetLicenceListByIds(damClient, licenceIds)
       if (sequence !== requestSequence) return false
@@ -73,13 +69,13 @@ export function useAssetListViewFormOptions(assetListView: Ref<AssetListView>) {
   watch(
     () => assetListView.value.licences,
     async () => {
-      await loadUploadLicenceOptions()
       if (
         !isNull(assetListView.value.uploadLicence) &&
         !assetListView.value.licences.includes(assetListView.value.uploadLicence)
       ) {
         assetListView.value.uploadLicence = null
       }
+      await loadUploadLicenceOptions()
     },
     { immediate: true, deep: true }
   )

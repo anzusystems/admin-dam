@@ -13,8 +13,5 @@
   },
   "meta": {
     "create": "Vytvoriť výber"
-  },
-  "validation": {
-    "uploadLicence": "Licencia pre nahrávanie musí byť jedna z vybraných licencií."
   }
 }

@@ -65,6 +65,7 @@ watch(
     :fetch-items="fetchItems"
     :fetch-items-by-ids="fetchItemsByIds"
     :multiple="multiple"
+    :disabled="!extSystemId"
     filter-by-field="name"
     prefetch="hover"
     :data-cy="dataCy"

@@ -26,5 +26,8 @@
   },
   "meta": {
     "create": "Create licence"
+  },
+  "validation": {
+    "badge": "Allowed characters for badge: A-Z and 0-9"
   }
 }

@@ -6,11 +6,11 @@ import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalPro
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const { t } = useI18n()
 
-const { uploadAllowed } = useCurrentListView()
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const { toolbarColor } = useTheme()
 

@@ -6,11 +6,11 @@ import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/as
 import ExternalProviderAssetQueueReadonly from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueReadonly.vue'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const { t } = useI18n()
 
-const { uploadAllowed } = useCurrentListView()
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const { toolbarColor } = useTheme()
 

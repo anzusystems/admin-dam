@@ -13,8 +13,5 @@
   },
   "meta": {
     "create": "Create list view"
-  },
-  "validation": {
-    "uploadLicence": "Upload licence must be one of the selected licences."
   }
 }

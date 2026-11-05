@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
 import { SYSTEM_DAM } from '@/shared/systems'
 import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
@@ -13,11 +15,13 @@ const { useCurrentUser } = useAuth()
 const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
 
 const { availableListViews, currentListView } = useCurrentListView()
+const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
 const { showErrorsDefault } = useAlerts()
 
 const activeDisplayText = computed(
-  () => currentListView.value?.name ?? currentUser.value?.selectedLicenceDto?.name ?? ''
+  () => currentListView.value?.name || getCachedAssetLicence(currentAssetLicenceId.value)?.name || ''
 )
 
 const saving = ref(false)
@@ -34,6 +38,12 @@ const onSelectView = async (id: IntegerId) => {
     saving.value = false
   }
 }
+
+onMounted(() => {
+  if (currentListView.value) return
+  addToCachedAssetLicences(currentAssetLicenceId.value)
+  fetchCachedAssetLicences()
+})
 </script>
 
 <template>

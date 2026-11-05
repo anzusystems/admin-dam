@@ -3,7 +3,7 @@ import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externa
 import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
 import ExternalProviderAssetDetailSidebarActionsWrapper from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +19,7 @@ const { t } = useI18n()
 const panels = ref(['info', 'meta'])
 
 const { asset } = useExternalProviderAssetDetailActions()
-const { uploadAllowed } = useCurrentListView()
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const { importFromDetail } = useExternalProviderAssetImport()
 

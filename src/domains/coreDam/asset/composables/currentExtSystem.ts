@@ -10,6 +10,8 @@ const currentExtSystemId = ref(0)
 
 const currentAssetLicenceId = ref(0)
 
+const currentListViewId = ref<IntegerIdNullable>(null)
+
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
@@ -34,6 +36,7 @@ export const initCurrentExtSystemAndLicence = async (
     if (view) {
       currentExtSystemId.value = view.extSystem
       currentAssetLicenceId.value = view.uploadLicence ?? 0
+      currentListViewId.value = view.id
       return true
     }
     if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
@@ -70,6 +73,7 @@ export const initCurrentExtSystemAndLicence = async (
       assetDetailStore.setAsset(assetRes)
       currentExtSystemId.value = view.extSystem
       currentAssetLicenceId.value = view.uploadLicence ?? 0
+      currentListViewId.value = view.id
       return true
     }
     const licenceRes = await fetchAssetLicence(assetRes.licence)
@@ -88,11 +92,13 @@ export const initCurrentExtSystemAndLicence = async (
 export function useCurrentExtSystem() {
   return {
     currentExtSystemId: readonly(currentExtSystemId),
+    currentListViewId: readonly(currentListViewId),
   }
 }
 
 export function useCurrentAssetLicence() {
   return {
     currentAssetLicenceId: readonly(currentAssetLicenceId),
+    uploadAllowed: computed(() => currentAssetLicenceId.value > 0),
   }
 }

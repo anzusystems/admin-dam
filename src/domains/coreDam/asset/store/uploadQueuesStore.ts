@@ -1,5 +1,4 @@
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useExternalProviders } from '@/domains/coreDam/asset/composables/externalProviders'
 import { damClient } from '@/shared/apiClients/damClient'
 import { fetchAsset, fetchAssetListByIds } from '@/domains/coreDam/asset/api/assetApi'
@@ -50,7 +49,7 @@ const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   const { createDefault } = useUploadQueueItemFactory()
-  const { showError, showErrorT, showErrorsDefault } = useAlerts()
+  const { showError, showErrorsDefault } = useAlerts()
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
@@ -123,12 +122,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   async function addByFiles(queueId: string, files: File[]) {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentAssetLicenceId } = useCurrentAssetLicence()
-    const { uploadAllowed } = useCurrentListView()
     const { currentExtSystemId } = useCurrentExtSystem()
-    if (!uploadAllowed.value) {
-      showErrorT('coreDam.asset.upload.notAllowed')
-      return
-    }
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
     if (isUndefined(configExtSystem)) {
       throw new Error('Ext system must be initialised.')

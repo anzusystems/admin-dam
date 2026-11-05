@@ -18,10 +18,10 @@ export interface AssetListViewResolved {
   name: string
   extSystem: IntegerId
   licences: IntegerId[]
-  uploadLicence?: IntegerIdNullable
+  uploadLicence: IntegerIdNullable
 }
 
 export type DamCurrentUserWithListViewsDto = DamCurrentUserDto & {
   listViews: AssetListViewResolved[]
-  selectedListView?: IntegerIdNullable
+  selectedListView: IntegerIdNullable
 }

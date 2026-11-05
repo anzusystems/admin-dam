@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -104,62 +103,61 @@ if (isUndefined(configExtSystem)) {
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
-const { uploadAllowed } = useCurrentListView()
+const { uploadAllowed } = useCurrentAssetLicence()
 const uploadVisible = computed(() => props.type === 'slots' || uploadAllowed.value)
 
 const { t } = useI18n()
 </script>
 
 <template>
-  <template v-if="uploadVisible">
-    <FileUpload
-      :variant="variant"
-      :button-text="buttonText"
-      :height="height"
-      :file-input-key="fileInputKey"
-      :accept="uploadAccept"
-      :max-sizes="uploadSizes"
-      :multiple="multiple"
-      @files-input="assetUpload"
-    />
-    <VDialog
-      v-model="uploadDialog"
-      :width="500"
+  <FileUpload
+    v-if="uploadVisible"
+    :variant="variant"
+    :button-text="buttonText"
+    :height="height"
+    :file-input-key="fileInputKey"
+    :accept="uploadAccept"
+    :max-sizes="uploadSizes"
+    :multiple="multiple"
+    @files-input="assetUpload"
+  />
+  <VDialog
+    v-model="uploadDialog"
+    :width="500"
+  >
+    <VCard
+      v-if="uploadDialog"
+      data-cy="delete-panel"
     >
-      <VCard
-        v-if="uploadDialog"
-        data-cy="delete-panel"
-      >
-        <ADialogToolbar @on-cancel="onDialogCancel">
-          {{ t('system.upload.limits.uploadWarning') }}
-        </ADialogToolbar>
-        <VCardText>
-          <p v-if="alreadyAtUploadLimit">
-            {{ t('system.upload.limits.onUploadLimit', { limit: maxUploadItems }) }}
-          </p>
-          <p v-else>
-            {{ t('system.upload.limits.addingOverLimit', { count: fileCache.length }) }}
-            <span v-if="uploadQueueTotalCount > 0">{{
-              t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
-            }}</span>
-            {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
-            {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
-          </p>
-        </VCardText>
-        <VCardActions>
-          <VSpacer />
-          <ABtnTertiary @click.stop="onDialogCancel">
-            {{ t('common.button.cancel') }}
-          </ABtnTertiary>
-          <ABtnPrimary
-            v-if="!alreadyAtUploadLimit"
-            :loading="uploadDialogLoader"
-            @click.stop="onDialogConfirm"
-          >
-            {{ t('system.upload.limits.actionAddFirstItems', { count: maxUploadItems - uploadQueueTotalCount }) }}
-          </ABtnPrimary>
-        </VCardActions>
-      </VCard>
-    </VDialog>
-  </template>
+      <ADialogToolbar @on-cancel="onDialogCancel">
+        {{ t('system.upload.limits.uploadWarning') }}
+      </ADialogToolbar>
+      <VCardText>
+        <p v-if="alreadyAtUploadLimit">
+          {{ t('system.upload.limits.onUploadLimit', { limit: maxUploadItems }) }}
+        </p>
+        <p v-else>
+          {{ t('system.upload.limits.addingOverLimit', { count: fileCache.length }) }}
+          <span v-if="uploadQueueTotalCount > 0">{{
+            t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
+          }}</span>
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
+          {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
+        </p>
+      </VCardText>
+      <VCardActions>
+        <VSpacer />
+        <ABtnTertiary @click.stop="onDialogCancel">
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          v-if="!alreadyAtUploadLimit"
+          :loading="uploadDialogLoader"
+          @click.stop="onDialogConfirm"
+        >
+          {{ t('system.upload.limits.actionAddFirstItems', { count: maxUploadItems - uploadQueueTotalCount }) }}
+        </ABtnPrimary>
+      </VCardActions>
+    </VCard>
+  </VDialog>
 </template>

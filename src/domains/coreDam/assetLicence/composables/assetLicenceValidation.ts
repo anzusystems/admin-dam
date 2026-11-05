@@ -7,6 +7,13 @@ export const BADGE_MAX_LENGTH = 4
 const { required, minLength, maxLength, minValue } = useValidate()
 
 export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExtended>) {
+  const { t } = useI18n()
+
+  const badgeFormat = helpers.withMessage(
+    () => t('coreDam.assetLicence.validation.badge'),
+    helpers.regex(/^[A-Z0-9]*$/)
+  )
+
   const rules = computed(() => ({
     assetLicence: {
       name: {
@@ -15,7 +22,7 @@ export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExten
       },
       badge: {
         maxLength: maxLength(BADGE_MAX_LENGTH),
-        format: helpers.regex(/^[A-Z0-9]*$/),
+        format: badgeFormat,
       },
       autoDelete: {
         olderThanDays: assetLicence.value.autoDelete.active
