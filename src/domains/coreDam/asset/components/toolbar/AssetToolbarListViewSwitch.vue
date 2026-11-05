@@ -2,14 +2,15 @@
 import { useAuth } from '@/domains/system/auth/auth'
 import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { SYSTEM_DAM } from '@/shared/systems'
 import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
-import type { DamAssetLicence, DamExtSystem } from '@anzusystems/common-admin'
+import { ADialogToolbar, type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -21,7 +22,7 @@ const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DA
 const { availableListViews, currentListView } = useCurrentListView()
 const { currentExtSystemId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
-const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
+const uploadQueuesStore = useUploadQueuesStore()
 
 const { showErrorsDefault } = useAlerts()
 
@@ -31,12 +32,17 @@ const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
 const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
 
 const availableLicences = computed(
-  () => currentUser.value?.assetLicencesDto.filter((licence) => licence.extSystem === currentExtSystemId.value) ?? []
+  () =>
+    currentUser.value?.resolvedAssetLicences.filter((licence) => licence.extSystem === currentExtSystemId.value) ?? []
 )
 
-const activeDisplayText = computed(
-  () => currentListView.value?.name || getCachedAssetLicence(currentAssetLicenceId.value)?.name || ''
-)
+const activeDisplayText = computed(() => currentListView.value?.name || currentAssetLicence.value?.name || '')
+
+const uploadLicenceText = (uploadLicence: IntegerIdNullable) => {
+  if (isNull(uploadLicence)) return t('system.mainBar.listViewSwitch.readOnly')
+  const licence = currentUser.value?.resolvedAssetLicences.find((item) => item.id === uploadLicence)
+  return t('system.mainBar.listViewSwitch.uploadsTo', { licence: licence?.name || uploadLicence })
+}
 
 const displayTextExtSystem = computed(() => {
   if (currentExtSystem.value && currentExtSystem.value.name.length > 0) {
@@ -54,12 +60,13 @@ const displayTextLicence = computed(() => {
 
 const saving = ref(false)
 const dialog = ref(false)
+const pendingSelection = ref<{ selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable } | null>(null)
 
-const onSelectView = async (id: IntegerId) => {
-  if (saving.value || !currentUser.value || id === currentListView.value?.id) return
+const switchTo = async (selection: { selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable }) => {
+  if (saving.value) return
   saving.value = true
   try {
-    await updateCurrentUser({ selectedListView: id, selectedLicence: currentUser.value.selectedLicence })
+    await updateCurrentUser(selection)
     window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
   } catch (error) {
     showErrorsDefault(error)
@@ -68,24 +75,34 @@ const onSelectView = async (id: IntegerId) => {
   }
 }
 
-const onSelectLicence = async (id: IntegerId) => {
-  if (saving.value || !currentUser.value || (!currentListView.value && id === currentAssetLicenceId.value)) return
-  saving.value = true
-  try {
-    await updateCurrentUser({ selectedLicence: id, selectedListView: null })
-    window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saving.value = false
+const requestSwitch = (selection: { selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable }) => {
+  // Switching reloads the page, which drops uploads and edits that live only in the queues.
+  const workInProgress = [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some(
+    (queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0
+  )
+  if (workInProgress) {
+    pendingSelection.value = selection
+    return
   }
+  switchTo(selection)
+}
+
+const onSelectView = (id: IntegerId) => {
+  if (!currentUser.value || id === currentListView.value?.id) return
+  requestSwitch({ selectedListView: id, selectedLicence: currentUser.value.selectedLicence })
+}
+
+const onSelectLicence = (id: IntegerId) => {
+  if (!currentUser.value || (!currentListView.value && id === currentAssetLicenceId.value)) return
+  requestSwitch({ selectedLicence: id, selectedListView: null })
+}
+
+const onConfirmPending = () => {
+  if (!pendingSelection.value) return
+  switchTo(pendingSelection.value)
 }
 
 onMounted(async () => {
-  if (!currentListView.value) {
-    addToCachedAssetLicences(currentAssetLicenceId.value)
-    fetchCachedAssetLicences()
-  }
   if (currentExtSystemId.value > 0) {
     try {
       const [extSystem, assetLicence] = await Promise.all([
@@ -110,7 +127,7 @@ onMounted(async () => {
         class="mx-1 pl-2 pr-1 pl-sm-3 pr-sm-2"
         rounded="pill"
         :height="34"
-        :prepend-icon="currentListView ? 'mdi-view-list' : 'mdi-key'"
+        :prepend-icon="currentListView ? 'mdi-folder-multiple-image' : 'mdi-key'"
         v-bind="props"
       >
         {{ activeDisplayText }}
@@ -131,6 +148,7 @@ onMounted(async () => {
           :key="listView.id"
           :active="listView.id === currentListView?.id"
           :title="listView.name"
+          :subtitle="uploadLicenceText(listView.uploadLicence)"
           @click.stop="onSelectView(listView.id)"
         />
         <VDivider />
@@ -145,7 +163,7 @@ onMounted(async () => {
       />
       <VListItem
         :title="t('system.mainBar.listViewSwitch.changeLicence')"
-        prepend-icon="mdi-key-arrow-right"
+        prepend-icon="mdi-swap-horizontal"
         data-cy="button-switch-licence"
         @click.stop="dialog = true"
       />
@@ -157,4 +175,31 @@ onMounted(async () => {
     :ext-system-name="displayTextExtSystem"
     :licence-name="displayTextLicence"
   />
+  <VDialog
+    :model-value="!!pendingSelection"
+    :width="500"
+    @update:model-value="pendingSelection = null"
+  >
+    <VCard v-if="pendingSelection">
+      <ADialogToolbar @on-cancel="pendingSelection = null">
+        {{ t('system.mainBar.listViewSwitch.title') }}
+      </ADialogToolbar>
+      <VCardText>
+        {{ t('system.mainBar.extSystemLicenceSwitch.description') }}
+      </VCardText>
+      <VCardActions>
+        <VSpacer />
+        <ABtnTertiary @click.stop="pendingSelection = null">
+          {{ t('common.button.cancel') }}
+        </ABtnTertiary>
+        <ABtnPrimary
+          :loading="saving"
+          data-cy="button-confirm-list-view-switch"
+          @click.stop="onConfirmPending"
+        >
+          {{ t('system.mainBar.extSystemLicenceSwitch.confirm') }}
+        </ABtnPrimary>
+      </VCardActions>
+    </VCard>
+  </VDialog>
 </template>

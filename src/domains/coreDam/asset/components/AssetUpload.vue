@@ -121,6 +121,30 @@ const { t } = useI18n()
     :multiple="multiple"
     @files-input="assetUpload"
   />
+  <div
+    v-else-if="variant === 'button'"
+    class="d-inline-flex"
+    data-cy="button-upload-read-only"
+  >
+    <VBtn
+      color="primary"
+      rounded="pill"
+      variant="flat"
+      :height="height ?? 34"
+      disabled
+    >
+      <template #prepend>
+        <VIcon icon="mdi-upload" />
+      </template>
+      {{ buttonText }}
+    </VBtn>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.readOnlyListView') }}
+    </VTooltip>
+  </div>
   <VDialog
     v-model="uploadDialog"
     :width="500"

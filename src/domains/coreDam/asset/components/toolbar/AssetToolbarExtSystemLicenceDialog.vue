@@ -72,8 +72,12 @@ const extSystemsItems = computed(() => {
 })
 
 const licenceItems = computed(() => {
-  if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
-    return currentUser.value.assetLicencesDto
+  if (
+    currentUser.value &&
+    currentUser.value.resolvedAssetLicences.length > 0 &&
+    !isUndefined(selectedExtSystem.value)
+  ) {
+    return currentUser.value.resolvedAssetLicences
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
       .map((item) => {
         return {
@@ -173,9 +177,10 @@ const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | Integer
 
 onMounted(async () => {
   selectedExtSystem.value = currentExtSystemId.value
-  selectedLicence.value = currentAssetLicenceId.value
+  const currentLicence = currentAssetLicenceId.value > 0 ? currentAssetLicenceId.value : null
+  selectedLicence.value = currentLicence
   selectedExtSystemSearch.value = currentExtSystemId.value
-  selectedLicenceSearch.value = currentAssetLicenceId.value
+  selectedLicenceSearch.value = currentLicence
 })
 </script>
 
@@ -238,9 +243,11 @@ onMounted(async () => {
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
                   }})<br>
-                  {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
-                    licenceName
-                  }})<br>
+                  <template v-if="currentAssetLicenceId > 0">
+                    {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
+                      licenceName
+                    }})<br>
+                  </template>
                 </div>
               </VCol>
             </VRow>

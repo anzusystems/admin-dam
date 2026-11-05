@@ -24,7 +24,8 @@
       "onlyAllowedAtOnce": "Only {count} file(s) can be uploaded at once.",
       "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",
       "actionAddFirstItems": "Add first {count} file(s)"
-    }
+    },
+    "readOnlyListView": "The list view is read-only, it has no upload licence"
   },
   "download": {
     "downloadOriginalFile": "Download original file"
@@ -73,7 +74,9 @@
       "title": "List view and licence",
       "listViews": "List views",
       "licences": "Licences",
-      "changeLicence": "Change licence…"
+      "changeLicence": "Change licence…",
+      "uploadsTo": "Uploads to: {licence}",
+      "readOnly": "Read-only"
     }
   },
   "settings": {

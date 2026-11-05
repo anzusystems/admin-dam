@@ -24,7 +24,8 @@
       "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
       "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
       "actionAddFirstItems": "Pridať prvých {count} súborov"
-    }
+    },
+    "readOnlyListView": "Výber je len na čítanie, nemá licenciu na nahrávanie"
   },
   "download": {
     "downloadOriginalFile": "Stiahnuť originálny súbor"
@@ -73,7 +74,9 @@
       "title": "Výber a licencia",
       "listViews": "Výbery",
       "licences": "Licencie",
-      "changeLicence": "Zmeniť licenciu…"
+      "changeLicence": "Zmeniť licenciu…",
+      "uploadsTo": "Nahráva do: {licence}",
+      "readOnly": "Len na čítanie"
     }
   },
   "settings": {

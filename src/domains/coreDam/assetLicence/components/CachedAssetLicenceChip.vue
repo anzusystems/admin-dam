@@ -54,9 +54,10 @@ const onClick = () => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
+  min-width: 20px;
   height: 20px;
-  border-radius: 50%;
+  padding: 0 5px;
+  border-radius: 10px;
   background-color: rgb(0 0 0 / 50%);
   color: #fff;
   font-size: 10px;
