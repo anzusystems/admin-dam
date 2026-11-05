@@ -131,6 +131,9 @@
     "fileFailedOpenAgain": "Spracovanie súboru zlyhalo. Uložiť pôjde po novom otvorení assetu.",
     "fileProcessedOpenAgain": "Súbor je spracovaný. Uložiť bude možné po novom otvorení detailu.",
     "deletedMeanwhile": "Asset bol medzitým zmazaný.",
+    "exif": {
+      "title": "EXIF hlavného súboru ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
@@ -151,6 +154,7 @@
       "sourceRequest": "Zdrojová požiadavka"
     },
     "info": {
+      "autoDeleteAt": "Automatické zmazanie",
       "status": {
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",

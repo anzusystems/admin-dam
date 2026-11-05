@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import type { DatatableOrderingOption } from '@anzusystems/common-admin'
-import { ADatatableOrdering, AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
+import { AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
 import { onKeyUp, useEventListener } from '@vueuse/core'
 import { computed, onBeforeUnmount, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -17,11 +16,9 @@ import AssetListSidebarFilter from '@/domains/coreDam/asset/components/list/comp
 import AssetListSidebarMetadata from '@/domains/coreDam/asset/components/list/components/AssetListSidebarMetadata.vue'
 import AssetListTableView from '@/domains/coreDam/asset/components/list/components/AssetListTableView.vue'
 import AssetListTilesView from '@/domains/coreDam/asset/components/list/components/AssetListTilesView.vue'
-import {
-  customSortOptions,
-  useAssetListActions,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
+import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetToolbarSearch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSearch.vue'
+import AssetToolbarSorting from '@/domains/coreDam/asset/components/toolbar/AssetToolbarSorting.vue'
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
@@ -150,13 +147,6 @@ const componentComputed = computed(() => {
   }
 })
 
-const sortByChange = (data: DatatableOrderingOption) => {
-  if (data.sortBy) {
-    pagination.value.sortBy = data.sortBy
-    fetchAssetList()
-  }
-}
-
 onUnmounted(() => {
   listUnmounted()
 })
@@ -253,10 +243,7 @@ onUnmounted(() => {
         vertical
         class="mx-1 my-2 hidden-xs"
       />
-      <ADatatableOrdering
-        :custom-options="customSortOptions"
-        @sort-by-change="sortByChange"
-      />
+      <AssetToolbarSorting />
       <VDivider
         vertical
         class="mx-1 my-2 hidden-xs"

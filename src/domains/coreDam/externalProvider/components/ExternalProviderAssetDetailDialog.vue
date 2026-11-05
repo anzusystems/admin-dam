@@ -117,7 +117,7 @@ const totalCountText = computed(() => {
           :height="64"
           class="border-b"
         >
-          <div>
+          <div class="flex-shrink-0">
             <VBtn
               :aria-label="t('coreDam.asset.list.prev')"
               variant="text"
@@ -155,14 +155,22 @@ const totalCountText = computed(() => {
               </VTooltip>
             </VBtn>
           </div>
-          <div class="text-label-large d-flex">
-            <div class="pr-4">
+          <div class="text-label-large d-flex min-width-0 overflow-hidden">
+            <div class="pr-4 flex-shrink-0">
               {{ totalCountText }}
             </div>
-            <div>{{ toolbarTitle }}</div>
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :aria-label="t('coreDam.asset.detail.toggleInfo')"
               :aria-expanded="wide ? sidebar : undefined"

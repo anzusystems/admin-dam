@@ -131,6 +131,9 @@
     "fileFailedOpenAgain": "Processing of the file failed. You can save after opening the asset again.",
     "fileProcessedOpenAgain": "The file is processed. Saving becomes possible after the detail is opened again.",
     "deletedMeanwhile": "The asset has been deleted meanwhile.",
+    "exif": {
+      "title": "Main file EXIF ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Focus",
@@ -151,6 +154,7 @@
       "sourceRequest": "Source request"
     },
     "info": {
+      "autoDeleteAt": "Auto delete",
       "status": {
         "duplicate": "Asset main file is duplicate",
         "draft": "Asset is without file",

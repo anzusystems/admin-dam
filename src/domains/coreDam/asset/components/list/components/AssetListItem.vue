@@ -81,6 +81,7 @@ const selectMultiple = () => {
         :fallback-height="IMAGE_HEIGHT"
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
+        :auto-delete-at="asset.autoDeleteAt"
         show-tts
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">

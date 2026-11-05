@@ -117,6 +117,7 @@ onMounted(() => {
       <ADamAssetImageMetaIcons
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
+        :auto-delete-at="asset.autoDeleteAt"
         disable-absolute
         show-tts
       />

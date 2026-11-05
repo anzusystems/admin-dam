@@ -57,12 +57,20 @@ const breadcrumbs = defineBreadcrumbs(() => [
   },
 ])
 
-useRecordPage({
+const { signal, leave } = useRecordPage({
   fallbackRouteName: '/(coreDam)/users-new',
   skipRouteNames: ['/(coreDam)/users-new/[id]', '/(coreDam)/users-new/new'],
   loading: loadingAnzuUser,
   load: (signal) => fetchAnzuUser(id, { signal }),
 })
+
+// DAM recalculates "User in external systems" on save, and the update keeps only the tracking fields of its answer.
+// Not once the page is left: a reload started then would empty the store of the page that follows.
+// A failed reload empties the record, so it leaves the page like a failed first load.
+const onSave = async () => {
+  if (!(await updateAnzuUser()) || signal.aborted) return
+  if ((await fetchAnzuUser(id, { signal })) === false) await leave()
+}
 
 onBeforeUnmount(() => {
   resetAnzuUserStore('dam')
@@ -75,7 +83,7 @@ onBeforeUnmount(() => {
       <AActionSaveButton
         v-if="!loadingAnzuUser"
         :loading="loadingUpdateAnzuUser"
-        @save-record="updateAnzuUser"
+        @save-record="onSave"
       />
       <AActionCloseButtonHistory
         :fallback-route-name="'/(coreDam)/users-new'"

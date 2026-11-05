@@ -15,13 +15,14 @@ import {
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import { ENTITY } from '@/domains/coreDam/user/api/userApi'
 import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
 import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const { userUpdate } = useUserEditActions()
+const { user, userUpdate } = useUserEditActions()
 const damConfigStore = useDamConfigStore()
 const { damPubConfig } = storeToRefs(damConfigStore)
 
@@ -80,14 +81,12 @@ const { t } = useI18n()
             data-cy="user-admin-to-ext-systems"
           />
         </ARow>
-        <ARow>
-          <ADamExtSystemRemoteAutocomplete
-            v-model="userUpdate.userToExtSystems"
-            :client="damClient"
-            :label="t('coreDam.user.model.userToExtSystems')"
-            multiple
-            clearable
-            data-cy="user-user-to-ext-systems"
+        <ARow :title="t('coreDam.user.model.userToExtSystems')">
+          <CachedExtSystemChip
+            v-for="userToExtSystem in user.userToExtSystems"
+            :id="userToExtSystem"
+            :key="userToExtSystem"
+            class="mr-1"
           />
         </ARow>
         <ARow>

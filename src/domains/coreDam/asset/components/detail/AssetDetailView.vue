@@ -187,11 +187,19 @@ onUnmounted(() => {
           :height="64"
           class="border-b pr-1"
         >
-          <div class="text-label-large d-flex pl-2">
-            <div>{{ toolbarTitle }}</div>
+          <div class="text-label-large d-flex pl-2 min-width-0 overflow-hidden">
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :aria-label="t('coreDam.asset.detail.toggleInfo')"
               :aria-expanded="wide ? sidebar : undefined"

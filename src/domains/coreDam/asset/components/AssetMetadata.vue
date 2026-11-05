@@ -5,6 +5,7 @@ import {
   ADamAssetCustomMetadataForm,
   ADamAuthorRemoteAutocompleteWithCached,
   ADamKeywordRemoteAutocompleteWithCached,
+  ADatetime,
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
@@ -20,6 +21,7 @@ import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
+import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
@@ -239,6 +241,17 @@ const onAnyMetadataChange = () => {
             {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
+        <VRow
+          v-if="asset.autoDeleteAt"
+          data-cy="asset-auto-delete-at"
+        >
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.autoDeleteAt') }}
+          </VCol>
+          <VCol cols="9">
+            <ADatetime :date-time="asset.autoDeleteAt" />
+          </VCol>
+        </VRow>
         <div v-if="assetMainFile">
           <VRow>
             <VCol cols="3">
@@ -298,5 +311,9 @@ const onAnyMetadataChange = () => {
         </div>
       </VExpansionPanelText>
     </VExpansionPanel>
+    <AssetMetadataExif
+      v-if="isTypeImage && assetMainFile && assetFileIsImageFile(assetMainFile)"
+      :file="assetMainFile"
+    />
   </VExpansionPanels>
 </template>

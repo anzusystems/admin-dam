@@ -112,6 +112,8 @@ export const useUserEditActions = () => {
       const user = await fetchDamUser(damClient, id)
       if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
+      addToCachedExtSystems(user.userToExtSystems)
+      fetchCachedExtSystems()
       return true
     } catch (error) {
       if (options.signal?.aborted) return undefined
@@ -132,7 +134,15 @@ export const useUserEditActions = () => {
         return
       }
       const userUpdateCloned = cloneDeep(userUpdate.value)
-      await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      const updatedUser = await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      // Left while saving, the store is reset or holds another user: the answer is not theirs.
+      if (userOneStore.user.id === updatedUser.id) {
+        // DAM recalculated "User in external systems". The form is rebuilt with an empty password, so it starts clean.
+        userOneStore.setUser(updatedUser)
+        v$.value.$reset()
+        addToCachedExtSystems(updatedUser.userToExtSystems)
+        fetchCachedExtSystems()
+      }
       showRecordWas('updated')
       if (!close) return
       push({ name: '/(coreDam)/users' })

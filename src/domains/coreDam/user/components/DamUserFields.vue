@@ -60,14 +60,15 @@ const { t } = useI18n()
       data-cy="user-admin-to-ext-systems"
     />
   </ARow>
+  <!-- Read-only: DAM sets it on every save from the licences and licence groups above, and drops a value sent here. -->
   <ARow>
     <ADamExtSystemRemoteAutocomplete
       v-model="user.userToExtSystems"
       :client="damClient"
       :label="t('coreDam.user.model.userToExtSystems')"
-      :readonly="readonly"
+      readonly
       multiple
-      :clearable="!readonly"
+      :clearable="false"
       data-cy="user-user-to-ext-systems"
     />
   </ARow>

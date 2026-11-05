@@ -10,4 +10,8 @@ export const coreDamDefaultConfig: CoreDamConfig = {
   damClient,
   keywordCreateAcl: 'dam_keyword_create',
   authorCreateAcl: 'dam_author_create',
+  // The library's asset pickers (sibling, image preview, TTS settings) show what the asset list of this admin shows.
+  showAutoDeleteEnabled: true,
+  showLicenceEnabled: true,
+  showLicenceBadgeEnabled: true,
 }

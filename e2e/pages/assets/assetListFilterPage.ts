@@ -149,13 +149,12 @@ export async function chooseAssetType(page: Page, type: AssetType): Promise<URLS
 }
 
 /**
- * Common-admin `ADatatableOrdering`: a "Radenie:" label beside a button that opens the menu.
- * Picking the ordering already in effect sends no request.
+ * The ordering toggle of the list, one button per ordering (desktop; small screens keep the dropdown).
+ * Pressing the ordering already in effect sends no request.
  */
 export async function chooseSorting(page: Page, sorting: Sorting): Promise<URLSearchParams> {
-  await page.getByText('Radenie:', { exact: true }).first().locator('xpath=following-sibling::button[1]').click()
   return searchParams(page, () =>
-    page.locator('.v-overlay--active .v-list-item').filter({ hasText: SORTING_BUTTON[sorting] }).first().click()
+    page.locator('[data-cy="asset-sorting"]').first().getByRole('button', { name: SORTING_BUTTON[sorting] }).click()
   )
 }
 

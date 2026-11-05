@@ -196,7 +196,10 @@ const { can } = useAuth()
           :height="64"
           class="border-b pr-1"
         >
-          <div v-if="assetDetailStore.view === 'list'">
+          <div
+            v-if="assetDetailStore.view === 'list'"
+            class="flex-shrink-0"
+          >
             <VBtn
               :aria-label="t('coreDam.asset.list.prev')"
               variant="text"
@@ -236,19 +239,27 @@ const { can } = useAuth()
           </div>
           <!-- Name in every detail. List position only in a list detail. -->
           <div
-            class="text-label-large d-flex"
+            class="text-label-large d-flex min-width-0 overflow-hidden"
             :class="{ 'pl-2': assetDetailStore.view !== 'list' }"
           >
             <div
               v-if="assetDetailStore.view === 'list'"
-              class="pr-4"
+              class="pr-4 flex-shrink-0"
             >
               {{ totalCountText }}
             </div>
-            <div>{{ toolbarTitle }}</div>
+            <div class="text-truncate">
+              {{ toolbarTitle }}
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ toolbarTitle }}
+              </VTooltip>
+            </div>
           </div>
           <VSpacer />
-          <div>
+          <div class="d-flex flex-shrink-0">
             <VBtn
               :aria-label="t('coreDam.asset.detail.toggleInfo')"
               :aria-expanded="wide ? sidebar : undefined"

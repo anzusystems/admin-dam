@@ -37,7 +37,10 @@ const closeDialog = () => {
         :height="64"
         class="border-b"
       >
-        <div v-if="walksList">
+        <div
+          v-if="walksList"
+          class="flex-shrink-0"
+        >
           <VBtn
             :aria-label="t('coreDam.asset.list.prev')"
             variant="text"
@@ -76,19 +79,30 @@ const closeDialog = () => {
           </VBtn>
         </div>
         <div
-          class="text-label-large d-flex"
+          class="text-label-large d-flex min-width-0 overflow-hidden"
           :class="{ 'pl-2': !walksList }"
         >
           <div
             v-if="walksList"
-            class="pr-4"
+            class="pr-4 flex-shrink-0"
           >
             {{ totalCountText }}
           </div>
-          <div v-if="title">{{ title }}</div>
+          <div
+            v-if="title"
+            class="text-truncate"
+          >
+            {{ title }}
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ title }}
+            </VTooltip>
+          </div>
         </div>
         <VSpacer />
-        <div>
+        <div class="d-flex flex-shrink-0">
           <VBtn
             :aria-label="t('common.button.close')"
             icon
