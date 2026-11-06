@@ -50,6 +50,8 @@ const onExtSystemChange = () => {
       v-model="assetListView.groups"
       :ext-system-id="assetListView.extSystem"
       :label="t('coreDam.assetListView.model.groups')"
+      :hint="t('coreDam.assetListView.model.groupsHint')"
+      persistent-hint
       data-cy="asset-list-view-groups"
     />
   </ARow>
@@ -58,6 +60,8 @@ const onExtSystemChange = () => {
       v-if="targetedByGroups"
       v-model="assetListView.licences"
       :label="t('coreDam.assetListView.model.licences')"
+      :hint="t('coreDam.assetListView.model.licencesHint')"
+      persistent-hint
       :items="groupLicenceOptions"
       :v="v$.assetListView.licences"
       multiple
@@ -68,6 +72,8 @@ const onExtSystemChange = () => {
       v-else
       v-model="assetListView.licences"
       :label="t('coreDam.assetListView.model.licences')"
+      :hint="t('coreDam.assetListView.model.licencesHint')"
+      persistent-hint
       :ext-system-id="assetListView.extSystem"
       :v="v$.assetListView.licences"
       multiple

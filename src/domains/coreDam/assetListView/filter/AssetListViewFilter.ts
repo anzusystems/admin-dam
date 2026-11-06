@@ -17,3 +17,19 @@ export function useAssetListViewListFilter() {
     filterData,
   }
 }
+
+export function useAssetListViewByGroupFilter() {
+  const fields = [
+    { name: 'groups' as const, variant: 'memberOf', default: null, render: { skip: true } },
+  ] satisfies readonly MakeFilterOption[]
+
+  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+    system: SYSTEM_CORE_DAM,
+    subject: ENTITY,
+  })
+
+  return {
+    filterConfig,
+    filterData,
+  }
+}

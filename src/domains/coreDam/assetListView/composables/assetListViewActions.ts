@@ -1,4 +1,5 @@
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import { type FilterConfig, type FilterData, type Pagination, usePagination } from '@anzusystems/common-admin/labs'
+import { SortOrder } from '@anzusystems/common-admin'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
 import { useAssetListViewOneStore } from '@/domains/coreDam/assetListView/store/assetListViewStore'
 import {
@@ -10,6 +11,8 @@ import {
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedAssetLicenceGroups } from '@/domains/coreDam/assetLicenceGroup/composables/cachedAssetLicenceGroups'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { useCachedAssetListViews } from '@/domains/coreDam/assetListView/composables/cachedAssetListViews'
+import { useAssetListViewByGroupFilter } from '@/domains/coreDam/assetListView/filter/AssetListViewFilter'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -48,6 +51,30 @@ export const useAssetListViewListActions = () => {
     listLoading,
     listItems,
     fetchList,
+  }
+}
+
+export const useAssetListViewByGroupActions = () => {
+  const groupListViewIds = ref<IntegerId[]>([])
+  const { addManualToCachedAssetListViews } = useCachedAssetListViews()
+  const { executeFetch } = useFetchAssetListViewList()
+  const { filterData, filterConfig } = useAssetListViewByGroupFilter()
+  const { pagination } = usePagination('position', SortOrder.Asc, { rowsPerPage: 100 })
+
+  const fetchByGroup = async (groupId: IntegerId) => {
+    filterData.groups = groupId
+    try {
+      const res = await executeFetch(pagination, filterData, filterConfig)
+      res.forEach((item) => addManualToCachedAssetListViews(item))
+      groupListViewIds.value = res.map((item) => item.id)
+    } catch (error) {
+      showErrorsDefault(error)
+    }
+  }
+
+  return {
+    groupListViewIds,
+    fetchByGroup,
   }
 }
 
