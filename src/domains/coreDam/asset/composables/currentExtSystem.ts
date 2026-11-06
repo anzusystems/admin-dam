@@ -44,9 +44,9 @@ export const initCurrentExtSystemAndLicence = async (
         currentExtSystemId.value = currentUser.value.selectedLicenceDto.extSystem
         currentAssetLicenceId.value = currentUser.value.selectedLicenceDto.id
         return true
-      } else if (currentUser.value.assetLicencesDto[0]) {
-        currentExtSystemId.value = currentUser.value.assetLicencesDto[0].extSystem
-        currentAssetLicenceId.value = currentUser.value.assetLicencesDto[0].id
+      } else if (currentUser.value.resolvedAssetLicences[0]) {
+        currentExtSystemId.value = currentUser.value.resolvedAssetLicences[0].extSystem
+        currentAssetLicenceId.value = currentUser.value.resolvedAssetLicences[0].id
         return true
       }
     }
