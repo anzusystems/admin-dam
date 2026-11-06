@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
@@ -62,7 +63,7 @@ const isTypeVideo = computed(() => {
   return assetType.value === DamAssetType.Video
 })
 
-const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
 watch(
   () => asset.value?.licence,
@@ -239,7 +240,7 @@ const onAnyMetadataChange = () => {
             {{ t('coreDam.asset.detail.info.field.licence') }}
           </VCol>
           <VCol cols="9">
-            {{ getCachedAssetLicence(asset.licence)?.name }}
+            <CachedAssetLicenceChip :id="asset.licence" />
           </VCol>
         </VRow>
         <VRow>
