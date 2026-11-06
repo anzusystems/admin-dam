@@ -31,8 +31,6 @@ const serviceRequirements = computed(() => {
 
 <template>
   <VRow>
-    <VCol>
-      <span class="font-weight-bold">{{ serviceRequirements?.title }}</span> {{ distribution.extId }}
-    </VCol>
+    <VCol> <span class="font-weight-bold">{{ serviceRequirements?.title }}</span> {{ distribution.extId }} </VCol>
   </VRow>
 </template>
