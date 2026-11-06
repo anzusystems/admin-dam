@@ -1,8 +1,8 @@
 import { type Page, expect } from '@playwright/test'
 import { CORE_DAM_API } from '@pages/shared/constants'
 
-/** The licence switcher button in the asset list header — it is labelled with the current licence name. */
-const LICENCE_MENU = 'header .v-btn:has(.mdi-chevron-down)'
+/** The list view and licence switch in the asset list header, labelled with the current view or licence name. */
+export const LICENCE_MENU = 'header .v-btn:has(.mdi-chevron-down)'
 
 /**
  * Switch the current user to `licenceId` through the header licence dialog, which reloads the admin.

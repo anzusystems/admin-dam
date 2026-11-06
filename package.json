@@ -30,7 +30,7 @@
     "browserslist:update": "npx --yes browserslist@latest --update-db"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.47.0-beta.dev-1784059876",
+    "@anzusystems/common-admin": "1.49.0-asset-list-view-86490.5",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^10.70.0",

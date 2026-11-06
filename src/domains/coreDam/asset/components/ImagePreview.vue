@@ -11,7 +11,6 @@ import {
 } from '@anzusystems/common-admin'
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   customSortOptions,
   SORT_BY_SCORE_DATE,
@@ -20,6 +19,7 @@ import {
 const props = withDefaults(
   defineProps<{
     modelValue: AssetFileImagePreviewNullable
+    licence: IntegerId
     width?: number
     height?: number
     showActions?: boolean
@@ -47,8 +47,6 @@ const fetchImage = async (id: DocId) => {
   imageFile.value = await fetchImageFile(id)
   loading.value = false
 }
-
-const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const imagePreviewModel = computed({
   get() {
@@ -179,7 +177,7 @@ watch(
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <AAssetSelect
-        :select-licences="[currentAssetLicenceId]"
+        :select-licences="[licence]"
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"

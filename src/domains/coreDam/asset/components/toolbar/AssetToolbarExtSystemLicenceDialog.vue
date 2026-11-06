@@ -72,8 +72,12 @@ const extSystemsItems = computed(() => {
 })
 
 const licenceItems = computed(() => {
-  if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
-    return currentUser.value.assetLicencesDto
+  if (
+    currentUser.value &&
+    currentUser.value.resolvedAssetLicences.length > 0 &&
+    !isUndefined(selectedExtSystem.value)
+  ) {
+    return currentUser.value.resolvedAssetLicences
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
       .map((item) => {
         return {
@@ -114,25 +118,23 @@ const errorMessageLicence = computed(() => {
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
+const router = useRouter()
+
 const onConfirm = async () => {
   if (saving.value) return
   saving.value = true
   validateLicence.value.$touch()
-  if (
-    validateLicence.value.$invalid ||
-    !selectedLicence.value ||
-    currentAssetLicenceId.value === selectedLicence.value
-  ) {
+  if (validateLicence.value.$invalid || !selectedLicence.value) {
     showValidationError()
     saving.value = false
     return
   }
   try {
     await fetchAssetLicence(selectedLicence.value)
-    await updateCurrentUser({ selectedLicence: selectedLicence.value })
+    await updateCurrentUser({ selectedLicence: selectedLicence.value, selectedListView: null })
     dialog.value = false
     showRecordWas('updated')
-    window.location.reload()
+    window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -175,9 +177,10 @@ const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | Integer
 
 onMounted(async () => {
   selectedExtSystem.value = currentExtSystemId.value
-  selectedLicence.value = currentAssetLicenceId.value
+  const currentLicence = currentAssetLicenceId.value > 0 ? currentAssetLicenceId.value : null
+  selectedLicence.value = currentLicence
   selectedExtSystemSearch.value = currentExtSystemId.value
-  selectedLicenceSearch.value = currentAssetLicenceId.value
+  selectedLicenceSearch.value = currentLicence
 })
 </script>
 
@@ -240,9 +243,11 @@ onMounted(async () => {
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
                   }})<br>
-                  {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
-                    licenceName
-                  }})<br>
+                  <template v-if="currentAssetLicenceId > 0">
+                    {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
+                      licenceName
+                    }})<br>
+                  </template>
                 </div>
               </VCol>
             </VRow>

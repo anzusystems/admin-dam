@@ -3,17 +3,20 @@ import { SYSTEM_DAM } from '@/shared/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { type DamCurrentUserDto, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
+import { isDocId, useDamConfigStore } from '@anzusystems/common-admin'
 
 const currentExtSystemId = ref(0)
 
 const currentAssetLicenceId = ref(0)
 
+const currentListViewId = ref<IntegerIdNullable>(null)
+
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
   const { useCurrentUser } = useAuth()
-  const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+  const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
 
   const damConfigStore = useDamConfigStore()
   const { damPrvConfig, initialized } = storeToRefs(damConfigStore)
@@ -26,15 +29,24 @@ export const initCurrentExtSystemAndLicence = async (
     console.error('Current user must be loaded first.')
     return false
   }
+
+  const view = currentUser.value.listViews?.find((v) => v.id === currentUser.value?.selectedListView) ?? null
+
   if (isUndefined(loadConfig)) {
+    if (view) {
+      currentExtSystemId.value = view.extSystem
+      currentAssetLicenceId.value = view.uploadLicence ?? 0
+      currentListViewId.value = view.id
+      return true
+    }
     if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
       if (currentUser.value.selectedLicenceDto) {
         currentExtSystemId.value = currentUser.value.selectedLicenceDto.extSystem
         currentAssetLicenceId.value = currentUser.value.selectedLicenceDto.id
         return true
-      } else if (currentUser.value.assetLicencesDto[0]) {
-        currentExtSystemId.value = currentUser.value.assetLicencesDto[0].extSystem
-        currentAssetLicenceId.value = currentUser.value.assetLicencesDto[0].id
+      } else if (currentUser.value.resolvedAssetLicences[0]) {
+        currentExtSystemId.value = currentUser.value.resolvedAssetLicences[0].extSystem
+        currentAssetLicenceId.value = currentUser.value.resolvedAssetLicences[0].id
         return true
       }
     }
@@ -55,6 +67,15 @@ export const initCurrentExtSystemAndLicence = async (
     if (isNull(assetRes)) {
       return false
     }
+    if (view && view.licences.includes(assetRes.licence)) {
+      const assetDetailStore = useAssetDetailStore()
+      assetDetailStore.directDetailLoad = true
+      assetDetailStore.setAsset(assetRes)
+      currentExtSystemId.value = view.extSystem
+      currentAssetLicenceId.value = view.uploadLicence ?? 0
+      currentListViewId.value = view.id
+      return true
+    }
     const licenceRes = await fetchAssetLicence(assetRes.licence)
     if (licenceRes.id && licenceRes.extSystem) {
       const assetDetailStore = useAssetDetailStore()
@@ -71,11 +92,13 @@ export const initCurrentExtSystemAndLicence = async (
 export function useCurrentExtSystem() {
   return {
     currentExtSystemId: readonly(currentExtSystemId),
+    currentListViewId: readonly(currentListViewId),
   }
 }
 
 export function useCurrentAssetLicence() {
   return {
     currentAssetLicenceId: readonly(currentAssetLicenceId),
+    uploadAllowed: computed(() => currentAssetLicenceId.value > 0),
   }
 }

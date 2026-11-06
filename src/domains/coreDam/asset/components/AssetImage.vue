@@ -29,6 +29,7 @@ const props = withDefaults(
     hideIcon?: boolean
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
+    licenceBadge?: string
     autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
@@ -55,6 +56,7 @@ const props = withDefaults(
     hideIcon: false,
     showMetaIcons: false,
     assetFileProperties: undefined,
+    licenceBadge: '',
     autoDeleteAt: null,
   }
 )
@@ -233,6 +235,7 @@ const { remainingTimeShort } = useRemainingTime()
         v-if="showMetaIcons && assetFileProperties"
         :asset-file-properties="assetFileProperties"
         :asset-type="assetType"
+        :licence-badge="licenceBadge"
         :auto-delete-at="autoDeleteAt"
       />
     </template>
@@ -270,6 +273,7 @@ const { remainingTimeShort } = useRemainingTime()
       v-if="showMetaIcons && assetFileProperties"
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
+      :licence-badge="licenceBadge"
       :auto-delete-at="autoDeleteAt"
     />
   </div>
@@ -312,6 +316,7 @@ const { remainingTimeShort } = useRemainingTime()
       v-if="showMetaIcons && assetFileProperties"
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
+      :licence-badge="licenceBadge"
       :auto-delete-at="autoDeleteAt"
     />
   </div>

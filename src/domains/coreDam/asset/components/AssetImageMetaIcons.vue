@@ -25,10 +25,12 @@ const props = withDefaults(
     assetType: DamAssetTypeType
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
+    licenceBadge?: string
     autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
     disableAbsolute: false,
+    licenceBadge: '',
     autoDeleteAt: null,
   }
 )
@@ -104,10 +106,17 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0 || autoDeleteBadge"
+    v-show="data.icons.length > 0 || licenceBadge.length > 0 || autoDeleteBadge"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
+    <span
+      v-if="licenceBadge.length > 0"
+      class="asset-image__licence-badge"
+      data-cy="asset-licence-badge"
+    >
+      {{ licenceBadge }}
+    </span>
     <VChip
       v-if="autoDeleteBadge"
       size="x-small"
@@ -143,6 +152,22 @@ const data = computed(() => {
   img.img-svg {
     height: 30px;
     padding: 2px;
+  }
+
+  .asset-image__licence-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    margin: 2px;
+    padding: 0 6px;
+    border-radius: 13px;
+    background-color: rgb(0 0 0 / 50%);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
   }
 }
 </style>

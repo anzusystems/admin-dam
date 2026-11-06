@@ -4,7 +4,7 @@ import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { ACL } from '@/domains/system/auth/auth'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import {
   AAssetSelect,
   AFormValueObjectOptionsSelect,
@@ -21,7 +21,7 @@ import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordF
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { listLicenceIds } = useCurrentListView()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 
 const { filterConfig: keywordFilterConfig, filterData: keywordFilterData } = useKeywordInnerFilter()
@@ -29,8 +29,6 @@ provide(FilterInnerConfigKey, keywordFilterConfig)
 provide(FilterInnerDataKey, keywordFilterData)
 
 const { t } = useI18n()
-
-const epilogLicenceIds = computed<IntegerId[]>(() => [currentAssetLicenceId.value])
 
 const onEpilogSelect = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
@@ -103,7 +101,7 @@ const clearEpilog = () => {
                 @click.stop="clearEpilog"
               />
               <AAssetSelect
-                :select-licences="epilogLicenceIds"
+                :select-licences="listLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { damClient } from '@/shared/apiClients/damClient'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -103,11 +103,15 @@ if (isUndefined(configExtSystem)) {
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
+const { uploadAllowed } = useCurrentAssetLicence()
+const uploadVisible = computed(() => props.type === 'slots' || uploadAllowed.value)
+
 const { t } = useI18n()
 </script>
 
 <template>
   <FileUpload
+    v-if="uploadVisible"
     :variant="variant"
     :button-text="buttonText"
     :height="height"
@@ -117,6 +121,30 @@ const { t } = useI18n()
     :multiple="multiple"
     @files-input="assetUpload"
   />
+  <div
+    v-else-if="variant === 'button'"
+    class="d-inline-flex"
+    data-cy="button-upload-read-only"
+  >
+    <VBtn
+      color="primary"
+      rounded="pill"
+      variant="flat"
+      :height="height ?? 34"
+      disabled
+    >
+      <template #prepend>
+        <VIcon icon="mdi-upload" />
+      </template>
+      {{ buttonText }}
+    </VBtn>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.readOnlyListView') }}
+    </VTooltip>
+  </div>
   <VDialog
     v-model="uploadDialog"
     :width="500"
