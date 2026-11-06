@@ -134,7 +134,7 @@ onMounted(async () => {
         class="mx-1 pl-2 pr-1 pl-sm-3 pr-sm-2"
         rounded="pill"
         :height="34"
-        :prepend-icon="currentListView ? 'mdi-folder-multiple-image' : 'mdi-key'"
+        :prepend-icon="currentListView ? undefined : 'mdi-key'"
         v-bind="props"
       >
         {{ activeDisplayText }}
@@ -170,7 +170,6 @@ onMounted(async () => {
       />
       <VListItem
         :title="t('system.mainBar.listViewSwitch.changeLicence')"
-        prepend-icon="mdi-swap-horizontal"
         data-cy="button-switch-licence"
         @click.stop="dialog = true"
       />

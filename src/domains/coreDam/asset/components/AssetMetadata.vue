@@ -6,7 +6,6 @@ import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/Ass
 import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
-import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
@@ -63,7 +62,7 @@ const isTypeVideo = computed(() => {
   return assetType.value === DamAssetType.Video
 })
 
-const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
 watch(
   () => asset.value?.licence,
@@ -240,7 +239,7 @@ const onAnyMetadataChange = () => {
             {{ t('coreDam.asset.detail.info.field.licence') }}
           </VCol>
           <VCol cols="9">
-            <CachedAssetLicenceChip :id="asset.licence" />
+            {{ getCachedAssetLicence(asset.licence)?.name }}
           </VCol>
         </VRow>
         <VRow>
