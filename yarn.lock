@@ -5,9 +5,9 @@ __metadata:
   version: 10
   cacheKey: 10
 
-"@anzusystems/common-admin@npm:1.49.0-asset-list-view-86490.2":
-  version: 1.49.0-asset-list-view-86490.2
-  resolution: "@anzusystems/common-admin@npm:1.49.0-asset-list-view-86490.2"
+"@anzusystems/common-admin@npm:1.49.0-asset-list-view-86490.3":
+  version: 1.49.0-asset-list-view-86490.3
+  resolution: "@anzusystems/common-admin@npm:1.49.0-asset-list-view-86490.3"
   peerDependencies:
     "@sentry/vue": ^10.0.0
     "@vuelidate/core": ^2.0.3
@@ -38,7 +38,7 @@ __metadata:
       optional: true
     vue-router:
       optional: true
-  checksum: 10/e8ebd9cff88208220e1105405d615748533ab9a5d5c89556d3703b965b605f117bbcae7fbf28758edd3785cddb5a337beeb099f90952be5b125645a4d3a8cf4c
+  checksum: 10/eb645680debcb7d4d85cdbeb12188c35a83ce4aad9e835956b563814692deff1f187ed73639bb2e23a014f1e62c1a45b29f2c3ec03092514686db7ac9ee712ea
   languageName: node
   linkType: hard
 
@@ -3167,7 +3167,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:1.49.0-asset-list-view-86490.2"
+    "@anzusystems/common-admin": "npm:1.49.0-asset-list-view-86490.3"
     "@floating-ui/dom": "npm:^1.8.0"
     "@intlify/unplugin-vue-i18n": "npm:^11.2.8"
     "@mdi/font": "npm:7.4.47"
