@@ -150,12 +150,21 @@ fi
 
 # Without -e, the env is the default e2e/playwright.config.ts gives `loadE2eEnv`
 DEFAULT_ENV="$(sed -nE "s/.*defaultEnv: '([a-z]+)'.*/\1/p" "${E2E_DIR}/playwright.config.ts" | head -1)"
+if [ -z "${E2E_ENV}" ] && [ -z "${DEFAULT_ENV}" ]; then
+    echo -e "\033[1;33m[WARN] no \`defaultEnv: '<env>'\` found in e2e/playwright.config.ts: without -e the checks for the local stack are skipped\033[0m"
+fi
 
 # The local stack is served over http. Only Chromium has the flag that treats it as a secure context, and a config
 # that passes it picks the full Chromium build, which Firefox and WebKit cannot launch as.
 if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ] && [[ ${BROWSER} =~ ^(firefox|webkit)$ ]] \
     && grep -q 'unsafely-treat-insecure-origin-as-secure' "${E2E_DIR}/playwright.config.ts"; then
     echo "[ERROR] '-b ${BROWSER}' does not run with '-e local': over http only Chromium gets a secure context"
+    exit 1
+fi
+
+# Playwright takes no --browser for a config with projects, which the route walk's is
+if [ -n "${BROWSER}" ] && [ "${ROUTES}" = "true" ]; then
+    echo "[ERROR] '-b, --browser' does not combine with '--routes': the route walk runs in Chromium"
     exit 1
 fi
 
@@ -220,6 +229,12 @@ if [ "${RUN_E2E}" = "false" ]; then
     exit ${STATUS}
 fi
 
+# The route walk reads src/typed-router.d.ts, which is generated and gitignored
+if [ ! -f "${PROJECT_ROOT}/src/typed-router.d.ts" ]; then
+    echo "[INFO] yarn generate:dts"
+    yarn generate:dts || exit 1
+fi
+
 # The local stack serves the last bin/build: a run over an older build would check code that is gone
 if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ]; then
     BUILT="${PROJECT_ROOT}/dist/index.html"
@@ -239,8 +254,8 @@ if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
     yarn install || exit 1
 fi
 
-# Install Playwright browser binaries (idempotent, skips the ones already installed)
-yarn playwright install chromium
+# Install the browser the run uses (idempotent, skips one already installed)
+yarn playwright install "${BROWSER:-chromium}"
 
 # A full run starts without the state an earlier run left behind (e.g. registered test users)
 STATE_FILE="${E2E_DIR}/.state/global-state.json"
