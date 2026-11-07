@@ -1,11 +1,16 @@
 <script lang="ts" setup>
+import { DamAssetTypeDefault, isNull, useAlerts } from '@anzusystems/common-admin'
+import type { DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useFetchDistributionCategory } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { DamAssetTypeDefault } from '@anzusystems/common-admin'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
-import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import DistributionCategoryWidgetDialog from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidgetDialog.vue'
+import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()
@@ -18,25 +23,23 @@ const dialog = ref(false)
 const loading = ref(false)
 const category = ref<DistributionCategory>(createDefault(currentExtSystemId.value))
 
-const assetId = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.id ? assetDetailStore.asset.id : null
-})
+const assetId = computed(() => (assetDetailStore.asset && assetDetailStore.asset.id ? assetDetailStore.asset.id : null))
 
-const distributionCategoryId = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.distributionCategory
+const distributionCategoryId = computed(() =>
+  assetDetailStore.asset && assetDetailStore.asset.distributionCategory
     ? assetDetailStore.asset.distributionCategory
     : null
-})
+)
 
-const assetType = computed(() => {
-  return assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
+const assetType = computed(() =>
+  assetDetailStore.asset && assetDetailStore.asset.attributes.assetType
     ? assetDetailStore.asset.attributes.assetType
     : DamAssetTypeDefault
-})
+)
 
 const loadCategory = async (id: DocId) => {
   loading.value = true
-  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
   try {
     category.value = await fetchDistributionCategory({ urlParams: { id } })
   } catch (error) {
@@ -67,27 +70,29 @@ watch(
 <template>
   <div class="d-flex flex-column w-100">
     <VRow class="align-center">
-      <VCol class="text-body-small">
-        {{ t('coreDam.distribution.common.select') }}:
-      </VCol>
+      <VCol class="text-body-small"> {{ t('coreDam.distribution.common.select') }}: </VCol>
     </VRow>
     <VRow v-if="!distributionCategoryId">
       <VCol>{{ t('coreDam.distributionCategory.notSelected') }}</VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
-          <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <VBtn
+            :aria-label="t('common.button.edit')"
+            variant="text"
+            icon
+            size="small"
+            :disabled="assetDetailStore.isDeleting"
+            @click.stop="dialog = true"
           >
-            {{ t('common.button.edit') }}
-          </VTooltip>
-        </VBtn>
+            <VIcon icon="mdi-pencil" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.edit') }}
+            </VTooltip>
+          </VBtn>
+        </Acl>
       </VCol>
     </VRow>
     <VRow v-else-if="loading">
@@ -114,20 +119,24 @@ watch(
         </div>
       </VCol>
       <VCol cols="auto">
-        <VBtn
-          variant="text"
-          icon
-          size="small"
-          @click.stop="dialog = true"
-        >
-          <VIcon icon="mdi-pencil" />
-          <VTooltip
-            activator="parent"
-            location="bottom"
+        <Acl :permission="ACL.DAM_ASSET_UPDATE">
+          <VBtn
+            :aria-label="t('common.button.edit')"
+            variant="text"
+            icon
+            size="small"
+            :disabled="assetDetailStore.isDeleting"
+            @click.stop="dialog = true"
           >
-            {{ t('common.button.edit') }}
-          </VTooltip>
-        </VBtn>
+            <VIcon icon="mdi-pencil" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.edit') }}
+            </VTooltip>
+          </VBtn>
+        </Acl>
       </VCol>
     </VRow>
     <DistributionCategoryWidgetDialog

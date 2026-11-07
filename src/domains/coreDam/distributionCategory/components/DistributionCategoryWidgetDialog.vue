@@ -1,33 +1,33 @@
 <script lang="ts" setup>
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import type { DamAssetTypeType, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { ADialogToolbar, ARow, ASystemEntityScope, isNull, useAlerts } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { updateAssetCategory } from '@/domains/coreDam/asset/api/assetApi'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   ENTITY,
   useFetchDistributionCategory,
 } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 import DistributionCategoryRemoteAutocomplete from '@/domains/coreDam/distributionCategory/components/DistributionCategoryRemoteAutocomplete.vue'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADialogToolbar, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useDistributionCategoryFactory } from '@/domains/coreDam/distributionCategory/factory/DistributionCategoryFactory'
+import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
-    modelValue?: boolean
     categoryId?: DocIdNullable
     assetId: DocId
     assetType: DamAssetTypeType
   }>(),
   {
-    modelValue: false,
     categoryId: null,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-  (e: 'afterSave', data: DocIdNullable): void
-}>()
+const emit = defineEmits<{ afterSave: [data: DocIdNullable] }>()
+
+const modelValue = defineModel<boolean>({ default: false })
 
 const { t } = useI18n()
 
@@ -40,10 +40,10 @@ const category = ref<DistributionCategory>(createDefault(currentExtSystemId.valu
 
 const dialogComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
@@ -65,7 +65,7 @@ const onConfirm = async () => {
 
 const loadCategory = async (id: DocId) => {
   category.value = createDefault(currentExtSystemId.value)
-  const { executeRequest: fetchDistributionCategory } = useFetchDistributionCategory()
+  const { execute: fetchDistributionCategory } = useFetchDistributionCategory()
   category.value = await fetchDistributionCategory({ urlParams: { id } })
 }
 
@@ -106,7 +106,7 @@ watch(
       v-if="dialogComputed"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.distributionCategory.manage') }}
       </ADialogToolbar>
       <VCardText>

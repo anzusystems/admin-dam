@@ -1,7 +1,18 @@
 <script lang="ts" setup>
+import {
+  FilterConfigKey,
+  FilterDataKey,
+  arrayItemToggle,
+  cloneDeep,
+  isArray,
+  isUndefined,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, inject } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { pickTextColorBasedOnBgColor } from '@/shared/utils/colors'
-import { arrayItemToggle, useDamConfigStore } from '@anzusystems/common-admin'
-import { FilterConfigKey, FilterDataKey } from '@anzusystems/common-admin/labs'
 
 const props = withDefaults(
   defineProps<{
@@ -31,16 +42,21 @@ const value = computed<string | string[]>({
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
-const items = computed(() => {
-  return Object.keys(damPrvConfig.value.colorSet).map((key) => ({
-    name: key,
+const { t, te } = useI18n()
+
+// A key without a translation is shown as is.
+const colorName = (key: string) => (te('coreDam.asset.color.' + key) ? t('coreDam.asset.color.' + key) : key)
+
+const items = computed(() =>
+  Object.keys(damPrvConfig.value.colorSet).map((key) => ({
+    name: colorName(key),
     color: damPrvConfig.value.colorSet[key],
     selected: isArray(value.value)
       ? value.value.includes(damPrvConfig.value.colorSet[key])
       : value.value === damPrvConfig.value.colorSet[key],
     iconColor: pickTextColorBasedOnBgColor(damPrvConfig.value.colorSet[key], '#fff', '#000'),
   }))
-})
+)
 
 const showClear = computed(() => {
   if (isArray(value.value)) {
@@ -63,8 +79,6 @@ const clear = () => {
   value.value = cloneDeep(filterConfig.fields[props.name].default) as string | string[]
 }
 
-const { t } = useI18n()
-
 const label = computed(() => {
   const titleT = filterConfig.fields[props.name].titleT
   return titleT ? t(titleT) : undefined
@@ -77,14 +91,25 @@ const label = computed(() => {
       <span v-if="label">{{ label }}</span>
     </VLabel>
     <div class="color-swatches d-flex flex-wrap">
+      <!--
+        Acts as a button: Enter triggers on keydown, Space on keyup, like a native button.
+        Neither key propagates to the surrounding filter form, which searches on Enter.
+      -->
       <div
         v-for="(item, key) in items"
         :key="key"
-        class="color-swatches__item pa-1 cursor-pointer position-relative system-border-a"
+        class="color-swatches__item pa-1 cursor-pointer position-relative border"
         :class="{ 'color-swatches__item--active': item.selected }"
         :style="{ backgroundColor: item.color }"
-        :title="item.name"
+        :aria-label="item.name"
+        role="button"
+        tabindex="0"
+        :aria-pressed="item.selected"
         @click.stop="toggleSelected(item.color)"
+        @keydown.enter.prevent.stop="toggleSelected(item.color)"
+        @keyup.enter.prevent.stop
+        @keydown.space.prevent.stop
+        @keyup.space.prevent.stop="toggleSelected(item.color)"
       >
         <VIcon
           v-show="item.selected"
@@ -96,17 +121,26 @@ const label = computed(() => {
           activator="parent"
           location="bottom"
         >
-          {{ item.color }}
+          {{ item.name }} ({{ item.color }})
         </VTooltip>
       </div>
       <VBtn
         v-show="showClear"
-        icon="mdi-close-circle"
+        :aria-label="t('common.button.clear')"
+        icon
         variant="text"
         :width="24"
         :height="24"
         @click.stop="clear"
-      />
+      >
+        <VIcon icon="mdi-close-circle" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('common.button.clear') }}
+        </VTooltip>
+      </VBtn>
     </div>
   </div>
 </template>

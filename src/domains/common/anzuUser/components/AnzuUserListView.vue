@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { damClient } from '@/shared/apiClients/damClient'
-import AnzuUserDatatable from '@/domains/common/anzuUser/components/AnzuUserDatatable.vue'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AnzuUserCreateButton from '@/domains/common/anzuUser/components/AnzuUserCreateButton.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import AnzuUserDatatable from '@/domains/common/anzuUser/components/AnzuUserDatatable.vue'
 import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
-import { ACard, useI18n } from '@anzusystems/common-admin'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const datatable = ref<InstanceType<typeof AnzuUserDatatable> | null>(null)
 
@@ -16,9 +19,9 @@ const { listLoading } = useAnzuUserActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
+])
 </script>
 
 <template>

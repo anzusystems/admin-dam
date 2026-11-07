@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY, useCreatePodcastEpisode } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY, useCreatePodcastEpisode } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
 import { usePodcastEpisodeFactory } from '@/domains/coreDam/podcastEpisode/factory/PodcastEpisodeFactory'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
-import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -18,9 +22,7 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: PodcastEpisode): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: PodcastEpisode] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -35,11 +37,9 @@ const onOpen = () => {
   podcastEpisode.value = createDefault(currentExtSystemId.value, props.podcastId)
 }
 
-const { executeRequest: createPodcastEpisode } = useCreatePodcastEpisode()
+const { execute: createPodcastEpisode } = useCreatePodcastEpisode()
 
-const create = async () => {
-  return await createPodcastEpisode({ object: podcastEpisode.value })
-}
+const create = async () => await createPodcastEpisode({ body: podcastEpisode.value })
 </script>
 
 <template>
@@ -51,9 +51,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.podcastEpisode.button.create') }}

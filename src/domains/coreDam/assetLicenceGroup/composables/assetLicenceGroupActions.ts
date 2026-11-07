@@ -1,12 +1,17 @@
-import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
+import type { DamAssetLicenceGroup, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import {
   useFetchAssetLicenceGroup,
   useFetchAssetLicenceGroupList,
   useUpdateAssetLicenceGroup,
 } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -21,12 +26,12 @@ export const useAssetLicenceGroupListActions = () => {
   const listItems = ref<DamAssetLicenceGroup[]>([])
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-  const { executeFetch } = useFetchAssetLicenceGroupList()
+  const { execute } = useFetchAssetLicenceGroupList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      const res = await executeFetch(pagination, filterData, filterConfig)
+      const res = await execute(pagination, filterData, filterConfig)
       res.forEach((item) => {
         addToCachedAssetLicences(item.licences)
         addToCachedExtSystems(item.extSystem)
@@ -54,23 +59,16 @@ export const useAssetLicenceGroupDetailActions = () => {
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
-  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
+  const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
 
-  const fetchData = async (id: number) => {
-    detailLoading.value = true
-    try {
-      const res = await fetchAssetLicenceGroup({ urlParams: { id } })
-      addToCachedAssetLicences(res.licences)
-      addToCachedExtSystems(res.extSystem)
-      assetLicenceGroup.value = res
-      fetchCachedAssetLicences()
-      fetchCachedExtSystems()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const res = await fetchAssetLicenceGroup({ urlParams: { id }, signal })
+    addToCachedAssetLicences(res.licences)
+    addToCachedExtSystems(res.extSystem)
+    assetLicenceGroup.value = res
+    fetchCachedAssetLicences()
+    fetchCachedExtSystems()
+  })
 
   return {
     assetLicenceGroup,
@@ -82,22 +80,15 @@ export const useAssetLicenceGroupDetailActions = () => {
 
 export const useAssetLicenceGroupEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const assetLicenceGroupOneStore = useAssetLicenceGroupOneStore()
   const { assetLicenceGroup } = storeToRefs(assetLicenceGroupOneStore)
-  const { executeRequest: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
-  const { executeRequest: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
+  const { execute: fetchAssetLicenceGroup } = useFetchAssetLicenceGroup()
+  const { execute: updateAssetLicenceGroup } = useUpdateAssetLicenceGroup()
 
-  const fetchData = async (id: number) => {
-    detailLoading.value = true
-    try {
-      assetLicenceGroup.value = await fetchAssetLicenceGroup({ urlParams: { id } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    assetLicenceGroup.value = await fetchAssetLicenceGroup({ urlParams: { id }, signal })
+  })
 
   const onUpdate = async (close = false) => {
     try {
@@ -109,13 +100,14 @@ export const useAssetLicenceGroupEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAssetLicenceGroup({
+      const res = await updateAssetLicenceGroup({
         urlParams: { id: assetLicenceGroupOneStore.assetLicenceGroup.id },
-        object: assetLicenceGroup.value,
+        body: assetLicenceGroup.value,
       })
+      syncUserAndTimeTracking(assetLicenceGroupOneStore.assetLicenceGroup, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/asset-licence-groups' })
+      push({ name: '/(coreDam)/asset-licence-groups' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

@@ -1,4 +1,7 @@
-import { DamAssetStatus, type DamAssetStatusType } from '@anzusystems/common-admin'
+import { DamAssetStatus } from '@anzusystems/common-admin'
+import type { DamAssetStatusType, ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export function useAssetStatus() {
   const { t } = useI18n()
@@ -18,9 +21,8 @@ export function useAssetStatus() {
     },
   ])
 
-  const getAssetStatusOption = (value: DamAssetStatusType) => {
-    return assetStatusOptions.value.find((item) => item.value === value)
-  }
+  const getAssetStatusOption = (value: DamAssetStatusType) =>
+    assetStatusOptions.value.find((item) => item.value === value)
 
   return {
     assetStatusOptions,

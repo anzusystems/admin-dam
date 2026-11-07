@@ -3,7 +3,9 @@ import type {
   DamAssetTypeType,
   DamDistributionRequirementsConfig,
   DamDistributionServiceName,
+  DocId,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -14,11 +16,11 @@ withDefaults(
   }>(),
   {}
 )
-defineEmits<{
-  (e: 'closeDialog', reloadList: boolean): void
-}>()
+defineEmits<{ closeDialog: [reloadList: boolean] }>()
+
+const { t } = useI18n()
 </script>
 
 <template>
-  <div>Please select distribution name</div>
+  <div>{{ t('coreDam.distribution.meta.selectName') }}</div>
 </template>

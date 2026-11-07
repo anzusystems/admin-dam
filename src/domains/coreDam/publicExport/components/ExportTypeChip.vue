@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { AChipNoLink } from '@anzusystems/common-admin'
-import { type ExportTypeType, useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import { computed } from 'vue'
+
+import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import type { ExportTypeType } from '@/domains/coreDam/asset/valueObject/ExportType'
 
 const props = withDefaults(
   defineProps<{
@@ -10,9 +13,7 @@ const props = withDefaults(
 )
 
 const { getExportTypeOption } = useExportTypeTypes()
-const typeOption = computed(() => {
-  return getExportTypeOption(props.type)
-})
+const typeOption = computed(() => getExportTypeOption(props.type))
 </script>
 
 <template>

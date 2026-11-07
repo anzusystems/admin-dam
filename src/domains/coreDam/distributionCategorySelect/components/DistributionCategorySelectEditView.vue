@@ -1,7 +1,19 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  AUnsavedConfirmDialog,
+  defineBreadcrumbs,
+  useRecordPage,
+  useUnsavedChangesGuard,
+} from '@anzusystems/common-admin'
+import { nextTick, onBeforeUnmount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import DistributionCategorySelectEditForm from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectEditForm.vue'
+import { useDistributionCategorySelectEditActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -16,6 +28,9 @@ const {
   onUpdate,
   distributionCategorySelect,
 } = useDistributionCategorySelectEditActions()
+
+// Empty sources: the list editor registers itself with the guard by its label.
+const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof DistributionCategorySelectEditForm> | null>(null)
 
@@ -33,25 +48,22 @@ const onSave = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    {
-      title: t('breadcrumb.coreDam.distributionCategorySelect.list'),
-      routeName: '/(coreDam)/distribution-category-selects',
-    },
-    {
-      title: distributionCategorySelect.value.id || t('breadcrumb.coreDam.distributionCategorySelect.edit'),
-      routeName: '/(coreDam)/distribution-category-selects/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  {
+    title: t('breadcrumb.coreDam.distributionCategorySelect.list'),
+    routeName: '/(coreDam)/distribution-category-selects',
+  },
+  {
+    title: distributionCategorySelect.value.id || t('breadcrumb.coreDam.distributionCategorySelect.edit'),
+    routeName: '/(coreDam)/distribution-category-selects/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/distribution-category-selects',
+  skipRouteNames: ['/(coreDam)/distribution-category-selects/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -68,7 +80,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onSave"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-category-selects'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/distribution-category-selects'"
+        :skip-route-names="['/(coreDam)/distribution-category-selects/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 
@@ -80,4 +95,9 @@ onBeforeUnmount(() => {
       />
     </VCardText>
   </ACard>
+  <AUnsavedConfirmDialog
+    v-model="guard.promptOpen.value"
+    :dirty-labels="guard.dirtyLabels.value"
+    @resolve="guard.resolvePrompt"
+  />
 </template>

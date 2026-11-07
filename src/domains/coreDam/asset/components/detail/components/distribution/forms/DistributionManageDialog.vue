@@ -1,17 +1,28 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextField, AFormValueObjectOptionsSelect, ARow } from '@anzusystems/common-admin'
 import {
-  DistributionItemResourceName,
-  type DistributionItemResourceNameType,
-  type DistributionUpdateDto,
-} from '@/domains/coreDam/asset/types/Distribution'
+  ADialogToolbar,
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
+import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
 import DistributionForm from '@/domains/coreDam/asset/components/detail/components/distribution/forms/DistributionForm.vue'
-import { DistributionUpdateDtoValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { distributionListChanged } from '@/domains/coreDam/asset/components/detail/composables/distributionListChanged'
 import { useDistributionUpdateDtoValidations } from '@/domains/coreDam/asset/components/detail/composables/distributionValidations'
 import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import AssetDetailSlotSelect from '@/domains/coreDam/asset/components/detail/components/AssetDetailSlotSelect.vue'
+import { DistributionItemResourceName } from '@/domains/coreDam/asset/types/Distribution'
+import type {
+  DistributionItemResourceNameType,
+  DistributionUpdateDto,
+} from '@/domains/coreDam/asset/types/Distribution'
 import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
-import { upsertAssetDistributions } from '@/domains/coreDam/asset/api/distributionApi'
+import { DistributionUpdateDtoValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const props = withDefaults(
   defineProps<{
@@ -26,9 +37,9 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (e: 'onDistributionUpsert'): void
-  (e: 'onDistributionTypeSelect', data: DistributionItemResourceNameType): void
-  (e: 'onCancel'): void
+  onDistributionUpsert: []
+  onDistributionTypeSelect: [data: DistributionItemResourceNameType]
+  onCancel: []
 }>()
 
 const distribution = defineModel<DistributionUpdateDto>({ required: true })
@@ -39,6 +50,9 @@ const { t } = useI18n()
 const saveButtonLoading = ref(false)
 
 const onCancel = () => {
+  // Not closable while saving: the save continues, and a closed dialog is unmounted.
+  // Nobody would learn of the save and the list would not be reloaded.
+  if (saveButtonLoading.value) return
   distributionManageDialog.value = false
   emit('onCancel')
 }
@@ -48,6 +62,8 @@ const { v$ } = useDistributionUpdateDtoValidations(distribution)
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
+  // The keyboard can still trigger a spinning button.
+  if (saveButtonLoading.value) return
   saveButtonLoading.value = true
   try {
     v$.value.$touch()
@@ -60,6 +76,8 @@ const onConfirm = async () => {
     distributionManageDialog.value = false
 
     showRecordWas(props.isEdit ? 'updated' : 'created')
+    // Notified even if this dialog is gone by the answer, for example when the settings or the tab were closed.
+    distributionListChanged()
     emit('onDistributionUpsert')
   } catch (error) {
     showErrorsDefault(error)
@@ -92,7 +110,7 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
     :width="900"
   >
     <VCard v-if="distributionManageDialog">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         <span v-if="isEdit">{{ t('coreDam.distribution.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.distribution.meta.create') }}</span>
       </ADialogToolbar>
@@ -127,15 +145,23 @@ const onDistributionTypeSelect = (value: DistributionItemResourceNameType) => {
         </ARow>
         <DistributionForm
           v-model="distribution"
+          :readonly="readonly"
           :validation-scope="DistributionUpdateDtoValidationScopeSymbol"
         />
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="onCancel">
+        <ABtnTertiary
+          :disabled="saveButtonLoading"
+          @click.stop="onCancel"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
-        <ABtnPrimary @click.stop="onConfirm">
+        <ABtnPrimary
+          v-if="!readonly"
+          :loading="saveButtonLoading"
+          @click.stop="onConfirm"
+        >
           {{ isEdit ? t('common.button.confirm') : t('common.button.create') }}
         </ABtnPrimary>
       </VCardActions>

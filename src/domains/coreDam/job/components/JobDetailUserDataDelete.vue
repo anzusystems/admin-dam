@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ABooleanValue, AJobDetailCommon, ARow, type JobUserDataDelete, useI18n } from '@anzusystems/common-admin'
+import { ABooleanValue, AJobDetailCommon, ARow } from '@anzusystems/common-admin'
+import type { JobUserDataDelete } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
 
 withDefaults(

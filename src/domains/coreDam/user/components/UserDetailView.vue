@@ -1,33 +1,42 @@
 <script lang="ts" setup>
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import UserDetail from '@/domains/coreDam/user/components/UserDetail.vue'
 import { useUserDetailActions } from '@/domains/coreDam/user/composables/userActions'
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
-const { detailLoading, fetchData, resetStore, user } = useUserDetailActions()
+const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
-    {
-      title: user.value.id + '' || t('breadcrumb.coreDam.user.detail'),
-      routeName: '/(coreDam)/users/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  {
+    title: `${t('breadcrumb.coreDam.user.detail')} #${id}`,
+    routeName: '/(coreDam)/users/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/users',
+  // Also skips the permissions edit of the same user, the page's second edit button.
+  skipRouteNames: ['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -52,7 +61,10 @@ onBeforeUnmount(() => {
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/users'"
+        :skip-route-names="['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

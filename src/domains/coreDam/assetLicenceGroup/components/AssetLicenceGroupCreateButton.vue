@@ -1,18 +1,21 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  type DamAssetLicenceGroup,
-  DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
-import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { ENTITY, useCreateAssetLicenceGroup } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
+import { useAssetLicenceGroupValidation } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupValidation'
+import { useAssetLicenceGroupFactory } from '@/domains/coreDam/assetLicenceGroup/factory/AssetLicenceGroupFactory'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -24,9 +27,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: DamAssetLicenceGroup): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: DamAssetLicenceGroup] }>()
 
 const { createDefault } = useAssetLicenceGroupFactory()
 const assetLicenceGroup = ref<DamAssetLicenceGroup>(createDefault())
@@ -39,11 +40,9 @@ const onOpen = () => {
   assetLicenceGroup.value = createDefault()
 }
 
-const { executeRequest: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
+const { execute: createAssetLicenceGroup } = useCreateAssetLicenceGroup()
 
-const create = async () => {
-  return await createAssetLicenceGroup({ object: assetLicenceGroup.value })
-}
+const create = async () => await createAssetLicenceGroup({ body: assetLicenceGroup.value })
 </script>
 
 <template>
@@ -55,9 +54,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.assetLicenceGroup.meta.create') }}
@@ -77,7 +76,7 @@ const create = async () => {
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="assetLicenceGroup.extSystem"
             :client="damClient"
             :label="t('coreDam.assetLicenceGroup.model.extSystem')"
@@ -87,7 +86,7 @@ const create = async () => {
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="assetLicenceGroup.licences"
             :client="damClient"
             :label="t('coreDam.assetLicenceGroup.model.licences')"

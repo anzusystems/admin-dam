@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
+import { ADatatablePagination, DamAssetType, DatatablePaginationKey } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { onMounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
+import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'
 import AssetSlotListItem from '@/domains/coreDam/asset/components/detail/components/slots/AssetSlotListItem.vue'
 import { useAssetDetailSidebarSlotsActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsActions'
-import { DamAssetType, type DamAssetTypeType } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey } from '@anzusystems/common-admin/labs'
-import AssetSibling from '@/domains/coreDam/asset/components/detail/components/slots/AssetSibling.vue'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 
 const props = withDefaults(
   defineProps<{
@@ -24,6 +27,7 @@ const assetDetailStore = useAssetDetailStore()
 
 const {
   getList,
+  getListAfterChange,
   pagination,
   showPagination,
   unsetSlot,
@@ -86,11 +90,10 @@ onMounted(async () => {
       @make-main-file="makeMainFile"
       @duplicate-slot="duplicateSlot"
       @switch-slot="switchSlot"
-      @refresh-list="getList"
+      @refresh-list="getListAfterChange"
     />
     <ADatatablePagination
       v-if="showPagination"
-      v-model="pagination"
       hide-records-per-page
       @change="getList"
     />

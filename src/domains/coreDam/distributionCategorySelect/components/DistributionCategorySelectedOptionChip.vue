@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import type { DistributionCategory } from '@/domains/coreDam/distributionCategory/types/DistributionCategory'
 
 const props = withDefaults(

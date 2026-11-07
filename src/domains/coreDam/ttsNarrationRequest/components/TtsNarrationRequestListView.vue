@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { ACard } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+
 import TtsNarrationRequestDatatable from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestDatatable.vue'
 import TtsNarrationRequestSynthesizeButton from '@/domains/coreDam/ttsNarrationRequest/components/TtsNarrationRequestSynthesizeButton.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { useTtsNarrationRequestListActions } from '@/domains/coreDam/ttsNarrationRequest/composables/ttsNarrationRequestActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useTtsNarrationRequestListActions()
 

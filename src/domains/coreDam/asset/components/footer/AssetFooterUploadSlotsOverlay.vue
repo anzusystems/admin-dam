@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import { ADamUploadQueueStopButton, isOneOf, useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
+import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useAssetFooterUploadSlotsView } from '@/domains/coreDam/asset/composables/assetFooterUploadSlots'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_SLOTS } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
-import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
-import { isOneOf } from '@anzusystems/common-admin'
-import { useAssetFooterUploadSlotsView } from '@/domains/coreDam/asset/composables/assetFooterUploadSlots'
-import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 
 const { t } = useI18n()
 
@@ -23,12 +25,8 @@ const {
 } = useAssetFooterUploadSlotsView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_SLOTS)
-})
-const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_SLOTS)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_SLOTS))
+const queueProcessedCount = computed(() => uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_SLOTS))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -41,9 +39,7 @@ const onStopConfirm = () => {
   hideUpload()
 }
 
-const isUploading = computed(() => {
-  return queueTotalCount.value > queueProcessedCount.value
-})
+const isUploading = computed(() => queueTotalCount.value > queueProcessedCount.value)
 
 const classComputed = computed(() => {
   const classes = []
@@ -100,6 +96,7 @@ const classComputed = computed(() => {
           </div>
           <VBtn
             v-show="showMinimalUpload"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="26"
@@ -118,6 +115,7 @@ const classComputed = computed(() => {
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
+            :aria-label="t('common.system.modal.show')"
             icon
             variant="flat"
             :height="26"
@@ -134,7 +132,7 @@ const classComputed = computed(() => {
               {{ t('common.system.modal.show') }}
             </VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop
+          <ADamUploadQueueStopButton
             :is-uploading="isUploading"
             @confirm="onStopConfirm"
           />

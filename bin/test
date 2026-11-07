@@ -1,125 +1,292 @@
 #!/bin/bash
-# Script used to run the tests in the application container
-#######################################################################################################################
-# Default variables
-#######################################################################################################################
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
-ARGS="$*"
-BROWSER="chrome"
-ENV="local"
-FILTER=""
-TAG=""
-RUNNER="yarn"
-DASHBOARD_OPTIONS="--record false"
-CONFIG_FILE="cypress/config/cypress.config.ts"
+# Run the project's tests: vitest (src/test) and Playwright e2e (e2e/), both by default.
+# By default inside the application container; --local runs them on this machine.
+# Only the project settings below differ between the admins.
 
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+E2E_DIR="${PROJECT_ROOT}/e2e"
 cd "${PROJECT_ROOT}" || exit 1
-# Initialize default variables
+
+# Project settings
+APP_NAME="admin-dam"
 # shellcheck disable=SC1091
 . ./bin/docker-libvariables
-# Initialize functions
-# shellcheck disable=SC1091
-. ./bin/docker-libfunctions
-docker_env_vars
+SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
+SERVICE_FROM_DOCKER_ENV=true  # the docker env files may rename it, read when the run goes to the container
+
+# The same in every admin. e2e/playwright.config.ts loads e2e/.env.<env> by E2E_ENV and holds the default env;
+# -e (or E2E_ENV set in the shell) overrides it.
+E2E_ENVS="local devel staging"
+E2E_ENV="${E2E_ENV:-}"
+ROUTES_CONFIG="${E2E_DIR}/playwright.routes.config.ts"
+
+FILTER=""
+FILTER_INVERT=""
+BROWSER=""
+SPEC=""
+PROJECTS=()
+HEADED=false
+UI=false
+DEBUG=false
+CLEAR_STATE=false
+INSTALL_DEPENDENCIES=true
+RUN_LOCAL=false
+RUN_UNIT=true
+RUN_E2E=true
+ROUTES=false
+PASSTHROUGH=()
 
 function help() {
-    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nBash script used to run the tests in the application container
+    local ROUTES_HELP=""
+    [ -f "${ROUTES_CONFIG}" ] && ROUTES_HELP="
+        --routes           (Optional) Run only the route walk (e2e/tests/routes): open every page, fail on errors"
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPTIONS]...
+    \nRun the tests for ${APP_NAME}: vitest and Playwright e2e, both unless one is selected.
+    They run in the ${SERVICE} container unless --local is given.
 
     Options:
-        -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
-        -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
-        -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
-        -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
-        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
+        --unit             (Optional) Run only the vitest suite (src/test), skip e2e
+        --e2e              (Optional) Run only the Playwright e2e suite, skip vitest${ROUTES_HELP}
+        -e --env           (Optional) Target environment, sets E2E_ENV and loads e2e/.env.<env> (Allowed: ${E2E_ENVS// / | }, Default: from e2e/playwright.config.ts)
+        -f --filter        (Optional) Run only tests whose title or tag matches (e.g. @smoke); also -g --grep
+        -i --filter-invert (Optional) Skip tests whose title or tag matches (e.g. @destructive)
+        -b --browser       (Optional) Browser (Allowed: chromium | firefox | webkit); not for a config with projects; with -e local only chromium if the config needs a secure context
+        --spec             (Optional) Test file or glob pattern (e.g. tests/example.spec.ts)
+        --project          (Optional) Only these Playwright projects, comma-separated, without their dependencies
+        --headed           (Optional) Run with visible browser window
+        --ui               (Optional) Open Playwright UI mode
+        --debug            (Optional) Run Playwright in debug mode
+        --clear-state      (Optional) Remove e2e/.state/global-state.json first (done anyway for a full run)
+        --no-install       (Optional) Skip yarn install
+        --local            (Optional) Run on this machine instead of the container
+        --docker           (Optional) Run in the container (the default)
+        --                 (Optional) Pass the rest to Playwright, or to vitest with --unit (e.g. -- --retries=0)
 
     Examples:
-        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
+        $(printf %q "${BASH_SOURCE[0]}")
+        $(printf %q "${BASH_SOURCE[0]}") --unit
+        $(printf %q "${BASH_SOURCE[0]}") --e2e -e staging -f @smoke
+        $(printf %q "${BASH_SOURCE[0]}") --local --ui
+        $(printf %q "${BASH_SOURCE[0]}") --spec tests/example.spec.ts --headed
+        $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0 --workers=2
     \n"
 }
 
 #######################################################################################################################
-# Go through all command line arguments and setup variables accordingly
+# Parse arguments (both "--option value" and "--option=value")
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
+    # `shift 2` with one argument left fails without shifting, and the loop would go round forever
     case $1 in
-    -b)
-        BROWSER=$2
-        shift 2
-        continue
+    -e | --env | -f | --filter | -g | --grep | -i | --filter-invert | -b | --browser | --spec | --project)
+        if [ "$#" -lt 2 ]; then
+            echo "[ERROR] Option '$1' needs a value"
+            exit 1
+        fi
         ;;
-    --browser*)
-        BROWSER=${1#*=}
-        shift 1
-        continue
+    esac
+    case $1 in
+    --unit) RUN_E2E=false; shift ;;
+    --e2e) RUN_UNIT=false; shift ;;
+    --routes) ROUTES=true; RUN_UNIT=false; shift ;;
+    -e | --env) E2E_ENV="$2"; shift 2 ;;
+    --env=*) E2E_ENV="${1#*=}"; shift ;;
+    -f | --filter | -g | --grep) FILTER="$2"; shift 2 ;;
+    --filter=* | --grep=*) FILTER="${1#*=}"; shift ;;
+    -i | --filter-invert) FILTER_INVERT="$2"; shift 2 ;;
+    --filter-invert=*) FILTER_INVERT="${1#*=}"; shift ;;
+    -b | --browser) BROWSER="$2"; shift 2 ;;
+    --browser=*) BROWSER="${1#*=}"; shift ;;
+    --spec) SPEC="$2"; shift 2 ;;
+    --spec=*) SPEC="${1#*=}"; shift ;;
+    --project) IFS=',' read -ra P <<< "$2"; PROJECTS+=("${P[@]}"); shift 2 ;;
+    --project=*) IFS=',' read -ra P <<< "${1#*=}"; PROJECTS+=("${P[@]}"); shift ;;
+    --headed) HEADED=true; shift ;;
+    --ui) UI=true; shift ;;
+    --debug) DEBUG=true; shift ;;
+    --clear-state) CLEAR_STATE=true; shift ;;
+    --no-install) INSTALL_DEPENDENCIES=false; shift ;;
+    --local) RUN_LOCAL=true; shift ;;
+    --docker) RUN_LOCAL=false; shift ;;
+    -h | --help)
+        help
+        exit 0
         ;;
-    -e)
-        ENV=$2
-        shift 2
-        continue
-        ;;
-    --env*)
-        ENV=${1#*=}
-        shift 1
-        continue
-        ;;
-    -f)
-        FILTER=$2
-        shift 2
-        continue
-        ;;
-    --filter*)
-        FILTER=${1#*=}
-        shift 1
-        continue
-        ;;
-    -t)
-        TAG=$2
-        shift 2
-        continue
-        ;;
-    --tag*)
-        TAG=${1#*=}
-        shift 1
-        continue
-        ;;
-    -d)
-        DASHBOARD_OPTIONS="--record --tag ${ENV},${TAG},${FILTER}"
-        shift 1
-        continue
+    --)
+        shift
+        PASSTHROUGH=("$@")
+        break
         ;;
     *)
-        echo "[WARN] Unknown command line switch: $1"
+        echo "[ERROR] Unknown option: $1"
         help
-        exit
+        exit 1
         ;;
     esac
 done
 
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
-    echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
-    help
-    exit
+#######################################################################################################################
+# Validate
+#######################################################################################################################
+if [ "${RUN_UNIT}" = "false" ] && [ "${RUN_E2E}" = "false" ]; then
+    echo "[ERROR] '--unit' and '--e2e' select a single suite each; passing both leaves nothing to run"
+    exit 1
 fi
 
-if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
-    echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
-    help
-    exit
+if [ -n "${E2E_ENV}" ] && [[ " ${E2E_ENVS} " != *" ${E2E_ENV} "* ]]; then
+    echo "[ERROR] Invalid value: '${E2E_ENV}' for '-e, --env' option. Allowed: ${E2E_ENVS// / | }"
+    exit 1
 fi
 
-if [ -f /.dockerenv ]; then
-    if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
-        ${RUNNER} cypress install --force
+if [ "${ROUTES}" = "true" ] && [ ! -f "${ROUTES_CONFIG}" ]; then
+    echo "[ERROR] '--routes': ${APP_NAME} has no route walk (e2e/playwright.routes.config.ts)"
+    exit 1
+fi
+
+if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^(chromium|firefox|webkit)$ ]]; then
+    echo "[ERROR] Invalid value: '${BROWSER}' for '-b, --browser' option. Allowed: chromium | firefox | webkit"
+    exit 1
+fi
+
+# Without -e, the env is the default e2e/playwright.config.ts gives `loadE2eEnv`
+DEFAULT_ENV="$(sed -nE "s/.*defaultEnv: '([a-z]+)'.*/\1/p" "${E2E_DIR}/playwright.config.ts" | head -1)"
+if [ -z "${E2E_ENV}" ] && [ -z "${DEFAULT_ENV}" ]; then
+    echo -e "\033[1;33m[WARN] no \`defaultEnv: '<env>'\` found in e2e/playwright.config.ts: without -e the checks for the local stack are skipped\033[0m"
+fi
+
+# The local stack is served over http. Only Chromium has the flag that treats it as a secure context, and a config
+# that passes it picks the full Chromium build, which Firefox and WebKit cannot launch as.
+if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ] && [[ ${BROWSER} =~ ^(firefox|webkit)$ ]] \
+    && grep -q 'unsafely-treat-insecure-origin-as-secure' "${E2E_DIR}/playwright.config.ts"; then
+    echo "[ERROR] '-b ${BROWSER}' does not run with '-e local': over http only Chromium gets a secure context"
+    exit 1
+fi
+
+# Playwright takes no --browser for a config with projects, which the route walk's is
+if [ -n "${BROWSER}" ] && [ "${ROUTES}" = "true" ]; then
+    echo "[ERROR] '-b, --browser' does not combine with '--routes': the route walk runs in Chromium"
+    exit 1
+fi
+
+#######################################################################################################################
+# Outside Docker without --local: hand the run over to the application container
+#######################################################################################################################
+if [ ! -f /.dockerenv ] && [ "${RUN_LOCAL}" = "false" ]; then
+    # Rebuilt from the parsed values so that every value stays one argument
+    # Without -e the env is left to e2e/playwright.config.ts, so its default is the only one
+    DELEGATE=()
+    [ -n "${E2E_ENV}" ]                     && DELEGATE+=(-e "${E2E_ENV}")
+    [ "${RUN_E2E}" = "false" ]              && DELEGATE+=(--unit)
+    [ "${RUN_UNIT}" = "false" ]             && DELEGATE+=(--e2e)
+    [ "${ROUTES}" = "true" ]                && DELEGATE+=(--routes)
+    [ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
+    [ -n "${FILTER}" ]                      && DELEGATE+=(-f "${FILTER}")
+    [ -n "${FILTER_INVERT}" ]               && DELEGATE+=(-i "${FILTER_INVERT}")
+    [ -n "${BROWSER}" ]                     && DELEGATE+=(-b "${BROWSER}")
+    [ -n "${SPEC}" ]                        && DELEGATE+=(--spec "${SPEC}")
+    [ ${#PROJECTS[@]} -gt 0 ]               && DELEGATE+=("--project=$(IFS=','; echo "${PROJECTS[*]}")")
+    [ "${HEADED}" = "true" ]                && DELEGATE+=(--headed)
+    [ "${UI}" = "true" ]                    && DELEGATE+=(--ui)
+    [ "${DEBUG}" = "true" ]                 && DELEGATE+=(--debug)
+    [ "${CLEAR_STATE}" = "true" ]           && DELEGATE+=(--clear-state)
+    [ ${#PASSTHROUGH[@]} -gt 0 ]            && DELEGATE+=(-- "${PASSTHROUGH[@]}")
+
+    # bin/docker-compose joins its arguments with `$*` and hands the result to `eval`, so a value with
+    # spaces would arrive as several arguments. Quote each one for that round trip; eval undoes it.
+    QUOTED=()
+    for ARG in "${DELEGATE[@]}"; do QUOTED+=("$(printf %q "${ARG}")"); done
+
+    # The docker env files may name another service (.env.docker.local), as bin/build reads them. Only here: reading
+    # them creates missing env files and exports their variables, which the tests themselves do not need.
+    if [ "${SERVICE_FROM_DOCKER_ENV:-false}" = "true" ]; then
+        # shellcheck disable=SC1091
+        . ./bin/docker-libfunctions
+        docker_env_vars
+        SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
     fi
-    # shellcheck disable=SC2086
-    CYPRESS_grepTags=${FILTER} \
-    dbus-launch ${RUNNER} cypress run \
-        --config-file ${CONFIG_FILE} \
-        --env cfg=${ENV} \
-        --browser ${BROWSER} \
-        ${DASHBOARD_OPTIONS}
+
+    bin/docker-compose exec --user node "${SERVICE}" /var/www/html/bin/test "${QUOTED[@]}"
     exit
 fi
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
+#######################################################################################################################
+# Run here: inside the container, or on this machine with --local
+#######################################################################################################################
+STATUS=0
+RUN_ENV=()
+# a browser on a desktop: colored output and a dark GTK theme for --headed and --ui
+[ -f /.dockerenv ] || RUN_ENV=(FORCE_COLOR=1 GTK_THEME=Adwaita:dark)
+
+# vitest first: it needs no environment and no browser, so its result is on screen within seconds
+if [ "${RUN_UNIT}" = "true" ]; then
+    UNIT_CMD=(yarn test)
+    [ ${#PASSTHROUGH[@]} -gt 0 ] && [ "${RUN_E2E}" = "false" ] && UNIT_CMD+=("${PASSTHROUGH[@]}")
+    echo "[INFO] ${UNIT_CMD[*]}"
+    "${UNIT_CMD[@]}" || STATUS=1
+fi
+
+if [ "${RUN_E2E}" = "false" ]; then
+    exit ${STATUS}
+fi
+
+# The route walk reads src/typed-router.d.ts, which is generated and gitignored
+if [ ! -f "${PROJECT_ROOT}/src/typed-router.d.ts" ]; then
+    echo "[INFO] yarn generate:dts"
+    yarn generate:dts || exit 1
+fi
+
+# The local stack serves the last bin/build: a run over an older build would check code that is gone
+if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ]; then
+    BUILT="${PROJECT_ROOT}/dist/index.html"
+    # The code, the dependencies (a common-admin copied in by copy.sh too) and the build config.
+    # *.d.ts left out: `yarn ci` regenerates the route declaration without changing it; public/config.json too:
+    # env-config (bin/lint, bin/dev) writes it anew from the same env
+    SOURCES=("${PROJECT_ROOT}/src" "${PROJECT_ROOT}/public" "${PROJECT_ROOT}/index.html" "${PROJECT_ROOT}/package.json" "${PROJECT_ROOT}/yarn.lock" "${PROJECT_ROOT}/vite.config.mts"
+        "${PROJECT_ROOT}/routerPages.config.mts" "${PROJECT_ROOT}/node_modules/@anzusystems/common-admin/dist")
+    if [ ! -f "${BUILT}" ] || [ -n "$(find "${SOURCES[@]}" -newer "${BUILT}" ! -name '*.d.ts' ! -path "${PROJECT_ROOT}/public/config.json" -print -quit 2>/dev/null)" ]; then
+        echo -e "\033[1;33m[WARN] dist/ is missing or older than the code, the dependencies or vite.config.mts: run bin/build first\033[0m"
+    fi
+fi
+
+cd "${E2E_DIR}" || exit 1
+
+if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
+    yarn install || exit 1
+fi
+
+# Install the browser the run uses (idempotent, skips one already installed)
+yarn playwright install "${BROWSER:-chromium}"
+
+# A full run starts without the state an earlier run left behind (e.g. registered test users)
+STATE_FILE="${E2E_DIR}/.state/global-state.json"
+if [ ${#PROJECTS[@]} -eq 0 ] && [ -z "${FILTER}" ] && [ -z "${SPEC}" ] && [ "${ROUTES}" = "false" ]; then
+    CLEAR_STATE=true
+fi
+if [ "${CLEAR_STATE}" = "true" ] && [ -f "${STATE_FILE}" ]; then
+    rm -f "${STATE_FILE:?}"
+    echo "[INFO] Cleared state file: ${STATE_FILE}"
+fi
+
+# An array, not a string: a value with spaces (`-f "two words"`, anything after `--`) stays one argument
+CONFIG=playwright.config.ts
+[ "${ROUTES}" = "true" ] && CONFIG=playwright.routes.config.ts
+CMD=(yarn playwright test --config "${CONFIG}")
+[ -n "${FILTER}" ]        && CMD+=(--grep "${FILTER}")
+[ -n "${FILTER_INVERT}" ] && CMD+=(--grep-invert "${FILTER_INVERT}")
+[ -n "${BROWSER}" ]       && CMD+=(--browser "${BROWSER}")
+for P in "${PROJECTS[@]}"; do CMD+=("--project=${P}"); done
+[ ${#PROJECTS[@]} -gt 0 ] && CMD+=(--no-deps)
+[ "${HEADED}" = "true" ]  && CMD+=(--headed)
+[ "${UI}" = "true" ]      && CMD+=(--ui)
+[ "${DEBUG}" = "true" ]   && CMD+=(--debug)
+[ -n "${SPEC}" ]          && CMD+=("${SPEC}")
+[ ${#PASSTHROUGH[@]} -gt 0 ] && CMD+=("${PASSTHROUGH[@]}")
+
+if [ -n "${E2E_ENV}" ]; then
+    RUN_ENV+=("E2E_ENV=${E2E_ENV}")
+else
+    echo "[INFO] E2E_ENV not given: e2e/playwright.config.ts picks its default (${DEFAULT_ENV:-unknown})"
+fi
+echo "[INFO] ${E2E_ENV:+E2E_ENV=${E2E_ENV} }${CMD[*]}"
+env "${RUN_ENV[@]}" "${CMD[@]}" || STATUS=1
+exit ${STATUS}

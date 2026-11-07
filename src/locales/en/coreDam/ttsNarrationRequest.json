@@ -68,8 +68,6 @@
       "externalVoiceId": "External voice ID",
       "assetStatus": "Status",
       "assetFailureReason": "Failure reason",
-      "assetCreatedAt": "Created",
-      "assetModifiedAt": "Modified",
       "sourceTextHash": "Source text hash",
       "assetId": "Asset",
       "extSystemId": "External system",

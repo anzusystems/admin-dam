@@ -10,18 +10,12 @@
     "add": "Pridať do nahrávania",
     "dragAndDrop": "Sem presuňte nahrávané súbory",
     "incorrectFormatSize": "Nesprávny formát alebo veľkosť",
-    "stop": "Zatvoriť",
-    "stopConfirmQuestion": "Chcete ukončiť nahrávanie?",
-    "waiting": "Čakanie",
-    "processing": "Spracováva sa",
-    "uploading": "Nahrávanie",
-    "done": "Hotovo",
     "limits": {
       "uploadWarning": "Varovanie pri nahrávaní",
-      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova",
+      "onUploadLimit": "Dosiahli ste limit nahrávania ({limit}). Dokončite nahrávanie a skúste znova.",
       "addingOverLimit": "Pokúšate sa nahrať ďalšie súbory ({count}).",
       "countAlreadyInProgress": "{count} súbor(y) prebiehajú.",
-      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
+      "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne.",
       "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
       "actionAddFirstItems": "Pridať prvých {count} súborov"
     }
@@ -45,12 +39,20 @@
       "chooseFromDistribution": "Vybrať z distribúcie"
     }
   },
+  "editor": {
+    "bold": "Tučné",
+    "italic": "Kurzíva",
+    "underline": "Podčiarknuté",
+    "link": "Odkaz",
+    "removeLink": "Odstrániť odkaz"
+  },
   "mainBar": {
     "upload": "Nahrať",
     "search": "Vyhľadať",
     "backToAssets": "Späť na assety",
     "options": "Nastavenia",
     "userOptions": "Konto",
+    "mainMenu": "Hlavné menu",
     "customIntegrations": {
       "title": "Vlastné integrácie",
       "assets": "Assety"
@@ -77,7 +79,16 @@
   },
   "settings": {
     "locale": "Lokalizácia",
-    "theme": "Téma"
+    "theme": "Téma",
+    "debug": {
+      "throwTitle": "DEBUG: Test vyhodenia chyby",
+      "throwButton": "Vyhodiť",
+      "logTitle": "DEBUG: Test zalogovania chyby",
+      "logButton": "Zalogovať",
+      "unreleasedTitle": "DEBUG: Zobraziť nevydané funkcie",
+      "unreleasedShow": "Zobraziť",
+      "unreleasedHide": "Skryť"
+    }
   },
   "currentUser": {
     "settings": "Nastavenia",
@@ -89,20 +100,25 @@
     "systemError": "Chyba",
     "size": "Nesprávna veľkosť",
     "offset": "Nesprávny offset",
-    "mimeType": "Nesprávny formát súboru"
+    "mimeType": "Nesprávny formát súboru",
+    "metadataFailed": "Metadáta sa nepodarilo načítať. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to znova.",
+    "metadataUnavailable": "Metadáta sa nepodarilo načítať. Odstráňte položku a označte ju znova.",
+    "assetFileStillProcessing": "Súbor assetu sa ešte spracúva. Odstráňte položku a označte ju znova, keď bude spracovaný.",
+    "processingTooLong": "Spracovanie trvá príliš dlho. Použite tlačidlo obnoviť alebo položku odstráňte a skúste to neskôr.",
+    "processingTooLongSlot": "Spracovanie trvá príliš dlho. Zrušte položku a skúste to neskôr.",
+    "fileMissing": "Súbor už na serveri nie je."
   },
   "closePage": {
     "title": "Táto stránka/karta môže byť bezpečne zatvorená."
   },
-  "notFoundPage": {
-    "title": "Ups, chyba 404.",
-    "subTitle": "Táto stránka neexistuje. Pokiaľ by mala, kontaktujte administrátora.",
-    "return": "Návrat na domovskú obrazovku"
-  },
-  "unauthorizedPage": {
-    "title": "Ups, chyba 401.",
-    "subTitle": "Nemáte oprávnenie na danú stránku. Pokiaľ oprávnenie vyžadujete, kontaktujte administrátora.",
-    "return": "Návrat na domovskú obrazovku"
+  "errorPage": {
+    "title": "Ups, niečo sa pokazilo.",
+    "subTitle": "Aplikáciu sa nepodarilo spustiť. Skúste to prosím znova a ak to potrvá, kontaktujte administrátora.",
+    "return": "Skúsiť znova",
+    "accessDenied": {
+      "title": "Nemáte prístup k externému systému",
+      "subTitle": "Na spustenie aplikácie musíte byť používateľom alebo administrátorom externého systému (ID {extSystem}) a mať povolenia na čítanie externého systému, formulárov assetov a ich polí. Požiadajte administrátora o ich pridelenie."
+    }
   },
   "error": {
     "notificationsNotConnected": "Notifikačná služba má dočasný výpadok, niektoré funkcie sa nemusia správať korektne."

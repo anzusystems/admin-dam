@@ -1,32 +1,32 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import VideoShowFilter from '@/domains/coreDam/videoShow/components/VideoShowFilter.vue'
+import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowListFilter } from '@/domains/coreDam/videoShow/filter/VideoShowFilter'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = VideoShow
 
@@ -134,7 +134,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
@@ -165,14 +164,12 @@ defineExpose({
             <ATableEditButton
               :record-id="item.id"
               :route-name="'/(coreDam)/video-shows/[id]/edit'"
+              :acl="ACL.DAM_VIDEO_SHOW_UPDATE"
             />
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

@@ -1,11 +1,20 @@
+import type {
+  AssetFileProcessStatusType,
+  DamCurrentUserDto,
+  DamDistributionServiceName,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
+import { AssetFileProcessStatus } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import type { AssetFileProcessStatusType, DamDistributionServiceName } from '@anzusystems/common-admin'
-import { AssetFileProcessStatus } from '@anzusystems/common-admin'
+import { useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const dialogKey = ref(1)
 const dialogNew = ref(false)
@@ -24,6 +33,8 @@ export function useAssetDetailDistributionDialog() {
   }
   const openRedistribute = (item: DistributionJwItem | DistributionYoutubeItem | DistributionCustomItem) => {
     assetFileId.value = item.assetFileId
+    // The item carries no status of its file, and a file that was distributed was processed.
+    assetFileStatus.value = AssetFileProcessStatus.Processed
     activeDistributionName.value = item.distributionService
     redistributeId.value = item.id
     showTabs.value = false
@@ -35,6 +46,7 @@ export function useAssetDetailDistributionDialog() {
   const openNew = () => {
     if (assetDetailStore.asset && assetDetailStore.asset.mainFile) {
       assetFileId.value = assetDetailStore.asset.mainFile.id
+      assetFileStatus.value = assetDetailStore.asset.mainFile.fileAttributes.status
     }
     activeDistributionName.value = null
     redistributeId.value = null
@@ -57,4 +69,15 @@ export function useAssetDetailDistributionDialog() {
     openRedistribute,
     openNew,
   }
+}
+
+/**
+ * A super admin distributes to any service, anyone else to the ones on their account, as `DistributionVoter` checks.
+ */
+export function useDistributionServiceAllowed() {
+  const { useCurrentUser } = useAuth()
+  const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+  return (name: DamDistributionServiceName) =>
+    isSuperAdmin.value || (currentUser.value?.allowedDistributionServices.includes(name) ?? false)
 }

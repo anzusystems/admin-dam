@@ -2,35 +2,34 @@
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
-  type Pagination,
+  SortOrder,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import type { Ref } from 'vue'
+} from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, DocId, Pagination } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import type { Ref } from 'vue'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
+import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import PodcastEpisodeFilter from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue'
 import { usePodcastEpisodeListActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeListFilter } from '@/domains/coreDam/podcastEpisode/filter/PodcastEpisodeFilter'
-import PodcastEpisodeFilter from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeFilter.vue'
-import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { prettyDuration } from '@/shared/utils/file'
 
 type DatatableItem = PodcastEpisode
@@ -117,10 +116,6 @@ const resetFilterAction = () => {
 onMounted(() => {
   loadStoredFilters(pagination, getList)
 })
-
-defineExpose({
-  refresh: getList,
-})
 </script>
 
 <template>
@@ -146,7 +141,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
@@ -174,9 +168,7 @@ defineExpose({
           <template v-if="item.attributes.duration">
             {{ prettyDuration(item.attributes.duration) }}
           </template>
-          <template v-else>
-            -
-          </template>
+          <template v-else> - </template>
         </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
@@ -187,7 +179,12 @@ defineExpose({
                 :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]'"
               />
             </Acl>
-            <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+            <!-- For an episode with an asset, the backend also checks update on the asset. -->
+            <Acl
+              :permission="
+                item.asset ? [ACL.DAM_PODCAST_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE] : ACL.DAM_PODCAST_EPISODE_UPDATE
+              "
+            >
               <ATableEditButton
                 :route-params="{ id: props.podcastId, episodeId: item.id }"
                 :route-name="'/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'"
@@ -196,10 +193,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import { ADamAssetImage } from '@anzusystems/common-admin'
 import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
 
 const props = withDefaults(
@@ -11,9 +14,7 @@ const props = withDefaults(
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'removeItem', index: number): void
-}>()
+const emit = defineEmits<{ removeItem: [index: number] }>()
 
 const IMAGE_ASPECT_RATIO = 16 / 9
 
@@ -23,16 +24,14 @@ const remove = () => {
   emit('removeItem', props.index)
 }
 
-const imageSrc = computed(() => {
-  return props.item.imagePreview ? props.item.imagePreview.url : ''
-})
+const imageSrc = computed(() => (props.item.imagePreview ? props.item.imagePreview.url : ''))
 </script>
 
 <template>
   <div class="dam-upload-queue__item">
     <div class="dam-upload-queue__item-card">
       <div class="position-relative">
-        <AssetImage
+        <ADamAssetImage
           :src="imageSrc"
           background-color="#ccc"
           use-component
@@ -48,11 +47,20 @@ const imageSrc = computed(() => {
           <div class="w-100 d-flex justify-space-between align-center">
             <div />
             <VBtn
-              icon="mdi-trash-can-outline"
+              :aria-label="t('coreDam.asset.selected.remove')"
+              icon
               variant="text"
               size="small"
               @click.stop="remove"
-            />
+            >
+              <VIcon icon="mdi-trash-can-outline" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.selected.remove') }}
+              </VTooltip>
+            </VBtn>
           </div>
         </VCol>
       </VRow>

@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
-import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
-import { bulkUpdateAssetsMetadata } from '@/domains/coreDam/asset/api/assetApi'
-import AssetFooterUploadButtonStop from '@/domains/coreDam/asset/components/footer/AssetFooterUploadButtonStop.vue'
+import { ADamUploadQueueStopButton, useAlerts, useTheme } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useDisplay } from 'vuetify'
+
+import {
+  bulkUpdateAssetsMetadata,
+  hasMetadataToSave,
+  showMetadataSaveError,
+} from '@/domains/coreDam/asset/api/assetApi'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
-import { useDisplay } from 'vuetify'
+import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
+import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
+import { useAssetFooterBulkSave } from '@/domains/coreDam/asset/composables/assetFooterBulkSave'
+import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 
@@ -21,12 +32,8 @@ const { fetchAssetList } = useAssetListActions()
 const { footerViewUpload, showMinimalUpload, setMinimalUpload, autoShowUpload, hideUpload } = useAssetFooterUploadView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
-const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL))
+const queueProcessedCount = computed(() => uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -37,28 +44,28 @@ watch(queueTotalCount, (newValue, oldValue) => {
 const { mobile } = useDisplay()
 const massOperations = ref(!mobile.value)
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(QUEUE_ID_UPLOAD_GLOBAL))
 
-const isUploading = computed(() => {
-  return queueTotalCount.value > queueProcessedCount.value
-})
+const isUploading = computed(() => queueTotalCount.value > queueProcessedCount.value)
 
-const isFinished = computed(() => {
-  return queueTotalCount.value === queueProcessedCount.value
-})
+const isFinished = computed(() => queueTotalCount.value === queueProcessedCount.value)
 
 const onStopConfirm = async () => {
   uploadQueuesStore.stopUpload(QUEUE_ID_UPLOAD_GLOBAL)
   hideUpload()
 }
 
+// Failed uploads, duplicates and items still waiting for metadata. Saving them would send nothing and report a failure.
+const nothingToSave = computed(() => !list.value.some(hasMetadataToSave))
+
+const { assetIdsToSave, leaveTypedOfPanel, refreshDetailAsset, panelTakesTypingAgain, typedKeptAfterFailure } =
+  useAssetFooterBulkSave()
+
 const toggleMassOperations = async () => {
   massOperations.value = !massOperations.value
 }
 
-const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
+const { showRecordWas, showValidationError } = useAlerts()
 
 const v$ = useVuelidate()
 
@@ -71,13 +78,22 @@ const onSave = async () => {
     saveButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave(list.value)
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     fetchAssetList()
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
   } catch (error) {
-    showErrorsDefault(error)
+    typedKeptAfterFailure(left)
+    showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveButtonLoading.value = false
   }
 }
@@ -91,14 +107,23 @@ const onSaveAndClose = async () => {
     saveAndCloseButtonLoading.value = false
     return
   }
+  const savedAssetIds = assetIdsToSave(list.value)
+  const left = await leaveTypedOfPanel(savedAssetIds)
+  if (left === null) {
+    saveAndCloseButtonLoading.value = false
+    return
+  }
   try {
     await bulkUpdateAssetsMetadata(list.value)
     showRecordWas('updated')
+    refreshDetailAsset(savedAssetIds)
     await onStopConfirm()
     fetchAssetList()
   } catch (error) {
-    showErrorsDefault(error)
+    typedKeptAfterFailure(left)
+    showMetadataSaveError(error)
   } finally {
+    panelTakesTypingAgain(left)
     saveAndCloseButtonLoading.value = false
   }
 }
@@ -111,7 +136,7 @@ const onSaveAndClose = async () => {
   >
     <div class="d-flex w-100 h-100 flex-column">
       <VToolbar
-        class="w-100 system-border-b pr-1"
+        class="w-100 border-b pr-1"
         :color="toolbarColor"
         density="compact"
         :height="64"
@@ -152,35 +177,38 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
-          <ABtnPrimary
-            v-if="isFinished"
-            :height="36"
-            class="mr-2"
-            rounded="pill"
-            :loading="saveAndCloseButtonLoading"
-            :disabled="saveButtonLoading"
-            @click.stop="onSaveAndClose"
-          >
-            {{ t('coreDam.asset.upload.saveAndClose') }}
-          </ABtnPrimary>
-          <VBtn
-            variant="text"
-            :height="36"
-            :width="36"
-            class="mr-2"
-            icon
-            :loading="saveButtonLoading"
-            :disabled="saveAndCloseButtonLoading"
-            @click.stop="onSave"
-          >
-            <VIcon icon="mdi-content-save" />
-            <VTooltip
-              activator="parent"
-              location="bottom"
+          <Acl :permission="ACL.DAM_ASSET_UPDATE">
+            <ABtnPrimary
+              v-if="isFinished"
+              :height="36"
+              class="mr-2"
+              rounded="pill"
+              :loading="saveAndCloseButtonLoading"
+              :disabled="saveButtonLoading || nothingToSave"
+              @click.stop="onSaveAndClose"
             >
-              {{ t('coreDam.asset.upload.save') }}
-            </VTooltip>
-          </VBtn>
+              {{ t('coreDam.asset.upload.saveAndClose') }}
+            </ABtnPrimary>
+            <VBtn
+              :aria-label="t('coreDam.asset.upload.save')"
+              variant="text"
+              :height="36"
+              :width="36"
+              class="mr-2"
+              icon
+              :loading="saveButtonLoading"
+              :disabled="saveAndCloseButtonLoading || nothingToSave"
+              @click.stop="onSave"
+            >
+              <VIcon icon="mdi-content-save" />
+              <VTooltip
+                activator="parent"
+                location="bottom"
+              >
+                {{ t('coreDam.asset.upload.save') }}
+              </VTooltip>
+            </VBtn>
+          </Acl>
           <AssetUpload
             :height="36"
             variant="icon"
@@ -189,7 +217,11 @@ const onSaveAndClose = async () => {
             vertical
             class="mx-4 my-2"
           />
+          <!-- With fewer than two rows there is no panel to open. -->
           <VBtn
+            v-if="list.length >= MASS_OPERATIONS_FROM"
+            :aria-label="t('coreDam.asset.massOperations.title')"
+            :aria-expanded="massOperations"
             :height="36"
             :width="36"
             :active="massOperations"
@@ -209,6 +241,7 @@ const onSaveAndClose = async () => {
           </VBtn>
           <VBtn
             v-show="showMinimalUpload"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="36"
@@ -225,7 +258,7 @@ const onSaveAndClose = async () => {
               {{ t('common.system.modal.hide') }}
             </VTooltip>
           </VBtn>
-          <AssetFooterUploadButtonStop
+          <ADamUploadQueueStopButton
             data-cy="button-close"
             :button-size="36"
             :is-uploading="isUploading"

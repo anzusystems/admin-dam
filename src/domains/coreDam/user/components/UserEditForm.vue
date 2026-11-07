@@ -1,23 +1,28 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
-import { ENTITY } from '@/domains/coreDam/user/api/userApi'
-import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
-import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
 import {
+  ADamAssetLicenceGroupRemoteAutocomplete,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamDistributionServiceSelect,
+  ADamExtSystemRemoteAutocomplete,
+  ADamExternalProviderAssetSelect,
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceGroupRemoteAutocomplete,
-  DamAssetLicenceRemoteAutocomplete,
-  DamDistributionServiceSelect,
-  DamExternalProviderAssetSelect,
-  DamExtSystemRemoteAutocomplete,
-  useDamConfigStore,
   UserAuthType,
+  isUndefined,
+  useDamConfigStore,
 } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
-const { userUpdate } = useUserEditActions()
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import { ENTITY } from '@/domains/coreDam/user/api/userApi'
+import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
+import { useUpdateUserValidation } from '@/domains/coreDam/user/composables/userValidation'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
+const { user, userUpdate } = useUserEditActions()
 const damConfigStore = useDamConfigStore()
 const { damPubConfig } = storeToRefs(damConfigStore)
 
@@ -47,7 +52,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceGroupRemoteAutocomplete
+          <ADamAssetLicenceGroupRemoteAutocomplete
             v-model="userUpdate.licenceGroups"
             :client="damClient"
             :label="t('coreDam.user.model.licenceGroups')"
@@ -57,7 +62,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="userUpdate.assetLicences"
             :client="damClient"
             :label="t('coreDam.user.model.assetLicences')"
@@ -67,7 +72,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
+          <ADamExtSystemRemoteAutocomplete
             v-model="userUpdate.adminToExtSystems"
             :client="damClient"
             :label="t('coreDam.user.model.adminToExtSystems')"
@@ -76,18 +81,16 @@ const { t } = useI18n()
             data-cy="user-admin-to-ext-systems"
           />
         </ARow>
-        <ARow>
-          <DamExtSystemRemoteAutocomplete
-            v-model="userUpdate.userToExtSystems"
-            :client="damClient"
-            :label="t('coreDam.user.model.userToExtSystems')"
-            multiple
-            clearable
-            data-cy="user-user-to-ext-systems"
+        <ARow :title="t('coreDam.user.model.userToExtSystems')">
+          <CachedExtSystemChip
+            v-for="userToExtSystem in user.userToExtSystems"
+            :id="userToExtSystem"
+            :key="userToExtSystem"
+            class="mr-1"
           />
         </ARow>
         <ARow>
-          <DamExternalProviderAssetSelect
+          <ADamExternalProviderAssetSelect
             v-model="userUpdate.allowedAssetExternalProviders"
             :client="damClient"
             :label="t('coreDam.user.model.allowedAssetExternalProviders')"
@@ -97,7 +100,7 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamDistributionServiceSelect
+          <ADamDistributionServiceSelect
             v-model="userUpdate.allowedDistributionServices"
             :client="damClient"
             :label="t('coreDam.user.model.allowedDistributionServices')"

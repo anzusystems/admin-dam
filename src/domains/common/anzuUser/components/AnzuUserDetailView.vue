@@ -1,10 +1,21 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AnzuUserDetail from '@/domains/common/anzuUser/components/AnzuUserDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
@@ -13,22 +24,19 @@ const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions(
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
-    {
-      title: t('breadcrumb.anzuUser.detail'),
-      routeName: '/(common)/anzu-users/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
+  {
+    title: t('breadcrumb.anzuUser.detail'),
+    routeName: '/(common)/anzu-users/[id]',
+  },
+])
 
-const getDetail = () => {
-  fetchAnzuUser(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(common)/anzu-users',
+  skipRouteNames: ['/(common)/anzu-users/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchAnzuUser(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -49,7 +57,10 @@ onBeforeUnmount(() => {
           :loading="detailLoading"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(common)/anzu-users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(common)/anzu-users'"
+        :skip-route-names="['/(common)/anzu-users/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

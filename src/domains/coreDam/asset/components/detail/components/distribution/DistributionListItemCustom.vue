@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import { ACopyText, DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
+import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
+import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
 import { isDistributionCustomItem } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
-import DistributionListItemCustomDistributionDataItem from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustomDistributionDataItem.vue'
-import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
-import {
-  ACopyText,
-  type DamAssetTypeType,
-  type DamDistributionServiceTypeType,
-  DamDistributionStatus,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -27,12 +27,11 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'openRedistribute'): void
-  (e: 'openCancel'): void
-}>()
+const emit = defineEmits<{ openRedistribute: []; openCancel: [] }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -41,9 +40,15 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
+)
+
+const { can } = useAuth()
+// TODO(BE): core-dam deletes a custom distribution (DELETE /custom-distribution/{id}) under dam_distribution_access,
+// the general delete under dam_distribution_delete; should be dam_distribution_delete for both
+// (ACL BE task #86852/3.10).
+const canCancel = computed(() => can(ACL.DAM_DISTRIBUTION_ACCESS))
 </script>
 
 <template>
@@ -71,7 +76,7 @@ const serviceRequirements = computed(() => {
           {{ t('coreDam.distribution.common.redistributeButton') }}
         </ABtnTertiary>
         <ABtnTertiary
-          v-if="item.status === DamDistributionStatus.Waiting"
+          v-if="item.status === DamDistributionStatus.Waiting && canCancel && !assetDetailStore.isDeleting"
           class="ml-2"
           size="small"
           @click.stop="emit('openCancel')"

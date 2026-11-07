@@ -1,25 +1,16 @@
 <script lang="ts" setup>
-const defaultLayout = 'AppLayoutLoader'
+import { ALayoutLoader, ALayoutSwitch } from '@anzusystems/common-admin'
 
-const layout = shallowRef(defaultLayout)
+import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
+import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
+import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
 
-const route = useRoute()
-
-watch(
-  () => route.meta,
-  async (meta) => {
-    try {
-      layout.value = meta.layout || defaultLayout
-    } catch (e) {
-      console.error(e)
-      layout.value = defaultLayout
-    }
-  }
-)
+// The layouts pages name in `definePage({ meta: { layout } })`.
+const layouts = { AppLayoutLoader: ALayoutLoader, AppLayoutMain, AppLayoutDrawer, AppLayoutFullscreen }
 </script>
 
 <template>
-  <component :is="layout">
+  <ALayoutSwitch :layouts="layouts">
     <slot />
-  </component>
+  </ALayoutSwitch>
 </template>

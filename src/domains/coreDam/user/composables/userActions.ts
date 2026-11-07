@@ -1,16 +1,24 @@
-import { type DamUser, useDamCachedUsers } from '@anzusystems/common-admin'
 import {
+  cloneDeep,
   fetchDamAssetLicenceGroupListByIds,
   fetchDamUser,
   fetchDamUserListByIds,
+  handleRecordLoadError,
   updateDamUser,
+  useAlerts,
+  useDamCachedUsers,
   useFetchDamUserList,
+  usePageNavigation,
 } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { DamUser, FilterConfig, FilterData, Pagination, ValueObjectOption } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
-import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
-import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { ref } from 'vue'
+
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { useUserOneStore } from '@/domains/coreDam/user/store/userStore'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
@@ -26,12 +34,12 @@ const saveAndCloseButtonLoading = ref(false)
 
 export const useUserListActions = () => {
   const listItems = ref<DamUser[]>([])
-  const { executeFetch } = useFetchDamUserList(damClient)
+  const { execute } = useFetchDamUserList(damClient)
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig)
+      listItems.value = await execute(pagination, filterData, filterConfig)
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -52,22 +60,35 @@ export const useUserDetailActions = () => {
   const { user, userAssetLicenceGroups } = storeToRefs(userOneStore)
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
+      // DAM user requests take no signal, so answers are ignored after the page is left.
       const user = await fetchDamUser(damClient, id)
-      userAssetLicenceGroups.value = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
+      if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
+      // If loading licence groups fails, the user is still shown without them.
+      try {
+        const licenceGroups = await fetchDamAssetLicenceGroupListByIds(damClient, user.licenceGroups)
+        if (options.signal?.aborted) return undefined
+        userAssetLicenceGroups.value = licenceGroups
+      } catch (error) {
+        if (options.signal?.aborted) return undefined
+        showErrorsDefault(error)
+      }
       addToCachedExtSystems(user.adminToExtSystems, user.userToExtSystems)
       addToCachedAssetLicences(user.assetLicences)
       addToCachedUsers(user.createdBy, user.modifiedBy)
       fetchCachedUsers()
       fetchCachedExtSystems()
       fetchCachedAssetLicences()
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      if (options.signal?.aborted) return undefined
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      // An aborted load belongs to a left page; the flag now belongs to the next page.
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -81,19 +102,24 @@ export const useUserDetailActions = () => {
 
 export const useUserEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const userOneStore = useUserOneStore()
   const { userUpdate, user } = storeToRefs(userOneStore)
 
-  const fetchData = async (id: number) => {
+  const fetchData = async (id: number, options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
       const user = await fetchDamUser(damClient, id)
+      if (options.signal?.aborted) return undefined
       userOneStore.setUser(user)
+      addToCachedExtSystems(user.userToExtSystems)
+      fetchCachedExtSystems()
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      if (options.signal?.aborted) return undefined
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 
@@ -108,10 +134,18 @@ export const useUserEditActions = () => {
         return
       }
       const userUpdateCloned = cloneDeep(userUpdate.value)
-      await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      const updatedUser = await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      // Left while saving, the store is reset or holds another user: the answer is not theirs.
+      if (userOneStore.user.id === updatedUser.id) {
+        // DAM recalculated "User in external systems". The form is rebuilt with an empty password, so it starts clean.
+        userOneStore.setUser(updatedUser)
+        v$.value.$reset()
+        addToCachedExtSystems(updatedUser.userToExtSystems)
+        fetchCachedExtSystems()
+      }
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/users' })
+      push({ name: '/(coreDam)/users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -133,10 +167,10 @@ export const useUserEditActions = () => {
 }
 
 export const useUserSelectActions = () => {
-  const { executeFetch } = useFetchDamUserList(damClient)
+  const { execute } = useFetchDamUserList(damClient)
 
   const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    const users = await executeFetch(pagination, filterData, filterConfig)
+    const users = await execute(pagination, filterData, filterConfig)
 
     return <ValueObjectOption<number>[]>users.map((user: DamUser) => ({
       title: user.email,

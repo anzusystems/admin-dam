@@ -1,7 +1,8 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { DamAssetType, createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/distributionCategorySelect/api/distributionCategorySelectApi'
-import { DamAssetType } from '@anzusystems/common-admin'
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const filterFields = [
   { name: 'id' as const, default: null, type: 'string' },
@@ -17,13 +18,8 @@ const filterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useDistributionCategorySelectListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  return createFilter(filterFields, createFilterStore(filterFields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
 import type { DamDistributionStatusType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
+import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
 
 const props = withDefaults(
   defineProps<{
@@ -10,9 +12,7 @@ const props = withDefaults(
 )
 
 const { getDistributionStatusOption } = useDistributionStatus()
-const statusOption = computed(() => {
-  return getDistributionStatusOption(props.status)
-})
+const statusOption = computed(() => getDistributionStatusOption(props.status))
 </script>
 
 <template>

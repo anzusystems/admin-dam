@@ -1,20 +1,21 @@
 <script lang="ts" setup>
+import { AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { AFormValueObjectOptionsSelect, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+
 import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceApi'
-import {
-  VoiceDiscriminator,
-  type ElevenlabsVoice,
-  type GoogleTtsVoice,
-  type Voice,
-  type VoiceDiscriminatorType,
-} from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
-import { useVoiceKindFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFactory'
 import VoiceFormElevenlabs from '@/domains/coreDam/voiceFamily/components/forms/VoiceFormElevenlabs.vue'
 import VoiceFormGoogleTts from '@/domains/coreDam/voiceFamily/components/forms/VoiceFormGoogleTts.vue'
+import { useVoiceKindFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFactory'
+import { VoiceDiscriminator } from '@/domains/coreDam/voiceFamily/types/Voice'
+import type {
+  ElevenlabsVoice,
+  GoogleTtsVoice,
+  Voice,
+  VoiceDiscriminatorType,
+} from '@/domains/coreDam/voiceFamily/types/Voice'
+import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{

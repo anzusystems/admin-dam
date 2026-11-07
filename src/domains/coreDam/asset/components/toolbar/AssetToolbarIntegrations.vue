@@ -1,7 +1,14 @@
 <script lang="ts" setup>
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 const { t } = useI18n()
 
@@ -23,13 +30,24 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const externalProviders = computed(() => {
-  return configExtSystem.assetExternalProviders ?? {}
+const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
+
+const { useCurrentUser, can } = useAuth()
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+// A super admin may open any provider. Others only the ones on their account
+// (`AssetExternalProviderVoter`), and only with the access grant the provider list requires.
+const offeredExternalProviders = computed(() => {
+  if (isSuperAdmin.value) return externalProviders.value
+  if (!can(ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS)) return {}
+  return Object.fromEntries(
+    Object.entries(externalProviders.value).filter(
+      ([provider]) => currentUser.value?.allowedAssetExternalProviders.includes(provider) ?? false
+    )
+  )
 })
 
-const show = computed(() => {
-  return !isEmptyObject(externalProviders.value)
-})
+const show = computed(() => !isEmptyObject(offeredExternalProviders.value))
 
 const activeDisplayText = computed(() => {
   const providerParam = (route.params as { provider?: string }).provider as undefined | string
@@ -71,7 +89,7 @@ const activeDisplayText = computed(() => {
         @click="backToDam"
       />
       <VListItem
-        v-for="(value, key) in externalProviders"
+        v-for="(value, key) in offeredExternalProviders"
         :key="key"
         :title="value.title"
         @click.stop="goToExternalProvider(key)"

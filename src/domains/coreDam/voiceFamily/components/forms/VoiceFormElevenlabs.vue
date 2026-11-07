@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { useI18n } from 'vue-i18n'
 import { AFormTextField, ARow } from '@anzusystems/common-admin'
-import type { ElevenlabsVoice } from '@/domains/coreDam/voiceFamily/types/Voice'
+import { useI18n } from 'vue-i18n'
+
 import { useVoiceElevenlabsValidation } from '@/domains/coreDam/voiceFamily/composables/voiceValidation'
+import type { ElevenlabsVoice } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 withDefaults(
   defineProps<{

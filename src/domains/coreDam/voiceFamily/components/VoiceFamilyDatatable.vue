@@ -1,36 +1,33 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
-  type Pagination,
+  SortOrder,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, Pagination } from '@anzusystems/common-admin'
+import { onMounted, provide } from 'vue'
 import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useVoiceFamilyListActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
+
+import { ENTITY } from '@/domains/coreDam/voiceFamily/api/voiceFamilyApi'
 import VoiceFamilyFilter from '@/domains/coreDam/voiceFamily/components/VoiceFamilyFilter.vue'
+import { useVoiceFamilyListActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyListFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'
 import type { VoiceFamily } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = VoiceFamily
 
@@ -125,7 +122,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.active="{ item }: { item: DatatableItem }">
@@ -155,10 +151,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

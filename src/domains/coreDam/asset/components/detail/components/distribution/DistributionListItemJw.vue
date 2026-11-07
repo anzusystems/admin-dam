@@ -1,19 +1,18 @@
 <script setup lang="ts">
+import { DamDistributionStatus, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DamDistributionServiceTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
+import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionFailReasonChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionFailReasonChip.vue'
-import DistributionStatusChip from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionStatusChip.vue'
-import {
-  type DamAssetTypeType,
-  type DamDistributionServiceTypeType,
-  DamDistributionStatus,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -24,9 +23,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'openRedistribute'): void
-}>()
+const emit = defineEmits<{ openRedistribute: [] }>()
 
 const { t } = useI18n()
 
@@ -37,9 +34,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const serviceRequirements = computed(() => {
-  return configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
-})
+const serviceRequirements = computed(
+  () => configExtSystem[props.assetType]?.distribution?.distributionRequirements[props.item.distributionService]
+)
 </script>
 
 <template>

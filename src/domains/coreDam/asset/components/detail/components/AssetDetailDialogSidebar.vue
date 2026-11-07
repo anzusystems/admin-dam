@@ -1,8 +1,16 @@
 <script setup lang="ts">
-import { ACL } from '@/domains/system/auth/auth'
-import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
+import { isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type {
+  AssetFileFailReasonType,
+  AssetFileProcessStatusType,
+  DamAssetStatusType,
+  DamAssetTypeType,
+  DocId,
+} from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
 import AssetDetailSidebarActionsTeleportTarget from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsTeleportTarget.vue'
 import AssetDetailSidebarImagePreview from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarImagePreview.vue'
@@ -10,19 +18,15 @@ import AssetDetailSidebarMetadata from '@/domains/coreDam/asset/components/detai
 import AssetDetailSidebarROI from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarROI.vue'
 import AssetDetailSidebarDistribution from '@/domains/coreDam/asset/components/detail/components/distribution/AssetDetailSidebarDistribution.vue'
 import AssetDetailSidebarPodcast from '@/domains/coreDam/asset/components/detail/components/podcast/AssetDetailSidebarPodcast.vue'
-import AssetDetailSidebarTts from '@/domains/coreDam/asset/components/detail/components/tts/AssetDetailSidebarTts.vue'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { storeToRefs } from 'pinia'
 import AssetDetailSidebarSlots from '@/domains/coreDam/asset/components/detail/components/slots/AssetDetailSidebarSlots.vue'
+import AssetDetailSidebarTts from '@/domains/coreDam/asset/components/detail/components/tts/AssetDetailSidebarTts.vue'
 import AssetDetailSidebarVideoShow from '@/domains/coreDam/asset/components/detail/components/videoShow/AssetDetailSidebarVideoShow.vue'
+import { AssetDetailTab, useAssetDetailTab } from '@/domains/coreDam/asset/composables/assetDetailTab'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import DistributionCategoryWidget from '@/domains/coreDam/distributionCategory/components/DistributionCategoryWidget.vue'
-import {
-  type AssetFileFailReasonType,
-  type AssetFileProcessStatusType,
-  type DamAssetStatusType,
-  type DamAssetTypeType,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
+import { ACL } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
@@ -43,10 +47,7 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'postDelete', data: DocId): void
-  (e: 'mainRouteChanged'): void
-}>()
+const emit = defineEmits<{ postDelete: [data: DocId] }>()
 
 const postDelete = (data: DocId) => {
   emit('postDelete', data)
@@ -63,9 +64,9 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const typeHasDistributions = computed(() => {
-  return (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
-})
+const typeHasDistributions = computed(
+  () => (configExtSystem[props.assetType]?.distribution?.distributionServices.length ?? 0) > 0
+)
 
 // Use the live store ref (kept in sync with the metadata switch) — assetFileProperties.ttsAudio
 // is the stale server snapshot and is not updated after a metadata save without a refetch.
@@ -155,7 +156,6 @@ const isTtsAudio = computed(() => ttsAudio.value)
             :is-active="activeTab === AssetDetailTab.Info"
             :asset-type="assetType"
             @post-delete="postDelete"
-            @main-route-changed="emit('mainRouteChanged')"
           />
         </div>
         <div

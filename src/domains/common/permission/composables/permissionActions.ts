@@ -1,16 +1,15 @@
-import type { Permissions } from '@/shared/types/Permission'
-import type { AnzuUser } from '@anzusystems/common-admin'
-import { objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
+import type { AnzuUser, IntegerId } from '@anzusystems/common-admin'
+import { isUndefined, objectGetValueByPath, objectSetValueByPath } from '@anzusystems/common-admin'
+
 import { useCachedPermissionGroups } from '@/domains/common/permissionGroup/composables/cachedPermissionGroups'
+import type { Permissions } from '@/shared/types/Permission'
 
 export const usePermissionActions = () => {
   const { getCachedPermissionGroup } = useCachedPermissionGroups()
-  const resolvePermissions = (user: AnzuUser): Permissions => {
-    return {
-      ...resolveGroupPermissions(user.permissionGroups),
-      ...user.permissions,
-    }
-  }
+  const resolvePermissions = (user: AnzuUser): Permissions => ({
+    ...resolveGroupPermissions(user.permissionGroups),
+    ...user.permissions,
+  })
 
   const resolveGroupPermissions = (permissionGroupIDs: IntegerId[]): Permissions => {
     const permissions: Permissions = {}

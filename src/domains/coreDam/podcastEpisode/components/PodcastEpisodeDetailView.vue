@@ -1,35 +1,56 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  usePageNavigation,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import PodcastEpisodeDetail from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue'
 import {
   usePodcastEpisodeDetailActions,
   usePodcastEpisodeRemoveActions,
 } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import PodcastEpisodeDetail from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, podcastEpisode } = usePodcastEpisodeDetailActions()
 const { deletePodcast } = usePodcastEpisodeRemoveActions()
 
 const route = useRoute()
-const router = useRouter()
+const { push, replace } = usePageNavigation()
 const podcastId = (route.params as { id: string }).id.toString()
 const id = (route.params as { episodeId: string }).episodeId.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts/[id]',
+  fallbackRouteParams: { id: podcastId },
+  skipRouteNames: ['/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit'],
+  loading: detailLoading,
+})
 
 const onSuccessfulCallback = () => {
   if (podcastEpisode.value.podcast) {
-    router.push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisode.value.podcast } })
+    push({ name: '/(coreDam)/podcasts/[id]', params: { id: podcastEpisode.value.podcast } })
     return
   }
-  router.push({ name: '/(coreDam)/podcasts' })
+  push({ name: '/(coreDam)/podcasts' })
 }
 
-onMounted(() => {
-  getDetail()
+onMounted(async () => {
+  const loaded = await fetchData(id, { signal })
+  if (loaded === false) await leave()
+  // The URL names a different podcast than the episode's. Use the episode's own so the breadcrumb and back link fit.
+  const parent = podcastEpisode.value.podcast
+  if (loaded && parent && parent !== podcastId) {
+    await replace({ name: '/(coreDam)/podcasts/[id]/episodes/[episodeId]', params: { id: parent, episodeId: id } })
+  }
 })
 
 onBeforeUnmount(() => {
@@ -38,27 +59,29 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
-    {
-      title: t('breadcrumb.coreDam.podcast.detail'),
-      routeName: '/(coreDam)/podcasts/[id]',
-      routeParams: { id: podcastId },
-    },
-    {
-      title: podcastEpisode.value.texts.title || t('breadcrumb.coreDam.podcastEpisode.detail'),
-      routeName: '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
-      routeParams: { id: podcastId, episodeId: id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
+  {
+    title: t('breadcrumb.coreDam.podcast.detail'),
+    routeName: '/(coreDam)/podcasts/[id]',
+    routeParams: { id: podcastId },
+  },
+  {
+    title: podcastEpisode.value.texts.title || t('breadcrumb.coreDam.podcastEpisode.detail'),
+    routeName: '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+    routeParams: { id: podcastId, episodeId: id },
+  },
+])
 </script>
 
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_PODCAST_EPISODE_UPDATE">
+      <Acl
+        :permission="
+          podcastEpisode.asset ? [ACL.DAM_PODCAST_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE] : ACL.DAM_PODCAST_EPISODE_UPDATE
+        "
+      >
         <AActionEditButton
           v-if="!detailLoading"
           :route-params="{ id: podcastId, episodeId: id }"
@@ -72,9 +95,10 @@ const breadcrumbs = defineBreadcrumbs(
           @delete-record="deletePodcast(id, onSuccessfulCallback)"
         />
       </Acl>
-      <AActionCloseButton
-        :route-name="'/(coreDam)/podcasts/[id]'"
-        :route-params="{ id: podcastId }"
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts/[id]'"
+        :fallback-route-params="{ id: podcastId }"
+        :skip-route-names="['/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit']"
       />
     </template>
   </ActionbarWrapper>

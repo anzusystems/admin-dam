@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const DistributionYoutubePrivacy = {
   Private: 'private',
   Public: 'public',
@@ -31,9 +35,8 @@ export function useDistributionYoutubePrivacy() {
     },
   ])
 
-  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacyType) => {
-    return distributionYoutubePrivacyOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionYoutubePrivacyOption = (value: DistributionYoutubePrivacyType) =>
+    distributionYoutubePrivacyOptions.value.find((item) => item.value === value)
 
   return {
     distributionYoutubePrivacyOptions,

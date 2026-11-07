@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
-import { ADialogToolbar, AFormValueObjectOptionsSelect } from '@anzusystems/common-admin'
-import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
+import { ADialogToolbar, AFormValueObjectOptionsSelect, useAlerts } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useDeviceTypeTypes } from '@/domains/coreDam/asset/valueObject/DeviceType'
-import { usePodcastExportDataValidation } from '@/domains/coreDam/podcast/composables/podcastExportDataValidations'
+import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 import PodcastExportDataBodyEditor from '@/domains/coreDam/podcast/components/PodcastExportDataBodyEditor.vue'
+import { usePodcastExportDataValidation } from '@/domains/coreDam/podcast/composables/podcastExportDataValidations'
+import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
 
 withDefaults(
   defineProps<{
@@ -15,9 +18,7 @@ withDefaults(
   }
 )
 
-const emit = defineEmits<{
-  (e: 'onCancel'): void
-}>()
+const emit = defineEmits<{ onCancel: [] }>()
 
 const podcastExportData = defineModel<PodcastExportData>({ required: true })
 const podcastExportDataManageDialog = defineModel<boolean>('manageDialog', { required: true })
@@ -55,8 +56,8 @@ const onConfirm = () => {
     scrollable
   >
     <VCard v-if="podcastExportDataManageDialog">
-      <ADialogToolbar @on-cancel="podcastExportDataManageDialog = false">
-        <span v-if="podcastExportData.id">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
+      <ADialogToolbar @cancel="onCancel">
+        <span v-if="podcastExportData.id > 0">{{ t('coreDam.podcastExportData.meta.edit') }}</span>
         <span v-else>{{ t('coreDam.podcastExportData.meta.create') }}</span>
       </ADialogToolbar>
       <VCardText>
@@ -98,7 +99,7 @@ const onConfirm = () => {
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary @click.stop="onConfirm">
-          {{ podcastExportData.id ? t('common.button.confirm') : t('common.button.create') }}
+          {{ podcastExportData.id > 0 ? t('common.button.confirm') : t('common.button.create') }}
         </ABtnPrimary>
       </VCardActions>
     </VCard>

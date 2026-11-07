@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { ADamUploadQueueList, UploadQueueSuggestionsKey, useAlerts } from '@anzusystems/common-admin'
+import type { UploadQueueListBinding } from '@anzusystems/common-admin'
+import { provide } from 'vue'
+
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
-import { AssetFileProcessStatus, DamAssetStatus, type UploadQueueItem } from '@anzusystems/common-admin'
-import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
+import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
-import { fetchAsset } from '@/domains/coreDam/asset/api/assetApi'
+import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
 
 const props = withDefaults(
   defineProps<{
@@ -19,90 +23,72 @@ const props = withDefaults(
 )
 
 const uploadQueuesStore = useUploadQueuesStore()
-const refreshDisabled = ref(false)
-
+const { currentExtSystemId } = useCurrentExtSystem()
 const { showWarningT } = useAlerts()
-
-const refreshItem = async (data: { index: number; assetId: DocId }) => {
-  refreshDisabled.value = true
-  try {
-    const asset = await fetchAsset(data.assetId)
-    if (asset.attributes.assetStatus === DamAssetStatus.WithFile) {
-      await uploadQueuesStore.queueItemProcessed(asset.id)
-    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Duplicate) {
-      await uploadQueuesStore.queueItemDuplicate(asset.id, asset.mainFile.originAssetFile, asset.attributes.assetType)
-    } else if (asset.mainFile?.fileAttributes.status === AssetFileProcessStatus.Failed) {
-      await uploadQueuesStore.queueItemFailed(data.assetId, asset.mainFile.fileAttributes.failReason)
-    } else {
-      showWarningT('common.damImage.queueItem.stillUploadingOrProcessing')
-    }
-  } catch (e) {
-    //
-  } finally {
-    refreshDisabled.value = false
-  }
-}
-
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
-
-const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
-}
-
-const removeItem = (index: number) => {
-  uploadQueuesStore.removeByIndex(props.queueId, index)
-}
-
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
 
-onMounted(() => {
-  list.value.forEach((item) => {
-    addToCachedKeywords(item.keywords)
-    addToCachedAuthors(item.authors)
-    // objectGetValues(item.authorSuggestions)
-    //   .filter((ids) => ids.length > 1)
-    //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
-  })
-  fetchCachedKeywords()
-  fetchCachedAuthors()
-})
+// Binds the library's list to admin-dam's store, alerts and name caches.
+const queue: UploadQueueListBinding = {
+  items: () => uploadQueuesStore.getQueueItems(props.queueId),
+  // Uses the row's event names inside the queue.
+  cancel: (item, _index, queueId) => uploadQueuesStore.stopItemUpload(queueId, item),
+  // A row is removed by its own delete, which removes it from the store.
+  remove: () => undefined,
+  refresh: (item) => uploadQueuesStore.refreshQueueItem(item),
+  refreshMayHelp: () => false,
+  warn: (key) => showWarningT(key),
+  prime: (items) => {
+    items.forEach((item) => {
+      addToCachedKeywords(item.keywords)
+      addToCachedAuthors(item.authors)
+    })
+    fetchCachedKeywords()
+    fetchCachedAuthors()
+  },
+  mainFileSingleUseEnabled: true,
+}
+
+// The name chips mark queue suggestions as new. The queues come from admin-dam's store.
+provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queueKey)?.suggestions)
 </script>
 
 <template>
-  <div
-    class="asset-queue-editable"
-    :class="{ 'asset-queue-editable--sidebar-active': massOperations }"
+  <ADamUploadQueueList
+    :queue-key="queueId"
+    :ext-system="currentExtSystemId"
+    :mass-operations="massOperations"
+    :disable-done-animation="disableDoneAnimation"
+    :queue="queue"
+    :mass-operations-from="MASS_OPERATIONS_FROM"
+    :keyboard-scroll="false"
   >
-    <div class="asset-queue-editable__left">
-      <div class="overflow-y-auto overflow-x-hidden h-100">
-        <VRow class="dam-upload-queue dam-upload-queue--editable pa-2 mb-5">
-          <AssetQueueItemEditable
-            v-for="(item, index) in list"
-            :key="item.key"
-            v-model:custom-data="item.customData"
-            v-model:keywords="item.keywords"
-            v-model:authors="item.authors"
-            v-model:main-file-single-use="item.mainFileSingleUse"
-            :refresh-disabled="refreshDisabled"
-            :item="item"
-            :index="index"
-            :queue-id="queueId"
-            :disable-done-animation="disableDoneAnimation"
-            @refresh-item="refreshItem"
-            @cancel-item="cancelItem"
-            @remove-item="removeItem"
-          />
-        </VRow>
+    <template #item="{ item, index, refreshDisabled, refresh }">
+      <AssetQueueItemEditable
+        v-model:custom-data="item.customData"
+        v-model:keywords="item.keywords"
+        v-model:authors="item.authors"
+        v-model:main-file-single-use="item.mainFileSingleUse"
+        :refresh-disabled="refreshDisabled"
+        :item="item"
+        :index="index"
+        :queue-id="queueId"
+        :disable-done-animation="disableDoneAnimation"
+        @refresh-item="refresh()"
+        @cancel-item="queue.cancel($event.item, $event.index, $event.queueId)"
+      />
+    </template>
+    <template #sidebar>
+      <!--
+        When closed, the library only slides the panel out of view.
+        Its content is also hidden from the keyboard and the screen reader.
+      -->
+      <div
+        class="d-flex w-100 h-100"
+        :inert="!massOperations"
+      >
+        <AssetQueueSelectedSidebar :queue-id="queueId" />
       </div>
-    </div>
-    <div
-      v-if="list.length > 1"
-      class="asset-queue-editable__sidebar system-border-l"
-    >
-      <AssetQueueSelectedSidebar :queue-id="queueId" />
-    </div>
-  </div>
+    </template>
+  </ADamUploadQueueList>
 </template>

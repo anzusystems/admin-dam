@@ -1,13 +1,19 @@
 <script lang="ts" setup>
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
+import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
-import { usePodcastEpisodeListFilter } from '@/domains/coreDam/podcastEpisode/filter/PodcastEpisodeFilter'
-import { useFetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import PodcastEpisodeListItem from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeListItem.vue'
 import PodcastEpisodeNewDialog from '@/domains/coreDam/asset/components/detail/components/podcast/PodcastEpisodeNewDialog.vue'
-import { usePodcastEpisodeRemoveActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useCachedPodcasts } from '@/domains/coreDam/podcast/composables/cachedPodcasts'
+import { useFetchPodcastEpisodeListByAsset } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
+import { usePodcastEpisodeRemoveActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
+import { usePodcastEpisodeListFilter } from '@/domains/coreDam/podcastEpisode/filter/PodcastEpisodeFilter'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { ACL } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
   defineProps<{
@@ -21,6 +27,8 @@ const props = withDefaults(
 )
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 const { pagination } = usePagination('position')
 provide(DatatablePaginationKey, pagination)
 const { filterConfig, filterData } = usePodcastEpisodeListFilter()
@@ -29,7 +37,7 @@ const showPagination = computed(
   () => !(pagination.value.page === 1 && pagination.value.currentViewCount < pagination.value.rowsPerPage)
 )
 
-const { executeFetch } = useFetchPodcastEpisodeListByAsset()
+const { execute } = useFetchPodcastEpisodeListByAsset()
 
 const listItems = ref<PodcastEpisode[]>([])
 const loading = ref(false)
@@ -53,7 +61,7 @@ const deletePodcastEpisode = (id: DocId) => {
 
 const getList = async () => {
   loading.value = true
-  const items = await executeFetch(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
+  const items = await execute(pagination, filterData, filterConfig, { urlParams: { assetId: props.assetId } })
   addToCachedPodcasts(items.map((item) => item.podcast))
   fetchCachedPodcasts()
   listItems.value = items
@@ -67,12 +75,15 @@ onMounted(async () => {
 
 <template>
   <AssetDetailSidebarActionsWrapper v-if="isActive">
-    <ABtnPrimary
-      data-cy="button-add-new-podcast-episode"
-      @click.stop="addNew"
-    >
-      {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
-    </ABtnPrimary>
+    <Acl :permission="[ACL.DAM_PODCAST_EPISODE_CREATE, ACL.DAM_ASSET_UPDATE]">
+      <ABtnPrimary
+        data-cy="button-add-new-podcast-episode"
+        :disabled="assetDetailStore.isDeleting"
+        @click.stop="addNew"
+      >
+        {{ t('coreDam.podcastEpisode.common.addAssetToNewPodcastEpisode') }}
+      </ABtnPrimary>
+    </Acl>
   </AssetDetailSidebarActionsWrapper>
   <div
     v-if="loading"
@@ -98,7 +109,6 @@ onMounted(async () => {
     />
     <ADatatablePagination
       v-if="showPagination"
-      v-model="pagination"
       hide-records-per-page
       @change="getList"
     />

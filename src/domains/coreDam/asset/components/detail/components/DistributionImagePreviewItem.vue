@@ -1,7 +1,10 @@
 <script lang="ts" setup>
+import { ADamAssetImage, DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import type { DistributionImagePreviewDto } from '@/domains/coreDam/asset/types/DistributionImagePreviewDto'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
-import { DamAssetStatus, useDamConfigStore } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -10,10 +13,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'toggleSelected', index: number): void
-  (e: 'invalidImage', index: number): void
-}>()
+const emit = defineEmits<{ toggleSelected: [index: number]; invalidImage: [index: number] }>()
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR = '#ccc'
 
@@ -65,7 +65,7 @@ onMounted(async () => {
           size="x-small"
         />
       </div>
-      <AssetImage
+      <ADamAssetImage
         :asset-status="item.url.length > 0 ? DamAssetStatus.WithFile : DamAssetStatus.Draft"
         :src="item.invalidImage ? '' : item.url"
         :background-color="IMAGE_BG_COLOR"
@@ -76,11 +76,13 @@ onMounted(async () => {
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
-          <div class="line-clamp-1">
+          <div class="text-truncate">
             {{ title }}
           </div>
           <div class="dam-image-grid__item-card-actions">
             <VBtn
+              :aria-label="t('coreDam.asset.list.toggleSelect')"
+              :aria-pressed="!!item.selected"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"
@@ -107,6 +109,7 @@ onMounted(async () => {
               </VTooltip>
             </VBtn>
             <VBtn
+              :aria-label="t('coreDam.asset.list.preview')"
               variant="flat"
               class="detail-icon mr-1"
               color="secondary"

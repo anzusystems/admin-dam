@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
 import type { VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { useVoiceDiscriminator } from '@/domains/coreDam/voiceFamily/valueObject/VoiceDiscriminator'
 

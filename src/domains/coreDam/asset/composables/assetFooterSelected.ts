@@ -1,5 +1,7 @@
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { computed, readonly, ref } from 'vue'
+
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const HEIGHT_MINIMAL = 32
 const HEIGHT_COMPACT = 160
@@ -53,9 +55,7 @@ export function useAssetFooterSelectedView() {
     customDialog.value = false
   }
 
-  const showMinimalSelected = computed(() => {
-    return footerViewSelected.value !== FooterViewSelected.Minimal
-  })
+  const showMinimalSelected = computed(() => footerViewSelected.value !== FooterViewSelected.Minimal)
 
   const setMinimalSelected = () => {
     assetListStore.keyboardNavigationEnable()
@@ -63,9 +63,7 @@ export function useAssetFooterSelectedView() {
     customDialog.value = false
   }
 
-  const showFullSelected = computed(() => {
-    return footerViewSelected.value !== FooterViewSelected.Full
-  })
+  const showFullSelected = computed(() => footerViewSelected.value !== FooterViewSelected.Full)
 
   const setFullSelected = () => {
     assetListStore.keyboardNavigationDisable()
@@ -73,9 +71,7 @@ export function useAssetFooterSelectedView() {
     customDialog.value = true
   }
 
-  const showCompactSelected = computed(() => {
-    return footerViewSelected.value !== FooterViewSelected.Compact
-  })
+  const showCompactSelected = computed(() => footerViewSelected.value !== FooterViewSelected.Compact)
 
   const setCompactSelected = () => {
     assetListStore.keyboardNavigationEnable()

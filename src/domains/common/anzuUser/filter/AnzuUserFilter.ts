@@ -1,4 +1,5 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
 
 const filterFields = [
   { name: 'id' as const, default: null, type: 'string' },
@@ -9,13 +10,8 @@ const filterFields = [
 ] satisfies readonly MakeFilterOption[]
 
 export function useAnzuUserFilter() {
-  const { filterConfig, filterData } = createFilter(filterFields, createFilterStore(filterFields), {
+  return createFilter(filterFields, createFilterStore(filterFields), {
     system: 'common',
     subject: 'anzuUser',
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

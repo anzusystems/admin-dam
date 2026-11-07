@@ -1,23 +1,22 @@
 <script lang="ts" setup>
+import { ADialogToolbar, cloneDeep } from '@anzusystems/common-admin'
 import { ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { ADialogToolbar, cloneDeep } from '@anzusystems/common-admin'
-import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+
 import VoiceManage from '@/domains/coreDam/voiceFamily/components/VoiceManage.vue'
+import { useVoiceEditActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     voice: Voice | null
   }>(),
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'onSuccess'): void
-}>()
+const emit = defineEmits<{ onSuccess: [] }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 
 const { t } = useI18n()
 const { saveButtonLoading, onUpdate } = useVoiceEditActions()
@@ -28,7 +27,7 @@ const localVoice = ref<Voice | null>(null)
 // keeps the same props.voice reference, so a watch on props.voice alone would not fire and stale
 // (cancelled) edits would linger in localVoice.
 watch(
-  [() => props.modelValue, () => props.voice],
+  [() => modelValue.value, () => props.voice],
   ([open, newVoice]) => {
     if (open && newVoice) {
       localVoice.value = cloneDeep(newVoice)
@@ -38,13 +37,13 @@ watch(
 )
 
 const onCancel = () => {
-  emit('update:modelValue', false)
+  modelValue.value = false
 }
 
 const onConfirm = () => {
   if (!localVoice.value) return
   onUpdate(localVoice.value, () => {
-    emit('update:modelValue', false)
+    modelValue.value = false
     emit('onSuccess')
   })
 }
@@ -55,10 +54,10 @@ const onConfirm = () => {
     :model-value="modelValue"
     :width="600"
     scrollable
-    @update:model-value="(val) => emit('update:modelValue', val)"
+    @update:model-value="(val) => (modelValue = val)"
   >
     <VCard v-if="modelValue && localVoice">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.voice.meta.edit') }}
       </ADialogToolbar>
       <VCardText>

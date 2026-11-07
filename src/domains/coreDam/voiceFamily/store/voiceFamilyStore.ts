@@ -1,7 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
 import { useVoiceFamilyFactory } from '@/domains/coreDam/voiceFamily/factory/VoiceFamilyFactory'
 import type { VoiceFamily } from '@/domains/coreDam/voiceFamily/types/VoiceFamily'
-import { ref } from 'vue'
 
 export const useVoiceFamilyOneStore = defineStore('voiceFamilyOneStore', () => {
   const { createDefault } = useVoiceFamilyFactory()

@@ -1,4 +1,8 @@
 import dayjs from 'dayjs'
+import Duration from 'dayjs/plugin/duration'
+
+// Extended here because this module uses the duration plugin. It must not rely on another module extending it first.
+dayjs.extend(Duration)
 
 export const prettyBps = (bytes: number, decimals = 2): string => {
   const sizes = ['bps', 'kbps', 'Mbps', 'Gbps']

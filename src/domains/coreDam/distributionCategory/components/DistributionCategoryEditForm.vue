@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+
+import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
 import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
 import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { distributionCategory, distributionCategorySelects, distributionCategorySelectedOptions } =
   useDistributionCategoryEditActions()
@@ -38,6 +40,7 @@ const { v$ } = useDistributionCategoryValidation(distributionCategory)
             :select="distributionCategorySelect"
           />
         </ARow>
+        <DamTrackingFields :data="distributionCategory" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

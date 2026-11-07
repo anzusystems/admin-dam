@@ -1,14 +1,14 @@
-import { booleanToInteger, type DamDistributionServiceName } from '@anzusystems/common-admin'
 import {
+  booleanToInteger,
   createFilter,
   createFilterStore,
-  type MakeFilterOption,
+  useApiCommand,
   useApiFetchList,
   useApiRequest,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import { damClient } from '@/shared/apiClients/damClient'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+} from '@anzusystems/common-admin'
+import type { DamDistributionServiceName, DocId, MakeFilterOption } from '@anzusystems/common-admin'
+
 import type {
   DistributionAuthUrl,
   DistributionYoutubeCreateRedistributeDto,
@@ -16,6 +16,8 @@ import type {
   YoutubeLanguage,
   YoutubePlaylist,
 } from '@/domains/coreDam/asset/types/Distribution'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const END_POINT = '/adm/v1/youtube-distribution'
 export const ENTITY = 'youtubeDistribution'
@@ -25,23 +27,21 @@ const emptyFilterStore = createFilterStore(emptyFilterFields)
 
 export const useCreateYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/distribute',
   })
 
 export const createYoutubeDistribution = (assetFileId: DocId, data: DistributionYoutubeCreateRedistributeDto) => {
-  const { executeRequest } = useCreateYoutubeDistribution()
-  return executeRequest({ urlParams: { assetFileId }, object: data })
+  const { execute } = useCreateYoutubeDistribution()
+  return execute({ urlParams: { assetFileId }, body: data })
 }
 
 export const useRedistributeYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeCreateRedistributeDto, DistributionYoutubeCreateRedistributeDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionId/redistribute',
   })
@@ -50,15 +50,14 @@ export const redistributeYoutubeDistribution = (
   distributionId: DocId,
   data: DistributionYoutubeCreateRedistributeDto
 ) => {
-  const { executeRequest } = useRedistributeYoutubeDistribution()
-  return executeRequest({ urlParams: { distributionId }, object: data })
+  const { execute } = useRedistributeYoutubeDistribution()
+  return execute({ urlParams: { distributionId }, body: data })
 }
 
 export const usePrepareFormDataYoutubeDistribution = () =>
   useApiRequest<DistributionYoutubeItem, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:assetFileId/prepare-payload/:distributionServiceName',
   })
@@ -67,28 +66,26 @@ export const prepareFormDataYoutubeDistribution = (
   assetFileId: DocId,
   distributionServiceName: DamDistributionServiceName
 ) => {
-  const { executeRequest } = usePrepareFormDataYoutubeDistribution()
-  return executeRequest({ urlParams: { assetFileId, distributionServiceName } })
+  const { execute } = usePrepareFormDataYoutubeDistribution()
+  return execute({ urlParams: { assetFileId, distributionServiceName } })
 }
 
 export const useGetYoutubeAuthUrl = () =>
   useApiRequest<DistributionAuthUrl, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/auth-url',
   })
 
-export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName) => {
-  const { executeRequest } = useGetYoutubeAuthUrl()
-  return executeRequest({ urlParams: { distributionServiceName } })
+export const getYoutubeAuthUrl = (distributionServiceName: DamDistributionServiceName, signal?: AbortSignal) => {
+  const { execute } = useGetYoutubeAuthUrl()
+  return execute({ urlParams: { distributionServiceName }, signal })
 }
 
 export const useFetchYoutubeLanguages = () =>
-  useApiFetchList<YoutubeLanguage[]>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+  useApiFetchList<YoutubeLanguage>({
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/language',
   })
@@ -99,14 +96,13 @@ export const fetchYoutubeLanguages = (distributionServiceName: DamDistributionSe
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-  const { executeFetch } = useFetchYoutubeLanguages()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { distributionServiceName } })
+  const { execute } = useFetchYoutubeLanguages()
+  return execute(pagination, filterData, filterConfig, { urlParams: { distributionServiceName } })
 }
 
 export const useFetchYoutubePlaylists = () =>
-  useApiFetchList<YoutubePlaylist[]>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+  useApiFetchList<YoutubePlaylist>({
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/playlist/:forceReload',
   })
@@ -117,22 +113,21 @@ export const fetchYoutubePlaylists = (distributionServiceName: DamDistributionSe
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-  const { executeFetch } = useFetchYoutubePlaylists()
-  return executeFetch(pagination, filterData, filterConfig, {
+  const { execute } = useFetchYoutubePlaylists()
+  return execute(pagination, filterData, filterConfig, {
     urlParams: { distributionServiceName, forceReload: booleanToInteger(forceReload) },
   })
 }
 
 export const useLogoutYoutube = () =>
-  useApiRequest<unknown, null>({
-    client: damClient,
+  useApiCommand<null>({
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:distributionServiceName/logout',
   })
 
 export const logoutYoutube = (distributionServiceName: DamDistributionServiceName) => {
-  const { executeRequest } = useLogoutYoutube()
-  return executeRequest({ urlParams: { distributionServiceName } })
+  const { execute } = useLogoutYoutube()
+  return execute({ urlParams: { distributionServiceName } })
 }

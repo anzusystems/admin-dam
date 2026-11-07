@@ -1,13 +1,23 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import PodcastDetail from '@/domains/coreDam/podcast/components/PodcastDetail.vue'
+import { usePodcastDetailActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import { PodcastDetailTab, usePodcastDetailTab } from '@/domains/coreDam/podcast/composables/podcastDetailTab'
-import PodcastEpisodeDatatable from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import PodcastEpisodeCreateButton from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeCreateButton.vue'
+import PodcastEpisodeDatatable from '@/domains/coreDam/podcastEpisode/components/PodcastEpisodeDatatable.vue'
 import { usePodcastEpisodeListActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, podcast } = usePodcastDetailActions()
 const { listLoading } = usePodcastEpisodeListActions()
@@ -30,12 +40,24 @@ watch(
   { immediate: true }
 )
 
-const getDetail = () => {
-  fetchData(podcastId)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts',
+  skipRouteNames: [
+    '/(coreDam)/podcasts/[id]/edit',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The episode list also fetches by the route id. Mount it only after the podcast loads,
+// or a failed load raises a second alert.
+const podcastLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(podcastId, { signal })
+  if (loaded === false) await leave()
+  podcastLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -44,16 +66,14 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
-    {
-      title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.detail'),
-      routeName: '/(coreDam)/podcasts/[id]',
-      routeParams: { id: podcastId },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
+  {
+    title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.detail'),
+    routeName: '/(coreDam)/podcasts/[id]',
+    routeParams: { id: podcastId },
+  },
+])
 
 const afterPodcastEpisodeCreate = () => {
   if (activeTab.value === PodcastDetailTab.Episodes) {
@@ -85,7 +105,14 @@ const afterPodcastEpisodeCreate = () => {
           :route-name="'/(coreDam)/podcasts/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts'"
+        :skip-route-names="[
+          '/(coreDam)/podcasts/[id]/edit',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 
@@ -110,10 +137,10 @@ const afterPodcastEpisodeCreate = () => {
   </VTabs>
   <Acl :permission="ACL.DAM_PODCAST_EPISODE_UI">
     <div v-show="activeTab === PodcastDetailTab.Episodes">
-      <ACard :loading="listLoading">
+      <ACard :loading="detailLoading || listLoading">
         <VCardText>
           <PodcastEpisodeDatatable
-            v-if="loadPodcastEpisodeDatatable"
+            v-if="podcastLoaded && loadPodcastEpisodeDatatable"
             :podcast-id="podcastId"
           />
         </VCardText>

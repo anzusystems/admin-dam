@@ -1,26 +1,25 @@
+import { handleRecordLoadError, useAlerts } from '@anzusystems/common-admin'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
 import { ref } from 'vue'
-import { type DocId, useAlerts } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import type {
-  TtsNarrationRequest,
-  TtsNarrationRequestDetail,
-  TtsSynthesizeRequestDto,
-  TtsSynthesizeResponse,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
-import {
-  TtsRequestStatus,
-  type TtsRequestStatusType,
-} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
 import {
   useCancelTtsNarrationRequest,
   useFetchTtsNarrationRequest,
   useFetchTtsNarrationRequestListByExtSystem,
   useSynthesizeTtsNarrationRequest,
 } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
+import { TtsRequestStatus } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
+import type {
+  TtsNarrationRequest,
+  TtsNarrationRequestDetail,
+  TtsRequestStatusType,
+  TtsSynthesizeRequestDto,
+  TtsSynthesizeResponse,
+} from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { useCachedVoiceFamiliesById } from '@/domains/coreDam/voiceFamily/composables/cachedVoiceFamilies'
 
 const { showRecordWas, showErrorsDefault } = useAlerts()
@@ -39,13 +38,13 @@ const cancelRequestButtonLoading = ref(false)
 
 export const useTtsNarrationRequestListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchTtsNarrationRequestListByExtSystem()
+  const { execute } = useFetchTtsNarrationRequestListByExtSystem()
   const listItems = ref<Array<TtsNarrationRequest>>([])
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -64,11 +63,11 @@ export const useTtsNarrationRequestListActions = () => {
 }
 
 export const useTtsNarrationRequestSynthesizeActions = () => {
-  const { executeRequest: synthesizeTtsNarrationRequest } = useSynthesizeTtsNarrationRequest()
+  const { execute: synthesizeTtsNarrationRequest } = useSynthesizeTtsNarrationRequest()
 
   // Passed to ACreateDialog's call-create; the dialog owns loading + error/success handling.
   const synthesize = (payload: TtsSynthesizeRequestDto): Promise<TtsSynthesizeResponse> =>
-    synthesizeTtsNarrationRequest({ object: payload })
+    synthesizeTtsNarrationRequest({ body: payload })
 
   return {
     synthesize,
@@ -76,12 +75,12 @@ export const useTtsNarrationRequestSynthesizeActions = () => {
 }
 
 export const useTtsNarrationRequestCancelRequestActions = () => {
-  const { executeRequest: cancelTtsNarrationRequest } = useCancelTtsNarrationRequest()
+  const { execute: cancelTtsNarrationRequest } = useCancelTtsNarrationRequest()
 
   const cancelRequest = async (requestId: DocId): Promise<TtsNarrationRequest | null> => {
     cancelRequestButtonLoading.value = true
     try {
-      const res = await cancelTtsNarrationRequest({ urlParams: { requestId }, object: {} })
+      const res = await cancelTtsNarrationRequest({ urlParams: { requestId }, body: {} })
       showRecordWas('updated')
       return res
     } catch (error) {
@@ -102,16 +101,16 @@ export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { addToCachedExtSystems, fetchCachedExtSystems } = useCachedExtSystems()
   const { addToCachedVoiceFamilies, fetchCachedVoiceFamilies, isLoadedCachedVoiceFamily } = useCachedVoiceFamiliesById()
-  const { executeRequest: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
+  const { execute: fetchTtsNarrationRequest } = useFetchTtsNarrationRequest()
 
   const detail = ref<TtsNarrationRequestDetail | null>(null)
   const detailLoading = ref(true)
 
   // Snapshot fetch — admin does not poll; the user reloads to see progress.
-  const fetchDetail = async () => {
+  const fetchDetail = async (options: { signal?: AbortSignal } = {}): Promise<boolean | undefined> => {
     detailLoading.value = true
     try {
-      const data = await fetchTtsNarrationRequest({ urlParams: { id: getId() } })
+      const data = await fetchTtsNarrationRequest({ urlParams: { id: getId() }, signal: options.signal })
       detail.value = data
       if (data) {
         addToCachedAssetLicences([data.assetLicence])
@@ -124,10 +123,11 @@ export const useTtsNarrationRequestDetailActions = (getId: () => DocId) => {
           fetchCachedVoiceFamilies()
         }
       }
+      return true
     } catch (error) {
-      showErrorsDefault(error)
+      return handleRecordLoadError(error) ? false : undefined
     } finally {
-      detailLoading.value = false
+      if (!options.signal?.aborted) detailLoading.value = false
     }
   }
 

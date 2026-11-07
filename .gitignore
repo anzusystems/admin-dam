@@ -1,7 +1,9 @@
 # Editor directories and files
 .DS_Store
 .idea
-.vscode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 *.suo
 *.ntvs*
 *.njsproj
@@ -25,11 +27,6 @@ src/auto-imports.d.ts
 # Tests
 coverage
 .scannerwork
-cypress/report
-cypress/config
-cypress/downloads
-cypress/fixtures
-!cypress/config/cypress.config.ts
 
 # Managed by yarn
 .yarn/*
@@ -40,7 +37,7 @@ cypress/fixtures
 !.yarn/versions
 
 # Log files
-logs
+/logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -54,6 +51,14 @@ docker-compose.override.yml*
 # Local tooling artifacts
 .common-admin-updated
 .playwright-cli/
+.playwright-mcp/
 
 # Exclusions
 !.gitkeep
+
+# Generated
+.eslintrc-auto-import.json
+
+# Lint caches
+.eslintcache
+.stylelintcache
