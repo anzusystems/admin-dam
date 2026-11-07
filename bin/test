@@ -12,9 +12,13 @@ APP_NAME="admin-dam"
 # shellcheck disable=SC1091
 . ./bin/docker-libvariables
 SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
-E2E_ENV_VAR="ADAM_ENV"      # e2e/playwright.config.ts loads e2e/.env.<env> by this variable
+SERVICE_FROM_DOCKER_ENV=true  # the docker env files may rename it, read when the run goes to the container
+
+# The same in every admin. e2e/playwright.config.ts loads e2e/.env.<env> by E2E_ENV and holds the default env;
+# -e (or E2E_ENV set in the shell) overrides it.
 E2E_ENVS="local devel staging"
-E2E_ENV="devel"
+E2E_ENV="${E2E_ENV:-}"
+ROUTES_CONFIG="${E2E_DIR}/playwright.routes.config.ts"
 
 FILTER=""
 FILTER_INVERT=""
@@ -33,18 +37,20 @@ ROUTES=false
 PASSTHROUGH=()
 
 function help() {
+    local ROUTES_HELP=""
+    [ -f "${ROUTES_CONFIG}" ] && ROUTES_HELP="
+        --routes           (Optional) Run only the route walk (e2e/tests/routes): open every page, fail on errors"
     echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPTIONS]...
     \nRun the tests for ${APP_NAME}: vitest and Playwright e2e, both unless one is selected.
     They run in the ${SERVICE} container unless --local is given.
 
     Options:
         --unit             (Optional) Run only the vitest suite (src/test), skip e2e
-        --e2e              (Optional) Run only the Playwright e2e suite, skip vitest
-        --routes           (Optional) Run only the route walk (e2e/tests/routes): open every page, fail on errors
-        -e --env           (Optional) Target environment, loads e2e/.env.<env> (Allowed: ${E2E_ENVS// / | }, Default: ${E2E_ENV})
+        --e2e              (Optional) Run only the Playwright e2e suite, skip vitest${ROUTES_HELP}
+        -e --env           (Optional) Target environment, sets E2E_ENV and loads e2e/.env.<env> (Allowed: ${E2E_ENVS// / | }, Default: from e2e/playwright.config.ts)
         -f --filter        (Optional) Run only tests whose title or tag matches (e.g. @smoke); also -g --grep
         -i --filter-invert (Optional) Skip tests whose title or tag matches (e.g. @destructive)
-        -b --browser       (Optional) Browser (Allowed: chromium | firefox | webkit); not for a config with projects, only chromium with -e local
+        -b --browser       (Optional) Browser (Allowed: chromium | firefox | webkit); not for a config with projects; with -e local only chromium if the config needs a secure context
         --spec             (Optional) Test file or glob pattern (e.g. tests/example.spec.ts)
         --project          (Optional) Only these Playwright projects, comma-separated, without their dependencies
         --headed           (Optional) Run with visible browser window
@@ -59,8 +65,7 @@ function help() {
     Examples:
         $(printf %q "${BASH_SOURCE[0]}")
         $(printf %q "${BASH_SOURCE[0]}") --unit
-        $(printf %q "${BASH_SOURCE[0]}") --e2e -e ${E2E_ENV} -f @smoke
-        $(printf %q "${BASH_SOURCE[0]}") --routes -e local
+        $(printf %q "${BASH_SOURCE[0]}") --e2e -e staging -f @smoke
         $(printf %q "${BASH_SOURCE[0]}") --local --ui
         $(printf %q "${BASH_SOURCE[0]}") --spec tests/example.spec.ts --headed
         $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0 --workers=2
@@ -128,8 +133,13 @@ if [ "${RUN_UNIT}" = "false" ] && [ "${RUN_E2E}" = "false" ]; then
     exit 1
 fi
 
-if [[ " ${E2E_ENVS} " != *" ${E2E_ENV} "* ]]; then
+if [ -n "${E2E_ENV}" ] && [[ " ${E2E_ENVS} " != *" ${E2E_ENV} "* ]]; then
     echo "[ERROR] Invalid value: '${E2E_ENV}' for '-e, --env' option. Allowed: ${E2E_ENVS// / | }"
+    exit 1
+fi
+
+if [ "${ROUTES}" = "true" ] && [ ! -f "${ROUTES_CONFIG}" ]; then
+    echo "[ERROR] '--routes': ${APP_NAME} has no route walk (e2e/playwright.routes.config.ts)"
     exit 1
 fi
 
@@ -138,9 +148,13 @@ if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^(chromium|firefox|webkit)$ ]]; the
     exit 1
 fi
 
-# The local stack is served over http. Only Chromium has the flag that treats it as a secure context, and
-# e2e/playwright.config.ts then picks the full Chromium build, which Firefox and WebKit cannot launch as.
-if [ "${E2E_ENV}" = "local" ] && [[ ${BROWSER} =~ ^(firefox|webkit)$ ]]; then
+# Without -e, the env is the default e2e/playwright.config.ts gives `loadE2eEnv`
+DEFAULT_ENV="$(sed -nE "s/.*defaultEnv: '([a-z]+)'.*/\1/p" "${E2E_DIR}/playwright.config.ts" | head -1)"
+
+# The local stack is served over http. Only Chromium has the flag that treats it as a secure context, and a config
+# that passes it picks the full Chromium build, which Firefox and WebKit cannot launch as.
+if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ] && [[ ${BROWSER} =~ ^(firefox|webkit)$ ]] \
+    && grep -q 'unsafely-treat-insecure-origin-as-secure' "${E2E_DIR}/playwright.config.ts"; then
     echo "[ERROR] '-b ${BROWSER}' does not run with '-e local': over http only Chromium gets a secure context"
     exit 1
 fi
@@ -150,7 +164,9 @@ fi
 #######################################################################################################################
 if [ ! -f /.dockerenv ] && [ "${RUN_LOCAL}" = "false" ]; then
     # Rebuilt from the parsed values so that every value stays one argument
-    DELEGATE=(-e "${E2E_ENV}")
+    # Without -e the env is left to e2e/playwright.config.ts, so its default is the only one
+    DELEGATE=()
+    [ -n "${E2E_ENV}" ]                     && DELEGATE+=(-e "${E2E_ENV}")
     [ "${RUN_E2E}" = "false" ]              && DELEGATE+=(--unit)
     [ "${RUN_UNIT}" = "false" ]             && DELEGATE+=(--e2e)
     [ "${ROUTES}" = "true" ]                && DELEGATE+=(--routes)
@@ -173,10 +189,12 @@ if [ ! -f /.dockerenv ] && [ "${RUN_LOCAL}" = "false" ]; then
 
     # The docker env files may name another service (.env.docker.local), as bin/build reads them. Only here: reading
     # them creates missing env files and exports their variables, which the tests themselves do not need.
-    # shellcheck disable=SC1091
-    . ./bin/docker-libfunctions
-    docker_env_vars
-    SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
+    if [ "${SERVICE_FROM_DOCKER_ENV:-false}" = "true" ]; then
+        # shellcheck disable=SC1091
+        . ./bin/docker-libfunctions
+        docker_env_vars
+        SERVICE="${DOCKER_COMPOSE_SERVICE_NAME}"
+    fi
 
     bin/docker-compose exec --user node "${SERVICE}" /var/www/html/bin/test "${QUOTED[@]}"
     exit
@@ -202,14 +220,15 @@ if [ "${RUN_E2E}" = "false" ]; then
     exit ${STATUS}
 fi
 
-# The local stack serves the last bin/build: a walk over an older build would check code that is gone
-if [ "${ROUTES}" = "true" ] && [ "${E2E_ENV}" = "local" ]; then
+# The local stack serves the last bin/build: a run over an older build would check code that is gone
+if [ "${E2E_ENV:-${DEFAULT_ENV}}" = "local" ]; then
     BUILT="${PROJECT_ROOT}/dist/index.html"
     # The code, the dependencies (a common-admin copied in by copy.sh too) and the build config.
-    # *.d.ts left out: `yarn ci` regenerates the route declaration without changing it
+    # *.d.ts left out: `yarn ci` regenerates the route declaration without changing it; public/config.json too:
+    # env-config (bin/lint, bin/dev) writes it anew from the same env
     SOURCES=("${PROJECT_ROOT}/src" "${PROJECT_ROOT}/public" "${PROJECT_ROOT}/index.html" "${PROJECT_ROOT}/package.json" "${PROJECT_ROOT}/yarn.lock" "${PROJECT_ROOT}/vite.config.mts"
         "${PROJECT_ROOT}/routerPages.config.mts" "${PROJECT_ROOT}/node_modules/@anzusystems/common-admin/dist")
-    if [ ! -f "${BUILT}" ] || [ -n "$(find "${SOURCES[@]}" -newer "${BUILT}" ! -name '*.d.ts' -print -quit 2>/dev/null)" ]; then
+    if [ ! -f "${BUILT}" ] || [ -n "$(find "${SOURCES[@]}" -newer "${BUILT}" ! -name '*.d.ts' ! -path "${PROJECT_ROOT}/public/config.json" -print -quit 2>/dev/null)" ]; then
         echo -e "\033[1;33m[WARN] dist/ is missing or older than the code, the dependencies or vite.config.mts: run bin/build first\033[0m"
     fi
 fi
@@ -248,6 +267,11 @@ for P in "${PROJECTS[@]}"; do CMD+=("--project=${P}"); done
 [ -n "${SPEC}" ]          && CMD+=("${SPEC}")
 [ ${#PASSTHROUGH[@]} -gt 0 ] && CMD+=("${PASSTHROUGH[@]}")
 
-echo "[INFO] ${E2E_ENV_VAR}=${E2E_ENV} ${CMD[*]}"
-env "${RUN_ENV[@]}" "${E2E_ENV_VAR}=${E2E_ENV}" "${CMD[@]}" || STATUS=1
+if [ -n "${E2E_ENV}" ]; then
+    RUN_ENV+=("E2E_ENV=${E2E_ENV}")
+else
+    echo "[INFO] E2E_ENV not given: e2e/playwright.config.ts picks its default (${DEFAULT_ENV:-unknown})"
+fi
+echo "[INFO] ${E2E_ENV:+E2E_ENV=${E2E_ENV} }${CMD[*]}"
+env "${RUN_ENV[@]}" "${CMD[@]}" || STATUS=1
 exit ${STATUS}

@@ -1,18 +1,10 @@
 import { defineConfig } from '@playwright/test'
-import * as dotenv from 'dotenv'
-import * as fs from 'fs'
+import { loadE2eEnv } from '@anzusystems/common-admin/e2e'
 import * as path from 'path'
 import { adminCmsUrl } from './pages/shared/urls'
 
-const environment = process.env.ADAM_ENV || 'devel'
-const envFile = path.resolve(__dirname, `.env.${environment}`)
-
-if (fs.existsSync(envFile)) {
-  dotenv.config({ path: envFile, quiet: true })
-} else {
-  console.warn(`Environment file not found: .env.${environment}`)
-  console.warn(`Create it by copying .env.dist and filling in credentials`)
-}
+// E2E_ENV (local | devel | staging, set by `bin/test -e`) picks .env.<env>; without it, devel.
+loadE2eEnv({ dir: __dirname, defaultEnv: 'devel' })
 
 // Every worker switches the licence of the account it runs as, so two workers sharing one account would
 // flip each other's licence mid-test. Run in parallel only when there is an account per worker.

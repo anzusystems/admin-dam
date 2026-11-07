@@ -1,20 +1,14 @@
+import { e2eEnvLabel, isLocalStack } from '@anzusystems/common-admin/e2e'
 import { coreDamUrl } from '@pages/shared/urls'
 
-const ADAM_ENV = process.env.ADAM_ENV ?? 'devel'
-
-const ENV_LABEL: Record<string, string> = {
-  staging: 'STG',
-  devel: 'DEV',
-  local: 'LOCAL',
-}
-
-export const ADMIN_SUITE = `ADMIN-DAM (${ENV_LABEL[ADAM_ENV] ?? ADAM_ENV.toUpperCase()})`
+/** Prefix for every spec describe title, e.g. "ADMIN-DAM (DEV) - Asset"; the env is E2E_ENV. */
+export const ADMIN_SUITE = `ADMIN-DAM (${e2eEnvLabel()})`
 
 /**
- * The local Docker stack (`ADAM_ENV=local`). It has no external services: no JW Player site, no Cloudflare in front
+ * The local Docker stack (`E2E_ENV=local`). It has no external services: no JW Player site, no Cloudflare in front
  * of the image servers, and core-dam's default auth redirect points to the dev server, not the build the suite opens.
  */
-export const IS_LOCAL = ADAM_ENV === 'local'
+export const IS_LOCAL = isLocalStack()
 
 /** Why a spec that distributes to JW Player is skipped on the local stack (core-dam has no `DISTRIBUTION_JW_CMS_SITE_ID`). */
 export const NO_JW_PLAYER_LOCALLY = 'the local core-dam has no JW Player site, a distribution there ends in "Chyba"'

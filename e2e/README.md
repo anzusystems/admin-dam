@@ -76,10 +76,11 @@ admin-cms, core-cms and the public web (`www`). Each root has its own variable, 
 Devel and staging follow the default, so their env files need none of them. Set them where the hostnames differ,
 such as a stack with numbered domains (`core-dam1.sme.local`).
 
-The active environment is controlled by `ADAM_ENV` (default: `devel`). The config loader reads `.env.${ADAM_ENV}`
-automatically.
+The active environment is controlled by `E2E_ENV` (default: `devel`), the same variable and names in every admin;
+`bin/test -e <env>` sets it. The config loader (`loadE2eEnv` of `@anzusystems/common-admin/e2e`) reads `.env.${E2E_ENV}`,
+and stops when the file of `devel` or `staging` is missing or `E2E_ENV` is another name.
 
-| `ADAM_ENV` | Env file       | Target                            |
+| `E2E_ENV`  | Env file       | Target                            |
 | ---------- | -------------- | --------------------------------- |
 | `devel`    | `.env.devel`   | `https://admin-dam.smedevel.sk`   |
 | `staging`  | `.env.staging` | `https://admin-dam.smestaging.sk` |
@@ -240,9 +241,9 @@ routes. Nothing else is clicked, and nothing is saved.
   that are not failures (`ignore`).
 - It logs in with `forceLogin` only and never switches the licence (an asset's address switches it for that page, not
   in the account), so its 4 workers may share one account.
-- `playwright.routes.config.ts` runs `tests/routes`; the default config ignores that folder. Its setup only checks
-  `BASE_URL`, `FORCE_LOGIN_URL` and `ADMIN_USER_ID` (no licence, no media fixtures), and its results go to
-  `.results-routes` / `.report-routes`. Over plain http (the local stack) it runs full Chromium with the origin
+- `playwright.routes.config.ts` (common-admin's `defineRouteWalkConfig` over the default config) runs `tests/routes`; the
+  default config ignores that folder. Its setup only checks `BASE_URL`, `FORCE_LOGIN_URL` and `ADMIN_USER_ID` (no
+  licence, no media fixtures), and its results go to `.results-routes` / `.report-routes`. Over plain http (the local stack) it runs full Chromium with the origin
   treated as secure, since `crypto.randomUUID` and the like need a secure context.
 
 ---

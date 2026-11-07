@@ -7,9 +7,9 @@
     "test:open": "playwright test --ui --config playwright.config.ts",
     "test:open:win": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8080 --config playwright.config.ts",
     "test:run": "playwright test --config playwright.config.ts",
-    "test:run:local": "ADAM_ENV=local playwright test --config playwright.config.ts",
-    "test:run:devel": "ADAM_ENV=devel playwright test --config playwright.config.ts",
-    "test:run:staging": "ADAM_ENV=staging playwright test --config playwright.config.ts",
+    "test:run:local": "E2E_ENV=local playwright test --config playwright.config.ts",
+    "test:run:devel": "E2E_ENV=devel playwright test --config playwright.config.ts",
+    "test:run:staging": "E2E_ENV=staging playwright test --config playwright.config.ts",
     "test:routes": "playwright test --config playwright.routes.config.ts",
     "lint": "yarn ci",
     "lint:fix": "yarn lint:oxlint:fix && yarn format",
@@ -23,7 +23,6 @@
   "devDependencies": {
     "@playwright/test": "^1.65.0",
     "@types/node": "^24.19.2",
-    "dotenv": "^18.0.9",
     "oxfmt": "^0.77.0",
     "oxlint": "1.92.0",
     "typescript": "~7.0.2"
