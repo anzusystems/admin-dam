@@ -14,7 +14,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 
   if (missing.length > 0) {
     throw new Error(
-      `Missing required environment variables:\n  ${missing.join('\n  ')}\n\nCopy .env.dist to .env.devel (or .env.staging) and fill in all values.`
+      `Missing required environment variables:\n  ${missing.join('\n  ')}\n\nCopy .env.dist to .env.${process.env.E2E_ENV} and fill in all values.`
     )
   }
 

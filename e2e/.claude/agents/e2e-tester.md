@@ -32,7 +32,7 @@ When you cannot work out how to test something, ask. A wrong test is worse than 
 2. **Page object** in `pages/<area>/<entity>Page.ts` — plain exported functions, interfaces and selector consts.
    No classes.
 3. **Spec** in `tests/<area>/<workflow>.spec.ts`.
-4. **Run** `ADAM_ENV=devel yarn playwright test tests/<area>/<file>.spec.ts --retries=0` until it passes.
+4. **Run** `E2E_ENV=devel yarn playwright test tests/<area>/<file>.spec.ts --retries=0` until it passes.
 5. **Lint** `yarn lint:fix && yarn ci`.
 
 Devel runs feature branches, not `main`: before calling a failure an app bug, check the version on the logged-out
@@ -124,6 +124,6 @@ Asset detail and slot helpers live in `pages/assets/assetDetailPage.ts` and `pag
 
 ## Environment
 
-`.env.${ADAM_ENV}` (devel default) — see `.env.dist`. Required vars are validated in `setup/globalSetup.ts`, which also
+`.env.${E2E_ENV}` (devel default) — see `.env.dist`. Required vars are validated in `setup/globalSetup.ts`, which also
 downloads the media fixtures. Add new vars to both `.env.dist` and (if required) `globalSetup`; no hardcoded fallbacks
 for credentials.
