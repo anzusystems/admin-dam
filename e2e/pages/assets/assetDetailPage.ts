@@ -122,10 +122,14 @@ export function createdId(page: Page, resource: string): Promise<string> {
     })
 }
 
+/**
+ * The add button sits below the suggestions of the open menu. Not looked up as an option: a menu with no matching
+ * keyword is not a listbox, so its entries carry no option role.
+ */
 export async function addNewKeyword(page: Page, name: string): Promise<string> {
   await metadataField(page, 'keywords').locator('input').fill(name)
   const created = createdId(page, 'keyword')
-  await page.getByRole('option', { name }).getByRole('button', { name }).click()
+  await page.locator('.v-overlay--active').getByRole('button', { name, exact: true }).click()
   const id = await created
   await expect(metadataField(page, 'keywords').locator('.v-chip')).toContainText([name])
   await page.keyboard.press('Escape')

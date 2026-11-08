@@ -34,11 +34,14 @@ let IMAGE_ID = ''
 let DOCUMENT_ID = ''
 let KEYWORD_ID = ''
 
-/** Shared by both fixture titles, so one text search finds exactly this run's pair and nothing else. */
-const TOKEN = `Filter${RAND_NUM}`
+/**
+ * Shared by both fixture titles, so one text search finds exactly this run's pair and nothing else. The search
+ * splits letters from digits, so the letters must be no word: `Filter<n>` also found staging's "No filter".
+ */
+const TOKEN = `Zqf${RAND_NUM}`
 const TITLE_IMAGE = `${TOKEN} Img`
 const TITLE_DOCUMENT = `${TOKEN} Doc`
-const KEYWORD = `FilterKw${RAND_NUM}`
+const KEYWORD = `Zqk${RAND_NUM}`
 
 test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
   test.beforeAll(async ({ browser }) => {

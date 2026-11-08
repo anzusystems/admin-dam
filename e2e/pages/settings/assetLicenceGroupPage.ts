@@ -32,9 +32,13 @@ export async function openLicenceGroups(page: Page): Promise<void> {
   await expect(page.locator('.v-breadcrumbs-item__text').last()).toContainText('Skupiny licencií assetov')
 }
 
-/** Both fields of this form fetch options as you type, so the menu has to be awaited. */
+/**
+ * Both fields of this form fetch options as you type, so the menu has to be awaited. The text input by its type:
+ * a field that already holds a value carries a hidden input with it too, and a single select's field is a
+ * combobox of its own.
+ */
 async function pickSuggestion(page: Page, field: Locator, text: string): Promise<void> {
-  await field.locator('input').fill(text)
+  await field.locator('input[type="text"]').fill(text)
   const options = page.locator('.v-overlay--active .v-list-item')
   await expect(options.first()).toBeVisible({ timeout: 15000 })
   await options

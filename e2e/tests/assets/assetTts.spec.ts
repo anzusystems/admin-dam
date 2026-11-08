@@ -27,7 +27,9 @@ import { TTS_FILTER_LABEL, setTtsAudio, ttsTileBadge } from '@pages/assets/asset
 let page: Page
 let ASSET_ID = ''
 
-const TITLE = `TtsAudio${RAND_NUM}`
+// The text search splits letters from digits, so the letters must be no word: `TtsAudio<n>` also found staging's
+// "TTS Trenčín" and "TTS audio epilog".
+const TITLE = `Zqt${RAND_NUM}`
 
 async function filterSynthetic(filterPage: Page, value: 'áno' | 'nie'): Promise<URLSearchParams> {
   await resetFilter(filterPage)

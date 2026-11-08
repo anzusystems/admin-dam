@@ -140,8 +140,9 @@ export async function addMassKeyword(page: Page, name: string): Promise<string> 
   const field = massRow(page, 'keywords')
   await field.locator('input').first().fill(name)
   const created = createdId(page, 'keyword')
-  // With nothing matching the typed text the list offers it as a new record, behind its own button.
-  await page.getByRole('option', { name }).getByRole('button', { name }).click()
+  // With nothing matching the typed text the list offers it as a new record, behind its own button. Not looked up
+  // as an option: a menu with no matching keyword is not a listbox, so its entries carry no option role.
+  await page.locator('.v-overlay--active').getByRole('button', { name, exact: true }).click()
   const id = await created
   await expect(field.locator('.v-chip')).toContainText([name])
   await page.keyboard.press('Escape')
