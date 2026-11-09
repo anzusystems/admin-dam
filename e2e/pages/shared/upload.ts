@@ -128,7 +128,11 @@ export async function uploadAndDescribe(page: Page, file: string, assetName?: st
   if (assetName) {
     await page.locator('.v-overlay--active .v-field__input').first().fill(assetName)
   }
-  await page.locator('.v-overlay--active .v-btn').filter({ hasText: 'Uložiť a ukončiť' }).click()
+  // The button waits for the row's metadata, which arrives only once core-dam has processed the file;
+  // for audio and video on staging that is at times well past the upload itself.
+  const saveAndClose = page.locator('.v-overlay--active .v-btn').filter({ hasText: 'Uložiť a ukončiť' })
+  await expect(saveAndClose).toBeEnabled({ timeout: 90000 })
+  await saveAndClose.click()
   return id
 }
 

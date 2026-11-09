@@ -9,8 +9,12 @@ export async function openAppsMenu(page: Page): Promise<void> {
   // closes under the next click. So an open menu is closed first and the menu is opened afresh.
   if (await settingsEntry.isVisible()) await page.keyboard.press('Escape')
   await expect(settingsEntry).toBeHidden()
-  await page.locator(APPS_MENU_BUTTON).click()
-  await expect(settingsEntry).toBeVisible()
+  // That moment can also outlast the check above, and the click then closes the menu instead. So the
+  // click is repeated, and only while the menu is not showing.
+  await expect(async () => {
+    if (!(await settingsEntry.isVisible())) await page.locator(APPS_MENU_BUTTON).click()
+    await expect(settingsEntry).toBeVisible({ timeout: 3000 })
+  }).toPass({ timeout: 20000 })
 }
 
 export async function openFromAppsMenu(page: Page, dataCy: string, urlPart: string): Promise<void> {
