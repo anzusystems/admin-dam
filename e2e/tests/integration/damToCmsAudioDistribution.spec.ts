@@ -9,6 +9,8 @@ import { addAssetToNewEpisode } from '@pages/settings/podcastSyncPage'
 import { switchMainFileToSlot } from '@pages/assets/assetSlotsPage'
 import {
   deleteAssetFromDetail,
+  dropLeftoverManualEpisodes,
+  dropReimportedTwins,
   newestImportedEpisode,
   podcastIdByTitle,
   runFullPodcastSync,
@@ -58,6 +60,7 @@ test.describe.serial(
       // The article embeds the asset, so it goes first.
       await deleteCmsArticlesViaApi(page, ARTICLE_TITLE)
       await cleanupAssets(page, assetIds)
+      if (PODCAST_ID && episode) await dropLeftoverManualEpisodes(page, PODCAST_ID, episode.title).catch(() => {})
       await page.context().close()
     })
 
@@ -92,6 +95,7 @@ test.describe.serial(
     })
 
     test('synchronizes the podcast', async () => {
+      await dropReimportedTwins(page, PODCAST_ID, episode.title, assetIds[0])
       await runFullPodcastSync(page, PODCAST_ID)
     })
 
