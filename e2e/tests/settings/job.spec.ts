@@ -21,6 +21,7 @@ import {
   setAssetTitle,
   type PodcastEpisodeAsset,
 } from '@pages/settings/podcastSyncPage'
+import { dropLeftoverManualEpisodes } from '@pages/integration/podcastEpisodeSwapPage'
 import { openAssetTab } from '@pages/assets/assetDetailPage'
 import { slotRow, switchMainFileToSlot } from '@pages/assets/assetSlotsPage'
 import { openSettingsSection, visibleCy } from '@pages/shared/crud'
@@ -44,6 +45,10 @@ test.describe.serial(`${ADMIN_SUITE} - System jobs`, { tag: '@destructive' }, ()
 
   test.afterAll(async () => {
     await cleanupAssets(page, assetIds)
+    // A run the synchronizer did not take over leaves its episode behind as a twin of the feed item.
+    if (episode) {
+      await dropLeftoverManualEpisodes(page, episode.podcastId, episode.title, assetIds).catch(() => {})
+    }
     await page.context().close()
   })
 

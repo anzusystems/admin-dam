@@ -38,13 +38,15 @@ export async function deleteEpisodeViaApi(page: Page, episodeId: string): Promis
 }
 
 /**
- * Newest imported episode is the one the web lists first. One whose title another episode shares (a test
- * run that died before its cleanup leaves such a twin) is passed over: the synchronizer could pair the feed
+ * The imported episode of the newest feed item, by its publication date: a synchronization re-imports the newest
+ * items, while one deep in the feed is not reached again. The web order is no guide to it, as every import puts
+ * its episode first, an old feed item re-imported after a delete too. One whose title another episode shares (a
+ * test run that died before its cleanup leaves such a twin) is passed over: the synchronizer could pair the feed
  * item with the twin instead of the test's episode.
  */
 export async function newestImportedEpisode(page: Page, podcastId: string): Promise<ImportedEpisode> {
   const response = await page.request.get(
-    `${CORE_DAM_API}/podcast-episode/podcast/${podcastId}?limit=10&offset=0&order[attributes.webOrderPosition]=desc`
+    `${CORE_DAM_API}/podcast-episode/podcast/${podcastId}?limit=10&offset=0&order[dates.publicationDate]=desc`
   )
   expect(response.ok(), 'podcast episode list').toBeTruthy()
   const episodes = (await response.json()).data as EpisodeRow[]
@@ -85,11 +87,18 @@ export async function dropReimportedTwins(
 /**
  * Teardown: the test's episode stays a manual one, with no asset once the test asset is gone, when the
  * synchronizer never took it over. It would be the twin that trips the next run, so it goes. An episode the
- * synchronizer did take over is the feed's again and stays for the next scheduled import to refill.
+ * synchronizer did take over is the feed's again and stays for the next scheduled import to refill. The episode
+ * can still name a test asset (`assetIds`) just deleted, which it lets go of a moment later.
  */
-export async function dropLeftoverManualEpisodes(page: Page, podcastId: string, title: string): Promise<void> {
+export async function dropLeftoverManualEpisodes(
+  page: Page,
+  podcastId: string,
+  title: string,
+  assetIds: string[] = []
+): Promise<void> {
   for (const episode of await episodesTitled(page, podcastId, title)) {
-    if (!episode.flags.fromRss && !episode.asset) await deleteEpisodeViaApi(page, episode.id)
+    if (episode.flags.fromRss) continue
+    if (!episode.asset || assetIds.includes(episode.asset)) await deleteEpisodeViaApi(page, episode.id)
   }
 }
 

@@ -72,20 +72,26 @@ export async function addAssetToNewEpisode(page: Page, assetId: string, podcast:
   await expect(page.locator('.sidebar-info .v-chip').filter({ hasText: podcast })).toBeVisible()
 }
 
+/**
+ * The synchronizer enables an episode it took over a few seconds after its job is done, and the detail does not
+ * refresh by itself, so the detail is opened again until it shows `value`.
+ */
 export async function expectEpisodeFlags(page: Page, podcastId: string, title: string, value: 'áno' | 'nie') {
-  await page.goto(`/podcasts/${podcastId}`)
-  await cardLoad(page)
-  await visibleCy(page, 'episode-list').click()
-  await cardLoad(page)
-  // Episodes list oldest first, so a new one sits on the last page. Find it by title instead.
-  await filterBy(page, 'Nadpis', title)
-  await page
-    .locator('tbody tr')
-    .filter({ has: page.locator('td').getByText(title, { exact: true }) })
-    .first()
-    .locator('[data-cy="table-detail"]')
-    .click()
-  await cardLoad(page)
-  await expect(detailValue(page, 'Povolené na webe')).toContainText(value)
-  await expect(detailValue(page, 'Povolené v appke')).toContainText(value)
+  await expect(async () => {
+    await page.goto(`/podcasts/${podcastId}`)
+    await cardLoad(page)
+    await visibleCy(page, 'episode-list').click()
+    await cardLoad(page)
+    // Episodes list oldest first, so a new one sits on the last page. Find it by title instead.
+    await filterBy(page, 'Nadpis', title)
+    await page
+      .locator('tbody tr')
+      .filter({ has: page.locator('td').getByText(title, { exact: true }) })
+      .first()
+      .locator('[data-cy="table-detail"]')
+      .click()
+    await cardLoad(page)
+    await expect(detailValue(page, 'Povolené na webe')).toContainText(value, { timeout: 5000 })
+    await expect(detailValue(page, 'Povolené v appke')).toContainText(value, { timeout: 5000 })
+  }).toPass({ timeout: 2 * 60 * 1000, intervals: [10000] })
 }
