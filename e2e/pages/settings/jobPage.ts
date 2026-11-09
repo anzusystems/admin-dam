@@ -1,4 +1,4 @@
-import { type Page, expect } from '@playwright/test'
+import { type Page, expect, test } from '@playwright/test'
 import { cardLoad } from '@pages/shared/admin'
 import { CORE_DAM_API } from '@pages/shared/constants'
 import { clickForAlert } from '@pages/shared/admin'
@@ -82,4 +82,50 @@ export async function waitForJobDone(page: Page, id: string, timeout = 5 * 60 * 
     await cardLoad(page)
     await expect(status).toContainText('Hotovo', { timeout: 5000 })
   }).toPass({ timeout, intervals: [10000] })
+}
+
+interface PodcastSyncJob {
+  createdAt: string
+  status: string
+}
+
+const finished = (job: PodcastSyncJob) => job.status === 'done' || job.status === 'error'
+
+/** The latest podcast synchronizations the scheduler ran (no podcast of their own, unlike one a user creates). */
+async function scheduledPodcastSyncs(page: Page): Promise<PodcastSyncJob[]> {
+  const response = await page.request.get(`${CORE_DAM_API}/job?limit=100&offset=0&order[id]=desc`)
+  expect(response.ok(), 'GET job').toBeTruthy()
+  const { data } = (await response.json()) as {
+    data: Array<PodcastSyncJob & { _resourceName: string; podcastId?: string | null }>
+  }
+  return data.filter((job) => job._resourceName === 'jobPodcastSynchronizer' && !job.podcastId)
+}
+
+/**
+ * The environment synchronizes every podcast on a schedule (staging: every 20 minutes). One that runs between the
+ * deletion of an episode's asset and the new episode taking its title imports the feed audio into an asset of its
+ * own, and the spec's synchronization then has nothing left to import into the test asset. So wait out a scheduled
+ * run that is under way or due within `margin`. The interval is read from the last two scheduled runs; with fewer,
+ * nothing is waited for.
+ */
+export async function waitOutScheduledPodcastSync(page: Page, margin = 2 * 60 * 1000): Promise<void> {
+  const [latest, previous] = await scheduledPodcastSyncs(page)
+  if (!latest || !previous) return
+  const last = Date.parse(latest.createdAt)
+  const interval = last - Date.parse(previous.createdAt)
+  if (interval <= 0) return
+  const next = last + (Math.floor((Date.now() - last) / interval) + 1) * interval
+  const due = next - Date.now() < margin
+  if (finished(latest) && !due) return
+
+  await test.step('Wait out the scheduled podcast synchronization', async () => {
+    const after = due ? next - 60 * 1000 : last
+    await expect
+      .poll(
+        async () =>
+          (await scheduledPodcastSyncs(page)).some((job) => Date.parse(job.createdAt) >= after && finished(job)),
+        { timeout: margin + 5 * 60 * 1000, intervals: [10000] }
+      )
+      .toBe(true)
+  })
 }

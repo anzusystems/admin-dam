@@ -4,7 +4,14 @@ import { ADMIN_SUITE, IS_LOCAL, NO_JOB_RUNNER_LOCALLY } from '@pages/shared/cons
 import { cleanupAssets, deleteAsset } from '@pages/shared/api'
 import { uploadAndDescribe } from '@pages/shared/upload'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
-import { JOB_DELETE, JOB_SYNC, createPodcastSyncJob, jobTypeOptions, waitForJobDone } from '@pages/settings/jobPage'
+import {
+  JOB_DELETE,
+  JOB_SYNC,
+  createPodcastSyncJob,
+  jobTypeOptions,
+  waitForJobDone,
+  waitOutScheduledPodcastSync,
+} from '@pages/settings/jobPage'
 import {
   addAssetToNewEpisode,
   expectEpisodeFlags,
@@ -53,6 +60,7 @@ test.describe.serial(`${ADMIN_SUITE} - System jobs`, { tag: '@destructive' }, ()
   })
 
   test('replaces an imported podcast episode with the test asset', async () => {
+    await waitOutScheduledPodcastSync(page)
     episode = await findImportedEpisodeAsset(page)
     PODCAST_TITLE = await podcastTitle(page, episode.podcastId)
 
