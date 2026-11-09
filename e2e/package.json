@@ -23,8 +23,8 @@
   "devDependencies": {
     "@playwright/test": "^1.65.0",
     "@types/node": "^24.19.2",
-    "oxfmt": "^0.77.0",
-    "oxlint": "1.92.0",
+    "oxfmt": "^0.78.0",
+    "oxlint": "1.93.0",
     "typescript": "~7.0.2"
   },
   "engines": {
