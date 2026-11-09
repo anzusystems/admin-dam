@@ -2,6 +2,7 @@ import { test, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
 import { uploadAndDescribe, waitForAssetList } from '@pages/shared/upload'
+import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
 import { deleteViaApi, visibleCy } from '@pages/shared/crud'
 import { fillTexts, openAssetDetail, saveMetadata } from '@pages/assets/assetDetailPage'
@@ -39,7 +40,9 @@ test.describe.serial(`${ADMIN_SUITE} - Audio asset to podcast episode`, () => {
     const listLoaded = waitForAssetList(page)
     await page.goto('/assets')
     await listLoaded
-    ASSET_ID = await uploadAndDescribe(page, 'audio/sample.mp3')
+    // A copy of its own: the sample itself, uploaded meanwhile by a spec in another worker, comes back as a
+    // read-only duplicate, which no metadata form opens for.
+    ASSET_ID = await uploadAndDescribe(page, uniqueFixtureCopy('audio/sample.mp3'))
     await waitForAssetProcessed(page, ASSET_ID, { done: ['processed', 'duplicate'] })
   })
 
