@@ -7,8 +7,6 @@ import { expectNoWrite } from '@pages/shared/errors'
 import {
   COLUMN,
   createLicenceGroup,
-  deleteLicenceGroupStatus,
-  deleteLicenceGroupsViaApi,
   fetchLicenceGroup,
   fillLicenceGroupForm,
   licenceGroupTable,
@@ -20,8 +18,7 @@ import {
 
 /**
  * Asset licence groups: a named bundle of asset licences of one ext system.
- * This spec leaves its fixture behind on purpose. A group cannot be deleted (DAM-B3: the API answers 500), so
- * `afterAll` sweeps groups with the `E2E` prefix best-effort. The sweep starts working once the bug is fixed.
+ * This spec leaves its fixture behind on purpose: a group cannot be deleted (no DELETE route in core-dam, DAM-B3).
  */
 
 let page: Page
@@ -46,7 +43,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
   })
 
   test.afterAll(async () => {
-    await deleteLicenceGroupsViaApi(page, NAME_PREFIX)
     await page.context().close()
   })
 
@@ -112,13 +108,5 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
 
     await panel.locator('[data-cy="button-cancel"]').click()
     await expect(panel).toBeHidden()
-  })
-
-  test('deletes a licence group again @bug', async () => {
-    test.fail() // DAM-B3: the API answers the delete with a 500
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B3' })
-
-    const status = await deleteLicenceGroupStatus(page, GROUP_ID)
-    expect([204, 404, 405], `DELETE /asset-licence-group/${GROUP_ID} responded ${status}`).toContain(status)
   })
 })

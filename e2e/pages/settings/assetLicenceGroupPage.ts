@@ -5,9 +5,9 @@ import { confirmCreate, createDialog, saveEdit, visibleCy } from '@pages/shared/
 import { datatable } from '@pages/shared/datatable'
 
 /**
- * A licence group cannot be deleted (DAM-B3): the admin client has no delete, and the routed one answers 500.
- * Created groups stay on the environment. Fixtures are named with the
- * run's `RAND_NUM` and swept best-effort by `deleteLicenceGroupsViaApi`.
+ * A licence group cannot be deleted: the admin has no delete, and core-dam has no DELETE route for it (it answers
+ * the method with 500 instead of 405, DAM-B3). Created groups stay on the environment, named with the run's
+ * `RAND_NUM`. Nothing tries to delete them, as every try only added an error to Sentry (ANZU-CORE-DAM-63).
  */
 
 const LICENCE_GROUP_ENDPOINT = '/asset-licence-group'
@@ -94,25 +94,4 @@ export async function fetchLicenceGroup(page: Page, id: string): Promise<{ name:
   const response = await page.request.get(`${CORE_DAM_API}${LICENCE_GROUP_ENDPOINT}/${id}`)
   expect(response.ok(), `GET ${LICENCE_GROUP_ENDPOINT}/${id} responds ${response.status()}`).toBeTruthy()
   return response.json()
-}
-
-/** The API answers a delete with 500 today (DAM-B3). */
-export async function deleteLicenceGroupStatus(page: Page, id: string): Promise<number> {
-  const response = await page.request.delete(`${CORE_DAM_API}${LICENCE_GROUP_ENDPOINT}/${id}`, {
-    failOnStatusCode: false,
-  })
-  return response.status()
-}
-
-/** Swallows failures: while DAM-B3 is open none of these deletes can succeed. */
-export async function deleteLicenceGroupsViaApi(page: Page, prefix: string): Promise<void> {
-  const response = await page.request
-    .get(`${CORE_DAM_API}${LICENCE_GROUP_ENDPOINT}?limit=100&offset=0`, { failOnStatusCode: false })
-    .catch(() => null)
-  if (!response?.ok()) return
-  const body = await response.json().catch(() => null)
-  const groups: Array<{ id: number; name: string }> = body?.data ?? body ?? []
-  for (const group of groups) {
-    if (group.name?.startsWith(prefix)) await deleteLicenceGroupStatus(page, String(group.id)).catch(() => 0)
-  }
 }

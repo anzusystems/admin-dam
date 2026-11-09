@@ -13,6 +13,7 @@ import {
   chooseSorting,
   colourSwatch,
   fillFilter,
+  filterField,
   loadNextPage,
   openFilterDrawer,
   pickColourSwatch,
@@ -26,7 +27,8 @@ import {
  * Finding assets again: the filter drawer, quick type buttons, ordering and paging.
  * One filter of each kind is covered, not all ~35 fields, since the kind carries the behaviour.
  * Results are asserted only for fixtures this spec uploaded, pinned by `Text`. The licence holds thousands of assets
- * that others keep changing. `Text` is the one filter the search reliably combines with others; `Id` does not (DAM-B2).
+ * that others keep changing. `Text` is the one filter the search reliably combines with others; `Id` searches by
+ * the id alone (core-dam leaves the other filters out on purpose, and the drawer says so).
  */
 
 let page: Page
@@ -128,16 +130,19 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
-  test('combines the id filter with the other filters', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B2: an id filter makes the search ignore every other filter
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B2' })
-
+  // DAM-B2 was no bug: core-dam searches by id alone on purpose (AssetQueryFactory::getFilter).
+  test('searches by the id alone and says the other filters are left out', async () => {
     await resetFilter(page)
+    // The field's hint, only while it holds an id.
+    const idHint = filterField(page, 'Id').locator('.v-messages')
+    await expect(idHint).toHaveCount(0)
     await fillFilter(page, 'Id', IMAGE_ID)
+    await expect(idHint).toHaveText('S vyplneným Id sa ostatné filtre nepoužijú.')
     await submitFilterForTiles(page, [TITLE_IMAGE])
 
+    // A document type filter would drop the image; with an id it is not applied.
     await chooseFilterOption(page, 'Typ', 'Dokument')
-    await submitFilterForTiles(page, [], 15000)
+    await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
   test('finds the tagged asset by its keyword', async () => {
@@ -165,10 +170,8 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
-  test('narrows the width range from the upper bound alone', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B10: an upper bound on its own keeps assets that have no width
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B10' })
-
+  // DAM-B10, fixed in 3.0: an upper bound on its own kept the assets without a width, which core-dam indexes as 0.
+  test('narrows the width range from the upper bound alone', async () => {
     const width: number = (await getAsset(page, IMAGE_ID)).mainFile.imageAttributes.width
 
     // The upper bound must work on its own: it shares a row with "Šírka od" and binds its own field.
@@ -177,7 +180,11 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await resetFilter(page)
     await fillFilter(page, 'Text', TOKEN)
     await fillFilter(page, 'Šírka do', String(width - 1))
-    expect((await submitFilter(page)).get('widthFrom')).toBeNull()
+    const params = await submitFilter(page)
+    expect(params.get('widthUntil')).toBe(String(width - 1))
+    // Sent with a lower bound of 1, so the document (width 0 in the index) is left out.
+    expect(params.get('widthFrom')).toBe('1')
+    await expect(filterField(page, 'Šírka od').locator('input').first()).toHaveValue('')
     await submitFilterForTiles(page, [], 15000)
   })
 
