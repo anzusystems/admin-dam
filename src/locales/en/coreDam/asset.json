@@ -53,6 +53,7 @@
     "createEmpty": "Create empty asset"
   },
   "filterTitle": "Filter",
+  "filterIdIgnoresOthers": "With an Id filled in, the other filters are not applied.",
   "noItemsFound": "No matching assets found",
   "sibling": {
     "title": "Sibling",

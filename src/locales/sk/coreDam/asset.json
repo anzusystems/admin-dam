@@ -53,6 +53,7 @@
     "createEmpty": "Vytvoriť prázdny asset"
   },
   "filterTitle": "Filter",
+  "filterIdIgnoresOthers": "S vyplneným Id sa ostatné filtre nepoužijú.",
   "noItemsFound": "Žiadne nájdené assety",
   "sibling": {
     "title": "Dvojička",

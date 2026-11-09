@@ -8,7 +8,10 @@ import {
   AFilterString,
   AFilterTimeInterval,
   AFilterValueObjectOptionsSelect,
+  FilterDataKey,
 } from '@anzusystems/common-admin'
+import { computed, inject } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetSlotsFilter from '@/domains/coreDam/asset/components/AssetSlotsFilter.vue'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
@@ -23,6 +26,11 @@ const { assetTypeOptions } = useAssetType()
 const { assetStatusOptions } = useAssetStatus()
 const { imageOrientationOptions } = useImageOrientation()
 const { currentExtSystemId } = useCurrentExtSystem()
+const { t } = useI18n()
+
+// core-dam searches by id alone and leaves the other filters out (AssetQueryFactory::getFilter), so say so.
+const filterData = inject(FilterDataKey)
+const idHint = computed(() => (filterData?.assetAndMainFileIds ? t('coreDam.asset.filterIdIgnoresOthers') : undefined))
 </script>
 
 <template>
@@ -33,7 +41,10 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
-      <AFilterString name="assetAndMainFileIds" />
+      <AFilterString
+        name="assetAndMainFileIds"
+        :hint="idHint"
+      />
     </VCol>
   </VRow>
   <VRow>

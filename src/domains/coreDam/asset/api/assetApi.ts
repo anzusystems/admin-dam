@@ -77,6 +77,24 @@ export const useFetchAssetList = () =>
     urlTemplate: END_POINT + '/licence/:licenceId',
   })
 
+/**
+ * Ranges core-dam indexes as 0 for an asset without that property: a document has no width, an image no duration.
+ * An upper bound on its own would keep every such asset, so it is sent with a lower bound of 1.
+ */
+const RANGES_ZERO_WHEN_MISSING = ['pixelSize', 'width', 'height', 'ratioWidth', 'ratioHeight', 'duration', 'bitrate']
+
+const isEmptyBound = (value: unknown) => isNull(value) || isUndefined(value) || value === ''
+
+export function withRangeLowerBounds(filterData: FilterData): FilterData {
+  let data = filterData
+  for (const range of RANGES_ZERO_WHEN_MISSING) {
+    if (!isEmptyBound(data[`${range}From`]) || isEmptyBound(data[`${range}Until`])) continue
+    if (data === filterData) data = { ...filterData }
+    data[`${range}From`] = 1
+  }
+  return data
+}
+
 export const fetchAssetList = (
   licenceId: number,
   pagination: Ref<Pagination>,
@@ -84,7 +102,7 @@ export const fetchAssetList = (
   filterConfig: FilterConfig
 ) => {
   const { execute } = useFetchAssetList()
-  return execute(pagination, filterData, filterConfig, { urlParams: { licenceId } })
+  return execute(pagination, withRangeLowerBounds(filterData), filterConfig, { urlParams: { licenceId } })
 }
 
 async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
