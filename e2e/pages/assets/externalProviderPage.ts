@@ -36,8 +36,13 @@ export function providerTiles(page: Page): Locator {
   return page.locator('.dam-image-grid__item')
 }
 
+/** The search field of the main bar, always at hand; the drawer's "Text" is inert while the drawer is closed. */
+function mainBarSearch(page: Page): Locator {
+  return page.locator('header').getByRole('textbox', { name: 'Vyhľadať' })
+}
+
 /**
- * The status is returned, not asserted, because callers sometimes
+ * Search the provider from the main bar. The status is returned, not asserted, because callers sometimes
  * document a failure: the search is broken on every environment (DAM-B1).
  */
 export async function searchProvider(page: Page, text: string, provider: string = UNSPLASH): Promise<number> {
@@ -45,8 +50,8 @@ export async function searchProvider(page: Page, text: string, provider: string 
     (response) => response.url().startsWith(`${CORE_DAM_API}/asset-external-provider/${provider}/search`),
     { timeout: 30000 }
   )
-  await providerSearchInput(page).fill(text)
-  await providerSearchButton(page).click()
+  await mainBarSearch(page).fill(text)
+  await mainBarSearch(page).press('Enter')
   return (await searched).status()
 }
 

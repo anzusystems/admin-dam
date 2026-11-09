@@ -32,9 +32,10 @@ const importedIds: string[] = []
 
 /**
  * Real Unsplash photo ids. If a photo is taken down, `fetchProviderPhotos` fails on that id.
- * Fix it by swapping the id, not by loosening the test.
+ * Fix it by swapping the id, not by loosening the test. A photo Unsplash sends without tags fails too, on core-dam's
+ * side (`UnsplashImageDto::$tags`, ANZU-CORE-DAM-2YD): `jFCViYFYcus` did from 2026-11-09 and was swapped.
  */
-const PHOTO_IDS = ['zNN6ubHmruI', 'jFCViYFYcus', 'CQl3Y5bV6FA']
+const PHOTO_IDS = ['zNN6ubHmruI', 'eOpewngf68w', 'CQl3Y5bV6FA']
 
 test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
   test.beforeAll(async ({ browser }) => {
