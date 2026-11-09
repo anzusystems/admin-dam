@@ -75,8 +75,9 @@ export async function dropReimportedTwins(
 ): Promise<void> {
   for (const episode of await episodesTitled(page, podcastId, title)) {
     if (episode.asset === assetId) continue
-    if (episode.asset) await deleteAssetViaApi(page, episode.asset)
+    // The episode first: core-dam answers its delete with 500 while it names an asset already deleted.
     await deleteEpisodeViaApi(page, episode.id)
+    if (episode.asset) await deleteAssetViaApi(page, episode.asset)
   }
   expect(
     (await episodesTitled(page, podcastId, title)).map((episode) => episode.asset),
@@ -85,10 +86,11 @@ export async function dropReimportedTwins(
 }
 
 /**
- * Teardown: the test's episode stays a manual one, with no asset once the test asset is gone, when the
- * synchronizer never took it over. It would be the twin that trips the next run, so it goes. An episode the
- * synchronizer did take over is the feed's again and stays for the next scheduled import to refill. The episode
- * can still name a test asset (`assetIds`) just deleted, which it lets go of a moment later.
+ * Teardown, before the test assets (`assetIds`) are deleted: the test's episode is still a manual one, holding a
+ * test asset or none, when the synchronizer never took it over. It would be the twin that trips the next run, so
+ * it goes. An episode the synchronizer did take over is the feed's again and stays for the next scheduled import
+ * to refill. Run after the assets are gone it fails: core-dam answers the delete of an episode that names an
+ * asset already deleted with 500.
  */
 export async function dropLeftoverManualEpisodes(
   page: Page,

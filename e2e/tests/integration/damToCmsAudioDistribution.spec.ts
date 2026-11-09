@@ -57,12 +57,12 @@ test.describe.serial(
     })
 
     test.afterAll(async () => {
-      // The article embeds the asset, so it goes first.
+      // The article embeds the asset and the episode holds it, so both go first.
       await deleteCmsArticlesViaApi(page, ARTICLE_TITLE)
-      await cleanupAssets(page, assetIds)
       if (PODCAST_ID && episode) {
         await dropLeftoverManualEpisodes(page, PODCAST_ID, episode.title, assetIds).catch(() => {})
       }
+      await cleanupAssets(page, assetIds)
       await page.context().close()
     })
 

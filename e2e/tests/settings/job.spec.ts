@@ -44,11 +44,11 @@ test.describe.serial(`${ADMIN_SUITE} - System jobs`, { tag: '@destructive' }, ()
   })
 
   test.afterAll(async () => {
-    await cleanupAssets(page, assetIds)
     // A run the synchronizer did not take over leaves its episode behind as a twin of the feed item.
     if (episode) {
       await dropLeftoverManualEpisodes(page, episode.podcastId, episode.title, assetIds).catch(() => {})
     }
+    await cleanupAssets(page, assetIds)
     await page.context().close()
   })
 
