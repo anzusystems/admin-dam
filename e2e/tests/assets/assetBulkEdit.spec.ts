@@ -69,6 +69,9 @@ async function selectUploadedAssets(): Promise<void> {
   }
   await expectSelectedCount(page, 3)
   await openSelectionEditor(page, 3)
+  // The rows get their metadata after they appear. A mass operation applied before that is lost or lands on a row
+  // that only looks empty (seen on staging), so wait as a user would, for the titles to show.
+  await expect.poll(() => rowTexts(page, 'title'), { timeout: 30_000 }).toEqual([TITLE(0), TITLE(1), TITLE(2)])
 }
 
 test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
