@@ -21,7 +21,7 @@ import {
   setAssetTitle,
   type PodcastEpisodeAsset,
 } from '@pages/settings/podcastSyncPage'
-import { dropLeftoverManualEpisodes } from '@pages/integration/podcastEpisodeSwapPage'
+import { dropLeftoverManualEpisodes, dropReimportedTwins } from '@pages/integration/podcastEpisodeSwapPage'
 import { openAssetTab } from '@pages/assets/assetDetailPage'
 import { slotRow, switchMainFileToSlot } from '@pages/assets/assetSlotsPage'
 import { openSettingsSection, visibleCy } from '@pages/shared/crud'
@@ -91,6 +91,8 @@ test.describe.serial(`${ADMIN_SUITE} - System jobs`, { tag: '@destructive' }, ()
   })
 
   test('synchronizes the podcast into the free slot and enables the episode', async () => {
+    // The synchronizer pairs the feed item with an episode by title alone, so another of that title would take it.
+    await dropReimportedTwins(page, episode.podcastId, episode.title, assetIds[0])
     await page.goto('/jobs')
     const jobId = await createPodcastSyncJob(page, episode.podcastId)
     await expect(page.locator('tbody tr').filter({ hasText: jobId }).first()).toContainText(JOB_SYNC)
