@@ -16,8 +16,9 @@ async function fillLicence(page: Page, data: AssetLicenceData): Promise<void> {
   // Search for the wanted one instead of only opening the menu.
   const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
   await extSystem.click()
-  // Once it holds a system, the field carries a hidden input with its id beside the search box.
-  await extSystem.getByRole('combobox').fill(data.extSystem)
+  // Once it holds a system, the field carries a hidden input with its id beside the search box, and the field
+  // around the box has the combobox role too.
+  await extSystem.locator('input:not([type="hidden"])').fill(data.extSystem)
   await page.getByRole('option', { name: data.extSystem, exact: true }).click()
 }
 
