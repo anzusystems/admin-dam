@@ -134,10 +134,8 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution YouTube form`, () => {
     await closeDistributionDialog(page, dialog)
   })
 
-  test('the publish-at picker of "Naplánované" is labelled @bug', async () => {
-    test.fail() // DAM-B9: the YouTube form renders it with an empty label
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B9' })
-
+  // DAM-B9, fixed in 3.0: the picker had no label.
+  test('the publish-at picker of "Naplánované" is labelled', async () => {
     await openDistributionTab(page, ASSET_ID)
     const dialog = await openAddDistribution(page)
     await openDistributionServiceTab(page, dialog, 'YouTube')

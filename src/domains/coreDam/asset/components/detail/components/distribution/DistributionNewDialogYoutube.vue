@@ -382,7 +382,12 @@ onUnmounted(async () => {
                 class="mb-2"
               >
                 <VCol>
-                  <AFormDatetimePicker v-model="distribution.publishAt" />
+                  <AFormDatetimePicker
+                    v-model="distribution.publishAt"
+                    :label="t('coreDam.distribution.model.publishAt')"
+                    :v="v$.distribution.publishAt"
+                    required
+                  />
                 </VCol>
               </VRow>
             </VCol>
