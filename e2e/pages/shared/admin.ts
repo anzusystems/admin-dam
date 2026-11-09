@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test'
+import { type Locator, type Page, type Request, expect } from '@playwright/test'
 
 /**
  * Waits up to `timeout` for `locator` to become visible and reports whether it did, instead of throwing.
@@ -86,15 +86,16 @@ export async function clickForAlert(page: Page, button: Locator, message: string
   await closeAlerts(page)
 
   const deadline = Date.now() + 60000
+  let write: Request | null = null
   for (;;) {
     const started = page
       .waitForRequest((request) => WRITE_METHODS.has(request.method()) && request.url().includes('/api/adm/'), {
         timeout: 5000,
       })
-      .then(() => true)
-      .catch(() => false)
+      .catch(() => null)
     await button.click()
-    if (await started) break
+    write = await started
+    if (write) break
     // A form that fails client-side validation never calls the API either.
     // That is not a swallowed click, and retrying cannot fix it.
     if (await page.locator('.v-alert').filter({ hasText: ALERT_FORM_INVALID }).first().isVisible()) {
@@ -105,10 +106,15 @@ export async function clickForAlert(page: Page, button: Locator, message: string
     }
     await closeAlerts(page)
   }
+  // The alert comes with the answer, which a busy server sends later than an expect waits; the admin waits for it
+  // up to its API timeout.
+  if (write) await Promise.race([write.response().catch(() => null), page.waitForTimeout(WRITE_ANSWER_TIMEOUT)])
   await alertMessage(page, message)
 }
 
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE'])
+/** How long a write may take to answer: the admin's API timeout (`apiTimeout`, 30 s on staging) and a little more. */
+export const WRITE_ANSWER_TIMEOUT = 35000
 const ALERT_FORM_INVALID = 'Vyplňte všetky povinné polia a opravte chyby.'
 
 export async function alertMessage(page: Page, message: string): Promise<void> {

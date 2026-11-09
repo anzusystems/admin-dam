@@ -1,6 +1,6 @@
 import { type Locator, type Page, type Response, expect } from '@playwright/test'
 import { ALERT_CREATE, ALERT_UPDATE, CORE_DAM_API } from '@pages/shared/constants'
-import { cardLoad, clickForAlert, detailId } from '@pages/shared/admin'
+import { WRITE_ANSWER_TIMEOUT, cardLoad, clickForAlert, detailId } from '@pages/shared/admin'
 
 /** Datatables and the rail/drawer duplicate most `data-cy` elements, so take the first visible one. */
 export function visibleCy(scope: Page | Locator, dataCy: string): Locator {
@@ -27,7 +27,8 @@ export function createDialog(page: Page, title?: string): Locator {
 export async function confirmCreate(page: Page, dialog: Locator, endpoint: string): Promise<string> {
   const created = page.waitForResponse(
     (response: Response) =>
-      response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith(endpoint)
+      response.request().method() === 'POST' && new URL(response.url()).pathname.endsWith(endpoint),
+    { timeout: WRITE_ANSWER_TIMEOUT }
   )
   await clickForAlert(page, dialog.locator('[data-cy="button-confirm"]'), ALERT_CREATE)
   const response = await created
