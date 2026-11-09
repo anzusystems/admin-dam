@@ -86,6 +86,10 @@ const openProviderList = async (uploaded = false) => {
   }))
   const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
     .default
+  // The provider is searched, never listed: without a term its page asks for nothing.
+  const { useExternalProviderAssetListFilter } =
+    await import('@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter')
+  useExternalProviderAssetListFilter().filterData.term = 'cat'
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/not-found', component: { render: () => null } })
   ui.router.addRoute({
@@ -142,6 +146,20 @@ beforeEach(() => {
 
 afterEach(() => {
   stopUploadUi()
+})
+
+describe('the search of an external provider', () => {
+  // core-dam reads `term`; the page sent `text`, so every search reached the provider empty and failed.
+  it('sends the typed text as the term core-dam reads', async () => {
+    await openProviderList()
+    const search = new URLSearchParams(
+      asked
+        .filter((url) => url.includes('/search'))
+        .at(-1)
+        ?.split('?')[1] ?? ''
+    )
+    expect([search.get('term'), search.has('text')]).toEqual(['cat', false])
+  })
 })
 
 /*

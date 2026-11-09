@@ -63,6 +63,10 @@ const openProviderList = async () => {
   }))
   const Provided = (await import('@/domains/coreDam/externalProvider/components/ExternalProviderAssetListView.vue'))
     .default
+  // The provider is searched, never listed: without a term its page asks for nothing.
+  const { useExternalProviderAssetListFilter } =
+    await import('@/domains/coreDam/externalProvider/filter/ExternalProviderAssetFilter')
+  useExternalProviderAssetListFilter().filterData.term = 'cat'
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   ui.router.addRoute({ path: '/not-found', component: { render: () => null } })
   ui.router.addRoute({

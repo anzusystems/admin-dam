@@ -233,7 +233,8 @@
     "importToDam": "Import to ADAM",
     "viewDetail": "View detail",
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "searchTermRequired": "Type a search term"
   },
   "queueItem": {
     "edit": "Edit more",

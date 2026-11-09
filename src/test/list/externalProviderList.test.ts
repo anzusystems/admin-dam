@@ -55,8 +55,12 @@ const load = async () => {
   const { useExternalProviderAssetListStore } =
     await import('@/domains/coreDam/externalProvider/store/externalProviderAssetListStore')
 
+  const actions = useExternalProviderAssetListActions()
+  // The provider is searched, never listed: without a term the list asks for nothing.
+  actions.filterData.term = 'cat'
+
   return {
-    actions: useExternalProviderAssetListActions(),
+    actions,
     listStore: useExternalProviderAssetListStore(),
   }
 }
@@ -83,6 +87,39 @@ describe('the external provider list', () => {
     await nextTick()
 
     expect(listStore.list.map((row) => row.selected)).toEqual([false])
+  })
+
+  it('asks for nothing without a search term, as the provider refuses an empty one', async () => {
+    const { actions, listStore } = await load()
+    for (const term of [null, '', '   ']) {
+      actions.filterData.term = term
+      await actions.fetchAssetList()
+      await actions.fetchNextPage()
+      expect(actions.searchTermMissing.value).toBe(true)
+    }
+    expect(execute).not.toHaveBeenCalled()
+    expect(listStore.list).toEqual([])
+    expect(listStore.loader.hard).toBe(false)
+
+    actions.filterData.term = 'cat'
+    await actions.fetchAssetList()
+    expect(execute).toHaveBeenCalledTimes(1)
+    expect(listStore.list.map((row) => row.asset.id)).toEqual(['page-1'])
+  })
+
+  it('empties the list when the term is cleared, and an answer still out does not fill it again', async () => {
+    const { actions, listStore } = await load()
+    let finishOld: (value: unknown[]) => void = () => undefined
+    execute.mockImplementationOnce(() => new Promise((resolve) => (finishOld = resolve)))
+    const older = actions.fetchAssetList()
+
+    actions.filterData.term = null
+    await actions.fetchAssetList()
+    finishOld([listItem('stale')])
+    await older
+
+    expect(listStore.list).toEqual([])
+    expect(listStore.loader.hard).toBe(false)
   })
 
   it('leaves the newer list on screen, not the one that answered last', async () => {

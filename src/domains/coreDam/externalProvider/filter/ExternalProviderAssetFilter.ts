@@ -4,10 +4,10 @@ import type { MakeFilterOption } from '@anzusystems/common-admin'
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
+// core-dam reads the search text as `term` (AssetExternalProviderApiParams); sent as `text`, it never arrived.
 const fields = [
   {
     name: 'term' as const,
-    apiName: 'text',
     titleT: 'coreDam.asset.filter.text',
     default: null,
     type: 'string',

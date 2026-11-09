@@ -39,6 +39,7 @@ const {
   pagination,
   filterData,
   filterConfig,
+  searchTermMissing,
   fetchAssetList,
   fetchNextPage,
   listMounted,
@@ -138,7 +139,9 @@ onUnmounted(() => {
         v-else
         class="text-headline-small text-medium-emphasis d-flex w-100 h-100 align-center justify-center"
       >
-        {{ t('coreDam.asset.noItemsFound') }}
+        {{
+          searchTermMissing ? t('coreDam.asset.externalProvider.searchTermRequired') : t('coreDam.asset.noItemsFound')
+        }}
       </div>
     </template>
     <template #main-bar-middle>

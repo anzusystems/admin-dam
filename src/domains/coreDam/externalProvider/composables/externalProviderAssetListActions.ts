@@ -1,6 +1,7 @@
 import {
   UploadQueueItemType,
   isNull,
+  isString,
   isUndefined,
   useAlerts,
   useDamConfigState,
@@ -9,7 +10,7 @@ import {
 } from '@anzusystems/common-admin'
 import type { Pagination } from '@anzusystems/common-admin'
 import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -62,6 +63,12 @@ let firstPageInFlight = false
  */
 let nextPageAskedInGeneration = 0
 
+/*
+ * The provider is searched, never listed: Unsplash refuses an empty query (core-dam then answers 500), so the
+ * list asks for nothing until a term is typed.
+ */
+const searchTerm = () => (isString(filterData.term) ? filterData.term.trim() : '')
+
 export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { getDamConfigExtSystem } = useDamConfigState(damClient)
   const { currentExtSystemId } = useCurrentExtSystem()
@@ -94,8 +101,21 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     pagination.value.currentViewCount = answered.value.currentViewCount
   }
 
+  const searchTermMissing = computed(() => searchTerm() === '')
+
   const fetchAssetList = async () => {
     if (!activeExternalProvider.value) return
+    if (searchTermMissing.value) {
+      // Ends the list a request still out belongs to, so its answer does not fill the emptied list.
+      ++listGeneration
+      firstPageInFlight = false
+      nextPageAskedInGeneration = 0
+      pagination.value.page = 1
+      pagination.value.hasNextPage = false
+      externalProviderAssetListStore.resetList()
+      externalProviderAssetListStore.hideLoader('hard')
+      return
+    }
     pagination.value.page = 1
     const generation = ++listGeneration
     firstPageInFlight = true
@@ -157,7 +177,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
       showWarning('Maximum listing limit reached, please update your filter for better result.')
       return
     }
-    if (!activeExternalProvider.value) return
+    if (!activeExternalProvider.value || searchTermMissing.value) return
     if (nextPageInFlightGeneration === listGeneration || firstPageInFlight) {
       nextPageAskedInGeneration = listGeneration
 
@@ -456,6 +476,7 @@ export function useExternalProviderAssetListActions(sidebarRight: Ref<boolean> |
     pagination,
     filterData,
     filterConfig,
+    searchTermMissing,
     fetchAssetList,
     resetAssetList,
     fetchNextPage,

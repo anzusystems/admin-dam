@@ -100,13 +100,4 @@ export const routeWalk: RouteWalkOptions = {
     // Opened directly, the error page runs the start-up again (src/router/beforeEachRoute.ts).
     '/error': /^\/assets$/,
   },
-  ignore: [
-    {
-      problem: /^xhr 500: GET .*\/adm\/v1\/asset-external-provider\/[^/]+\/search\?/,
-      routes: /^\/external-providers\//,
-      // The page searches with an empty term when it opens; core-dam passes it to Unsplash's /search/photos,
-      // which answers 400 without a query.
-      reason: "the provider's search answers 500 (DAM-B1, see tests/assets/externalProviderUnsplash.spec.ts)",
-    },
-  ],
 }

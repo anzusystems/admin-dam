@@ -233,7 +233,8 @@
     "importToDam": "Nahrať do ADAM",
     "viewDetail": "Zobraziť detail",
     "id": "ID",
-    "title": "Nadpis"
+    "title": "Nadpis",
+    "searchTermRequired": "Zadajte hľadaný výraz"
   },
   "queueItem": {
     "edit": "Upraviť",

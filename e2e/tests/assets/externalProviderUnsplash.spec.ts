@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page, type Request } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, ALERT_SYSTEM_ERROR } from '@pages/shared/constants'
 import { cleanupAssets, getAsset, waitForAssetProcessed } from '@pages/shared/api'
@@ -18,8 +18,10 @@ import {
 } from '@pages/assets/externalProviderPage'
 
 /**
- * The provider's search is broken (DAM-B1): it answers 500 for every query on every environment.
- * The import tests stub only the search response. The payload is fetched live from the
+ * The provider's search is broken (DAM-B1): it answers 500 for every query on every environment. The admin sent the
+ * text as `text` while core-dam reads `term`, so every search reached Unsplash empty (fixed in the admin), and
+ * core-dam also fails on Unsplash's answer to a real query (`UnsplashImageDto::$tags` read before it is set,
+ * Sentry ANZU-CORE-DAM-2YD). The import tests stub only the search response. The payload is fetched live from the
  * provider's single-photo endpoint, and the import really imports those photos into DAM.
  * Delete `stubProviderSearch` and this note once the search is fixed.
  */
@@ -46,10 +48,19 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     await page.context().close()
   })
 
-  test('opens the Unsplash grid with its search form', async () => {
+  // Unsplash refuses an empty query, so the page asks it nothing until a term is typed.
+  test('opens the Unsplash grid with its search form, and searches nothing before a term is typed', async () => {
+    const searches: string[] = []
+    const onRequest = (request: Request) => {
+      if (request.url().includes('/asset-external-provider/unsplash_cms/search')) searches.push(request.url())
+    }
+    page.on('request', onRequest)
     await openProvider(page)
     expect(page.url()).toContain('/external-providers/unsplash_cms')
     await expect(providerSearchInput(page)).toBeVisible()
+    await expect(page.getByText('Zadajte hľadaný výraz', { exact: true })).toBeVisible()
+    page.off('request', onRequest)
+    expect(searches, 'the page should not search before a term is typed').toEqual([])
   })
 
   test('searches Unsplash and lists the results', { tag: '@bug' }, async () => {
@@ -66,6 +77,7 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     photos = await fetchProviderPhotos(page, PHOTO_IDS)
     await stubProviderSearch(page, photos)
     await openProvider(page)
+    expect(await searchProvider(page, 'forest'), 'the stubbed search').toBe(200)
     await expect(providerTiles(page)).toHaveCount(photos.length)
 
     await activateProviderTile(page, 0)
@@ -80,6 +92,7 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
 
   test('imports a ticked selection in one go', async () => {
     await openProvider(page)
+    expect(await searchProvider(page, 'forest'), 'the stubbed search').toBe(200)
     await expect(providerTiles(page)).toHaveCount(photos.length)
 
     // The two photos the single import did not take, so the assertion cannot pass on a leftover.
