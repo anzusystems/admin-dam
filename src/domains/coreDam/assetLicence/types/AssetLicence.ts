@@ -16,7 +16,6 @@ export interface AssetLicenceAutoDelete {
 }
 
 export interface DamAssetLicenceExtended extends DamAssetLicence {
-  badge: string
   internalRule: AssetLicenceInternalRule
   internalRuleAuthors: DocId[]
   internalRuleUsers: IntegerId[]

@@ -21,13 +21,16 @@ const licenceScope = (id: IntegerId, extSystem: IntegerId): AssetScope => ({
   listView: null,
 })
 
+export const licenceSelectionAllowed = (settings: DamPrvConfig['settings']) =>
+  settings.allowSelectExtSystem && settings.allowSelectLicenceId
+
 const resolveSelectedScope = (user: DamCurrentUserDto, settings: DamPrvConfig['settings']): AssetScope => {
   const view = user.listViews.find((v) => v.id === user.selectedListView)
   if (view) {
     return { extSystem: view.extSystem, licences: view.licences, uploadLicence: view.uploadLicence, listView: view.id }
   }
-  const selectable = settings.allowSelectExtSystem && settings.allowSelectLicenceId
-  const licence = selectable ? (user.selectedLicenceDto ?? user.resolvedAssetLicences[0]) : undefined
+  const allowed = licenceSelectionAllowed(settings)
+  const licence = allowed ? (user.selectedLicenceDto ?? user.resolvedAssetLicences[0]) : undefined
   return licence
     ? licenceScope(licence.id, licence.extSystem)
     : licenceScope(settings.defaultAssetLicenceId, settings.defaultExtSystemId)

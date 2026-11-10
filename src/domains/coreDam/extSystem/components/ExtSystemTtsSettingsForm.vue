@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { ACL } from '@/domains/system/auth/auth'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
-import { useAuth } from '@/domains/system/auth/auth'
 import {
   AAssetSelect,
   AFormValueObjectOptionsSelect,

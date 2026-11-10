@@ -1,5 +1,10 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
+import {
+  AFormTextField,
+  AFormValueObjectOptionsSelect,
+  ARow,
+  DamExtSystemRemoteAutocomplete,
+} from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import AssetLicenceByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtSystemRemoteAutocomplete.vue'
 import AssetLicenceGroupByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupByExtSystemRemoteAutocomplete.vue'
@@ -16,7 +21,6 @@ const { t } = useI18n()
 const onExtSystemChange = () => {
   assetListView.value.groups = []
   assetListView.value.licences = []
-  assetListView.value.uploadLicence = null
 }
 
 const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
@@ -83,7 +87,7 @@ watch(
     />
   </ARow>
   <ARow>
-    <VSelect
+    <AFormValueObjectOptionsSelect
       v-model="assetListView.uploadLicence"
       :items="uploadLicenceItems"
       :label="t('coreDam.assetListView.model.uploadLicence')"

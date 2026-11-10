@@ -8,7 +8,7 @@ import type {
 const mapFullToMinimal = (assetLicence: DamAssetLicenceExtended): DamAssetLicenceCached => ({
   id: assetLicence.id,
   name: assetLicence.name,
-  badge: assetLicence.badge ?? '',
+  badge: assetLicence.badge,
 })
 
 const mapIdToMinimal = (id: IntegerId): DamAssetLicenceCached => {

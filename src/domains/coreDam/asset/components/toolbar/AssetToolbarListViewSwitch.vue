@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import {
+  licenceSelectionAllowed,
+  useCurrentAssetLicence,
+  useCurrentExtSystem,
+} from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
@@ -9,7 +13,13 @@ import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueues
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { SYSTEM_DAM } from '@/shared/systems'
-import { ADialogToolbar, type DamAssetLicence, type DamCurrentUserDto, type DamExtSystem } from '@anzusystems/common-admin'
+import {
+  ADialogToolbar,
+  type DamAssetLicence,
+  type DamCurrentUserDto,
+  type DamExtSystem,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
@@ -30,10 +40,15 @@ const { executeRequest: fetchExtSystem } = useFetchExtSystem()
 const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
 const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
 
-const availableLicences = computed(
-  () =>
+const { damPrvConfig } = storeToRefs(useDamConfigStore())
+
+// Without the licence selection the DAM config decides the licence, so the scope would ignore a picked one.
+const availableLicences = computed(() => {
+  if (!licenceSelectionAllowed(damPrvConfig.value.settings)) return []
+  return (
     currentUser.value?.resolvedAssetLicences.filter((licence) => licence.extSystem === currentExtSystemId.value) ?? []
-)
+  )
+})
 
 const availableListViews = computed(
   () => currentUser.value?.listViews.filter((view) => view.extSystem === currentExtSystemId.value) ?? []

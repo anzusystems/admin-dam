@@ -1,6 +1,10 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import {
+  licenceSelectionAllowed,
+  useCurrentAssetLicence,
+  useCurrentExtSystem,
+} from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 import { damClient } from '@/shared/apiClients/damClient'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
@@ -90,9 +94,7 @@ const licenceItems = computed(() => {
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
-const allowSelect = computed(() => {
-  return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
-})
+const allowSelect = computed(() => licenceSelectionAllowed(damPrvConfig.value.settings))
 
 const onCancel = () => {
   dialog.value = false
