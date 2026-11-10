@@ -3,11 +3,11 @@ import {
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
+  DamAssetLicenceGroupRemoteAutocomplete,
+  DamAssetLicenceRemoteAutocomplete,
   DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
-import AssetLicenceByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtSystemRemoteAutocomplete.vue'
-import AssetLicenceGroupByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupByExtSystemRemoteAutocomplete.vue'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
 import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
@@ -64,8 +64,11 @@ watch(
     />
   </ARow>
   <ARow>
-    <AssetLicenceGroupByExtSystemRemoteAutocomplete
+    <DamAssetLicenceGroupRemoteAutocomplete
       v-model="assetListView.groups"
+      :client="damClient"
+      :disabled="!assetListView.extSystem"
+      multiple
       :ext-system-id="assetListView.extSystem"
       :label="t('coreDam.assetListView.model.groups')"
       :hint="t('coreDam.assetListView.model.groupsHint')"
@@ -74,8 +77,10 @@ watch(
     />
   </ARow>
   <ARow>
-    <AssetLicenceByExtSystemRemoteAutocomplete
+    <DamAssetLicenceRemoteAutocomplete
       v-model="assetListView.licences"
+      :client="damClient"
+      :disabled="!assetListView.extSystem"
       :label="t('coreDam.assetListView.model.licences')"
       :hint="t('coreDam.assetListView.model.licencesHint')"
       persistent-hint

@@ -17,20 +17,3 @@ export function useAssetLicenceGroupListFilter() {
     filterData,
   }
 }
-
-export function useAssetLicenceGroupInnerFilter() {
-  const fields = [
-    { name: 'name' as const, variant: 'startsWith', default: null, type: 'string' },
-    { name: 'extSystem' as const, default: null },
-  ] satisfies readonly MakeFilterOption[]
-
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
-    system: SYSTEM_CORE_DAM,
-    subject: ENTITY,
-  })
-
-  return {
-    filterConfig,
-    filterData,
-  }
-}

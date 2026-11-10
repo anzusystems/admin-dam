@@ -1,4 +1,4 @@
-import { type DamAssetLicenceGroup, fetchDamAssetLicenceGroupListByIds } from '@anzusystems/common-admin'
+import type { DamAssetLicenceGroup } from '@anzusystems/common-admin'
 import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
 import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import {
@@ -8,7 +8,6 @@ import {
 } from '@/domains/coreDam/assetLicenceGroup/api/assetLicenceGroupApi'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCachedExtSystems } from '@/domains/coreDam/extSystem/composables/cachedExtSystems'
-import { damClient } from '@/shared/apiClients/damClient'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -133,23 +132,5 @@ export const useAssetLicenceGroupEditActions = () => {
     fetchData,
     onUpdate,
     resetStore: assetLicenceGroupOneStore.reset,
-  }
-}
-
-export const useAssetLicenceGroupSelectActions = () => {
-  const { executeFetch } = useFetchAssetLicenceGroupList()
-
-  const mapToValueObjectOption = (groups: DamAssetLicenceGroup[]): ValueObjectOption<IntegerId>[] =>
-    groups.map((group) => ({ title: group.name, value: group.id }))
-
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
-    mapToValueObjectOption(await executeFetch(pagination, filterData, filterConfig))
-
-  const fetchItemsByIds = async (ids: IntegerId[]) =>
-    mapToValueObjectOption(await fetchDamAssetLicenceGroupListByIds(damClient, ids))
-
-  return {
-    fetchItems,
-    fetchItemsByIds,
   }
 }
