@@ -76,6 +76,7 @@ export async function dropReimportedTwins(
   for (const episode of await episodesTitled(page, podcastId, title)) {
     if (episode.asset === assetId) continue
     // The episode first: core-dam answers its delete with 500 while it names an asset already deleted.
+    // TODO: Sentry ANZU-CORE-DAM-2YF (task #87413). Once fixed, either order works; this one stays correct.
     await deleteEpisodeViaApi(page, episode.id)
     if (episode.asset) await deleteAssetViaApi(page, episode.asset)
   }

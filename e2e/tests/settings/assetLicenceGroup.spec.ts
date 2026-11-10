@@ -19,6 +19,7 @@ import {
 /**
  * Asset licence groups: a named bundle of asset licences of one ext system.
  * This spec leaves its fixture behind on purpose: a group cannot be deleted (no DELETE route in core-dam, DAM-B3).
+ * TODO: DAM-B3, core-dam answers that DELETE with 500 instead of 405 (task #87413).
  */
 
 let page: Page

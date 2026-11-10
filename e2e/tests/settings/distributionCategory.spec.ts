@@ -21,8 +21,9 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution category`, () => {
   })
 
   test.afterAll(async () => {
-    // Distribution categories can't be deleted — no admin action, and DELETE /distribution/category/:id
-    // answers 500 (DAM-B14) — so the test one is renamed to "-do-not-use" instead.
+    // TODO: DAM-B14. Distribution categories cannot be deleted: no admin action, and DELETE
+    // /distribution/category/:id answers 500 instead of 405 (task #87413); whether it should be deletable at all is a separate question.
+    // Until then the test one is renamed to "-do-not-use" instead.
     await page.context().close()
   })
 
