@@ -44,6 +44,8 @@ const DESCRIPTION_FILLED = `BulkFilledDesc${RAND_NUM}`
 const DESCRIPTION_FORM = `BulkFormDesc${RAND_NUM}`
 const DESCRIPTION_DISCARDED = `BulkDiscardedDesc${RAND_NUM}`
 
+const WAITING_FOR_METADATA = 'Načítavajú sa metadáta vybraných súborov. Hromadné operácie budú dostupné potom.'
+
 async function saved(field: 'title' | 'description'): Promise<string[]> {
   const values: string[] = []
   for (const id of assetIds) {
@@ -62,15 +64,18 @@ async function openListWithUploads(): Promise<void> {
  * Select the three uploaded assets by title, in upload order, and open the editor on them.
  * The fixed order makes the editor rows line up with `assetIds`.
  */
-async function selectUploadedAssets(): Promise<void> {
+async function pickUploadedAssets(): Promise<void> {
   await openListWithUploads()
   for (const index of [0, 1, 2]) {
     await selectTile(page, await tileWithCaption(page, TITLE(index)))
   }
   await expectSelectedCount(page, 3)
   await openSelectionEditor(page, 3)
-  // The rows get their metadata after they appear. A mass operation applied before that is lost or lands on a row
-  // that only looks empty (seen on staging), so wait as a user would, for the titles to show.
+}
+
+/** `pickUploadedAssets`, then wait as a user would for the rows to show their titles, which also checks their order. */
+async function selectUploadedAssets(): Promise<void> {
+  await pickUploadedAssets()
   await expect.poll(() => rowTexts(page, 'title'), { timeout: 30_000 }).toEqual([TITLE(0), TITLE(1), TITLE(2)])
 }
 
@@ -119,6 +124,36 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
 
     await saveSelection(page)
     expect(await saved('description')).toEqual(filled)
+  })
+
+  // On staging an operation reached rows that were still loading, and their metadata then overwrote what it wrote.
+  test('the mass operations wait until the selected assets have their metadata', async () => {
+    const metadataOfSelected = '**/asset/licence/*/ids/**'
+    let release = () => {}
+    const held = new Promise<void>((resolve) => (release = resolve))
+    await page.route(metadataOfSelected, async (route) => {
+      await held
+      await route.continue()
+    })
+    const blockedPanel = massSidebar(page).locator('[inert]:has(.sidebar-info)')
+    try {
+      await pickUploadedAssets()
+      await openMassOperations(page)
+      await expect(massSidebar(page).getByRole('status')).toHaveText(WAITING_FOR_METADATA)
+      await expect(blockedPanel).toHaveCount(1)
+      await test.info().attach('mass operations waiting', {
+        body: await massSidebar(page).screenshot(),
+        contentType: 'image/png',
+      })
+    } finally {
+      release()
+      await page.unroute(metadataOfSelected)
+    }
+
+    await expect(massSidebar(page).getByRole('status')).toHaveCount(0)
+    await expect(blockedPanel).toHaveCount(0)
+    await expect.poll(() => rowTexts(page, 'title')).toEqual([TITLE(0), TITLE(1), TITLE(2)])
+    await clearSelection(page)
   })
 
   // Only selects, never edits, so it can take the tiles by position without knowing which assets they are.
