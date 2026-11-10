@@ -5,7 +5,6 @@ import { ACL } from '@/domains/system/auth/auth'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
 import { useAuth } from '@/domains/system/auth/auth'
-import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
 import {
   AAssetSelect,
   AFormValueObjectOptionsSelect,
@@ -13,6 +12,7 @@ import {
   ASystemEntityScope,
   type AssetSelectReturnData,
   DamAssetType,
+  type DamCurrentUserDto,
 } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
@@ -23,7 +23,7 @@ import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordF
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
 const { useCurrentUser } = useAuth()
-const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
+const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 const extSystemLicenceIds = computed(
   () =>
     currentUser.value?.resolvedAssetLicences

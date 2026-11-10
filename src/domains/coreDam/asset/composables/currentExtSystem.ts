@@ -3,8 +3,7 @@ import { SYSTEM_DAM } from '@/shared/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
-import { type DamPrvConfig, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import { type DamCurrentUserDto, type DamPrvConfig, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
 
 interface AssetScope {
   extSystem: IntegerId
@@ -22,7 +21,7 @@ const licenceScope = (id: IntegerId, extSystem: IntegerId): AssetScope => ({
   listView: null,
 })
 
-const resolveSelectedScope = (user: DamCurrentUserWithListViewsDto, settings: DamPrvConfig['settings']): AssetScope => {
+const resolveSelectedScope = (user: DamCurrentUserDto, settings: DamPrvConfig['settings']): AssetScope => {
   const view = user.listViews.find((v) => v.id === user.selectedListView)
   if (view) {
     return { extSystem: view.extSystem, licences: view.licences, uploadLicence: view.uploadLicence, listView: view.id }
@@ -38,7 +37,7 @@ export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
 ) => {
   const { useCurrentUser } = useAuth()
-  const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
+  const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
   const damConfigStore = useDamConfigStore()
   const { damPrvConfig, initialized } = storeToRefs(damConfigStore)

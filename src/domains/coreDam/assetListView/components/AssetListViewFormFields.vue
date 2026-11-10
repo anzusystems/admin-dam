@@ -5,6 +5,7 @@ import AssetLicenceByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLi
 import AssetLicenceGroupByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupByExtSystemRemoteAutocomplete.vue'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
 import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const assetListView = defineModel<AssetListView>({ required: true })
 
@@ -17,6 +18,25 @@ const onExtSystemChange = () => {
   assetListView.value.licences = []
   assetListView.value.uploadLicence = null
 }
+
+const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
+
+const uploadLicenceItems = computed(() =>
+  assetListView.value.licences.map((id) => ({ value: id, title: getCachedAssetLicence(id)?.name || String(id) }))
+)
+
+// The upload licence is one of the view's licences (AssetListViewValidator in core-dam-bundle).
+watch(
+  () => assetListView.value.licences,
+  (licences) => {
+    addToCachedAssetLicences(licences)
+    fetchCachedAssetLicences()
+    if (!isNull(assetListView.value.uploadLicence) && !licences.includes(assetListView.value.uploadLicence)) {
+      assetListView.value.uploadLicence = null
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -63,10 +83,10 @@ const onExtSystemChange = () => {
     />
   </ARow>
   <ARow>
-    <AssetLicenceByExtSystemRemoteAutocomplete
+    <VSelect
       v-model="assetListView.uploadLicence"
+      :items="uploadLicenceItems"
       :label="t('coreDam.assetListView.model.uploadLicence')"
-      :ext-system-id="assetListView.extSystem"
       clearable
       data-cy="asset-list-view-upload-licence"
     />

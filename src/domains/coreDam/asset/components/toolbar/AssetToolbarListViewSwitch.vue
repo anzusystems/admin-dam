@@ -9,15 +9,14 @@ import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueues
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import { SYSTEM_DAM } from '@/shared/systems'
-import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
-import { ADialogToolbar, type DamAssetLicence, type DamExtSystem } from '@anzusystems/common-admin'
+import { ADialogToolbar, type DamAssetLicence, type DamCurrentUserDto, type DamExtSystem } from '@anzusystems/common-admin'
 
 const { t } = useI18n()
 
 const router = useRouter()
 
 const { useCurrentUser } = useAuth()
-const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
+const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
 const { currentExtSystemId, currentListViewId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
@@ -184,6 +183,7 @@ onMounted(async () => {
     v-model="dialog"
     :ext-system-name="displayTextExtSystem"
     :licence-name="displayTextLicence"
+    @select="onSelectLicence"
   />
   <VDialog
     :model-value="!!pendingSelection"
