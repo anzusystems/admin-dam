@@ -1,27 +1,21 @@
 <script lang="ts" setup>
-import {
-  AFormTextField,
-  AFormValueObjectOptionsSelect,
-  ARow,
-  DamExtSystemRemoteAutocomplete,
-} from '@anzusystems/common-admin'
+import { AFormTextField, ARow, DamExtSystemRemoteAutocomplete } from '@anzusystems/common-admin'
 import { damClient } from '@/shared/apiClients/damClient'
 import AssetLicenceByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtSystemRemoteAutocomplete.vue'
 import AssetLicenceGroupByExtSystemRemoteAutocomplete from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupByExtSystemRemoteAutocomplete.vue'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
-import { useAssetListViewFormOptions } from '@/domains/coreDam/assetListView/composables/assetListViewFormOptions'
 import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
 
 const assetListView = defineModel<AssetListView>({ required: true })
 
 const { v$ } = useAssetListViewValidation(assetListView)
-const { groupLicenceOptions, uploadLicenceOptions, targetedByGroups } = useAssetListViewFormOptions(assetListView)
 
 const { t } = useI18n()
 
 const onExtSystemChange = () => {
   assetListView.value.groups = []
   assetListView.value.licences = []
+  assetListView.value.uploadLicence = null
 }
 </script>
 
@@ -56,20 +50,7 @@ const onExtSystemChange = () => {
     />
   </ARow>
   <ARow>
-    <AFormValueObjectOptionsSelect
-      v-if="targetedByGroups"
-      v-model="assetListView.licences"
-      :label="t('coreDam.assetListView.model.licences')"
-      :hint="t('coreDam.assetListView.model.licencesHint')"
-      persistent-hint
-      :items="groupLicenceOptions"
-      :v="v$.assetListView.licences"
-      multiple
-      required
-      data-cy="asset-list-view-licences"
-    />
     <AssetLicenceByExtSystemRemoteAutocomplete
-      v-else
       v-model="assetListView.licences"
       :label="t('coreDam.assetListView.model.licences')"
       :hint="t('coreDam.assetListView.model.licencesHint')"
@@ -82,10 +63,10 @@ const onExtSystemChange = () => {
     />
   </ARow>
   <ARow>
-    <AFormValueObjectOptionsSelect
+    <AssetLicenceByExtSystemRemoteAutocomplete
       v-model="assetListView.uploadLicence"
       :label="t('coreDam.assetListView.model.uploadLicence')"
-      :items="uploadLicenceOptions"
+      :ext-system-id="assetListView.extSystem"
       clearable
       data-cy="asset-list-view-upload-licence"
     />

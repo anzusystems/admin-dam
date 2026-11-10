@@ -1,5 +1,5 @@
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
 import { fetchAsset as apiFetchAsset, fetchAssetList as apiFetchAssetList } from '@/domains/coreDam/asset/api/assetApi'
 import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
@@ -59,7 +59,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { listLicenceIds } = useCurrentListView()
+  const { listLicenceIds } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { maxSelectedItems } = useBetaTestFeatures()

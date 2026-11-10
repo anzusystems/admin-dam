@@ -38,6 +38,7 @@ export function usePodcastEpisodeFactory() {
       modifiedAt: dateTimeNow(),
       createdBy: 1,
       modifiedBy: 1,
+      licence: 0,
       imagePreview: null,
       _resourceName: ENTITY,
       _system: SYSTEM_CORE_DAM,

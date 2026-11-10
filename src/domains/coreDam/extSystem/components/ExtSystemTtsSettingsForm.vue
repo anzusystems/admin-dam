@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { ACL } from '@/domains/system/auth/auth'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
+import { useAuth } from '@/domains/system/auth/auth'
+import type { DamCurrentUserWithListViewsDto } from '@/domains/coreDam/assetListView/types/AssetListView'
 import {
   AAssetSelect,
   AFormValueObjectOptionsSelect,
@@ -21,7 +22,14 @@ import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordF
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-const { listLicenceIds } = useCurrentListView()
+const { useCurrentUser } = useAuth()
+const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
+const extSystemLicenceIds = computed(
+  () =>
+    currentUser.value?.resolvedAssetLicences
+      .filter((licence) => licence.extSystem === extSystem.value.id)
+      .map((licence) => licence.id) ?? []
+)
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 
 const { filterConfig: keywordFilterConfig, filterData: keywordFilterData } = useKeywordInnerFilter()
@@ -101,7 +109,7 @@ const clearEpilog = () => {
                 @click.stop="clearEpilog"
               />
               <AAssetSelect
-                :select-licences="listLicenceIds"
+                :select-licences="extSystemLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"

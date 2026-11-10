@@ -5,6 +5,7 @@ import type {
   DatetimeUTCNullable,
   DocId,
   DocIdNullable,
+  IntegerId,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
 import type { PodcastLastImportStatusType } from '@/domains/coreDam/podcast/valueObject/PodcastLastImportStatus'
@@ -40,6 +41,7 @@ interface Dates {
 export interface PodcastEpisode extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: DocId
   podcast: DocIdNullable
+  licence: IntegerId
   asset: DocIdNullable
   texts: Texts
   attributes: Attributes

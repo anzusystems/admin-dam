@@ -7,7 +7,7 @@
     "groups": "Licence groups",
     "groupsHint": "Only users with one of these groups see the view. Without a group, every user of the external system sees it.",
     "licences": "Licences",
-    "licencesHint": "The view shows assets of these licences. With groups, only the licences of the groups are offered. Each user sees only the licences they can access.",
+    "licencesHint": "The view shows assets of these licences. With groups, licences must belong to one of the selected groups. Each user sees only the licences they can access.",
     "uploadLicence": "Upload licence"
   },
   "filter": {

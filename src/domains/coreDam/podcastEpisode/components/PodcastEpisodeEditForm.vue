@@ -5,26 +5,12 @@ import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@
 import { usePodcastEpisodeEditActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
 import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
-import { useFetchPodcast } from '@/domains/coreDam/podcast/api/podcastApi'
 
 const { podcastEpisode } = usePodcastEpisodeEditActions()
 
 const { v$ } = usePodcastEpisodeValidation(podcastEpisode)
 
 const { t } = useI18n()
-
-// The episode has no licence of its own; core-dam takes the podcast's (`PodcastEpisode::getLicence`).
-const { executeRequest: fetchPodcast } = useFetchPodcast()
-const podcastLicence = ref<IntegerIdNullable>(null)
-
-watch(
-  () => podcastEpisode.value.podcast,
-  async (podcastId) => {
-    if (!podcastId) return
-    podcastLicence.value = (await fetchPodcast({ urlParams: { id: podcastId } })).licence
-  },
-  { immediate: true }
-)
 </script>
 
 <template>
@@ -154,9 +140,8 @@ watch(
       >
         <ARow>
           <ImagePreview
-            v-if="podcastLicence"
             v-model="podcastEpisode.imagePreview"
-            :licence="podcastLicence"
+            :licence="podcastEpisode.licence"
             show-actions
             data-cy="select-image-preview"
           />

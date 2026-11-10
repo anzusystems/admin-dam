@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentListView } from '@/domains/coreDam/assetListView/composables/currentListView'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
@@ -20,8 +19,7 @@ const router = useRouter()
 const { useCurrentUser } = useAuth()
 const { currentUser } = useCurrentUser<DamCurrentUserWithListViewsDto>(SYSTEM_DAM)
 
-const { availableListViews, currentListView } = useCurrentListView()
-const { currentExtSystemId } = useCurrentExtSystem()
+const { currentExtSystemId, currentListViewId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 const uploadQueuesStore = useUploadQueuesStore()
 const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
@@ -37,6 +35,12 @@ const availableLicences = computed(
   () =>
     currentUser.value?.resolvedAssetLicences.filter((licence) => licence.extSystem === currentExtSystemId.value) ?? []
 )
+
+const availableListViews = computed(
+  () => currentUser.value?.listViews.filter((view) => view.extSystem === currentExtSystemId.value) ?? []
+)
+
+const currentListView = computed(() => currentUser.value?.listViews.find((view) => view.id === currentListViewId.value))
 
 const activeDisplayText = computed(() => currentListView.value?.name || currentAssetLicence.value?.name || '')
 
@@ -91,12 +95,12 @@ const requestSwitch = (selection: { selectedListView: IntegerIdNullable; selecte
 }
 
 const onSelectView = (id: IntegerId) => {
-  if (!currentUser.value || id === currentListView.value?.id) return
+  if (!currentUser.value || id === currentListViewId.value) return
   requestSwitch({ selectedListView: id, selectedLicence: currentUser.value.selectedLicence })
 }
 
 const onSelectLicence = (id: IntegerId) => {
-  if (!currentUser.value || (!currentListView.value && id === currentAssetLicenceId.value)) return
+  if (!currentUser.value || (isNull(currentListViewId.value) && id === currentAssetLicenceId.value)) return
   requestSwitch({ selectedLicence: id, selectedListView: null })
 }
 
@@ -134,7 +138,7 @@ onMounted(async () => {
         class="mx-1 pl-2 pr-1 pl-sm-3 pr-sm-2"
         rounded="pill"
         :height="34"
-        :prepend-icon="currentListView ? undefined : 'mdi-key'"
+        :prepend-icon="isNull(currentListViewId) ? 'mdi-key' : undefined"
         v-bind="props"
       >
         {{ activeDisplayText }}
@@ -153,7 +157,7 @@ onMounted(async () => {
         <VListItem
           v-for="listView in availableListViews"
           :key="listView.id"
-          :active="listView.id === currentListView?.id"
+          :active="listView.id === currentListViewId"
           :title="listView.name"
           :subtitle="uploadLicenceText(listView.uploadLicence)"
           @click.stop="onSelectView(listView.id)"
@@ -164,7 +168,7 @@ onMounted(async () => {
       <VListItem
         v-for="licence in availableLicences"
         :key="licence.id"
-        :active="!currentListView && licence.id === currentAssetLicenceId"
+        :active="isNull(currentListViewId) && licence.id === currentAssetLicenceId"
         :title="licence.name"
         @click.stop="onSelectLicence(licence.id)"
       />
