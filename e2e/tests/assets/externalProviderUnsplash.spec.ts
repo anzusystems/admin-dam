@@ -65,7 +65,7 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
   })
 
   test('searches Unsplash and lists the results', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B1: the provider search answers 500 for every query
+    test.fail() // TODO: DAM-B1 (task #87413), drop once the provider search stops answering 500 for every query
     test.info().annotations.push({ type: 'bug', description: 'DAM-B1' })
 
     const status = await searchProvider(page, 'forest')

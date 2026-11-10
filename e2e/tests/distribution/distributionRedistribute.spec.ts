@@ -156,7 +156,7 @@ test.describe.serial(`${ADMIN_SUITE} - Distribution redistribute`, () => {
   })
 
   test('redistributes a distribution created in the advanced panel @bug', async () => {
-    test.fail() // DAM-B8: answers 422 "error_field_empty" for fields the request filled
+    test.fail() // TODO: DAM-B8 (task #87413), drop once redistribute stops answering 422 "error_field_empty" for filled fields
     test.info().annotations.push({ type: 'bug', description: 'DAM-B8' })
 
     await openDistributionTab(page, ASSET_ID)

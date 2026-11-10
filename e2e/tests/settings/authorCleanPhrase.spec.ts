@@ -118,7 +118,7 @@ test.describe.serial(`${ADMIN_SUITE} - Author clean phrases`, () => {
   })
 
   test('applies the author of a rule that was switched to substitution @bug', async () => {
-    test.fail() // DAM-B5: the switch is stored but never applied
+    test.fail() // TODO: DAM-B5 (task #87413), drop once a rule switched to substitution is applied
     test.info().annotations.push({ type: 'bug', description: 'DAM-B5' })
 
     await openCleanPhrases(page)
