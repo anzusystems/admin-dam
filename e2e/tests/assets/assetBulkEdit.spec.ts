@@ -141,18 +141,20 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
       await openMassOperations(page)
       await expect(massSidebar(page).getByRole('status')).toHaveText(WAITING_FOR_METADATA)
       await expect(blockedPanel).toHaveCount(1)
+      await expect(blockedPanel).toHaveCSS('opacity', '0.5')
       await test.info().attach('mass operations waiting', {
         body: await massSidebar(page).screenshot(),
         contentType: 'image/png',
       })
     } finally {
       release()
-      await page.unroute(metadataOfSelected)
     }
 
     await expect(massSidebar(page).getByRole('status')).toHaveCount(0)
     await expect(blockedPanel).toHaveCount(0)
     await expect.poll(() => rowTexts(page, 'title')).toEqual([TITLE(0), TITLE(1), TITLE(2)])
+    // Only now: a route removed while its handler still holds a request has the request handled twice.
+    await page.unroute(metadataOfSelected)
     await clearSelection(page)
   })
 
