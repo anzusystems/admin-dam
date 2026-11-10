@@ -753,32 +753,40 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     return core.settlement.refreshAsset({ assetId: item.assetId, fileId: item.fileId })
   }
 
+  /*
+   * A picked asset without its metadata (still loading, or it never came) is empty only because nothing is known.
+   * A mass operation would fill it, the metadata would then overwrite it, and the bulk save skips such a row anyway.
+   * Rows of an upload take it: their first metadata keeps what a mass operation wrote.
+   */
+  const takesMassOperation = (item: UploadQueueItem) => item.type !== UploadQueueItemType.Asset || item.canEditMetadata
+
   function queueItemsReplaceEmptyCustomDataValue(
     queueId: string,
     data: { assetType: DamAssetTypeType; elementProperty: string; value: CustomDataValue },
     forceReplace = false
   ) {
-    uploadQueueFillCustomDataValue(queues.value[queueId].items, data, forceReplace)
+    uploadQueueFillCustomDataValue(queues.value[queueId].items.filter(takesMassOperation), data, forceReplace)
   }
 
   /*
    * Keywords and authors go only to items whose asset type enables them, like custom values per type.
    * Other rows have no input for them, and the bulk save would send them.
    */
-  function assetTypeHas(feature: 'keywords' | 'authors') {
+  function takesMassOperationOf(feature: 'keywords' | 'authors') {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentExtSystemId } = useCurrentExtSystem()
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
 
-    return (item: UploadQueueItem) => !!configExtSystem?.[item.assetType]?.[feature]?.enabled
+    return (item: UploadQueueItem) =>
+      takesMassOperation(item) && !!configExtSystem?.[item.assetType]?.[feature]?.enabled
   }
 
   function queueItemsReplaceEmptyKeywords(queueId: string, value: string[], forceReplace = false) {
-    uploadQueueFillKeywords(queues.value[queueId].items, value, forceReplace, assetTypeHas('keywords'))
+    uploadQueueFillKeywords(queues.value[queueId].items, value, forceReplace, takesMassOperationOf('keywords'))
   }
 
   function queueItemsReplaceEmptyAuthors(queueId: string, value: string[], forceReplace = false) {
-    uploadQueueFillAuthors(queues.value[queueId].items, value, forceReplace, assetTypeHas('authors'))
+    uploadQueueFillAuthors(queues.value[queueId].items, value, forceReplace, takesMassOperationOf('authors'))
   }
 
   function updateAssetMetadata(asset: AssetDetailItemDto) {

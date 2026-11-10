@@ -6,6 +6,7 @@ import type { App } from 'vue'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 
+import { i18n } from '@/plugins/i18n'
 import { assetDetail, assetFile, createFakeDam, httpError, queueRow, seedQueue } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 
@@ -80,6 +81,7 @@ const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, U
   app = createApp(AssetQueueEditable, { queueId: QUEUE, massOperations: false })
   app.use(pinia)
   app.use(createVuetify({ components }))
+  app.use(i18n)
   app.mount(root)
   await nextTick()
   const button = (row: UploadQueueItem) => {

@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { ADamUploadQueueList, UploadQueueSuggestionsKey, useAlerts } from '@anzusystems/common-admin'
+import {
+  ADamUploadQueueList,
+  UploadQueueItemStatus,
+  UploadQueueSuggestionsKey,
+  useAlerts,
+} from '@anzusystems/common-admin'
 import type { UploadQueueListBinding } from '@anzusystems/common-admin'
-import { provide } from 'vue'
+import { computed, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import AssetQueueItemEditable from '@/domains/coreDam/asset/components/queue/AssetQueueItemEditable.vue'
 import AssetQueueSelectedSidebar from '@/domains/coreDam/asset/components/queue/AssetQueueSelectedSidebar.vue'
@@ -22,8 +28,14 @@ const props = withDefaults(
   }
 )
 
+const { t } = useI18n()
 const uploadQueuesStore = useUploadQueuesStore()
 const { currentExtSystemId } = useCurrentExtSystem()
+
+// Picked assets wait for their metadata. A mass operation would see them empty, and the metadata would then overwrite it.
+const metadataLoading = computed(() =>
+  uploadQueuesStore.getQueueItems(props.queueId).some((item) => item.status === UploadQueueItemStatus.Loading)
+)
 const { showWarningT } = useAlerts()
 const { addToCachedKeywords, fetchCachedKeywords } = useCachedKeywords()
 const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
@@ -84,11 +96,41 @@ provide(UploadQueueSuggestionsKey, (queueKey) => uploadQueuesStore.getQueue(queu
         Its content is also hidden from the keyboard and the screen reader.
       -->
       <div
-        class="d-flex w-100 h-100"
+        class="d-flex w-100 h-100 position-relative"
         :inert="!massOperations"
       >
-        <AssetQueueSelectedSidebar :queue-id="queueId" />
+        <div
+          class="d-flex w-100 h-100"
+          :class="{ 'opacity-50': metadataLoading }"
+          :inert="metadataLoading"
+        >
+          <AssetQueueSelectedSidebar :queue-id="queueId" />
+        </div>
+        <div
+          v-if="metadataLoading"
+          class="asset-queue-editable__metadata-loading position-absolute w-100 h-100 d-flex align-center justify-center pa-4"
+          role="status"
+        >
+          <VSheet
+            class="d-flex align-center ga-3 pa-3 text-body-medium"
+            elevation="2"
+            rounded
+          >
+            <VProgressCircular
+              indeterminate
+              size="20"
+              width="2"
+            />
+            {{ t('coreDam.asset.massOperations.waitingForMetadata') }}
+          </VSheet>
+        </div>
       </div>
     </template>
   </ADamUploadQueueList>
 </template>
+
+<style lang="scss" scoped>
+.asset-queue-editable__metadata-loading {
+  inset: 0;
+}
+</style>

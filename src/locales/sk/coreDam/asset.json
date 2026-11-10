@@ -228,7 +228,8 @@
     "saveAndClose": "Uložiť a ukončiť"
   },
   "massOperations": {
-    "title": "Hromadné operácie"
+    "title": "Hromadné operácie",
+    "waitingForMetadata": "Načítavajú sa metadáta vybraných súborov. Hromadné operácie budú dostupné potom."
   },
   "externalProvider": {
     "importToDam": "Nahrať do ADAM",

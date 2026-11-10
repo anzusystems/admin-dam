@@ -360,3 +360,27 @@ describe('the buttons under the mass operations', () => {
     expect(rows.map((one) => one.keywords)).toEqual([[], ['keyword-kosice'], []])
   })
 })
+
+describe('the mass operations while picked assets wait for their metadata', () => {
+  // An operation would see the waiting row empty, and its metadata would then overwrite what was written.
+  it('are out of reach, with a note saying why, until no row waits any more', async () => {
+    const { rows, sidebar } = await mountQueue([
+      row('asset-1'),
+      row('asset-2', { type: 'asset', status: 'loading', canEditMetadata: false }),
+    ])
+    const outOfReach = () => sidebar.querySelector('.sidebar-info')?.closest('[inert]') !== null
+    const note = () =>
+      sidebar.querySelector('.asset-queue-editable__metadata-loading[role="status"]')?.textContent?.trim()
+
+    expect([outOfReach(), note()]).toEqual([
+      true,
+      'Loading the metadata of the selected files. Mass operations will be available then.',
+    ])
+
+    rows[1].status = 'uploaded'
+    rows[1].canEditMetadata = true
+    await nextTick()
+
+    expect([outOfReach(), note()]).toEqual([false, undefined])
+  })
+})

@@ -439,3 +439,71 @@ describe('mass operations: filling keywords and authors into the queue', () => {
     expect(await fill(true)).toEqual(written)
   })
 })
+
+describe('mass operations on assets picked for mass edit', () => {
+  const described = (id: string, description: string) => ({
+    ...detail(id),
+    metadata: { customData: { description }, authorSuggestions: {} },
+  })
+
+  const pickTwo = async () => {
+    extSystem.config = { image: { keywords: { enabled: true }, authors: { enabled: true } } }
+    const { useUploadQueuesStore } = await load()
+    const store = useUploadQueuesStore()
+    let answer: (assets: unknown[]) => void = () => undefined
+    let fail: (error: Error) => void = () => undefined
+    fetchAssetListByIds.mockReturnValueOnce(
+      new Promise((resolve, reject) => {
+        answer = resolve
+        fail = reject
+      })
+    )
+    await store.addByAssets(QUEUE, [listedAsset('asset-1'), listedAsset('asset-2')] as never)
+    const fillAll = () => {
+      store.queueItemsReplaceEmptyCustomDataValue(QUEUE, {
+        assetType: 'image',
+        elementProperty: 'description',
+        value: 'filled',
+      } as never)
+      store.queueItemsReplaceEmptyKeywords(QUEUE, ['keyword'])
+      store.queueItemsReplaceEmptyAuthors(QUEUE, ['author'])
+    }
+    const rows = () => store.queues[QUEUE].items
+    const written = () => rows().map((row) => [row.customData.description, row.keywords, row.authors])
+
+    return { answer, fail, fillAll, rows, written }
+  }
+
+  // Seen on stage: the metadata took the value from the asset without a description, and one with it showed the value.
+  it('leave a row alone until its metadata has come, then fill only what is really empty', async () => {
+    const { answer, fillAll, rows, written } = await pickTwo()
+
+    fillAll()
+    expect(written()).toEqual([
+      [undefined, [], []],
+      [undefined, [], []],
+    ])
+
+    answer([described('asset-1', 'kept'), described('asset-2', '')])
+    await vi.waitFor(() => expect(rows().every((row) => row.canEditMetadata)).toBe(true))
+    fillAll()
+
+    expect(written()).toEqual([
+      ['kept', ['keyword'], ['author']],
+      ['filled', ['keyword'], ['author']],
+    ])
+  })
+
+  it('leave out a row whose metadata never came, as the bulk save does', async () => {
+    const { fail, fillAll, rows, written } = await pickTwo()
+
+    fail(new Error('the asset service is down'))
+    await vi.waitFor(() => expect(rows().map((row) => row.status)).toEqual(['failed', 'failed']))
+    fillAll()
+
+    expect(written()).toEqual([
+      [undefined, [], []],
+      [undefined, [], []],
+    ])
+  })
+})

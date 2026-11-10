@@ -10,6 +10,7 @@ import * as components from 'vuetify/components'
 
 import en from '@/locales/en'
 import sk from '@/locales/sk'
+import { i18n } from '@/plugins/i18n'
 import {
   assetDetail,
   assetFile,
@@ -91,6 +92,7 @@ const mountQueue = async (rows: UploadQueueItem[], otherQueues: Record<string, U
   app = createApp(AssetQueueEditable, { queueId: QUEUE, massOperations: false })
   app.use(pinia)
   app.use(createVuetify({ components }))
+  app.use(i18n)
   app.mount(root)
   await nextTick()
   const button = (row: UploadQueueItem) => {
