@@ -1,5 +1,6 @@
 import {
   type AnzuApiValidationResponseData,
+  axiosErrorResponseHasForbiddenOperationData,
   axiosErrorResponseHasValidationData,
   i18n,
   NEW_LINE_MARK,
@@ -51,6 +52,31 @@ const handleValidationErrorMessage = (error: Error) => {
     }
   }
   return errorMessages.length > 0 ? errorMessages.join(NEW_LINE_MARK) : t('system.uploadErrors.unknownError')
+}
+
+const handleForbiddenOperationMessage = (error: Error) => {
+  const { t, te } = i18n.global || i18n
+  const detail = isAxiosError(error) ? (error.response?.data as { detail?: string })?.detail : undefined
+  const key = 'error.apiForbiddenOperation.' + detail
+
+  return detail && te(key) ? t(key) : t('error.apiForbiddenOperation.noTranslation')
+}
+
+/**
+ * A rejected upload carries the reason in the API response; without this the queue item only gets
+ * a red icon and the user never learns why the file was refused.
+ */
+export const resolveUploadErrorMessage = (error: unknown) => {
+  const { t } = i18n.global || i18n
+
+  if (axiosErrorResponseHasForbiddenOperationData(error as Error)) {
+    return handleForbiddenOperationMessage(error as Error)
+  }
+  if (axiosErrorResponseHasValidationData(error as Error)) {
+    return handleValidationErrorMessage(error as Error)
+  }
+
+  return t('system.uploadErrors.unknownError')
 }
 
 const readFile = async (offset: number, size: number, file: File): Promise<{ data: string; offset: number }> => {

@@ -10,12 +10,21 @@ export function useAssetLicenceFactory() {
       name: '',
       extSystem: null,
       extId: '',
+      badge: '',
       internalRule: {
         active: false,
         markAsInternalSince: null,
       },
       internalRuleAuthors: [],
       internalRuleUsers: [],
+      flags: {
+        manualUploadAllowed: true,
+        directUseAllowed: true,
+      },
+      autoDelete: {
+        active: false,
+        olderThanDays: 0,
+      },
       createdAt: dateTimeNow(),
       modifiedAt: dateTimeNow(),
       createdBy: 0,

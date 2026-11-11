@@ -3,7 +3,9 @@
     "id": "ID",
     "name": "Name",
     "extSystem": "External system",
-    "licences": "Licences"
+    "licences": "Licences",
+    "listViews": "Views for the group",
+    "listViewsHint": "Users with this group see these views, plus every view without a group in the same external system."
   },
   "filter": {
     "id": "ID"

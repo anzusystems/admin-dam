@@ -1,58 +1,48 @@
 #!/bin/bash
-# Script used to run the tests in the application container
-#######################################################################################################################
-# Default variables
-#######################################################################################################################
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
-ARGS="$*"
-BROWSER="chrome"
-ENV="local"
-FILTER=""
-TAG=""
-RUNNER="yarn"
-DASHBOARD_OPTIONS="--record false"
-CONFIG_FILE="cypress/config/cypress.config.ts"
+# Run the Playwright e2e tests (e2e/).
+# Outside Docker: delegates to the application container.
+# Inside Docker: installs dependencies and runs tests directly.
 
-cd "${PROJECT_ROOT}" || exit 1
-# Initialize default variables
-# shellcheck disable=SC1091
-. ./bin/docker-libvariables
-# Initialize functions
-# shellcheck disable=SC1091
-. ./bin/docker-libfunctions
-docker_env_vars
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
+E2E_DIR="${PROJECT_ROOT}/e2e"
+ENV="devel"
+FILTER=""
+FILTER_INVERT=""
+SPEC=""
+HEADED=false
+UI=false
+INSTALL_DEPENDENCIES=true
+PASSTHROUGH=""
 
 function help() {
-    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPERATION] [OPTIONS]...
-    \nBash script used to run the tests in the application container
+    echo -en "$(printf %q "${BASH_SOURCE[0]}") [OPTIONS]...
+    \nRun the Playwright e2e tests for admin-dam
 
     Options:
-        -e --env     (Optional) Environment of the project (Allowed values: local | dev | stg, Default: local)
-        -b --browser (Optional) Browser for test execution (Allowed values: chrome | electron | firefox, Default: chrome)
-        -f --filter  (Optional) Comma separated list of filters (Default: n/a - all tests)
-        -t --tag     (Optional) Only for dashboard runs tags for cypress dashboard list
-        -d           (Optional) Cypress dashboard run, results will be stored in dashboard as well as in 'cypress/report' folder
+        -e --env          (Optional) Target environment (Allowed: local | devel | staging, Default: devel)
+        -f --filter       (Optional) Grep pattern for test names or tags (e.g. @smoke)
+        -i --filter-invert (Optional) Skip tests matching the grep pattern (e.g. @destructive)
+        --spec            (Optional) Test file or glob pattern (e.g. tests/settings/author.spec.ts)
+        --headed          (Optional) Run with visible browser window
+        --ui              (Optional) Open Playwright UI mode
+        --no-install      (Optional) Skip yarn install
+        --                (Optional) Pass remaining args directly to Playwright (e.g. -- --retries=0 --workers=2)
 
     Examples:
-        $(printf %q "${BASH_SOURCE[0]}") -e local -b chrome -f @datepicker,@nl --tag Docker,Web -d
+        $(printf %q "${BASH_SOURCE[0]}")
+        $(printf %q "${BASH_SOURCE[0]}") -e staging -f @smoke
+        $(printf %q "${BASH_SOURCE[0]}") -i \"@destructive|@integration\"
+        $(printf %q "${BASH_SOURCE[0]}") --spec tests/settings/author.spec.ts
+        $(printf %q "${BASH_SOURCE[0]}") -e devel --headed
+        $(printf %q "${BASH_SOURCE[0]}") --no-install -- --retries=0
     \n"
 }
 
 #######################################################################################################################
-# Go through all command line arguments and setup variables accordingly
+# Parse arguments
 #######################################################################################################################
 while [ "$#" -gt 0 ]; do
     case $1 in
-    -b)
-        BROWSER=$2
-        shift 2
-        continue
-        ;;
-    --browser*)
-        BROWSER=${1#*=}
-        shift 1
-        continue
-        ;;
     -e)
         ENV=$2
         shift 2
@@ -68,58 +58,118 @@ while [ "$#" -gt 0 ]; do
         shift 2
         continue
         ;;
+    --filter-invert*)
+        FILTER_INVERT=${1#*=}
+        shift 1
+        continue
+        ;;
     --filter*)
         FILTER=${1#*=}
         shift 1
         continue
         ;;
-    -t)
-        TAG=$2
+    -i)
+        FILTER_INVERT=$2
         shift 2
         continue
         ;;
-    --tag*)
-        TAG=${1#*=}
+    --spec)
+        SPEC=$2
+        shift 2
+        continue
+        ;;
+    --spec=*)
+        SPEC=${1#*=}
         shift 1
         continue
         ;;
-    -d)
-        DASHBOARD_OPTIONS="--record --tag ${ENV},${TAG},${FILTER}"
+    --headed)
+        HEADED=true
         shift 1
         continue
+        ;;
+    --ui)
+        UI=true
+        shift 1
+        continue
+        ;;
+    --no-install)
+        INSTALL_DEPENDENCIES=false
+        shift 1
+        continue
+        ;;
+    -h | --help)
+        help
+        exit 0
+        ;;
+    --)
+        shift
+        PASSTHROUGH="$*"
+        break
         ;;
     *)
         echo "[WARN] Unknown command line switch: $1"
         help
-        exit
+        exit 1
         ;;
     esac
 done
 
-if [ -n "${BROWSER}" ] && [[ ! ${BROWSER} =~ ^electron$|^chrome$|^firefox$ ]]; then
-    echo "[ERROR] Invalid value: '${BROWSER}' using '-b, --browser' option"
+#######################################################################################################################
+# Validate
+#######################################################################################################################
+if [[ ! ${ENV} =~ ^local$|^devel$|^staging$ ]]; then
+    echo "[ERROR] Invalid value: '${ENV}' for '-e, --env' option. Allowed: local | devel | staging"
     help
-    exit
+    exit 1
 fi
 
-if [ -n "${ENV}" ] && [ ! -f "cypress/config/${ENV}.ts" ] || [[ ! ${ENV} =~ ^stg$|^dev$|^local$ ]]; then
-    echo "[ERROR] Config file '${ENV}.ts' does not exist in cypress/config folder"
-    help
-    exit
-fi
-
+#######################################################################################################################
+# Inside Docker: run tests directly
+#######################################################################################################################
 if [ -f /.dockerenv ]; then
-    if [ ! -d "${CYPRESS_CACHE_FOLDER}" ] ; then
-        ${RUNNER} cypress install --force
+    cd "${E2E_DIR}" || exit 1
+
+    if [ "${INSTALL_DEPENDENCIES}" = "true" ]; then
+        yarn install
     fi
-    # shellcheck disable=SC2086
-    CYPRESS_grepTags=${FILTER} \
-    dbus-launch ${RUNNER} cypress run \
-        --config-file ${CONFIG_FILE} \
-        --env cfg=${ENV} \
-        --browser ${BROWSER} \
-        ${DASHBOARD_OPTIONS}
-    exit
+
+    # Install Playwright browser binaries (idempotent — skips if already installed)
+    yarn playwright install chromium
+
+    CMD="ADAM_ENV=${ENV} yarn playwright test --config playwright.config.ts"
+
+    [ -n "${FILTER}" ]        && CMD="${CMD} --grep \"${FILTER}\""
+    [ -n "${FILTER_INVERT}" ] && CMD="${CMD} --grep-invert \"${FILTER_INVERT}\""
+    [ "${HEADED}" = "true" ]  && CMD="${CMD} --headed"
+    [ "${UI}" = "true" ]      && CMD="${CMD} --ui"
+    [ -n "${SPEC}" ]          && CMD="${CMD} ${SPEC}"
+    [ -n "${PASSTHROUGH}" ]   && CMD="${CMD} ${PASSTHROUGH}"
+
+    echo "[INFO] ${CMD}"
+    eval "${CMD}"
+    exit $?
 fi
 
-bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" bash -c \'bin/test "${ARGS}"\'
+#######################################################################################################################
+# Outside Docker: delegate to the application container
+#######################################################################################################################
+cd "${PROJECT_ROOT}" || exit 1
+# shellcheck disable=SC1091
+. ./bin/docker-libvariables
+
+# Reconstruct args from parsed variables so each is a proper separate token — passing the raw args through
+# bin/docker-compose's eval-based command building loses their quoting.
+DELEGATE=(-e "${ENV}")
+[ "${INSTALL_DEPENDENCIES}" = "false" ] && DELEGATE+=(--no-install)
+[ -n "${FILTER}" ]                       && DELEGATE+=(-f "${FILTER}")
+[ -n "${FILTER_INVERT}" ]                && DELEGATE+=(-i "${FILTER_INVERT}")
+[ "${HEADED}" = "true" ]                 && DELEGATE+=(--headed)
+[ "${UI}" = "true" ]                     && DELEGATE+=(--ui)
+[ -n "${SPEC}" ]                         && DELEGATE+=(--spec "${SPEC}")
+if [ -n "${PASSTHROUGH}" ]; then
+    read -ra PT <<< "${PASSTHROUGH}"
+    DELEGATE+=(-- "${PT[@]}")
+fi
+
+bin/docker-compose exec --user node "${DOCKER_COMPOSE_SERVICE_NAME}" /var/www/html/bin/test "${DELEGATE[@]}"

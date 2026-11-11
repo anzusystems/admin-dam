@@ -24,7 +24,8 @@
       "onlyAllowedAtOnce": "Only {count} file(s) can be uploaded at once.",
       "cancelOrUploadFirst": "Do you want to cancel or upload only first {count} file(s)?",
       "actionAddFirstItems": "Add first {count} file(s)"
-    }
+    },
+    "readOnlyListView": "The list view is read-only, it has no upload licence"
   },
   "download": {
     "downloadOriginalFile": "Download original file"
@@ -51,10 +52,6 @@
     "backToAssets": "Back to assets",
     "options": "Options",
     "userOptions": "Account",
-    "customIntegrations": {
-      "title": "Custom integrations",
-      "assets": "Assets"
-    },
     "podcasts": "Podcasts",
     "videoShows": "Video shows",
     "extSystemLicenceSwitch": {
@@ -71,8 +68,15 @@
       "title": "Switch DAM ext system and asset licence",
       "description": "Important: Please finish all work first, any progress will be lost!",
       "confirm": "Confirm and reload admin",
-      "changeToLicenceId": "Change to licence ID",
-      "changeLicence": "Change licence:"
+      "changeToLicenceId": "Change to licence ID"
+    },
+    "listViewSwitch": {
+      "title": "List view and licence",
+      "listViews": "List views",
+      "licences": "Licences",
+      "changeLicence": "Change licence…",
+      "uploadsTo": "Uploads to: {licence}",
+      "readOnly": "Read-only"
     }
   },
   "settings": {

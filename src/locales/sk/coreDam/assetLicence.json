@@ -4,6 +4,15 @@
     "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
+    "badge": "Odznak",
+    "flags": {
+      "manualUploadAllowed": "Povolený manuálny upload",
+      "directUseAllowed": "Povolené priame použitie"
+    },
+    "autoDelete": {
+      "active": "Automatické mazanie",
+      "olderThanDays": "Mazať staršie ako (dní)"
+    },
     "internalRule": {
       "active": "Automaticky označovať ako interné",
       "markAsInternalSince": "Označovať ako interné od"
@@ -17,5 +26,8 @@
   },
   "meta": {
     "create": "Vytvoriť licenciu"
+  },
+  "validation": {
+    "badge": "Povolené znaky pre odznak: A-Z a 0-9"
   }
 }

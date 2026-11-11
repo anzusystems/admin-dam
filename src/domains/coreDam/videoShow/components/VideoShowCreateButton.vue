@@ -13,21 +13,19 @@ withDefaults(
     buttonT?: string
     buttonClass?: string
     dataCy?: string
-    disabled?: boolean | undefined
   }>(),
   {
     disableRedirect: false,
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
     dataCy: '',
-    disabled: undefined,
   }
 )
 const emit = defineEmits<{
   (e: 'onSuccess', data: VideoShow): void
 }>()
 
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
 
 const { createDefault } = useVideoShowFactory()
 const videoShow = ref<VideoShow>(createDefault(currentAssetLicenceId.value))
@@ -52,6 +50,7 @@ const create = async () => {
     v-model="dialog"
     :v="v$"
     :call-create="create"
+    :disabled="!uploadAllowed"
     disable-redirect
     :button-class="buttonClass"
     :data-cy="dataCy"

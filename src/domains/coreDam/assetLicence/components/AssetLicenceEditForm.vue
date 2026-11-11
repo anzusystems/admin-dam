@@ -6,13 +6,12 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import { damClient } from '@/shared/apiClients/damClient'
+import { BADGE_MAX_LENGTH, useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 
 const { assetLicence } = useAssetLicenceEditActions()
 
@@ -48,12 +47,53 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
-            v-model="assetLicence.extSystem"
-            :client="damClient"
-            :label="t('coreDam.assetLicence.model.extSystem')"
-            :v="v$.assetLicence.extSystem"
+          <AFormTextField
+            :model-value="assetLicence.badge"
+            :label="t('coreDam.assetLicence.model.badge')"
+            :v="v$.assetLicence.badge"
+            :maxlength="BADGE_MAX_LENGTH"
+            data-cy="asset-licence-badge"
+            @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
+          />
+        </ARow>
+        <ARow :title="t('coreDam.assetLicence.model.extSystem')">
+          <CachedExtSystemChip
+            :id="assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.manualUploadAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.manualUploadAllowed')"
+            data-cy="asset-licence-manual-upload-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.flags.directUseAllowed"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.directUseAllowed')"
+            data-cy="asset-licence-direct-use-allowed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="assetLicence.autoDelete.active"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.autoDelete.active')"
+            data-cy="asset-licence-auto-delete-active"
+          />
+        </ARow>
+        <ARow v-if="assetLicence.autoDelete.active">
+          <AFormTextField
+            v-model="assetLicence.autoDelete.olderThanDays"
+            :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
+            :v="v$.assetLicence.autoDelete.olderThanDays"
+            type="number"
+            :step="1"
+            data-cy="asset-licence-auto-delete-older-than-days"
           />
         </ARow>
         <ARow>

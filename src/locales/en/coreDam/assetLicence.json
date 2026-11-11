@@ -4,6 +4,15 @@
     "name": "Name",
     "extSystem": "External system",
     "extId": "External ID",
+    "badge": "Badge",
+    "flags": {
+      "manualUploadAllowed": "Manual upload allowed",
+      "directUseAllowed": "Direct use allowed"
+    },
+    "autoDelete": {
+      "active": "Auto delete",
+      "olderThanDays": "Delete older than (days)"
+    },
     "internalRule": {
       "active": "Internal rule active",
       "markAsInternalSince": "Mark as internal since"
@@ -17,5 +26,8 @@
   },
   "meta": {
     "create": "Create licence"
+  },
+  "validation": {
+    "badge": "Allowed characters for badge: A-Z and 0-9"
   }
 }

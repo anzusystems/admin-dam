@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
+import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
 import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
@@ -14,6 +17,7 @@ import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
+  ADatetime,
   assetFileIsAudioFile,
   assetFileIsImageFile,
   assetFileIsVideoFile,
@@ -58,6 +62,18 @@ const isTypeAudio = computed(() => {
 const isTypeVideo = computed(() => {
   return assetType.value === DamAssetType.Video
 })
+
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+
+watch(
+  () => asset.value?.licence,
+  (licence) => {
+    if (isUndefined(licence)) return
+    addToCachedAssetLicences(licence)
+    fetchCachedAssetLicences()
+  },
+  { immediate: true }
+)
 
 const assetMainFile = computed<null | AssetFile>(() => {
   return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
@@ -221,6 +237,14 @@ const onAnyMetadataChange = () => {
         </VRow>
         <VRow>
           <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.field.licence') }}
+          </VCol>
+          <VCol cols="9">
+            <CachedAssetLicenceChip :id="asset.licence" />
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
           <VCol cols="9">
@@ -233,6 +257,17 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+          </VCol>
+        </VRow>
+        <VRow
+          v-if="asset.autoDeleteAt"
+          data-cy="asset-auto-delete-at"
+        >
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.autoDeleteAt') }}
+          </VCol>
+          <VCol cols="9">
+            <ADatetime :date-time="asset.autoDeleteAt" />
           </VCol>
         </VRow>
         <div v-if="assetMainFile">
@@ -294,5 +329,9 @@ const onAnyMetadataChange = () => {
         </div>
       </VExpansionPanelText>
     </VExpansionPanel>
+    <AssetMetadataExif
+      v-if="isTypeImage && assetMainFile && assetFileIsImageFile(assetMainFile)"
+      :file="assetMainFile"
+    />
   </VExpansionPanels>
 </template>

@@ -44,6 +44,8 @@
     "slotsCountUntil": "Slots count until",
     "createdAtFrom": "Created from - to",
     "createdAtUntil": "Created until",
+    "uploadedAtFrom": "Uploaded from",
+    "uploadedAtUntil": "Uploaded until",
     "mainFileSingleUse": "Single-use licence",
     "mainFileInternal": "Internal"
   },
@@ -59,7 +61,8 @@
     "2k": "2K",
     "qhd": "QHD",
     "4k": "4K",
-    "8k": "8K"
+    "8k": "8K",
+    "autoDeleteAt": "Auto delete {date}"
   },
   "filterTitle": "Filter",
   "noItemsFound": "No matching assets found",
@@ -131,6 +134,9 @@
       "hide": "Show more metadata"
     },
     "noAssetSelected": "No asset selected",
+    "exif": {
+      "title": "Main file EXIF ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Focus",
@@ -151,6 +157,7 @@
       "sourceRequest": "Source request"
     },
     "info": {
+      "autoDeleteAt": "Auto delete",
       "status": {
         "duplicate": "Asset main file is duplicate",
         "draft": "Asset is without file",
@@ -165,6 +172,7 @@
         "id": "Asset ID",
         "mainFileId": "Main file ID",
         "type": "Type",
+        "licence": "Licence",
         "mimeType": "Format",
         "size": "Size",
         "dominantColor": "Color",

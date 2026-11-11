@@ -7,10 +7,9 @@ import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
-import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
+import AssetToolbarListViewSwitch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarListViewSwitch.vue'
 import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
 import { envConfig } from '@/shared/EnvConfigService'
-import { ACL } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 
@@ -52,9 +51,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
         </div>
 
         <div class="d-flex align-center">
-          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-            <AssetToolbarIntegrations />
-          </Acl>
+          <AssetToolbarListViewSwitch />
           <slot name="main-bar-middle" />
         </div>
 
