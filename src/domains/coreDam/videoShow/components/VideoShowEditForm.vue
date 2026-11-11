@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { ENTITY } from '@/domains/coreDam/videoShow/api/videoShowApi'
 import { useVideoShowEditActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
 import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { videoShow } = useVideoShowEditActions()
 
@@ -61,6 +64,7 @@ const { t } = useI18n()
             :label="t('coreDam.videoShow.model.flags.mobilePublicExportEnabled')"
           />
         </ARow>
+        <DamTrackingFields :data="videoShow" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

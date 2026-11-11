@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
-import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import ExternalProviderAssetDetailSidebarActionsWrapper from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetDetailSidebarActionsWrapper.vue'
+import ExternalProviderAssetMetadataItem from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadataItem.vue'
+import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
 
 const props = withDefaults(
@@ -19,7 +22,7 @@ const panels = ref(['info', 'meta'])
 
 const { asset } = useExternalProviderAssetDetailActions()
 
-const { importFromDetail } = useExternalProviderAssetImport()
+const { canImport, importFromDetail } = useExternalProviderAssetImport()
 
 const onImport = () => {
   importFromDetail(props.detailDialog)
@@ -29,6 +32,7 @@ const onImport = () => {
 <template>
   <ExternalProviderAssetDetailSidebarActionsWrapper v-if="detailDialog && asset">
     <ABtnPrimary
+      v-if="canImport([asset.attributes.assetType])"
       type="submit"
       class="ml-2"
       @click.stop="onImport"

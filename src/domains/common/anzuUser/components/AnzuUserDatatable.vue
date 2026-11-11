@@ -3,31 +3,32 @@ import {
   ABooleanValue,
   AChipNoLink,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
-  type AnzuUser,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { AnzuUser } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/common/anzuUser/api/anzuUserApi'
-import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
-import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
 import AnzuUserFilter from '@/domains/common/anzuUser/components/AnzuUserFilter.vue'
+import { useAnzuUserActions } from '@/domains/common/anzuUser/composables/anzuUserActions'
+import { useAnzuUserFilter } from '@/domains/common/anzuUser/filter/AnzuUserFilter'
 import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 import CachedPermissionGroupChip from '@/domains/common/permissionGroup/components/CachedPermissionGroupChip.vue'
-import { damClient } from '@/shared/apiClients/damClient'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
 
 type DatatableItem = AnzuUser
 
@@ -123,7 +124,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="anzuUserList"
         :items-length="anzuUserList.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.enabled="{ item }: { item: DatatableItem }">
@@ -189,10 +189,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

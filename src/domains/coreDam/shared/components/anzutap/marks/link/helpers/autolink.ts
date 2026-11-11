@@ -1,13 +1,9 @@
-import {
-  combineTransactionSteps,
-  findChildrenInRange,
-  getChangedRanges,
-  getMarksBetween,
-  type NodeWithPos,
-} from '@tiptap/core'
+import { combineTransactionSteps, findChildrenInRange, getChangedRanges, getMarksBetween } from '@tiptap/core'
+import type { NodeWithPos } from '@tiptap/core'
 import { MarkType } from '@tiptap/pm/model'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { MultiToken, tokenize } from 'linkifyjs'
+
 import { getLinkMarkAttributesFromHref } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkAttrs'
 
 /**

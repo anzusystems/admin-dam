@@ -1,15 +1,25 @@
 <script lang="ts" setup>
 import {
-  AActionCloseButton,
+  AActionCloseButtonHistory,
   ACard,
   AJobDetailCommon,
   JOB_RESOURCE_USER_DATA_DELETE,
-  useI18n,
+  defineBreadcrumbs,
+  isUndefined,
+  stringToInt,
+  useRecordPage,
 } from '@anzusystems/common-admin'
-import { useJobDetailActions } from '@/domains/coreDam/job/composables/jobActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { computed, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'
+import JobDetailAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'
 import JobDetailPodcastSynchronizer from '@/domains/coreDam/job/components/JobDetailPodcastSynchronizer.vue'
+import JobDetailSynchronizeImageChanged from '@/domains/coreDam/job/components/JobDetailSynchronizeImageChanged.vue'
 import JobDetailUserDataDelete from '@/domains/coreDam/job/components/JobDetailUserDataDelete.vue'
+import JobImageCopy from '@/domains/coreDam/job/components/JobImageCopy.vue'
+import { useJobDetailActions } from '@/domains/coreDam/job/composables/jobActions'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
@@ -17,19 +27,18 @@ import {
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
 } from '@/domains/coreDam/job/valueObject/JobResource'
-import JobAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobAuthorCurrentOptimize.vue'
-import JobImageCopy from '@/domains/coreDam/job/components/JobImageCopy.vue'
-import JobDetailAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobDetailAssetFileReprocessInternalFlag.vue'
-import JobDetailSynchronizeImageChanged from '@/domains/coreDam/job/components/JobDetailSynchronizeImageChanged.vue'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, job } = useJobDetailActions()
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/jobs',
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
+})
 
 const jobComponent = computed(() => {
   if (isUndefined(job.value)) return AJobDetailCommon
@@ -51,31 +60,25 @@ const jobComponent = computed(() => {
   }
 })
 
-onMounted(() => {
-  getDetail()
-})
-
 onBeforeUnmount(() => {
   resetStore()
 })
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' },
-    {
-      title: t('breadcrumb.coreDam.job.detail'),
-      routeName: '/(coreDam)/jobs/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' },
+  {
+    title: t('breadcrumb.coreDam.job.detail'),
+    routeName: '/(coreDam)/jobs/[id]',
+  },
+])
 </script>
 
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <AActionCloseButton :route-name="'/(coreDam)/jobs'" />
+      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/jobs'" />
     </template>
   </ActionbarWrapper>
 

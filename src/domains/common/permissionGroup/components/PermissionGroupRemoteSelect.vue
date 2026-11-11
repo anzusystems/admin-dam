@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFilterRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
+import { provide } from 'vue'
+
 import { usePermissionGroupSelectAction } from '@/domains/common/permissionGroup/composables/permissionGroupActions'
 import { usePermissionGroupFilter } from '@/domains/common/permissionGroup/filter/PermissionGroupFilter'
 
@@ -9,9 +11,7 @@ withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'change'): void
-}>()
+const emit = defineEmits<{ change: [] }>()
 
 const { fetchItems, fetchItemsByIds } = usePermissionGroupSelectAction()
 

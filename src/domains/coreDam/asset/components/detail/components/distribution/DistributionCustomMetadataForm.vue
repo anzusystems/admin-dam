@@ -1,28 +1,25 @@
 <script lang="ts" setup>
+import { ACustomDataFormElement, isUndefined, useDamConfigStore } from '@anzusystems/common-admin'
+import type { CustomDataValue, DamDistributionServiceName } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
-import {
-  ACustomDataFormElement,
-  type CustomDataValue,
-  type DamDistributionServiceName,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
     distributionServiceName: DamDistributionServiceName
-    modelValue: { [key: string]: CustomDataValue }
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: { [key: string]: CustomDataValue }): void
-  (e: 'anyChange'): void
-}>()
+const emit = defineEmits<{ anyChange: [] }>()
+
+const modelValue = defineModel<{ [key: string]: CustomDataValue }>({ required: true })
 
 const updateModelValue = (data: { property: string; value: CustomDataValue }) => {
   const updated = {} as { [key: string]: CustomDataValue }
   updated[data.property] = data.value
-  emit('update:modelValue', { ...props.modelValue, ...updated })
+  modelValue.value = { ...modelValue.value, ...updated }
   emit('anyChange')
 }
 const damConfigStore = useDamConfigStore()

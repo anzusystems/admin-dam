@@ -1,13 +1,20 @@
 <script lang="ts" setup>
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
-import { useDamAssetLicenceInnerFilter } from '@anzusystems/common-admin'
+import type { FilterConfig, FilterData, IntegerId, IntegerIdNullable, Pagination } from '@anzusystems/common-admin'
+import {
+  AFormRemoteAutocomplete,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
+  cloneDeep,
+  isString,
+  useDamAssetLicenceInnerFilter,
+} from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+import { computed, provide, watch } from 'vue'
+
 import { useAssetLicenceByExtIdSelectActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: number | null | number[]
     label?: string | undefined
     required?: boolean | undefined
     multiple?: boolean
@@ -28,16 +35,13 @@ const props = withDefaults(
     disableInitFetch: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: IntegerIdNullable | IntegerId[]): void
-}>()
-
+const modelValue = defineModel<IntegerIdNullable | IntegerId[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: number | null | number[]) {
-    emit('update:modelValue', cloneDeep<number | null | number[]>(newValue))
+    modelValue.value = cloneDeep<number | null | number[]>(newValue)
   },
 })
 
@@ -61,15 +65,14 @@ const fetchItemsCustomized = async (
   return []
 }
 
-const selectedExtSystemId = computed(() => {
-  return props.extSystemId
-})
+const selectedExtSystemId = computed(() => props.extSystemId)
 
 watch(
   selectedExtSystemId,
   (newValue, oldValue) => {
     if (newValue === oldValue) return
-    modelValueComputed.value = null
+    // Not at mount: there is nothing stale to clear, and it would null even a multiple model.
+    if (oldValue !== undefined) modelValueComputed.value = null
     if (newValue) {
       filterData.extSystem = newValue
       return

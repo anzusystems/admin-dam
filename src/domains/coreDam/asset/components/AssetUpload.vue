@@ -1,16 +1,22 @@
 <script setup lang="ts">
-import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { damClient } from '@/shared/apiClients/damClient'
-import { useBetaTestFeatures } from '@/shared/BetaTestFeaturesService'
-import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import {
   ADialogToolbar,
-  type DamAssetTypeType,
+  DamAssetType,
+  isUndefined,
   useDamAcceptTypeAndSizeHelper,
   useDamConfigState,
 } from '@anzusystems/common-admin'
+import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
+import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
+import { ACL, assetTypeAcl, useAuth } from '@/domains/system/auth/auth'
+import { damClient } from '@/shared/apiClients/damClient'
+import { useBetaTestFeatures } from '@/shared/utils/BetaTestFeaturesService'
 
 const props = withDefaults(
   defineProps<{
@@ -23,6 +29,7 @@ const props = withDefaults(
     slotName?: string
     multiple?: boolean
     assetType?: DamAssetTypeType
+    disabled?: boolean
   }>(),
   {
     variant: 'dropzone-fullscreen',
@@ -34,6 +41,7 @@ const props = withDefaults(
     slotName: undefined,
     multiple: true,
     assetType: undefined,
+    disabled: false,
   }
 )
 
@@ -44,36 +52,34 @@ const uploadDialogLoader = ref(false)
 const uploadQueuesStore = useUploadQueuesStore()
 const { maxUploadItems } = useBetaTestFeatures()
 
+// Routes files to the asset slot or to the queue as new assets.
+// Used both for picked files and for files confirmed in the limit dialog.
+const addToQueue = async (files: File[]) => {
+  if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
+    await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
+    return true
+  } else if (props.type === 'default') {
+    await uploadQueuesStore.addByFiles(props.queueId, files)
+    return true
+  }
+  console.error('Unsupported upload setup.')
+  return false
+}
+
 const assetUpload = async (files: File[]) => {
   fileCache.value = files
   if (files.length + uploadQueueTotalCount.value > maxUploadItems.value) {
     openDialog()
     return
   }
-  if (props.type === 'slots' && props.assetId && props.slotName && props.assetType) {
-    // todo add check by type for slot uploads
-    await uploadQueuesStore.addByFilesAsSlotUpload(props.queueId, files, props.assetId, props.slotName, props.assetType)
-    fileCache.value = []
-    return
-  } else if (props.type === 'default') {
-    await uploadQueuesStore.addByFiles(props.queueId, files)
-    fileCache.value = []
-    return
-  }
-  console.error('Unsupported upload setup.')
+  if (await addToQueue(files)) fileCache.value = []
 }
 
-const fileInputKey = computed(() => {
-  return uploadQueuesStore.getQueueFileInputKey(props.queueId)
-})
+const fileInputKey = computed(() => uploadQueuesStore.getQueueFileInputKey(props.queueId))
 
-const uploadQueueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(props.queueId)
-})
+const uploadQueueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(props.queueId))
 
-const alreadyAtUploadLimit = computed(() => {
-  return uploadQueueTotalCount.value === maxUploadItems.value
-})
+const alreadyAtUploadLimit = computed(() => uploadQueueTotalCount.value === maxUploadItems.value)
 
 const openDialog = () => {
   uploadDialog.value = true
@@ -88,7 +94,7 @@ const onDialogCancel = () => {
 const onDialogConfirm = async () => {
   uploadDialogLoader.value = true
   const files = fileCache.value.slice(0, maxUploadItems.value - uploadQueueTotalCount.value)
-  await uploadQueuesStore.addByFiles(props.queueId, files)
+  await addToQueue(files)
   fileCache.value = []
   uploadDialogLoader.value = false
   uploadDialog.value = false
@@ -103,11 +109,34 @@ if (isUndefined(configExtSystem)) {
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { uploadSizes, uploadAccept } = useDamAcceptTypeAndSizeHelper(props.assetType, configExtSystem)
 
+const { can, canForAll } = useAuth()
+
+// TODO(BE): core-dam checks dam_video_update / dam_document_update on an upload's chunk and finish requests, where image
+// and audio check _create; should be _create (ACL BE task #86852/2.13). A slot upload of the two checks _update on its
+// create too.
+const canUpload = computed(() => {
+  if (props.type === 'slots') {
+    if (isUndefined(props.assetType)) return false
+    if (props.assetType === DamAssetType.Video || props.assetType === DamAssetType.Document) {
+      return can(assetTypeAcl(props.assetType, 'update'))
+    }
+    return can(assetTypeAcl(props.assetType, 'create'))
+  }
+  return (
+    (configExtSystem.image?.enabled && can(ACL.DAM_IMAGE_CREATE)) ||
+    (configExtSystem.audio?.enabled && can(ACL.DAM_AUDIO_CREATE)) ||
+    (configExtSystem.video?.enabled && canForAll([ACL.DAM_VIDEO_CREATE, ACL.DAM_VIDEO_UPDATE])) ||
+    (configExtSystem.document?.enabled && canForAll([ACL.DAM_DOCUMENT_CREATE, ACL.DAM_DOCUMENT_UPDATE])) ||
+    false
+  )
+})
+
 const { t } = useI18n()
 </script>
 
 <template>
   <FileUpload
+    v-if="canUpload"
     :variant="variant"
     :button-text="buttonText"
     :height="height"
@@ -115,6 +144,7 @@ const { t } = useI18n()
     :accept="uploadAccept"
     :max-sizes="uploadSizes"
     :multiple="multiple"
+    :disabled="disabled"
     @files-input="assetUpload"
   />
   <VDialog
@@ -125,7 +155,7 @@ const { t } = useI18n()
       v-if="uploadDialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onDialogCancel">
+      <ADialogToolbar @cancel="onDialogCancel">
         {{ t('system.upload.limits.uploadWarning') }}
       </ADialogToolbar>
       <VCardText>
@@ -137,7 +167,7 @@ const { t } = useI18n()
           <span v-if="uploadQueueTotalCount > 0">{{
             t('system.upload.limits.countAlreadyInProgress', { count: uploadQueueTotalCount })
           }}</span>
-          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br><br>
+          {{ t('system.upload.limits.onlyAllowedAtOnce', { count: maxUploadItems }) }}<br /><br />
           {{ t('system.upload.limits.cancelOrUploadFirst', { count: maxUploadItems - uploadQueueTotalCount }) }}
         </p>
       </VCardText>

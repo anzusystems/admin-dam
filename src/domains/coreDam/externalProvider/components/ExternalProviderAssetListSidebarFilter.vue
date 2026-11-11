@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import { useExternalProviderAssetListActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetListActions'
-import { AFilterString, AFilterWrapperSidebar } from '@anzusystems/common-admin/labs'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { sidebarLeft } = useMainWrapper()
 
@@ -50,6 +52,7 @@ const resetFilter = () => {
           {{ t('common.button.submitFilter') }}
         </VBtn>
         <VBtn
+          :aria-label="t('common.button.resetFilter')"
           class="px-2"
           color="light"
           min-width="36px"
@@ -58,6 +61,12 @@ const resetFilter = () => {
           @click.stop="resetFilter"
         >
           <VIcon icon="mdi-filter-remove-outline" />
+          <VTooltip
+            activator="parent"
+            location="bottom"
+          >
+            {{ t('common.button.resetFilter') }}
+          </VTooltip>
         </VBtn>
       </div>
     </template>

@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import type { UploadQueueItem, UploadQueueItemStatusType } from '@anzusystems/common-admin'
-import { DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import { ADamAssetImage, DamAssetStatusDefault, UploadQueueItemStatus } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -14,8 +15,8 @@ const props = withDefaults(
 
 const { t } = useI18n()
 
-const processing = computed(() => {
-  return (
+const processing = computed(() =>
+  (
     [
       UploadQueueItemStatus.Waiting,
       UploadQueueItemStatus.Uploading,
@@ -23,13 +24,9 @@ const processing = computed(() => {
       UploadQueueItemStatus.Processing,
     ] as unknown as UploadQueueItemStatusType
   ).includes(props.item.status)
-})
-const imageSrc = computed(() => {
-  return props.item.imagePreview ? props.item.imagePreview.url : undefined
-})
-const assetType = computed(() => {
-  return props.item.assetType
-})
+)
+const imageSrc = computed(() => (props.item.imagePreview ? props.item.imagePreview.url : undefined))
+const assetType = computed(() => props.item.assetType)
 const status = computed(() => {
   if (!props.item) return DamAssetStatusDefault
   return props.item.assetStatus
@@ -40,7 +37,7 @@ const status = computed(() => {
   <div class="dam-upload-queue__item dam-upload-queue__item--simple d-flex flex-column">
     <div class="dam-upload-queue__item-card">
       <div class="position-relative">
-        <AssetImage
+        <ADamAssetImage
           :asset-type="assetType"
           :asset-status="status"
           :src="imageSrc"
@@ -71,7 +68,7 @@ const status = computed(() => {
       </div>
       <div class="d-flex align-center w-100">
         <div />
-        <div class="text-body-small line-clamp-1">
+        <div class="text-body-small text-truncate">
           {{ item.displayTitle || t('coreDam.asset.list.noTitle') }}
         </div>
       </div>

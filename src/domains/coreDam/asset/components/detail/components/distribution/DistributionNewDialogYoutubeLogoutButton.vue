@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
-import { ADialogToolbar } from '@anzusystems/common-admin'
+import { ADialogToolbar, useAlerts } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { logoutYoutube } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 
 const props = withDefaults(
@@ -9,9 +12,7 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'onSuccessLogout'): void
-}>()
+const emit = defineEmits<{ onSuccessLogout: [] }>()
 
 const dialog = ref(false)
 const buttonLoading = ref(false)
@@ -51,7 +52,7 @@ const confirmLogout = async () => {
       class="mt-0 mr-auto ml-auto"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('coreDam.youtubeDistribution.logout.logoutTitle') }}
       </ADialogToolbar>
       <VCardText>

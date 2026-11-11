@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
-import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
-import JobDatatable from '@/domains/coreDam/job/components/JobDatatable.vue'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import JobCreateButton from '@/domains/coreDam/job/components/JobCreateButton.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import JobDatatable from '@/domains/coreDam/job/components/JobDatatable.vue'
+import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const datatable = ref<InstanceType<typeof JobDatatable> | null>(null)
 
@@ -16,9 +19,7 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [{ title: t('breadcrumb.coreDam.job.list'), routeName: '/(coreDam)/jobs' }])
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 import type { AnzuUserAndTimeTrackingAware, DocId, IntegerId, ResourceNameSystemAware } from '@anzusystems/common-admin'
+
 import type { VoiceDiscriminatorType } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 export const RESOURCE_VOICE_FAMILY = 'voiceFamily'

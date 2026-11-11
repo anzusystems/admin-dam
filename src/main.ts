@@ -1,19 +1,22 @@
 import App from '@/App.vue'
-import AppLayoutLoader from '@/layouts/AppLayoutLoader.vue'
-import AppLayoutMain from '@/layouts/AppLayoutMain.vue'
-import AppLayoutDrawer from '@/layouts/AppLayoutDrawer.vue'
-import AppLayoutBlank from '@/layouts/AppLayoutBlank.vue'
-import AppLayoutFullscreen from '@/layouts/AppLayoutFullscreen.vue'
+// Vuetify's stylesheets (with MDI icons) load before common-admin's.
+// The `@layer` statements in index.html order the layers, but import order still matters for unlayered rules.
+// The comment after this block keeps import sorting out of it.
+import { AnzuSystemsCommonAdmin, loadCommonFonts } from '@anzusystems/common-admin'
+import type { PluginOptions } from '@anzusystems/common-admin'
+
 import { vuetify } from '@/plugins/vuetify'
 import { router } from '@/router'
 import { envConfig, loadEnvConfig } from '@/shared/EnvConfigService'
-import { initErrorHandler } from '@/shared/ErrorHandlerApiService'
-import { AnzuSystemsCommonAdmin, loadCommonFonts, type PluginOptions } from '@anzusystems/common-admin'
 import '@anzusystems/common-admin/styles'
-import { damClient } from '@/shared/apiClients/damClient'
+// End of the stylesheet order.
+import * as Sentry from '@sentry/vue'
 import dayjs from 'dayjs'
 import Duration from 'dayjs/plugin/duration'
-import * as Sentry from '@sentry/vue'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
+
+import { coreDamDefaultConfig } from '@/plugins/commonAdminCoreDam'
 import { AVAILABLE_LANGUAGES, DEFAULT_LANGUAGE, i18n } from '@/plugins/i18n'
 
 dayjs.extend(Duration)
@@ -27,18 +30,16 @@ loadEnvConfig(() => {
     .use(vuetify)
     .use(router)
     .use<PluginOptions>(AnzuSystemsCommonAdmin, {
+      i18n,
       languages: {
         available: AVAILABLE_LANGUAGES,
         default: DEFAULT_LANGUAGE,
       },
       coreDam: {
         configs: {
-          default: {
-            damClient: damClient,
-          },
+          default: coreDamDefaultConfig,
         },
         apiTimeout: envConfig.dam.apiTimeout,
-        uploadStatusFallback: true,
         adminDomain: envConfig.dam.adminUrl,
         notification: {
           enabled: envConfig.notification.enabled,
@@ -46,11 +47,6 @@ loadEnvConfig(() => {
         },
       },
     })
-    .component('AppLayoutLoader', AppLayoutLoader)
-    .component('AppLayoutMain', AppLayoutMain)
-    .component('AppLayoutDrawer', AppLayoutDrawer)
-    .component('AppLayoutBlank', AppLayoutBlank)
-    .component('AppLayoutFullscreen', AppLayoutFullscreen)
 
   if (envConfig.sentry.dsn) {
     Sentry.init({
@@ -58,12 +54,17 @@ loadEnvConfig(() => {
       dsn: envConfig.sentry.dsn,
       release: envConfig.appVersion,
       environment: envConfig.appEnvironment,
-      sendDefaultPii: true,
+      dataCollection: {
+        userInfo: true,
+        cookies: true,
+        httpHeaders: { request: true, response: true },
+        urlQueryParams: true,
+      },
       tracesSampleRate: 0,
-      profilesSampleRate: 0,
       replaysOnErrorSampleRate: 0.2,
       transport: Sentry.makeBrowserOfflineTransport(Sentry.makeFetchTransport),
       integrations: [
+        Sentry.extraErrorDataIntegration({ depth: 3, captureErrorCause: false }),
         Sentry.browserTracingIntegration({ router, routeLabel: 'path' }),
         Sentry.replayIntegration({
           maskAllText: false,
@@ -73,8 +74,6 @@ loadEnvConfig(() => {
         Sentry.httpClientIntegration(),
       ],
     })
-  } else {
-    initErrorHandler(app)
   }
 
   app.mount('#app')

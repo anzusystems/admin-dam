@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import { ENTITY } from '@/domains/coreDam/keyword/api/keywordApi'
 import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordValidation } from '@/domains/coreDam/keyword/composables/keywordValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { keyword } = useKeywordEditActions()
 
@@ -37,6 +40,7 @@ const { t } = useI18n()
             data-cy="keyword-flags-reviewed"
           />
         </ARow>
+        <DamTrackingFields :data="keyword" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

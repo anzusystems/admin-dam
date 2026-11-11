@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-import { AJobDetailCommon, ARow, useI18n } from '@anzusystems/common-admin'
-import type { JobImageCopy } from '@/domains/coreDam/job/types/Job'
+import { AJobDetailCommon, ARow } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
+import type { JobImageCopy } from '@/domains/coreDam/job/types/Job'
 
 withDefaults(
   defineProps<{

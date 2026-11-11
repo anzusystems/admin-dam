@@ -1,34 +1,33 @@
-import type { VideoShow, VideoShowMinimal } from '@/domains/coreDam/videoShow/types/VideoShow'
-import { useFetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import { defineCached } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useFetchVideoShowListByIds } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import type { VideoShow, VideoShowMinimal } from '@/domains/coreDam/videoShow/types/VideoShow'
 
 const mapFullToMinimal = (videoShow: VideoShow): VideoShowMinimal => ({
   id: videoShow.id,
   title: videoShow.texts.title,
 })
 
-const mapIdToMinimal = (id: DocId): VideoShowMinimal => {
-  return { id: id, title: '' }
-}
+const mapIdToMinimal = (id: DocId): VideoShowMinimal => ({ id: id, title: '' })
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<DocId, VideoShow, VideoShowMinimal>(
   mapFullToMinimal,
   mapIdToMinimal,
   (ids) => {
     const { currentExtSystemId } = useCurrentExtSystem()
-    const { executeFetch } = useFetchVideoShowListByIds()
-    return executeFetch(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
+    const { execute } = useFetchVideoShowListByIds()
+    return execute(ids, { urlParams: { extSystemId: currentExtSystemId.value } })
   }
 )
 
-export const useCachedVideoShows = () => {
-  return {
-    addManualToCachedVideoShows: addManual,
-    addToCachedVideoShows: add,
-    fetchCachedVideoShows: fetch,
-    cachedVideoShows: cache,
-    hasCachedVideoShow: has,
-    getCachedVideoShow: get,
-    isLoadedCachedVideoShow: isLoaded,
-  }
-}
+export const useCachedVideoShows = () => ({
+  addManualToCachedVideoShows: addManual,
+  addToCachedVideoShows: add,
+  fetchCachedVideoShows: fetch,
+  cachedVideoShows: cache,
+  hasCachedVideoShow: has,
+  getCachedVideoShow: get,
+  isLoadedCachedVideoShow: isLoaded,
+})

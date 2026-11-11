@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "nodenext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "nodenext",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@pages/*": ["./pages/*"],
+      // The types of common-admin's route walk (`@anzusystems/common-admin/e2e`), which is out of reach of this
+      // project's node_modules. The file itself: its declarations are ES modules, which add no extension.
+      "playwright/test": ["./node_modules/playwright/test.d.ts"]
+    }
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./pages"
+    },
+    {
+      "path": "./tests"
+    },
+    {
+      "path": "./tsconfig.setup.json"
+    }
+  ]
+}

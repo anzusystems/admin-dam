@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const DistributionFailReason = {
   None: 'none',
   Unknown: 'unknown',
@@ -35,9 +39,8 @@ export function useDistributionFailReason() {
     },
   ])
 
-  const getDistributionFailReasonOption = (value: DistributionFailReasonType) => {
-    return DistributionFailReasonOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionFailReasonOption = (value: DistributionFailReasonType) =>
+    DistributionFailReasonOptions.value.find((item) => item.value === value)
 
   return {
     DistributionFailReasonOptions,

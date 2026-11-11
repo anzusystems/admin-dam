@@ -4,9 +4,10 @@ import type {
   IntegerId,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { ExportTypeType } from '@/domains/coreDam/asset/valueObject/ExportType'
-import type { DeviceTypeType } from '@/domains/coreDam/asset/valueObject/DeviceType'
 import type { JSONContent } from '@tiptap/core'
+
+import type { DeviceTypeType } from '@/domains/coreDam/asset/valueObject/DeviceType'
+import type { ExportTypeType } from '@/domains/coreDam/asset/valueObject/ExportType'
 
 export interface PodcastExportData extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId

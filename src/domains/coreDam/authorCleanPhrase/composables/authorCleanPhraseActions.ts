@@ -1,15 +1,20 @@
+import type { FilterConfig, FilterData, IntegerId, Pagination } from '@anzusystems/common-admin'
+import { defineRecordLoader, syncUserAndTimeTracking, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import { ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import {
   useDeleteAuthorCleanPhrase,
   useFetchAuthorCleanPhrase,
   useFetchAuthorCleanPhraseList,
   useUpdateAuthorCleanPhrase,
 } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
-import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAuthorCleanPhraseOneStore } from '@/domains/coreDam/authorCleanPhrase/store/authorCleanPhraseStore'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -22,12 +27,12 @@ const saveAndCloseButtonLoading = ref(false)
 export const useAuthorCleanPhraseListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<AuthorCleanPhrase[]>([])
-  const { executeFetch } = useFetchAuthorCleanPhraseList()
+  const { execute } = useFetchAuthorCleanPhraseList()
 
   const fetchList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -46,14 +51,14 @@ export const useAuthorCleanPhraseListActions = () => {
 }
 
 export const useAuthorCleanPhraseRemoveActions = () => {
-  const router = useRouter()
-  const { executeRequest: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
+  const { push } = usePageNavigation()
+  const { execute: deleteAuthorCleanPhrase } = useDeleteAuthorCleanPhrase()
   const removeAuthorCleanPhrase = async (id: IntegerId) => {
     detailLoading.value = true
     try {
       await deleteAuthorCleanPhrase({ urlParams: { id } })
-      showRecordWas('updated')
-      router.push({ name: '/(coreDam)/author-clean-phrases' })
+      showRecordWas('deleted')
+      push({ name: '/(coreDam)/author-clean-phrases' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -71,22 +76,15 @@ export const useAuthorCleanPhraseDetailActions = () => {
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
   const { fetchCachedAuthors, addToCachedAuthors } = useCachedAuthors()
 
-  const fetchData = async (id: IntegerId) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
-      authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
-      if (authorCleanPhrase.authorReplacement) {
-        addToCachedAuthors(authorCleanPhrase.authorReplacement)
-      }
-      fetchCachedAuthors()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
+  const fetchData = defineRecordLoader(detailLoading, async (id: IntegerId, signal) => {
+    const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+    const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal })
+    authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+    if (authorCleanPhrase.authorReplacement) {
+      addToCachedAuthors(authorCleanPhrase.authorReplacement)
     }
-  }
+    fetchCachedAuthors()
+  })
 
   return {
     authorCleanPhrase,
@@ -98,22 +96,15 @@ export const useAuthorCleanPhraseDetailActions = () => {
 
 export const useAuthorCleanPhraseEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const authorCleanPhraseOneStore = useAuthorCleanPhraseOneStore()
   const { authorCleanPhrase } = storeToRefs(authorCleanPhraseOneStore)
 
-  const fetchData = async (id: IntegerId) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
-      const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id } })
-      authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: IntegerId, signal) => {
+    const { execute: fetchAuthorCleanPhrase } = useFetchAuthorCleanPhrase()
+    const authorCleanPhrase = await fetchAuthorCleanPhrase({ urlParams: { id }, signal })
+    authorCleanPhraseOneStore.setAuthorCleanPhrase(authorCleanPhrase)
+  })
 
   const onUpdate = async (close = false) => {
     try {
@@ -125,14 +116,15 @@ export const useAuthorCleanPhraseEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
-      await updateAuthorCleanPhrase({
+      const { execute: updateAuthorCleanPhrase } = useUpdateAuthorCleanPhrase()
+      const res = await updateAuthorCleanPhrase({
         urlParams: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
-        object: authorCleanPhrase.value,
+        body: authorCleanPhrase.value,
       })
+      syncUserAndTimeTracking(authorCleanPhraseOneStore.authorCleanPhrase, res)
       showRecordWas('updated')
 
-      router.push({
+      push({
         name: '/(coreDam)/author-clean-phrases/[id]',
         params: { id: authorCleanPhraseOneStore.authorCleanPhrase.id },
       })

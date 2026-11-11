@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
+import { useI18n } from 'vue-i18n'
+
 import ExternalProviderAssetMetadata from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetMetadata.vue'
-import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
+import { useExternalProviderAssetDetailActions } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetDetailActions'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
+import { useExternalProviderAssetDetailStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetDetailStore'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 const { t } = useI18n()
 
@@ -16,7 +18,7 @@ const assetDetailStore = useExternalProviderAssetDetailStore()
 const onEditMore = async () => {
   assetDetailStore.showDetail()
 }
-const { importFromDetail } = useExternalProviderAssetImport()
+const { canImport, importFromDetail } = useExternalProviderAssetImport()
 
 const onImport = () => {
   importFromDetail()
@@ -54,6 +56,7 @@ const onImport = () => {
     >
       <div class="pa-2 d-flex align-center justify-center">
         <ABtnPrimary
+          v-if="canImport([asset.attributes.assetType])"
           class="mr-2"
           size="small"
           @click.stop="onImport"

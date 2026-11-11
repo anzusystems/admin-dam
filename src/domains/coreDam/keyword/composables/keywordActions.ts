@@ -1,8 +1,24 @@
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
-import { SortOrder, useDamCachedUsers } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type {
+  DamKeyword,
+  DamKeywordMinimal,
+  FilterConfig,
+  FilterData,
+  Pagination,
+  ValueObjectOption,
+} from '@anzusystems/common-admin'
+import {
+  SortOrder,
+  defineRecordLoader,
+  syncUserAndTimeTracking,
+  useAlerts,
+  usePageNavigation,
+} from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
 import type { Ref } from 'vue'
+import { ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   fetchKeywordListByIds,
   useFetchKeyword,
@@ -22,7 +38,7 @@ const saveAndCloseButtonLoading = ref(false)
 export const useKeywordListActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
   const listItems = ref<DamKeyword[]>([])
-  const { executeFetch } = useFetchKeywordList()
+  const { execute } = useFetchKeywordList()
 
   // A text search must sort by relevance, so the sort is dropped for that request only
   // and the user's choice is restored once the search is cleared.
@@ -37,7 +53,7 @@ export const useKeywordListActions = () => {
       pagination.value.sortBy = pagination.value.sortBy ?? lastSortBy
     }
     try {
-      listItems.value = await executeFetch(pagination, filterData, filterConfig, {
+      listItems.value = await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     } catch (error) {
@@ -58,22 +74,12 @@ export const useKeywordListActions = () => {
 export const useKeywordDetailActions = () => {
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
-  const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
-  const fetchData = async (id: string) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchKeyword } = useFetchKeyword()
-      const keyword = await fetchKeyword({ urlParams: { id } })
-      keywordOneStore.setKeyword(keyword)
-      addToCachedUsers(keyword.createdBy, keyword.modifiedBy)
-      fetchCachedUsers()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchKeyword } = useFetchKeyword()
+    const keyword = await fetchKeyword({ urlParams: { id }, signal })
+    keywordOneStore.setKeyword(keyword)
+  })
 
   return {
     detailLoading,
@@ -85,22 +91,15 @@ export const useKeywordDetailActions = () => {
 
 export const useKeywordEditActions = () => {
   const v$ = useVuelidate()
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const keywordOneStore = useKeywordOneStore()
   const { keyword } = storeToRefs(keywordOneStore)
 
-  const fetchData = async (id: string) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchKeyword } = useFetchKeyword()
-      const keyword = await fetchKeyword({ urlParams: { id } })
-      keywordOneStore.setKeyword(keyword)
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchData = defineRecordLoader(detailLoading, async (id: string, signal) => {
+    const { execute: fetchKeyword } = useFetchKeyword()
+    const keyword = await fetchKeyword({ urlParams: { id }, signal })
+    keywordOneStore.setKeyword(keyword)
+  })
 
   const onUpdate = async (close = false) => {
     try {
@@ -112,11 +111,12 @@ export const useKeywordEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      const { executeRequest: updateKeyword } = useUpdateKeyword()
-      await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, object: keyword.value })
+      const { execute: updateKeyword } = useUpdateKeyword()
+      const res = await updateKeyword({ urlParams: { id: keywordOneStore.keyword.id }, body: keyword.value })
+      syncUserAndTimeTracking(keywordOneStore.keyword, res)
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/keywords' })
+      push({ name: '/(coreDam)/keywords' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -138,7 +138,7 @@ export const useKeywordEditActions = () => {
 
 export const useKeywordSelectActions = () => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const { executeFetch } = useFetchKeywordList()
+  const { execute } = useFetchKeywordList()
 
   const mapToValueObject = (keyword: DamKeyword): ValueObjectOption<string> => ({
     title: keyword.name,
@@ -150,33 +150,28 @@ export const useKeywordSelectActions = () => {
     name: keyword.name,
   })
 
-  const mapToValueObjects = (keywords: DamKeyword[]): ValueObjectOption<string>[] => {
-    return keywords.map((keyword: DamKeyword) => mapToValueObject(keyword))
-  }
+  const mapToValueObjects = (keywords: DamKeyword[]): ValueObjectOption<string>[] =>
+    keywords.map((keyword: DamKeyword) => mapToValueObject(keyword))
 
-  const mapToMinimals = (keywords: DamKeyword[]): DamKeywordMinimal[] => {
-    return keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
-  }
+  const mapToMinimals = (keywords: DamKeyword[]): DamKeywordMinimal[] =>
+    keywords.map((keyword: DamKeyword) => mapToMinimal(keyword))
 
-  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToValueObjects(
-      await executeFetch(pagination, filterData, filterConfig, {
+  const fetchItems = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToValueObjects(
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
-  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
-    return mapToMinimals(
-      await executeFetch(pagination, filterData, filterConfig, {
+  const fetchItemsMinimal = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) =>
+    mapToMinimals(
+      await execute(pagination, filterData, filterConfig, {
         urlParams: { extSystemId: currentExtSystemId.value },
       })
     )
-  }
 
-  const fetchItemsByIds = async (ids: string[]) => {
-    return mapToValueObjects(await fetchKeywordListByIds(currentExtSystemId.value, ids))
-  }
+  const fetchItemsByIds = async (ids: string[]) =>
+    mapToValueObjects(await fetchKeywordListByIds(currentExtSystemId.value, ids))
 
   return {
     mapToValueObject,

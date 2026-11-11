@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import DistributionCategoryEditForm from '@/domains/coreDam/distributionCategory/components/DistributionCategoryEditForm.vue'
+import { useDistributionCategoryEditActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -19,22 +29,19 @@ const {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
-    {
-      title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
-      routeName: '/(coreDam)/distribution-categories/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
+  {
+    title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.edit'),
+    routeName: '/(coreDam)/distribution-categories/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/distribution-categories',
+  skipRouteNames: ['/(coreDam)/distribution-categories/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -51,7 +58,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-categories'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/distribution-categories'"
+        :skip-route-names="['/(coreDam)/distribution-categories/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

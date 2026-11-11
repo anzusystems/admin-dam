@@ -1,7 +1,19 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  AUnsavedConfirmDialog,
+  defineBreadcrumbs,
+  useRecordPage,
+  useUnsavedChangesGuard,
+} from '@anzusystems/common-admin'
+import { nextTick, onBeforeUnmount, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import PodcastEditForm from '@/domains/coreDam/podcast/components/PodcastEditForm.vue'
+import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -9,6 +21,9 @@ const id = (route.params as { id: string }).id.toString()
 
 const { saveButtonLoading, saveAndCloseButtonLoading, detailLoading, fetchData, resetStore, onUpdate, podcast } =
   usePodcastEditActions()
+
+// Empty sources: the list editor registers itself with the guard by its label.
+const guard = useUnsavedChangesGuard({ sources: [] })
 
 const editForm = ref<InstanceType<typeof PodcastEditForm> | null>(null)
 
@@ -20,12 +35,15 @@ const onSave = () => {
   })
 }
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/podcasts',
+  skipRouteNames: [
+    '/(coreDam)/podcasts/[id]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+    '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -34,16 +52,14 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
-    {
-      title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.edit'),
-      routeName: '/(coreDam)/podcasts/[id]/edit',
-      routeParams: { id },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.podcast.list'), routeName: '/(coreDam)/podcasts' },
+  {
+    title: podcast.value.texts.title || t('breadcrumb.coreDam.podcast.edit'),
+    routeName: '/(coreDam)/podcasts/[id]/edit',
+    routeParams: { id },
+  },
+])
 </script>
 
 <template>
@@ -55,7 +71,14 @@ const breadcrumbs = defineBreadcrumbs(
         :disabled="saveAndCloseButtonLoading"
         @save-record="onSave"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/podcasts'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/podcasts'"
+        :skip-route-names="[
+          '/(coreDam)/podcasts/[id]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]',
+          '/(coreDam)/podcasts/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 
@@ -67,4 +90,9 @@ const breadcrumbs = defineBreadcrumbs(
       />
     </VCardText>
   </ACard>
+  <AUnsavedConfirmDialog
+    v-model="guard.promptOpen.value"
+    :dirty-labels="guard.dirtyLabels.value"
+    @resolve="guard.resolvePrompt"
+  />
 </template>

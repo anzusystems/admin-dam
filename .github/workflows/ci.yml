@@ -18,7 +18,7 @@ jobs:
       matrix:
         include:
           - node-version: 24
-            docker-image: anzusystems/node:4.1.0-node24-nginx-browsers
+            docker-image: anzusystems/node:4.2.0-node24-nginx-browsers
 
     name: Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
@@ -32,9 +32,15 @@ jobs:
 
       - name: Cache Yarn packages
         id: yarn-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
-          path: node_modules
+          # node_modules/.cache has its own entry below. Here it would stay frozen at the last
+          # yarn.lock change and be restored across dependency changes via the fallback key.
+          # `node_modules/*`, not `node_modules`: actions/cache globs without implicit descendants, so the
+          # bare directory would ignore the exclusion. `*` matches dotfiles, so .yarn-state.yml stays in.
+          path: |
+            node_modules/*
+            !node_modules/.cache
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock', '*/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -42,8 +48,29 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      # Only caches that track their inputs: vue-tsc's build info and vitest's test order. eslint, stylelint
+      # and vitest's transform cache stay off because they reuse results without tracking all dependencies.
+      # A new entry per passing run, restored from the latest for the same runner,
+      # Node version, yarn.lock and tsconfigs. The tsconfigs are in the key
+      # because vue-tsc's build info does not notice a vueCompilerOptions change.
+      - name: Restore tool caches
+        id: tool-cache
+        uses: actions/cache/restore@v6
+        with:
+          path: node_modules/.cache
+          key: tool-cache-v1-${{ runner.os }}-${{ runner.arch }}-node${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('tsconfig*.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            tool-cache-v1-${{ runner.os }}-${{ runner.arch }}-node${{ matrix.node-version }}-${{ hashFiles('yarn.lock') }}-${{ hashFiles('tsconfig*.json') }}-
+
       - name: Run Yarn CI
         run: yarn ci
+
+      # Only after a passing yarn ci, and before the audit, which can fail the job on its own.
+      - name: Save tool caches
+        uses: actions/cache/save@v6
+        with:
+          path: node_modules/.cache
+          key: ${{ steps.tool-cache.outputs.cache-primary-key }}
 
       - name: Run Security check
         run: yarn npm audit

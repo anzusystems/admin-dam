@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
+import { computed, provide, watch } from 'vue'
+
 import { useDistributionCategorySelectActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { useDistributionCategoryFilter } from '@/domains/coreDam/distributionCategory/filter/DistributionCategoryFilter'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string | number | null | string[] | number[]
     assetType: DamAssetTypeType
     label?: string | undefined
     required?: boolean | undefined
@@ -24,12 +25,9 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string | number | null | string[] | number[]): void
-}>()
-
+const modelValue = defineModel<string | number | null | string[] | number[]>({ required: true })
 // AFormRemoteAutocomplete's model-value accepts only string ids — narrow the wider prop here.
-const innerModelValue = computed(() => props.modelValue as string | string[] | null)
+const innerModelValue = computed(() => modelValue.value as string | string[] | null)
 
 const { fetchItems, fetchItemsByIds } = useDistributionCategorySelectActions()
 
@@ -58,6 +56,6 @@ watch(
     filter-by-field="name"
     :data-cy="dataCy"
     :prefetch="disableInitFetch ? false : 'hover'"
-    @update:model-value="emit('update:modelValue', $event ?? null)"
+    @update:model-value="modelValue = $event ?? null"
   />
 </template>

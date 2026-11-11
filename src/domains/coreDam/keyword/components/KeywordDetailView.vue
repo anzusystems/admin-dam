@@ -1,33 +1,40 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useKeywordDetailActions } from '@/domains/coreDam/keyword/composables/keywordActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import KeywordDetail from '@/domains/coreDam/keyword/components/KeywordDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useKeywordDetailActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, keyword } = useKeywordDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
-    {
-      title: keyword.value.name || t('breadcrumb.coreDam.keyword.detail'),
-      routeName: '/(coreDam)/keywords/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
+  {
+    title: keyword.value.name || t('breadcrumb.coreDam.keyword.detail'),
+    routeName: '/(coreDam)/keywords/[id]',
+  },
+])
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/keywords',
+  skipRouteNames: ['/(coreDam)/keywords/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -45,7 +52,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/keywords/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/keywords'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/keywords'"
+        :skip-route-names="['/(coreDam)/keywords/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

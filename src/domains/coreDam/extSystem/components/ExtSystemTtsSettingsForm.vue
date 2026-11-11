@@ -1,23 +1,28 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { ACL } from '@/domains/system/auth/auth'
-import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
-import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   AAssetSelect,
+  AFormRemoteAutocomplete,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  type AssetSelectReturnData,
   DamAssetType,
+  FilterInnerConfigKey,
+  FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
-import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
+import type { AssetSelectReturnData, IntegerId } from '@anzusystems/common-admin'
+import { computed, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
+import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useKeywordSelectActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordFilter'
+import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
+import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
@@ -95,20 +100,29 @@ const clearEpilog = () => {
               <span v-else>—</span>
               <VBtn
                 v-if="extSystem.ttsFreeAudioEpilogAsset"
-                icon="mdi-trash-can-outline"
+                :aria-label="t('common.button.clear')"
+                icon
                 variant="text"
                 size="small"
                 class="ml-2"
                 data-cy="ext-system-tts-free-audio-epilog-asset-clear"
                 @click.stop="clearEpilog"
-              />
+              >
+                <VIcon icon="mdi-trash-can-outline" />
+                <VTooltip
+                  activator="parent"
+                  location="bottom"
+                >
+                  {{ t('common.button.clear') }}
+                </VTooltip>
+              </VBtn>
               <AAssetSelect
                 :select-licences="epilogLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"
                 :asset-type="DamAssetType.Audio"
-                @on-confirm="onEpilogSelect"
+                @confirm="onEpilogSelect"
               >
                 <template #activator="{ props: assetSelectProps }">
                   <VBtn

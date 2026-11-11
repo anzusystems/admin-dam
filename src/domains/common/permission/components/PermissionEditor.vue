@@ -1,31 +1,33 @@
 <script lang="ts" setup>
-import type { Permissions } from '@/shared/types/Permission'
-import PermissionGrantEditor from '@/domains/common/permission/components/PermissionGrantEditor.vue'
-import PermissionValueChip from '@/domains/common/permission/components/PermissionValueChip.vue'
-import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
 import type { GrantType } from '@anzusystems/common-admin'
 import {
   Grant,
   GrantOrigin,
   GrantOriginDefault,
+  ROLE_SUPER_ADMIN,
+  cloneDeep,
+  isUndefined,
   objectDeletePropertyByPath,
   objectGetValueByPath,
   objectSetValueByPath,
-  ROLE_SUPER_ADMIN,
 } from '@anzusystems/common-admin'
 import type { AxiosInstance } from 'axios'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import PermissionGrantEditor from '@/domains/common/permission/components/PermissionGrantEditor.vue'
+import PermissionValueChip from '@/domains/common/permission/components/PermissionValueChip.vue'
+import { usePermissionConfigActions } from '@/domains/common/permission/composables/permissionConfigActions'
+import type { Permissions } from '@/shared/types/Permission'
 
 const props = defineProps<{
-  modelValue: Permissions
   resolvedPermissions?: Permissions
   roles?: string[]
   client: () => AxiosInstance
   isEdit?: boolean
 }>()
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: Permissions): void
-}>()
-const permissions = computed(() => cloneDeep(props.modelValue))
+const modelValue = defineModel<Permissions>({ required: true })
+const permissions = computed(() => cloneDeep(modelValue.value))
 const { permissionConfig, loadingPermissionConfig, isPermissionConfigInitialized, translatePermission } =
   // eslint-disable-next-line vue/no-setup-props-reactivity-loss
   usePermissionConfigActions(props.client)
@@ -33,11 +35,11 @@ const changeGrant = (subject: string, action: string, grant?: GrantType) => {
   const permissionName = subject + '_' + action
   if (isUndefined(grant) && Object.hasOwn(permissions.value, permissionName)) {
     objectDeletePropertyByPath(permissions.value, permissionName)
-    emit('update:modelValue', permissions.value)
+    modelValue.value = permissions.value
     return
   }
   objectSetValueByPath(permissions.value, permissionName, grant)
-  emit('update:modelValue', permissions.value)
+  modelValue.value = permissions.value
 }
 const getSelectedGrant = (subject: string, action: string) => {
   const permissionName = subject + '_' + action
@@ -125,9 +127,7 @@ const { t } = useI18n()
             >
               <td>
                 {{ translatePermission('actions', permissionAction) }}
-                <div class="text-body-small text-disabled">
-                  {{ permissionSubject }}_{{ permissionAction }}
-                </div>
+                <div class="text-body-small text-disabled">{{ permissionSubject }}_{{ permissionAction }}</div>
               </td>
               <td v-if="isEdit">
                 <PermissionGrantEditor

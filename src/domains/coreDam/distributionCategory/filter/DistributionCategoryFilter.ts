@@ -1,7 +1,8 @@
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { DamAssetType, DamAssetTypeDefault, createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { DamAssetType, DamAssetTypeDefault } from '@anzusystems/common-admin'
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const listFields = [
   { name: 'id' as const, default: null, type: 'string' },
@@ -12,15 +13,10 @@ const listFields = [
 const listFilterStore = createFilterStore(listFields)
 
 export function useDistributionCategoryListFilter() {
-  const { filterConfig, filterData } = createFilter(listFields, listFilterStore, {
+  return createFilter(listFields, listFilterStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }
 
 export function useDistributionCategoryFilter() {
@@ -29,13 +25,8 @@ export function useDistributionCategoryFilter() {
     { name: 'type' as const, default: DamAssetTypeDefault, type: 'string' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { DamDistributionServiceName } from '@anzusystems/common-admin'
+import { useAlerts } from '@anzusystems/common-admin'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { fetchYoutubePlaylists } from '@/domains/coreDam/asset/api/distributionYoutubeApi'
 import type { YoutubePlaylist } from '@/domains/coreDam/asset/types/Distribution'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string
     distributionServiceName: DamDistributionServiceName
     label?: string
   }>(),
@@ -13,29 +16,23 @@ const props = withDefaults(
     label: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string): void
-}>()
-
+const modelValue = defineModel<string>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: string) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
+const { t } = useI18n()
 const { showErrorsDefault } = useAlerts()
 
 const items = ref<YoutubePlaylist[]>([])
 const loading = ref(false)
 
-const itemsComputed = computed(() => {
-  return items.value.map((item) => {
-    return { title: item.title, value: item.id }
-  })
-})
+const itemsComputed = computed(() => items.value.map((item) => ({ title: item.title, value: item.id })))
 
 const fetchItems = async (forceReload = false) => {
   loading.value = true
@@ -61,12 +58,21 @@ onMounted(() => {
   >
     <template #append>
       <VBtn
+        :aria-label="t('common.button.refresh')"
         class="ml-2"
-        icon="mdi-refresh"
+        icon
         size="small"
         variant="text"
         @click.stop="fetchItems(true)"
-      />
+      >
+        <VIcon icon="mdi-refresh" />
+        <VTooltip
+          activator="parent"
+          location="bottom"
+        >
+          {{ t('common.button.refresh') }}
+        </VTooltip>
+      </VBtn>
     </template>
   </VSelect>
 </template>

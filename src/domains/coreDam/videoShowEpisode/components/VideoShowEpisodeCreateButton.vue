@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY, useCreateVideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import type { DocId } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY, useCreateVideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
 import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
-import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -18,9 +22,7 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: VideoShowEpisode): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: VideoShowEpisode] }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
 
@@ -36,8 +38,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  const { executeRequest } = useCreateVideoShowEpisode()
-  return await executeRequest({ object: videoShowEpisode.value })
+  const { execute } = useCreateVideoShowEpisode()
+  return await execute({ body: videoShowEpisode.value })
 }
 </script>
 
@@ -50,9 +52,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.videoShowEpisode.button.create') }}

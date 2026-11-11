@@ -1,5 +1,16 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import UserEditForm from '@/domains/coreDam/user/components/UserEditForm.vue'
 import { useUserEditActions } from '@/domains/coreDam/user/composables/userActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
@@ -7,27 +18,24 @@ import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, user } =
+const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate } =
   useUserEditActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
-    {
-      title: user.value.id + '' || t('breadcrumb.coreDam.user.edit'),
-      routeName: '/(coreDam)/users/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  {
+    title: `${t('breadcrumb.coreDam.user.edit')} #${id}`,
+    routeName: '/(coreDam)/users/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/users',
+  skipRouteNames: ['/(coreDam)/users/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -45,7 +53,10 @@ onBeforeUnmount(() => {
         @save-record="onUpdate"
       />
 
-      <AActionCloseButton :route-name="'/(coreDam)/users'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/users'"
+        :skip-route-names="['/(coreDam)/users/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

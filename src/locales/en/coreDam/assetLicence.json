@@ -4,6 +4,14 @@
     "name": "Name",
     "extSystem": "External system",
     "extId": "External ID",
+    "flags": {
+      "manualUploadAllowed": "Manual upload allowed",
+      "directUseAllowed": "Direct use allowed"
+    },
+    "autoDelete": {
+      "active": "Auto delete",
+      "olderThanDays": "Delete older than (days)"
+    },
     "internalRule": {
       "active": "Internal rule active",
       "markAsInternalSince": "Mark as internal since"

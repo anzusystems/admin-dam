@@ -1,17 +1,24 @@
 <script setup lang="ts">
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+import DistributionListItemCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustom.vue'
+import DistributionListItemEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemEmpty.vue'
+import DistributionListItemJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemJw.vue'
+import DistributionListItemYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemYoutube.vue'
+import {
+  useAssetDetailDistributionDialog,
+  useDistributionServiceAllowed,
+} from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
+import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import DistributionListItemCustom from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemCustom.vue'
-import DistributionListItemEmpty from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemEmpty.vue'
-import DistributionListItemJw from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemJw.vue'
-import DistributionListItemYoutube from '@/domains/coreDam/asset/components/detail/components/distribution/DistributionListItemYoutube.vue'
-import { useAssetDetailDistributionDialog } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialog'
-import { useAssetDetailDistributionDialogCancel } from '@/domains/coreDam/asset/components/detail/composables/assetDetailDistributionDialogCancel'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
-import { DamDistributionServiceType, useDamConfigStore } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -31,11 +38,17 @@ const distributionType = computed(() => {
   return null
 })
 
-const showRedistribute = computed(() => {
-  return damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
-    props.item.status
-  )
-})
+const isDistributionServiceAllowed = useDistributionServiceAllowed()
+// Not for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
+const showRedistribute = computed(
+  () =>
+    !assetDetailStore.isDeleting &&
+    isDistributionServiceAllowed(props.item.distributionService) &&
+    damPrvConfig.value.distributionServices[props.item.distributionService].allowedRedistributeStatuses.includes(
+      props.item.status
+    )
+)
 
 const componentComputed = computed(() => {
   switch (distributionType.value) {

@@ -1,7 +1,16 @@
 <script lang="ts" setup>
-import { ACL } from '@/domains/system/auth/auth'
+import { LogTypeDefault, useDebugFeatures } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
 
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
+
+const { useCurrentUser } = useAuth()
+const { showDebugFeatures } = useDebugFeatures()
 const { t } = useI18n()
+
+// Logs, and public exports for now, are gated on the role, not a permission.
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 </script>
 
 <template>
@@ -47,7 +56,7 @@ const { t } = useI18n()
         data-cy="user-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_EXT_SYSTEM_UI">
+    <Acl :permission="[ACL.DAM_EXT_SYSTEM_UI, ACL.DAM_EXT_SYSTEM_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/ext-systems' }"
         prepend-icon="mdi-television-stop"
@@ -55,7 +64,7 @@ const { t } = useI18n()
         data-cy="ext-system-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_UI, ACL.DAM_ASSET_LICENCE_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licences' }"
         prepend-icon="mdi-account-key"
@@ -63,7 +72,7 @@ const { t } = useI18n()
         data-cy="asset-licence-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_ASSET_LICENCE_GROUP_UI">
+    <Acl :permission="[ACL.DAM_ASSET_LICENCE_GROUP_UI, ACL.DAM_ASSET_LICENCE_GROUP_LIST]">
       <VListItem
         :to="{ name: '/(coreDam)/asset-licence-groups' }"
         prepend-icon="mdi-account-key"
@@ -120,6 +129,33 @@ const { t } = useI18n()
         data-cy="user-permissions"
       />
     </Acl>
+    <!--
+      Merged view: the AnzuUser and dam parts of one record on one page, saved by one call.
+      It sits beside both originals until parity is signed off. Then
+      it takes over `/users` and the entries collapse into one.
+    -->
+    <Acl
+      v-if="showDebugFeatures"
+      :permission="ACL.DAM_USER_READ"
+    >
+      <VListItem
+        :to="{ name: '/(coreDam)/users-new' }"
+        prepend-icon="mdi-account-edit-outline"
+        :title="`${t('sidebar.settings.anzuUser')} (new)`"
+        data-cy="user-permissions-new"
+      />
+    </Acl>
+    <Acl
+      v-if="showDebugFeatures"
+      :permission="ACL.DAM_PERMISSION_GROUP_UI"
+    >
+      <VListItem
+        :to="{ name: '/(common)/permission-groups-new' }"
+        prepend-icon="mdi-folder-account-outline"
+        :title="`${t('sidebar.settings.permissionGroups')} (new)`"
+        data-cy="permission-group-settings-new"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
       <VListItem
         :to="{ name: '/(coreDam)/jobs' }"
@@ -136,14 +172,16 @@ const { t } = useI18n()
         data-cy="job-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_PUBLIC_EXPORT_CREATE">
+    <!-- TODO(BE): core-dam checks dam_publicExport_read on the list without a record, which its ext system voter denies
+         to all but a super admin; should be dam_publicExport_ui and _read (ACL BE task #86852/2.12). -->
+    <template v-if="isSuperAdmin">
       <VListItem
         :to="{ name: '/(coreDam)/public-exports' }"
         prepend-icon="mdi-export"
         :title="t('sidebar.settings.publicExport')"
         data-cy="public-export"
       />
-    </Acl>
+    </template>
     <Acl :permission="ACL.DAM_TTS_VOICE_FAMILY_UI">
       <VListItem
         :to="{ name: '/(coreDam)/voice-families' }"
@@ -160,13 +198,13 @@ const { t } = useI18n()
         data-cy="tts-narration-request-settings"
       />
     </Acl>
-    <Acl :permission="ACL.DAM_LOG_UI">
+    <template v-if="isSuperAdmin">
       <VListItem
-        :to="{ name: '/(common)/logs' }"
+        :to="{ name: '/(common)/logs/dam/[type]', params: { type: LogTypeDefault } }"
         prepend-icon="mdi-math-log"
         :title="t('sidebar.settings.log')"
         data-cy="log-settings"
       />
-    </Acl>
+    </template>
   </VList>
 </template>

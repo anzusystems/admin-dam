@@ -1,19 +1,22 @@
 <script lang="ts" setup>
 import {
   ACreateDialog,
+  ADamAssetLicenceRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
-  DamAssetLicenceRemoteAutocomplete,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 import { ENTITY, useCreatePublicExport } from '@/domains/coreDam/publicExport/api/publicExportApi'
+import { usePublicExportValidation } from '@/domains/coreDam/publicExport/composables/publicExportValidation'
 import { usePublicExportFactory } from '@/domains/coreDam/publicExport/factory/PublicExportFactory'
 import type { PublicExport } from '@/domains/coreDam/publicExport/types/PublicExport'
-import { usePublicExportValidation } from '@/domains/coreDam/publicExport/composables/publicExportValidation'
-import { useExportTypeTypes } from '@/domains/coreDam/asset/valueObject/ExportType'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -25,9 +28,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: PublicExport): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: PublicExport] }>()
 
 const { createDefault } = usePublicExportFactory()
 const publicExport = ref<PublicExport>(createDefault())
@@ -41,8 +42,8 @@ const onOpen = () => {
 }
 
 const create = async () => {
-  const { executeRequest: createPublicExport } = useCreatePublicExport()
-  return await createPublicExport({ object: publicExport.value })
+  const { execute: createPublicExport } = useCreatePublicExport()
+  return await createPublicExport({ body: publicExport.value })
 }
 
 const { exportTypeOptions } = useExportTypeTypes()
@@ -57,9 +58,9 @@ const { exportTypeOptions } = useExportTypeTypes()
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #button-title>
       {{ t('coreDam.publicExport.button.create') }}
@@ -89,7 +90,7 @@ const { exportTypeOptions } = useExportTypeTypes()
           />
         </ARow>
         <ARow>
-          <DamAssetLicenceRemoteAutocomplete
+          <ADamAssetLicenceRemoteAutocomplete
             v-model="publicExport.licences"
             :client="damClient"
             :label="t('coreDam.publicExport.model.assetLicence')"

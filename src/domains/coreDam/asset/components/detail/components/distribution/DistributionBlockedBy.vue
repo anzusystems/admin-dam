@@ -1,30 +1,38 @@
 <script setup lang="ts">
+import {
+  DamDistributionRequirementStrategy,
+  cloneDeep,
+  isUndefined,
+  useDamConfigState,
+  usePagination,
+  useValidate,
+} from '@anzusystems/common-admin'
+import type {
+  DamAssetTypeType,
+  DamDistributionRequirementsConfig,
+  DamDistributionServiceName,
+  DocIdNullable,
+} from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { ErrorObject } from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useDistributionFilter } from '@/domains/coreDam/asset/filter/DistributionFilter'
-import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
-import { damClient } from '@/shared/apiClients/damClient'
-import { fetchAssetFileDistributionList } from '@/domains/coreDam/asset/api/distributionApi'
 import type {
   DistributionCustomItem,
   DistributionJwItem,
   DistributionYoutubeItem,
 } from '@/domains/coreDam/asset/types/Distribution'
-import {
-  type DamAssetTypeType,
-  type DamDistributionRequirementsConfig,
-  DamDistributionRequirementStrategy,
-  type DamDistributionServiceName,
-  type DocIdNullable,
-  useDamConfigState,
-} from '@anzusystems/common-admin'
-import { usePagination } from '@anzusystems/common-admin/labs'
-import useVuelidate, { type ErrorObject } from '@vuelidate/core'
+import { useDistributionStatus } from '@/domains/coreDam/asset/valueObject/DamDistributionStatus'
+import { damClient } from '@/shared/apiClients/damClient'
 
 // now only supports strategy AtLeastOne, as BE too
 
 const props = withDefaults(
   defineProps<{
-    modelValue: string[]
     distributionServiceName: DamDistributionServiceName
     config: DamDistributionRequirementsConfig
     assetFileId: DocIdNullable
@@ -32,16 +40,13 @@ const props = withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: string[]): void
-}>()
-
+const modelValue = defineModel<string[]>({ required: true })
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', cloneDeep(newValue))
+    modelValue.value = cloneDeep(newValue)
   },
 })
 
@@ -64,9 +69,7 @@ const loadDistributions = async (fileId: DocIdNullable) => {
   )
 }
 
-const assetFileIdComputed = computed(() => {
-  return props.assetFileId
-})
+const assetFileIdComputed = computed(() => props.assetFileId)
 
 const { getDamConfigExtSystem } = useDamConfigState(damClient)
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -75,26 +78,22 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const itemsComputed = computed(() => {
-  return distributions.value.map((item) => {
-    return {
-      title:
-        (configExtSystem[props.assetType]?.distribution?.distributionRequirements[item.distributionService]?.title ??
-          item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
-      value: item.id,
-    }
-  })
-})
+const itemsComputed = computed(() =>
+  distributions.value.map((item) => ({
+    title:
+      (configExtSystem[props.assetType]?.distribution?.distributionRequirements[item.distributionService]?.title ??
+        item.distributionService) + ` (${getDistributionStatusOption(item.status)?.title})`,
+    value: item.id,
+  }))
+)
 
 const { requiredIf } = useValidate()
 
-const rules = computed(() => {
-  return {
-    modelValueComputed: {
-      required: requiredIf(props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne),
-    },
-  }
-})
+const rules = computed(() => ({
+  modelValueComputed: {
+    required: requiredIf(props.config.strategy === DamDistributionRequirementStrategy.AtLeastOne),
+  },
+}))
 
 const v$ = useVuelidate(rules, { modelValueComputed })
 
@@ -128,7 +127,7 @@ watch(
       @blur="onBlur"
     >
       <template #label>
-        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="required" />
+        {{ t('coreDam.distribution.common.blockedByDistribution') }}<span class="a-required-mark" />
       </template>
     </VSelect>
   </div>

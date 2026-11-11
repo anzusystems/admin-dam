@@ -2,32 +2,32 @@
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  SortOrder,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, DocId } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
+import VideoShowEpisodeFilter from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
 import { useVideoShowEpisodeListActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeListFilter } from '@/domains/coreDam/videoShowEpisode/filter/VideoShowEpisodeFilter'
-import VideoShowEpisodeFilter from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeFilter.vue'
 import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = VideoShowEpisode
 
@@ -118,10 +118,6 @@ const resetFilterAction = () => {
 onMounted(() => {
   loadStoredFilters(pagination, getList)
 })
-
-defineExpose({
-  refresh: getList,
-})
 </script>
 
 <template>
@@ -147,7 +143,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.flags.webPublicExportEnabled="{ item }: { item: DatatableItem }">
@@ -181,14 +176,16 @@ defineExpose({
             <ATableEditButton
               :route-params="{ id: props.videoShowId, episodeId: item.id }"
               :route-name="'/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit'"
+              :acl="
+                item.asset
+                  ? [ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE, ACL.DAM_ASSET_UPDATE]
+                  : ACL.DAM_VIDEO_SHOW_EPISODE_UPDATE
+              "
             />
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

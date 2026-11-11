@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { useTheme } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 import { useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueUploadList from '@/domains/coreDam/asset/components/queue/AssetQueueUploadList.vue'
 
 const { t } = useI18n()
 
@@ -20,12 +24,8 @@ const {
 } = useAssetFooterUploadView()
 const uploadQueuesStore = useUploadQueuesStore()
 
-const queueTotalCount = computed(() => {
-  return uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
-const queueProcessedCount = computed(() => {
-  return uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL)
-})
+const queueTotalCount = computed(() => uploadQueuesStore.getQueueTotalCount(QUEUE_ID_UPLOAD_GLOBAL))
+const queueProcessedCount = computed(() => uploadQueuesStore.getQueueProcessedCount(QUEUE_ID_UPLOAD_GLOBAL))
 
 watch(queueTotalCount, (newValue, oldValue) => {
   if (newValue !== oldValue && newValue > 0) {
@@ -33,9 +33,7 @@ watch(queueTotalCount, (newValue, oldValue) => {
   }
 })
 
-const isUploading = computed(() => {
-  return queueTotalCount.value > queueProcessedCount.value
-})
+const isUploading = computed(() => queueTotalCount.value > queueProcessedCount.value)
 </script>
 
 <template>
@@ -84,6 +82,7 @@ const isUploading = computed(() => {
           </div>
           <VBtn
             v-show="showMinimalUpload"
+            :aria-label="t('common.system.modal.hide')"
             icon
             variant="flat"
             :height="26"
@@ -102,6 +101,7 @@ const isUploading = computed(() => {
           </VBtn>
           <VBtn
             v-show="showCompactUpload"
+            :aria-label="t('common.system.modal.show')"
             icon
             variant="flat"
             :height="26"

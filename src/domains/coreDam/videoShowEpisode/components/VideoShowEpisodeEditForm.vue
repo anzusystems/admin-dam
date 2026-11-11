@@ -1,9 +1,12 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { ENTITY } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
 import { useVideoShowEpisodeEditActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
 import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { videoShowEpisode } = useVideoShowEpisodeEditActions()
 
@@ -71,7 +74,9 @@ const { t } = useI18n()
       <VCol
         cols="12"
         md="4"
-      />
+      >
+        <DamTrackingFields :data="videoShowEpisode" />
+      </VCol>
     </VRow>
   </ASystemEntityScope>
 </template>

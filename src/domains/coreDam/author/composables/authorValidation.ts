@@ -1,4 +1,8 @@
 import type { DamAuthor, ValidationScope } from '@anzusystems/common-admin'
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
 
 const { required, minLength } = useValidate()
 

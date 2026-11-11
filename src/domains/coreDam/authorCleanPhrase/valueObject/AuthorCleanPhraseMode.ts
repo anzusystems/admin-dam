@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const AuthorCleanPhraseMode = {
   Remove: 'remove',
   Replace: 'replace',
@@ -25,9 +29,8 @@ export function useAuthorCleanPhraseModeTypes() {
     },
   ])
 
-  const getAuthorCleanPhraseModeOption = (value: AuthorCleanPhraseModeType) => {
-    return authorCleanPhraseModeOptions.value.find((item) => item.value === value)
-  }
+  const getAuthorCleanPhraseModeOption = (value: AuthorCleanPhraseModeType) =>
+    authorCleanPhraseModeOptions.value.find((item) => item.value === value)
 
   return {
     authorCleanPhraseModeOptions,

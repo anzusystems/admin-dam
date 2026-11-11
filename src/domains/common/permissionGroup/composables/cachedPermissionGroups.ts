@@ -1,4 +1,6 @@
-import type { PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
+import type { IntegerId, PermissionGroup, PermissionGroupMinimal } from '@anzusystems/common-admin'
+import { defineCached } from '@anzusystems/common-admin'
+
 import { useFetchPermissionGroupListByIds } from '@/domains/common/permissionGroup/api/permissionGroupApi'
 
 const mapFullToMinimal = (permissionGroup: PermissionGroup): PermissionGroupMinimal => ({
@@ -7,13 +9,11 @@ const mapFullToMinimal = (permissionGroup: PermissionGroup): PermissionGroupMini
   permissions: permissionGroup.permissions,
 })
 
-const mapIdToMinimal = (id: IntegerId): PermissionGroupMinimal => {
-  return { id: id, title: '', permissions: {} }
-}
+const mapIdToMinimal = (id: IntegerId): PermissionGroupMinimal => ({ id: id, title: '', permissions: {} })
 
 const fetchPermissionGroupListByIds = (ids: IntegerId[]) => {
-  const { executeFetch } = useFetchPermissionGroupListByIds()
-  return executeFetch(ids)
+  const { execute } = useFetchPermissionGroupListByIds()
+  return execute(ids)
 }
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
@@ -22,14 +22,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   PermissionGroupMinimal
 >(mapFullToMinimal, mapIdToMinimal, fetchPermissionGroupListByIds)
 
-export const useCachedPermissionGroups = () => {
-  return {
-    addManualToCachedPermissionGroups: addManual,
-    addToCachedPermissionGroups: add,
-    fetchCachedPermissionGroups: fetch,
-    cachedPermissionGroups: cache,
-    hasCachedPermissionGroup: has,
-    getCachedPermissionGroup: get,
-    isLoadedCachedPermissionGroup: isLoaded,
-  }
-}
+export const useCachedPermissionGroups = () => ({
+  addManualToCachedPermissionGroups: addManual,
+  addToCachedPermissionGroups: add,
+  fetchCachedPermissionGroups: fetch,
+  cachedPermissionGroups: cache,
+  hasCachedPermissionGroup: has,
+  getCachedPermissionGroup: get,
+  isLoadedCachedPermissionGroup: isLoaded,
+})

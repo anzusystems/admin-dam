@@ -1,33 +1,40 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useDistributionCategoryDetailActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import DistributionCategoryDetail from '@/domains/coreDam/distributionCategory/components/DistributionCategoryDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useDistributionCategoryDetailActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, distributionCategory } = useDistributionCategoryDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
-    {
-      title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.detail'),
-      routeName: '/(coreDam)/distribution-categories/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.distributionCategory.list'), routeName: '/(coreDam)/distribution-categories' },
+  {
+    title: distributionCategory.value.name || t('breadcrumb.coreDam.distributionCategory.detail'),
+    routeName: '/(coreDam)/distribution-categories/[id]',
+  },
+])
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/distribution-categories',
+  skipRouteNames: ['/(coreDam)/distribution-categories/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -45,7 +52,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/distribution-categories/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/distribution-categories'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/distribution-categories'"
+        :skip-route-names="['/(coreDam)/distribution-categories/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

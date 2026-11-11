@@ -2,19 +2,22 @@
 import {
   ACreateDialog,
   AFormDatetimePicker,
-  AFormTextarea,
   AFormTextField,
+  AFormTextarea,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreatePodcast } from '@/domains/coreDam/podcast/api/podcastApi'
+import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastFactory } from '@/domains/coreDam/podcast/factory/PodcastFactory'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
-import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -26,9 +29,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: Podcast): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: Podcast] }>()
 
 const { t } = useI18n()
 
@@ -43,11 +44,9 @@ const onOpen = () => {
   podcast.value = createDefault(currentAssetLicenceId.value)
 }
 
-const { executeRequest: createPodcast } = useCreatePodcast()
+const { execute: createPodcast } = useCreatePodcast()
 
-const create = async () => {
-  return await createPodcast({ object: podcast.value })
-}
+const create = async () => await createPodcast({ body: podcast.value })
 
 const { podcastModeOptions } = usePodcastMode()
 
@@ -63,9 +62,9 @@ const { v$ } = usePodcastValidation(podcast)
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.podcast.meta.create') }}

@@ -1,5 +1,10 @@
-import type { AnzuUser } from '@anzusystems/common-admin'
-import type { FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin/labs'
+import type { AnzuUser, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
+import { defineRecordLoader, defineRecordSave, isInt, useAlerts, usePageNavigation } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+
 import {
   useCreateAnzuUser,
   useFetchAnzuUser,
@@ -20,11 +25,11 @@ export const useAnzuUserActions = () => {
   const { addToCachedPermissionGroups, fetchCachedPermissionGroups } = useCachedPermissionGroups()
 
   const anzuUserList = ref<AnzuUser[]>([])
-  const { executeFetch } = useFetchAnzuUserList()
+  const { execute } = useFetchAnzuUserList()
   const fetchAnzuUserList = async (pagination: Ref<Pagination>, filterData: FilterData, filterConfig: FilterConfig) => {
     listLoading.value = true
     try {
-      anzuUserList.value = await executeFetch(pagination, filterData, filterConfig)
+      anzuUserList.value = await execute(pagination, filterData, filterConfig)
       anzuUserList.value.forEach((anzuUser) => addToCachedPermissionGroups(anzuUser.permissionGroups))
       fetchCachedPermissionGroups()
     } catch (error) {
@@ -37,22 +42,15 @@ export const useAnzuUserActions = () => {
   const anzuUserOneStore = useAnzuUserOneStore()
   const { anzuUser } = storeToRefs(anzuUserOneStore)
 
-  const fetchAnzuUser = async (id: number) => {
-    detailLoading.value = true
-    try {
-      const { executeRequest: fetchAnzuUserRequest } = useFetchAnzuUser()
-      const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id } })
-      anzuUserOneStore.setAnzuUser(anzuUserRes)
-      addToCachedPermissionGroups(anzuUserRes.permissionGroups)
-      fetchCachedPermissionGroups()
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      detailLoading.value = false
-    }
-  }
+  const fetchAnzuUser = defineRecordLoader(detailLoading, async (id: number, signal) => {
+    const { execute: fetchAnzuUserRequest } = useFetchAnzuUser()
+    const anzuUserRes = await fetchAnzuUserRequest({ urlParams: { id }, signal })
+    anzuUserOneStore.setAnzuUser(anzuUserRes)
+    addToCachedPermissionGroups(anzuUserRes.permissionGroups)
+    fetchCachedPermissionGroups()
+  })
 
-  const router = useRouter()
+  const { push } = usePageNavigation()
   const v$ = useVuelidate()
   const updateAnzuUser = async (close = false) => {
     if (!isInt(anzuUserOneStore.anzuUser.id)) return
@@ -64,14 +62,14 @@ export const useAnzuUserActions = () => {
         saveButtonLoading.value = false
         return
       }
-      const { executeRequest: updateAnzuUserRequest } = useUpdateAnzuUser()
+      const { execute: updateAnzuUserRequest } = useUpdateAnzuUser()
       await updateAnzuUserRequest({
         urlParams: { id: anzuUserOneStore.anzuUser.id },
-        object: anzuUserOneStore.anzuUser,
+        body: anzuUserOneStore.anzuUser,
       })
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(common)/anzu-users' })
+      push({ name: '/(common)/anzu-users' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -79,29 +77,16 @@ export const useAnzuUserActions = () => {
     }
   }
 
-  const createAnzuUser = async (close = false) => {
-    saveButtonLoading.value = true
-    try {
-      v$.value.$touch()
-      if (v$.value.$invalid) {
-        showValidationError()
-        saveButtonLoading.value = false
-        return
-      }
-      const { executeRequest: createAnzuUserRequest } = useCreateAnzuUser()
-      const anzuUserRes = await createAnzuUserRequest({ object: anzuUserOneStore.anzuUser })
-      showRecordWas('created')
-      if (close) {
-        router.push({ name: '/(common)/anzu-users' })
-        return
-      }
-      router.push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
-    } catch (error) {
-      showErrorsDefault(error)
-    } finally {
-      saveButtonLoading.value = false
+  const createAnzuUser = defineRecordSave(saveButtonLoading, v$, async (close = false) => {
+    const { execute: createAnzuUserRequest } = useCreateAnzuUser()
+    const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
+    showRecordWas('created')
+    if (close) {
+      push({ name: '/(common)/anzu-users' })
+      return
     }
-  }
+    push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
+  })
 
   return {
     datatableHiddenColumns,

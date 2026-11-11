@@ -1,52 +1,24 @@
-import type { InternalAxiosRequestConfig } from 'axios'
+import { createRefreshRequestInterceptor, createRefreshSession } from '@anzusystems/common-admin'
+
 import { useRefreshToken } from '@/domains/system/auth/authApi'
-import { useCookies } from '@vueuse/integrations/useCookies'
+import { AUTH_PATH_PREFIX } from '@/domains/system/auth/authPath'
 import { logoutUser } from '@/domains/system/composables/currentUser'
-import { envConfig } from '@/shared/EnvConfigService'
+import { getAuthCookieState } from '@/shared/apiClients/authCookies'
 
-type AcceptRequestConfigCallbackType = (accept: boolean) => void
+// The refresh rules live in the library: one refresh for concurrent requests.
+// Logout only when the session is really gone: a 401, or a 400 when no other tab rotated the token.
+// When the auth backend cannot answer, it rejects with `AuthUnavailableError` and does not log out.
+export const refreshSession = createRefreshSession({
+  // `body: {}` is deliberate. labs skips the body entirely when `body` is undefined.
+  refresh: () => useRefreshToken().execute({ body: {} }),
+  jwtPayload: () => getAuthCookieState().jwtPayload,
+})
 
-let isRefreshingToken = false
-let userRefreshSubscribers: Array<AcceptRequestConfigCallbackType> = []
-
-const onRefreshedUser = (accept = true) =>
-  (userRefreshSubscribers = userRefreshSubscribers.filter((callback) => callback(accept)))
-
-const addRefreshUserSubscriber = (callback: AcceptRequestConfigCallbackType) => userRefreshSubscribers.push(callback)
-
-const userRefreshRequestInterceptor = (
-  requestConfig: Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig
-): Promise<InternalAxiosRequestConfig> | InternalAxiosRequestConfig => {
-  const cookies = useCookies([envConfig.cookies.refreshTokenExistsName, envConfig.cookies.jwtPayloadName])
-
-  if (!cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
-    logoutUser()
-
-    return Promise.reject(requestConfig)
-  }
-
-  if (cookies.get(envConfig.cookies.refreshTokenExistsName) && !cookies.get(envConfig.cookies.jwtPayloadName)) {
-    if (!isRefreshingToken) {
-      isRefreshingToken = true
-      const { executeRequest: refreshToken } = useRefreshToken()
-      refreshToken({ object: {} })
-        .then(() => onRefreshedUser())
-        .catch(() => {
-          onRefreshedUser(false)
-          logoutUser()
-        })
-        .finally(() => (isRefreshingToken = false))
-    }
-
-    return new Promise((resolve, reject) =>
-      addRefreshUserSubscriber((accept): void => {
-        if (accept) resolve(requestConfig)
-        else reject(requestConfig)
-      })
-    )
-  }
-
-  return requestConfig
-}
+const { interceptor: userRefreshRequestInterceptor } = createRefreshRequestInterceptor({
+  cookies: getAuthCookieState,
+  refreshSession,
+  logout: logoutUser,
+  skipUrlPrefix: AUTH_PATH_PREFIX,
+})
 
 export { userRefreshRequestInterceptor }

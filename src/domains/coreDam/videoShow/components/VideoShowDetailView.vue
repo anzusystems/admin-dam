@@ -1,13 +1,23 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard } from '@anzusystems/common-admin'
-import { useVideoShowDetailActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import VideoShowDetail from '@/domains/coreDam/videoShow/components/VideoShowDetail.vue'
-import { useVideoShowDetailTab, VideoShowDetailTab } from '@/domains/coreDam/videoShow/composables/videoShowDetailTab'
-import VideoShowEpisodeDatatable from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
+import { useVideoShowDetailActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
+import { VideoShowDetailTab, useVideoShowDetailTab } from '@/domains/coreDam/videoShow/composables/videoShowDetailTab'
 import VideoShowEpisodeCreateButton from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeCreateButton.vue'
+import VideoShowEpisodeDatatable from '@/domains/coreDam/videoShowEpisode/components/VideoShowEpisodeDatatable.vue'
 import { useVideoShowEpisodeListActions } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, videoShow } = useVideoShowDetailActions()
 const { listLoading } = useVideoShowEpisodeListActions()
@@ -30,12 +40,24 @@ watch(
   { immediate: true }
 )
 
-const getDetail = () => {
-  fetchData(videoShowId)
-}
+const { signal, leave } = useRecordPage({
+  fallbackRouteName: '/(coreDam)/video-shows',
+  skipRouteNames: [
+    '/(coreDam)/video-shows/[id]/edit',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+    '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+  ],
+  loading: detailLoading,
+})
 
-onMounted(() => {
-  getDetail()
+// The episode list also fetches by the route id. It waits for the
+// video show to load, or a failed load would raise a second alert.
+const videoShowLoaded = ref(false)
+
+onMounted(async () => {
+  const loaded = await fetchData(videoShowId, { signal })
+  if (loaded === false) await leave()
+  videoShowLoaded.value = loaded === true
 })
 
 onBeforeUnmount(() => {
@@ -44,16 +66,14 @@ onBeforeUnmount(() => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
-    {
-      title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
-      routeName: '/(coreDam)/video-shows/[id]',
-      routeParams: { id: videoShowId },
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+  {
+    title: videoShow.value.texts.title || t('breadcrumb.coreDam.videoShow.detail'),
+    routeName: '/(coreDam)/video-shows/[id]',
+    routeParams: { id: videoShowId },
+  },
+])
 
 const afterVideoShowEpisodeCreate = () => {
   if (activeTab.value === VideoShowDetailTab.Episodes) {
@@ -85,7 +105,14 @@ const afterVideoShowEpisodeCreate = () => {
           :route-name="'/(coreDam)/video-shows/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/video-shows'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/video-shows'"
+        :skip-route-names="[
+          '/(coreDam)/video-shows/[id]/edit',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]',
+          '/(coreDam)/video-shows/[id]/episodes/[episodeId]/edit',
+        ]"
+      />
     </template>
   </ActionbarWrapper>
 
@@ -110,10 +137,10 @@ const afterVideoShowEpisodeCreate = () => {
   </VTabs>
   <Acl :permission="ACL.DAM_VIDEO_SHOW_EPISODE_UI">
     <div v-show="activeTab === VideoShowDetailTab.Episodes">
-      <ACard :loading="listLoading">
+      <ACard :loading="detailLoading || listLoading">
         <VCardText>
           <VideoShowEpisodeDatatable
-            v-if="loadVideoShowEpisodeDatatable"
+            v-if="videoShowLoaded && loadVideoShowEpisodeDatatable"
             :video-show-id="videoShowId"
           />
         </VCardText>

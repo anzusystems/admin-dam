@@ -2,24 +2,26 @@
 import {
   AAssetSelect,
   ADialogToolbar,
-  type AssetFileImage,
-  type AssetFileImagePreviewNullable,
   AssetFileProcessStatus,
-  type AssetSelectReturnData,
   DamAssetType as AssetTypeValue,
-  SortOrder,
+  isNull,
+  useAlerts,
 } from '@anzusystems/common-admin'
+import type {
+  AssetFileImage,
+  AssetFileImagePreviewNullable,
+  AssetSelectReturnData,
+  DocId,
+} from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import {
-  customSortOptions,
-  SORT_BY_SCORE_DATE,
-} from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: AssetFileImagePreviewNullable
     width?: number
     height?: number
     showActions?: boolean
@@ -30,64 +32,106 @@ const props = withDefaults(
     showActions: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: AssetFileImagePreviewNullable): void
-  (e: 'changed', data: AssetFileImagePreviewNullable): void
-}>()
+const emit = defineEmits<{ changed: [data: AssetFileImagePreviewNullable] }>()
+
+const modelValue = defineModel<AssetFileImagePreviewNullable>({ required: true })
 
 const { t } = useI18n()
+const { showErrorsDefault, showUnknownError } = useAlerts()
 
 const loading = ref(false)
 const dialog = ref(false)
 const newFileId = ref<DocId>('')
+/*
+ * The last image read. It is kept when the card is cleared, so it can return
+ * when the parent restores the image, for example after a failed save of "none".
+ */
 const imageFile = ref<null | AssetFileImage>(null)
+// Counts image reads, so a response for an image the card no longer holds is dropped.
+let latestImageRead = 0
+
+/*
+ * The read of the current image failed, so its preview and processing state are unknown and not shown.
+ * The card keeps its buttons, so the image can still be removed or replaced.
+ */
+const readFailed = ref(false)
 
 const fetchImage = async (id: DocId) => {
+  const asked = ++latestImageRead
+  readFailed.value = false
+  /*
+   * A restored image that is the last read and already processed needs
+   * no new read. With the server down that read would never finish.
+   * An image still processing is read again to get its progress.
+   */
+  if (imageFile.value?.id === id && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) {
+    loading.value = false
+
+    return
+  }
   loading.value = true
-  imageFile.value = await fetchImageFile(id)
-  loading.value = false
+  try {
+    const read = await fetchImageFile(id)
+    if (asked === latestImageRead) imageFile.value = read
+  } catch (e) {
+    if (asked !== latestImageRead) return
+    readFailed.value = true
+    if (!showErrorsDefault(e)) showUnknownError()
+  } finally {
+    if (asked === latestImageRead) loading.value = false
+  }
 }
 
 const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const imagePreviewModel = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
+/*
+ * Shows nothing when the card holds no image, or when the read
+ * failed, since the last read image is then a different one.
+ */
+const shownFile = computed(() => (isNull(imagePreviewModel.value) || readFailed.value ? null : imageFile.value))
+
+// The image is re-read only when it changes. The editor retries a failed read with this.
+const readAgain = () => {
+  if (!isNull(imagePreviewModel.value)) fetchImage(imagePreviewModel.value.imageFile)
+}
+
 const src = computed(() => {
-  if (imageFile.value && imageFile.value.links?.image_detail) return imageFile.value.links.image_detail.url
+  if (shownFile.value && shownFile.value.links?.image_detail) return shownFile.value.links.image_detail.url
   return placeholder16x9
 })
 
 const isDuplicate = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Duplicate) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Duplicate) return true
   return false
 })
 
 const isFailed = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Failed) return true
   return false
 })
 
 const isProcessed = computed(() => {
-  if (imageFile.value && imageFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) return true
+  if (shownFile.value && shownFile.value.fileAttributes?.status === AssetFileProcessStatus.Processed) return true
   return false
 })
 
 const isProcessing = computed(() => {
-  if (imagePreviewModel.value === null) return false
+  if (imagePreviewModel.value === null || readFailed.value) return false
   if (isProcessed.value || isFailed.value || isDuplicate.value) return false
   return true
 })
 
 const unassignImage = () => {
   imagePreviewModel.value = null
-  imageFile.value = null
   emit('changed', null)
 }
 
@@ -166,6 +210,15 @@ watch(
       :max-height="300"
       :src="src"
     />
+    <VBtn
+      v-if="readFailed && !loading && imagePreviewModel !== null"
+      variant="text"
+      class="my-2 mr-2"
+      size="small"
+      @click.stop="readAgain"
+    >
+      {{ t('common.button.retry') }}
+    </VBtn>
     <div v-if="showActions">
       <slot name="actions-start" />
 
@@ -183,9 +236,7 @@ watch(
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"
-        :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
-        :custom-sort-options="customSortOptions"
-        @on-confirm="selectAsset"
+        @confirm="selectAsset"
       >
         <template #activator="{ props: assetSelectProps }">
           <VBtn
@@ -208,7 +259,7 @@ watch(
         v-if="dialog"
         data-cy="delete-panel"
       >
-        <ADialogToolbar @on-cancel="onCancel">
+        <ADialogToolbar @cancel="onCancel">
           {{ t('system.imagePreview.actions.selectImage') }}
         </ADialogToolbar>
         <VCardText>

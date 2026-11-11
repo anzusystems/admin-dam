@@ -34,7 +34,12 @@ esac
 CMD="docker compose --env-file ${ENV_DOCKER_FILE} $*"
 echo_debug "Whole command: '${CMD}'"
 eval "${CMD}"
+# Captured before the cleanup below: that block is the last command in the script, so without this the
+# caller is told the compose command succeeded whenever they run — a failing test or lint reported as green.
+STATUS=$?
 
 if ${DOCKER_NETWORK_DELETE}; then
     delete_docker_network anzusystems_network
 fi
+
+exit ${STATUS}

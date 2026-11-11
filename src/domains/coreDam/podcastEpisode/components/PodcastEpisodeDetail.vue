@@ -1,15 +1,13 @@
 <script lang="ts" setup>
-import {
-  ABooleanValue,
-  ACopyText,
-  ADatetime,
-  ARow,
-  AUserAndTimeTrackingFields,
-  COMMON_CONFIG,
-} from '@anzusystems/common-admin'
-import { usePodcastEpisodeOneStore } from '@/domains/coreDam/podcastEpisode/store/podcastEpisodeStore'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import { ABooleanValue, ACopyText, ADamAssetImage, ADatetime, ARow, COMMON_CONFIG } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
+import { usePodcastEpisodeOneStore } from '@/domains/coreDam/podcastEpisode/store/podcastEpisodeStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { prettyDuration } from '@/shared/utils/file'
 
 const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
@@ -17,9 +15,7 @@ const { podcastEpisode } = storeToRefs(usePodcastEpisodeOneStore())
 const { t } = useI18n()
 const router = useRouter()
 
-const imageSrc = computed(() => {
-  return podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined
-})
+const imageSrc = computed(() => (podcastEpisode.value.links ? podcastEpisode.value.links.image_list.url : undefined))
 
 const onAssetChipClick = () => {
   if (!podcastEpisode.value.asset) return
@@ -97,9 +93,9 @@ const onAssetChipClick = () => {
       </ARow>
       <ARow
         v-if="imageSrc"
-        title="Image"
+        :title="t('coreDam.podcastEpisode.model.image')"
       >
-        <AssetImage
+        <ADamAssetImage
           :src="imageSrc"
           use-component
         />
@@ -114,7 +110,7 @@ const onAssetChipClick = () => {
           {{ podcastEpisode.asset }}
         </VChip>
       </ARow>
-      <AUserAndTimeTrackingFields :data="podcastEpisode" />
+      <DamTrackingFields :data="podcastEpisode" />
     </VCol>
   </VRow>
 </template>

@@ -1,6 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { ValueObjectOption } from '@anzusystems/common-admin'
+
 import { TtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/types/TtsActiveProviderMode'
 import type { TtsActiveProviderModeType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsActiveProviderMode'
 
@@ -13,9 +14,8 @@ export function useTtsActiveProviderMode() {
     { value: TtsActiveProviderMode.Auto, title: t('coreDam.extSystem.ttsSettings.modes.auto') },
   ])
 
-  const getTtsActiveProviderModeOption = (value: TtsActiveProviderModeType) => {
-    return valueObjectOptions.value.find((item) => item.value === value)
-  }
+  const getTtsActiveProviderModeOption = (value: TtsActiveProviderModeType) =>
+    valueObjectOptions.value.find((item) => item.value === value)
 
   return {
     valueObjectOptions,

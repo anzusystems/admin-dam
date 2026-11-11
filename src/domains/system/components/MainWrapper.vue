@@ -1,20 +1,50 @@
 <script lang="ts" setup>
-import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
-import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
-import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
-import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
-import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
+import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import logoFull from '@/assets/logo-adam-full.svg'
 import logoNoText from '@/assets/logo-adam-no-text.svg'
+import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
+import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
+import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
 import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
-import { AAdminSwitcher, ASystemBar } from '@anzusystems/common-admin'
-import { envConfig } from '@/shared/EnvConfigService'
+import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
+import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import {
+  ExternalProviderFooterViewSelected,
+  useExternalProviderAssetFooterSelectedView,
+} from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
+import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { ACL } from '@/domains/system/auth/auth'
+import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const { t } = useI18n()
 
 const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainWrapper()
+
+const { footerViewSelected, hideSelected } = useAssetFooterSelectedView()
+const { externalProviderFooterViewSelected, hideSelected: hideExternalProviderSelected } =
+  useExternalProviderAssetFooterSelectedView()
+const uploadQueuesStore = useUploadQueuesStore()
+
+/*
+ * Browser back/forward can leave the page to a history entry vue-router
+ * wrote by `replace`; Vuetify lets that pass through an open dialog.
+ * The next page then showed the full-page selection dialog empty.
+ * So the selection returns to its hidden strip and the mass edit is cleared, also when the next page is not a list.
+ * Runs before the next page renders. The upload queue is shared by all lists and stays.
+ */
+onBeforeUnmount(() => {
+  if (footerViewSelected.value === FooterViewSelected.Full) hideSelected()
+  if (externalProviderFooterViewSelected.value === ExternalProviderFooterViewSelected.Full) {
+    hideExternalProviderSelected()
+  }
+  uploadQueuesStore.clearQueue(QUEUE_ID_MASS_EDIT)
+})
 </script>
 
 <template>
@@ -26,7 +56,7 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       density="compact"
       :order="-1"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
     >
       <div class="d-flex w-100 justify-space-between align-center overflow-x-auto pb-2 pt-1 py-sm-2 pr-1">
         <div class="d-flex align-center">
@@ -38,14 +68,14 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
                 :src="logoFull"
                 alt="ADAM"
                 class="hidden-xs"
-              >
+              />
               <img
                 width="42"
                 height="42"
                 :src="logoNoText"
                 alt="ADAM"
                 class="hidden-sm-and-up"
-              >
+              />
             </RouterLink>
           </div>
           <slot name="main-bar-left" />
@@ -73,13 +103,15 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
       :order="-1"
       :height="39"
       elevation="0"
-      class="system-border-b"
+      class="border-b"
     >
       <slot name="second-bar">
         <div class="d-flex flex-column w-100 px-1 align-center">
           <div class="d-flex justify-space-between w-100 align-center">
             <div class="d-flex align-center">
               <VBtn
+                :aria-label="t('coreDam.asset.list.filterToggle')"
+                :aria-expanded="sidebarLeft"
                 :active="sidebarLeft"
                 icon
                 :width="30"
@@ -105,6 +137,8 @@ const { sidebarLeft, sidebarRight, customFooterHeight, customDialog } = useMainW
             <div class="d-flex align-center">
               <slot name="second-bar-right" />
               <VBtn
+                :aria-label="t('coreDam.asset.list.infoToggle')"
+                :aria-expanded="sidebarRight"
                 :active="sidebarRight"
                 icon
                 :width="30"
