@@ -1,0 +1,19 @@
+{
+  "model": {
+    "id": "ID",
+    "name": "Názov",
+    "extSystem": "Externý systém",
+    "position": "Poradie",
+    "groups": "Skupiny licencií",
+    "groupsHint": "Výber uvidia len používatelia s niektorou z týchto skupín. Bez skupiny ho uvidia všetci používatelia externého systému.",
+    "licences": "Licencie",
+    "licencesHint": "Výber zobrazí assety týchto licencií. So skupinami musia licencie patriť do niektorej z vybraných skupín. Používateľ uvidí len licencie, ku ktorým má prístup.",
+    "uploadLicence": "Licencia pre nahrávanie"
+  },
+  "filter": {
+    "id": "ID"
+  },
+  "meta": {
+    "create": "Vytvoriť výber"
+  }
+}

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 import { useAuth } from '@/domains/system/auth/auth'
-import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import {
+  licenceSelectionAllowed,
+  useCurrentAssetLicence,
+  useCurrentExtSystem,
+} from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 import { damClient } from '@/shared/apiClients/damClient'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
 import AssetLicenceByExtIdRemoteAutocomplete from '@/domains/coreDam/assetLicence/components/AssetLicenceByExtIdRemoteAutocomplete.vue'
 import {
   ADialogToolbar,
@@ -31,6 +33,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: boolean): void
+  (e: 'select', licenceId: IntegerId): void
 }>()
 
 const dialog = computed({
@@ -51,7 +54,6 @@ const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { useCurrentUser } = useAuth()
 const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
-const saving = ref(false)
 const selectedExtSystem = ref<null | IntegerId>(null)
 const selectedLicence = ref<null | IntegerId>(null)
 
@@ -72,8 +74,12 @@ const extSystemsItems = computed(() => {
 })
 
 const licenceItems = computed(() => {
-  if (currentUser.value && currentUser.value.assetLicencesDto.length > 0 && !isUndefined(selectedExtSystem.value)) {
-    return currentUser.value.assetLicencesDto
+  if (
+    currentUser.value &&
+    currentUser.value.resolvedAssetLicences.length > 0 &&
+    !isUndefined(selectedExtSystem.value)
+  ) {
+    return currentUser.value.resolvedAssetLicences
       .filter((licence) => licence.extSystem === selectedExtSystem.value)
       .map((item) => {
         return {
@@ -88,9 +94,7 @@ const licenceItems = computed(() => {
 const damConfigStore = useDamConfigStore()
 const { damPrvConfig } = storeToRefs(damConfigStore)
 
-const allowSelect = computed(() => {
-  return damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId
-})
+const allowSelect = computed(() => licenceSelectionAllowed(damPrvConfig.value.settings))
 
 const onCancel = () => {
   dialog.value = false
@@ -112,32 +116,16 @@ const errorMessageLicence = computed(() => {
   return []
 })
 
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showValidationError } = useAlerts()
 
-const onConfirm = async () => {
-  if (saving.value) return
-  saving.value = true
+const onConfirm = () => {
   validateLicence.value.$touch()
-  if (
-    validateLicence.value.$invalid ||
-    !selectedLicence.value ||
-    currentAssetLicenceId.value === selectedLicence.value
-  ) {
+  if (validateLicence.value.$invalid || !selectedLicence.value) {
     showValidationError()
-    saving.value = false
     return
   }
-  try {
-    await fetchAssetLicence(selectedLicence.value)
-    await updateCurrentUser({ selectedLicence: selectedLicence.value })
-    dialog.value = false
-    showRecordWas('updated')
-    window.location.reload()
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saving.value = false
-  }
+  emit('select', selectedLicence.value)
+  dialog.value = false
 }
 
 const onSelectedExtSystemSearchChange = (value: IntegerIdNullable | IntegerId[]) => {
@@ -175,9 +163,10 @@ const onSelectedLicenceSearchByExtIdChange = (value: IntegerIdNullable | Integer
 
 onMounted(async () => {
   selectedExtSystem.value = currentExtSystemId.value
-  selectedLicence.value = currentAssetLicenceId.value
+  const currentLicence = currentAssetLicenceId.value > 0 ? currentAssetLicenceId.value : null
+  selectedLicence.value = currentLicence
   selectedExtSystemSearch.value = currentExtSystemId.value
-  selectedLicenceSearch.value = currentAssetLicenceId.value
+  selectedLicenceSearch.value = currentLicence
 })
 </script>
 
@@ -240,9 +229,11 @@ onMounted(async () => {
                   {{ t('system.mainBar.extSystemLicenceSwitch.currentExtSystem') }}: {{ currentExtSystemId }} ({{
                     extSystemName
                   }})<br>
-                  {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
-                    licenceName
-                  }})<br>
+                  <template v-if="currentAssetLicenceId > 0">
+                    {{ t('system.mainBar.extSystemLicenceSwitch.currentLicence') }}: {{ currentAssetLicenceId }} ({{
+                      licenceName
+                    }})<br>
+                  </template>
                 </div>
               </VCol>
             </VRow>
@@ -320,7 +311,6 @@ onMounted(async () => {
         <ABtnPrimary
           v-if="allowSelect"
           :disabled="isNull(selectedLicence)"
-          :loading="saving"
           data-cy="button-confirm"
           @click.stop="onConfirm"
         >

@@ -24,7 +24,8 @@
       "onlyAllowedAtOnce": "Maximálne {count} súborov je možné nahrať súčasne",
       "cancelOrUploadFirst": "Chcete zrušiť alebo nahrať iba prvých {count} súborov?",
       "actionAddFirstItems": "Pridať prvých {count} súborov"
-    }
+    },
+    "readOnlyListView": "Výber je len na čítanie, nemá licenciu na nahrávanie"
   },
   "download": {
     "downloadOriginalFile": "Stiahnuť originálny súbor"
@@ -51,10 +52,6 @@
     "backToAssets": "Späť na assety",
     "options": "Nastavenia",
     "userOptions": "Konto",
-    "customIntegrations": {
-      "title": "Vlastné integrácie",
-      "assets": "Assety"
-    },
     "podcasts": "Podcasty",
     "videoShows": "Video relácie",
     "extSystemLicenceSwitch": {
@@ -71,8 +68,15 @@
       "title": "Prepnutie externého systému a licencie",
       "description": "Dôležité: Najprv ukončite prácu, všetka neukončená práca bude stratená!",
       "confirm": "Potvrdiť a znovu načítať ADAM",
-      "changeToLicenceId": "Zmena na ID licencie",
-      "changeLicence": "Zmeniť licenciu:"
+      "changeToLicenceId": "Zmena na ID licencie"
+    },
+    "listViewSwitch": {
+      "title": "Výber a licencia",
+      "listViews": "Výbery",
+      "licences": "Licencie",
+      "changeLicence": "Zmeniť licenciu…",
+      "uploadsTo": "Nahráva do: {licence}",
+      "readOnly": "Len na čítanie"
     }
   },
   "settings": {

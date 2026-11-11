@@ -3,7 +3,9 @@
     "id": "ID",
     "name": "Názov",
     "extSystem": "Externý systém",
-    "licences": "Licencie"
+    "licences": "Licencie",
+    "listViews": "Výbery pre skupinu",
+    "listViewsHint": "Používatelia s touto skupinou vidia tieto výbery a k nim všetky výbery bez skupiny v rovnakom externom systéme."
   },
   "filter": {
     "id": "ID"

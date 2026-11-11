@@ -6,8 +6,11 @@ import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/as
 import ExternalProviderAssetQueueReadonly from '@/domains/coreDam/externalProvider/components/ExternalProviderAssetQueueReadonly.vue'
 import { useExternalProviderAssetImport } from '@/domains/coreDam/externalProvider/composables/externalProviderAssetImport'
 import { useExternalProviderAssetListStore } from '@/domains/coreDam/externalProvider/store/externalProviderAssetListStore'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 const { t } = useI18n()
+
+const { uploadAllowed } = useCurrentAssetLicence()
 
 const { toolbarColor } = useTheme()
 
@@ -65,6 +68,7 @@ const onImport = () => {
         <VSpacer />
         <div class="d-flex align-center">
           <VBtn
+            v-if="uploadAllowed"
             color="primary"
             variant="flat"
             :height="36"

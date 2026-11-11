@@ -10,15 +10,12 @@ export interface AssetLicenceData {
   extSystem: string
 }
 
-async function fillLicence(page: Page, data: AssetLicenceData): Promise<void> {
+/** The ext system of a licence is set only on create; the edit form shows it read-only. */
+export type AssetLicenceUpdateData = Omit<AssetLicenceData, 'extSystem'>
+
+async function fillLicence(page: Page, data: AssetLicenceUpdateData): Promise<void> {
   await page.locator('[data-cy="asset-licence-name"] input').fill(data.name)
   await page.locator('[data-cy="asset-licence-ext-id"] input').fill(data.extId)
-  // An autocomplete: on the edit form its search text is the current system, which filters out every other
-  // option, so search for the wanted one instead of only opening the menu.
-  const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
-  await extSystem.click()
-  await extSystem.locator('input').fill(data.extSystem)
-  await page.getByRole('option', { name: data.extSystem, exact: true }).click()
 }
 
 /** Create an asset licence through the create dialog of the licence list and return its id. */
@@ -28,13 +25,17 @@ export async function createAssetLicence(page: Page, data: AssetLicenceData): Pr
   const panel = page.locator('[data-cy="create-panel"]')
   await expect(panel).toBeVisible()
   await fillLicence(page, data)
+  const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
+  await extSystem.click()
+  await extSystem.locator('input').fill(data.extSystem)
+  await page.getByRole('option', { name: data.extSystem, exact: true }).click()
   await expect(panel.locator('[data-cy="button-close"]')).toBeVisible()
   await expect(panel.locator('[data-cy="button-cancel"]')).toBeVisible()
   return confirmCreate(page, createDialog(page), '/asset-licence')
 }
 
 /** Edit an asset licence found by id in the list. */
-export async function updateAssetLicence(page: Page, id: string, data: AssetLicenceData): Promise<void> {
+export async function updateAssetLicence(page: Page, id: string, data: AssetLicenceUpdateData): Promise<void> {
   await page.goto('/asset-licences')
   await filterBy(page, 'ID', id)
   await visibleCy(page, 'table-edit').click()

@@ -1,7 +1,12 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
-import { createAssetLicence, updateAssetLicence, type AssetLicenceData } from '@pages/settings/assetLicencePage'
+import {
+  createAssetLicence,
+  updateAssetLicence,
+  type AssetLicenceData,
+  type AssetLicenceUpdateData,
+} from '@pages/settings/assetLicencePage'
 import { openDetailAndClose, resetFilters, rowWithCell } from '@pages/shared/crud'
 import { filterBy } from '@pages/shared/admin'
 
@@ -9,7 +14,7 @@ let page: Page
 let LICENCE_ID = ''
 
 const CREATE_DATA: AssetLicenceData = { name: `cms${RAND_NUM}`, extId: RAND_NUM, extSystem: 'cms' }
-const UPDATE_DATA: AssetLicenceData = { name: `cms${RAND_NUM}-edit`, extId: `${RAND_NUM}-edit`, extSystem: 'blog' }
+const UPDATE_DATA: AssetLicenceUpdateData = { name: `cms${RAND_NUM}-edit`, extId: `${RAND_NUM}-edit` }
 
 test.describe.serial(`${ADMIN_SUITE} - Asset licences`, () => {
   test.beforeAll(async ({ browser }) => {

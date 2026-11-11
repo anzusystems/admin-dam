@@ -27,7 +27,7 @@ const { asset } = storeToRefs(assetDetailStore)
 const { toolbarColor } = useTheme()
 const { activeTab } = useAssetDetailTab()
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { listLicenceIds } = useCurrentAssetLicence()
 const {
   toggleSidebar,
   sidebar,
@@ -72,7 +72,7 @@ const getDetail = async () => {
   assetDetailStore.showDetail()
   try {
     const res = await fetchAsset(assetId.value)
-    if (currentAssetLicenceId.value !== res.licence) {
+    if (!listLicenceIds.value.includes(res.licence)) {
       showErrorT('coreDam.asset.detail.licenceMismatch')
       assetDetailStore.hideLoader()
       return

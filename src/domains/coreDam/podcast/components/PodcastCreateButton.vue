@@ -34,7 +34,7 @@ const { t } = useI18n()
 
 const dialog = ref(false)
 
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
 
 const { createDefault } = usePodcastFactory()
 const podcast = ref<Podcast>(createDefault(currentAssetLicenceId.value))
@@ -59,6 +59,7 @@ const { v$ } = usePodcastValidation(podcast)
     v-model="dialog"
     :v="v$"
     :call-create="create"
+    :disabled="!uploadAllowed"
     disable-redirect
     :button-class="buttonClass"
     :data-cy="dataCy"

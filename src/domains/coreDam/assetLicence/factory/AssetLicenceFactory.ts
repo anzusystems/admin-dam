@@ -10,6 +10,7 @@ export function useAssetLicenceFactory() {
       name: '',
       extSystem: null,
       extId: '',
+      badge: '',
       internalRule: {
         active: false,
         markAsInternalSince: null,
