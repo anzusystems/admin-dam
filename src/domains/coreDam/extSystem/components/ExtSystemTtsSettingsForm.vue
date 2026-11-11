@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { ACL } from '@/domains/system/auth/auth'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useTtsActiveProviderMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsActiveProviderMode'
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
   AAssetSelect,
   AFormValueObjectOptionsSelect,
@@ -11,7 +12,6 @@ import {
   ASystemEntityScope,
   type AssetSelectReturnData,
   DamAssetType,
-  type DamCurrentUserDto,
 } from '@anzusystems/common-admin'
 import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
 import VoiceFamilyRemoteAutocomplete from '@/domains/coreDam/voiceFamily/components/VoiceFamilyRemoteAutocomplete.vue'
@@ -21,14 +21,7 @@ import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordF
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-const { useCurrentUser } = useAuth()
-const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
-const extSystemLicenceIds = computed(
-  () =>
-    currentUser.value?.resolvedAssetLicences
-      .filter((licence) => licence.extSystem === extSystem.value.id)
-      .map((licence) => licence.id) ?? []
-)
+const { listLicenceIds } = useCurrentAssetLicence()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 
 const { filterConfig: keywordFilterConfig, filterData: keywordFilterData } = useKeywordInnerFilter()
@@ -108,7 +101,7 @@ const clearEpilog = () => {
                 @click.stop="clearEpilog"
               />
               <AAssetSelect
-                :select-licences="extSystemLicenceIds"
+                :select-licences="listLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"
