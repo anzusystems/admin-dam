@@ -19,15 +19,11 @@ const { t } = useI18n()
 
 const { authorTypeOptions } = useDamAuthorType()
 
-const hasCurrentAuthors = computed(() => author.value.currentAuthors.length > 0)
+const hasCurrentAuthors = computed(() => !!author.value.currentAuthors?.length)
 
-watch(
-  hasCurrentAuthors,
-  (hasParents) => {
-    if (hasParents) author.value.flags.reviewed = false
-  },
-  { immediate: true }
-)
+watch(hasCurrentAuthors, (hasParents) => {
+  if (hasParents) author.value.flags.reviewed = false
+})
 </script>
 
 <template>
