@@ -39,7 +39,7 @@
     "release:cleanup": "npx -y --allow-git=all github:anzusystems/release-tools#main cleanup"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "2.0.0-rc.15",
+    "@anzusystems/common-admin": "2.0.0-rc.16",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^11.12.0",
