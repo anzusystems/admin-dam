@@ -85,7 +85,7 @@
     }
   },
   "anzuUser": {
-    "list": "Oprávnenia používateľov",
+    "list": "Používatelia",
     "detail": "Používateľ",
     "edit": "Používateľ",
     "create": "Nový používateľ"

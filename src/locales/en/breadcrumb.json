@@ -85,7 +85,7 @@
     }
   },
   "anzuUser": {
-    "list": "User permissions",
+    "list": "Users",
     "detail": "User",
     "edit": "User",
     "create": "New user"
