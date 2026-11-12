@@ -5,7 +5,8 @@
     "identifier": "Identifier",
     "type": "Type",
     "flags": {
-      "reviewed": "Reviewed"
+      "reviewed": "Reviewed",
+      "reviewedDisabledHint": "An author with parent authors cannot be reviewed"
     },
     "currentAuthors": "Parent authors",
     "childAuthors": "Child authors",

@@ -18,6 +18,16 @@ const { v$ } = useAuthorValidation(author)
 const { t } = useI18n()
 
 const { authorTypeOptions } = useDamAuthorType()
+
+const hasCurrentAuthors = computed(() => author.value.currentAuthors.length > 0)
+
+watch(
+  hasCurrentAuthors,
+  (hasParents) => {
+    if (hasParents) author.value.flags.reviewed = false
+  },
+  { immediate: true }
+)
 </script>
 
 <template>
@@ -50,6 +60,9 @@ const { authorTypeOptions } = useDamAuthorType()
           <VSwitch
             v-model="author.flags.reviewed"
             :label="t('coreDam.author.model.flags.reviewed')"
+            :disabled="hasCurrentAuthors"
+            :hint="hasCurrentAuthors ? t('coreDam.author.model.flags.reviewedDisabledHint') : undefined"
+            :persistent-hint="hasCurrentAuthors"
             data-cy="author-flags-reviewed"
           />
         </ARow>

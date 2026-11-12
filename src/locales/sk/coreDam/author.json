@@ -5,7 +5,8 @@
     "identifier": "Identifikátor",
     "type": "Typ",
     "flags": {
-      "reviewed": "Skontrolovaný"
+      "reviewed": "Skontrolovaný",
+      "reviewedDisabledHint": "Autor s nadradenými autormi nemôže byť skontrolovaný"
     },
     "currentAuthors": "Nadradení autori",
     "childAuthors": "Podradení autori",
