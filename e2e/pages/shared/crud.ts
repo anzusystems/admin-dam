@@ -15,7 +15,7 @@ export async function openSettingsSection(page: Page, dataCy: string, url: strin
   await cardLoad(page)
 }
 
-export function createDialog(page: Page, title?: string): Locator {
+export function createDialog(page: Page, title?: string | RegExp): Locator {
   const dialog = page.getByRole('dialog')
   return title ? dialog.filter({ hasText: title }) : dialog
 }

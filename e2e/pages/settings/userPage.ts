@@ -24,7 +24,7 @@ async function clickOption(page: Page, name: string): Promise<void> {
 
 export async function createAnzuUser(page: Page, data: AnzuUserCreateData): Promise<string> {
   await visibleCy(page, 'button-create').click()
-  const dialog = createDialog(page, 'Vytvorenie Anzu používateľa')
+  const dialog = createDialog(page, /Vytvorenie (Anzu )?používateľa/)
   await dialog.locator('[data-cy="user-id"] input').fill(data.id)
   await dialog.locator('[data-cy="user-email"] input').fill(data.email)
 
