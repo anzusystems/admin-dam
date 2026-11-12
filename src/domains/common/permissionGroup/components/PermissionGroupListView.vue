@@ -21,7 +21,7 @@ const { listLoading } = usePermissionGroupActions()
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-backup' },
 ])
 </script>
 

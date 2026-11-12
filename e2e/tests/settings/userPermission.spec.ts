@@ -42,12 +42,13 @@ test.describe.serial(`${ADMIN_SUITE} - User permission`, () => {
   })
 
   test('creates a user', async () => {
-    await openSettingsSection(page, 'user-permissions', '/anzu-users', 'Oprávnenia používateľov')
+    await page.goto('/anzu-users-backup')
+    await cardLoad(page)
     const id = await createAnzuUser(page, { id: USER_ID, email: USER_EMAIL, role: 'Super Administrátor' })
     expect(id).toBe(USER_ID)
-    await openUserByEmail(page, '/anzu-users', USER_EMAIL, USER_ID)
+    await openUserByEmail(page, '/anzu-users-backup', USER_EMAIL, USER_ID)
     await closeDetail(page, `/${USER_ID}`)
-    await expect(page).toHaveURL(/\/anzu-users$/)
+    await expect(page).toHaveURL(/\/anzu-users-backup$/)
   })
 
   test('enables the user with a name', async () => {

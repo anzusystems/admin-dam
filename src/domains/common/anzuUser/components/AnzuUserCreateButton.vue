@@ -65,7 +65,7 @@ const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
   showRecordWas('created')
   dialog.value = false
   if (!isUndefined(res.id) && !props.disableRedirect) {
-    push({ name: '/(common)/anzu-users/[id]', params: { id: String(res.id) } })
+    push({ name: '/(common)/anzu-users-backup/[id]', params: { id: String(res.id) } })
   }
 })
 </script>

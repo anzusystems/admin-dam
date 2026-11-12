@@ -69,7 +69,7 @@ export const useAnzuUserActions = () => {
       })
       showRecordWas('updated')
       if (!close) return
-      push({ name: '/(common)/anzu-users' })
+      push({ name: '/(common)/anzu-users-backup' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -82,10 +82,10 @@ export const useAnzuUserActions = () => {
     const anzuUserRes = await createAnzuUserRequest({ body: anzuUserOneStore.anzuUser })
     showRecordWas('created')
     if (close) {
-      push({ name: '/(common)/anzu-users' })
+      push({ name: '/(common)/anzu-users-backup' })
       return
     }
-    push({ name: '/(common)/anzu-users/[id]', params: { id: String(anzuUserRes.id) } })
+    push({ name: '/(common)/anzu-users-backup/[id]', params: { id: String(anzuUserRes.id) } })
   })
 
   return {

@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import AnzuUserDetailView from '@/domains/common/anzuUser/components/AnzuUserDetailView.vue'
+import UserListView from '@/domains/coreDam/user/components/UserListView.vue'
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
-  path: '/anzu-users/:id(\\d+)',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_USER_READ],
     layout: 'AppLayoutDrawer',
-    breadcrumbT: 'breadcrumb.anzuUser.detail',
+    breadcrumbT: 'breadcrumb.coreDam.user.list',
   },
 })
 </script>
 
 <template>
-  <AnzuUserDetailView />
+  <UserListView />
 </template>

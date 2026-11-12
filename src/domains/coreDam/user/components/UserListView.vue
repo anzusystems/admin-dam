@@ -14,7 +14,7 @@ const datatable = ref<InstanceType<typeof UserDatatable> | null>(null)
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users-backup' },
 ])
 </script>
 

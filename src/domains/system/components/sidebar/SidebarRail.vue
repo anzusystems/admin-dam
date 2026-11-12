@@ -210,21 +210,6 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
-    <Acl :permission="ACL.DAM_USER_UI">
-      <VListItem
-        :aria-label="t('sidebar.settings.anzuUser')"
-        :to="{ name: '/(common)/anzu-users' }"
-        prepend-icon="mdi-account-edit-outline"
-        data-cy="user-permissions"
-      >
-        <VTooltip
-          location="right"
-          activator="parent"
-        >
-          {{ t('sidebar.settings.anzuUser') }}
-        </VTooltip>
-      </VListItem>
-    </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">
       <VListItem
         :aria-label="t('sidebar.settings.job')"

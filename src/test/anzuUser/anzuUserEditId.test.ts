@@ -42,8 +42,8 @@ const anzuUser = (id: number) => ({
 
 // Anzu user pages under their real route names, which the page navigates by.
 const ANZU_USER_PAGES = [
-  { path: '/anzu-users', name: '/(common)/anzu-users' },
-  { path: '/anzu-users/:id', name: '/(common)/anzu-users/[id]' },
+  { path: '/anzu-users-backup', name: '/(common)/anzu-users-backup' },
+  { path: '/anzu-users-backup/:id', name: '/(common)/anzu-users-backup/[id]' },
 ]
 
 const openEdit = async (id: number) => {
@@ -56,10 +56,14 @@ const openEdit = async (id: number) => {
       setup() {
         const router = useRouter()
         ANZU_USER_PAGES.forEach((route) => router.addRoute({ ...route, component: { render: () => null } }))
-        router.addRoute({ path: '/anzu-users/:id/edit', name: '/(common)/anzu-users/[id]/edit', component: EditView })
+        router.addRoute({
+          path: '/anzu-users-backup/:id/edit',
+          name: '/(common)/anzu-users-backup/[id]/edit',
+          component: EditView,
+        })
         // The page is drawn only once the user has arrived, as the application's router view does.
         const arrived = ref(false)
-        void router.push('/anzu-users/' + id + '/edit').then(() => (arrived.value = true))
+        void router.push('/anzu-users-backup/' + id + '/edit').then(() => (arrived.value = true))
         return () => [h(ui.library.AActionbarTarget), arrived.value ? h(EditView) : null]
       },
     })

@@ -25,16 +25,16 @@ const { resetPermissionGroupStore, fetchPermissionGroup, updatePermissionGroup, 
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-backup' },
   {
     title: t('breadcrumb.permissionGroup.edit'),
-    routeName: '/(common)/permission-groups/[id]/edit',
+    routeName: '/(common)/permission-groups-backup/[id]/edit',
   },
 ])
 
 useRecordPage({
-  fallbackRouteName: '/(common)/permission-groups',
-  skipRouteNames: ['/(common)/permission-groups/[id]'],
+  fallbackRouteName: '/(common)/permission-groups-backup',
+  skipRouteNames: ['/(common)/permission-groups-backup/[id]'],
   loading: detailLoading,
   load: (signal) => fetchPermissionGroup(id, { signal }),
 })
@@ -53,8 +53,8 @@ onBeforeUnmount(() => {
         @save-record="updatePermissionGroup"
       />
       <AActionCloseButtonHistory
-        :fallback-route-name="'/(common)/permission-groups'"
-        :skip-route-names="['/(common)/permission-groups/[id]']"
+        :fallback-route-name="'/(common)/permission-groups-backup'"
+        :skip-route-names="['/(common)/permission-groups-backup/[id]']"
       />
     </template>
   </ActionbarWrapper>

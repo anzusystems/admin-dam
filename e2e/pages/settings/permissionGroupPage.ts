@@ -21,12 +21,12 @@ export async function openPermissionGroupByTitle(page: Page, title: string, id: 
   await filterBy(page, 'Nadpis', title)
   await rowWithCell(page, title).first().click()
   await cardLoad(page)
-  await expect(page).toHaveURL(new RegExp(`/permission-groups/${id}$`))
+  await expect(page).toHaveURL(new RegExp(`/permission-groups-backup/${id}$`))
   await expect(visibleCy(page, 'copy-text')).toHaveText(id)
 }
 
 export async function editPermissionGroup(page: Page, id: string, data: PermissionGroupData): Promise<void> {
-  await page.goto(`/permission-groups/${id}/edit`)
+  await page.goto(`/permission-groups-backup/${id}/edit`)
   await cardLoad(page)
   const title = page.locator('[data-cy="permissionGroup-title"] input')
   // The form renders empty before the group is fetched; typing earlier gets overwritten by the loaded values.

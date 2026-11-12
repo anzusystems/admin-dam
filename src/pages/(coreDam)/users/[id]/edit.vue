@@ -1,6 +1,26 @@
-<script setup lang="ts">
-import UserEditView from '@/domains/coreDam/user/components/UserEditView.vue'
+<script lang="ts" setup>
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  AAnzuUserForm,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useAnzuUserActions,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import type { Ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import DamUserFields from '@/domains/coreDam/user/components/DamUserFields.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import { damUserSystemDescriptor } from '@/domains/system/descriptors/userSystemDescriptor'
+import type { DamUser } from '@/domains/system/descriptors/userSystemDescriptor'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { damClient } from '@/shared/apiClients/damClient'
 
 definePage({
   path: '/users/:id(\\d+)/edit',
@@ -8,11 +28,87 @@ definePage({
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_USER_READ, ACL.DAM_USER_UPDATE],
     layout: 'AppLayoutDrawer',
-    breadcrumbT: 'breadcrumb.coreDam.user.edit',
   },
+})
+
+const route = useRoute('/(coreDam)/users/[id]/edit')
+const id = stringToInt(route.params.id)
+
+const { anzuUser, loadingAnzuUser, loadingUpdateAnzuUser, fetchAnzuUser, updateAnzuUser, resetAnzuUserStore } =
+  useAnzuUserActions({
+    client: damClient,
+    system: 'dam',
+    entity: damUserSystemDescriptor.entity,
+    endPoint: damUserSystemDescriptor.endpoints.list,
+    // DAM recalculates "User in external systems" on save; the form shows it read-only.
+    updateResponseFields: ['userToExtSystems'],
+  })
+
+// The store types the record as the library's `AnzuUser`. In dam the same row also
+// has the licence and ext-system fields that `DamUserDto` adds on the backend.
+const damUser = anzuUser as unknown as Ref<DamUser>
+
+const { t } = useI18n()
+
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users' },
+  {
+    title: anzuUser.value.person.fullName || anzuUser.value.email || t('breadcrumb.anzuUser.edit'),
+    routeName: '/(coreDam)/users/[id]/edit',
+    id,
+  },
+])
+
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/users',
+  skipRouteNames: ['/(coreDam)/users/[id]', '/(coreDam)/users/new'],
+  loading: loadingAnzuUser,
+  load: (signal) => fetchAnzuUser(id, { signal }),
+})
+
+onBeforeUnmount(() => {
+  resetAnzuUserStore('dam')
 })
 </script>
 
 <template>
-  <UserEditView />
+  <ActionbarWrapper :breadcrumbs="breadcrumbs">
+    <template #buttons>
+      <AActionSaveButton
+        v-if="!loadingAnzuUser"
+        :loading="loadingUpdateAnzuUser"
+        @save-record="updateAnzuUser"
+      />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/users'"
+        :skip-route-names="['/(coreDam)/users/[id]', '/(coreDam)/users/new']"
+      />
+    </template>
+  </ActionbarWrapper>
+
+  <ACard :loading="loadingAnzuUser">
+    <VCardText>
+      <AAnzuUserForm
+        v-model:user="anzuUser"
+        :client="damClient"
+        system="dam"
+        :permission-group-end-point="damUserSystemDescriptor.endpoints.permissionGroup"
+        :required-metadata="damUserSystemDescriptor.requiredMetadata"
+        :id-input="damUserSystemDescriptor.idInput"
+        :enabled-note="damUserSystemDescriptor.enabledNote"
+        :metadata-note="damUserSystemDescriptor.metadataNote"
+        is-edit
+        random-color
+      >
+        <template #systemFields="{ readonly: fieldsReadonly }">
+          <!-- The dam part of the same record. One save writes both. -->
+          <DamUserFields
+            v-model:user="damUser"
+            :readonly="fieldsReadonly"
+          />
+        </template>
+      </AAnzuUserForm>
+      <DamTrackingFields :data="anzuUser" />
+    </VCardText>
+  </ACard>
 </template>

@@ -63,3 +63,31 @@ describe('a current log address', () => {
     expect(await landsOn('/logs/dam/audit/not-a-log-id')).toEqual(['/logs/dam/audit/not-a-log-id', NOT_FOUND])
   })
 })
+
+// The Anzu user and the dam user of an account share one id, and `/users` now shows both on one page.
+describe('an anzu user address', () => {
+  it.each([
+    ['/anzu-users', '/users', '/(coreDam)/users'],
+    ['/anzu-users/', '/users', '/(coreDam)/users'],
+    ['/anzu-users/5', '/users/5', '/(coreDam)/users/[id]'],
+    ['/anzu-users/5/edit', '/users/5/edit', '/(coreDam)/users/[id]/edit'],
+    ['/anzu-user/5/edit', '/users/5/edit', '/(coreDam)/users/[id]/edit'],
+  ])('%s opens the same record on the user page', async (address, current, name) => {
+    expect(await landsOn(address)).toEqual([current, name])
+  })
+
+  it('keeps the query and the hash', async () => {
+    expect(await landsOn('/anzu-users/5/edit?from=bookmark#top')).toEqual([
+      '/users/5/edit?from=bookmark#top',
+      '/(coreDam)/users/[id]/edit',
+    ])
+  })
+
+  it.each([
+    ['/anzu-users-backup', '/(common)/anzu-users-backup'],
+    ['/anzu-users-backup/5', '/(common)/anzu-users-backup/[id]'],
+    ['/anzu-users-backup/5/edit', '/(common)/anzu-users-backup/[id]/edit'],
+  ])('%s, the old page, stays as it is', async (address, name) => {
+    expect(await landsOn(address)).toEqual([address, name])
+  })
+})

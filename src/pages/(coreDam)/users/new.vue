@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   AActionCloseButtonHistory,
-  AActionSaveAndCloseButton,
   AActionSaveButton,
   AAnzuUserForm,
   ACard,
@@ -35,22 +34,17 @@ const { anzuUser, loadingAnzuUser, createAnzuUser, loadingCreateAnzuUser, resetA
 
 const { push } = usePageNavigation()
 
-const onCreate = async (close = false) => {
+const onCreate = async () => {
   const created = await createAnzuUser()
   if (isNull(created)) return
-  if (close) {
-    push({ name: '/(coreDam)/users-new' })
-
-    return
-  }
-  push({ name: '/(coreDam)/users-new/[id]', params: { id: String(created.id) } })
+  push({ name: '/(coreDam)/users/[id]', params: { id: String(created.id) } })
 }
 
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users-new' },
-  { title: anzuUser.value.email || t('breadcrumb.anzuUser.create'), routeName: '/(coreDam)/users-new/new' },
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(coreDam)/users' },
+  { title: anzuUser.value.email || t('breadcrumb.anzuUser.create'), routeName: '/(coreDam)/users/new' },
 ])
 
 onMounted(() => {
@@ -70,11 +64,7 @@ onBeforeUnmount(() => {
         :loading="loadingCreateAnzuUser"
         @save-record="onCreate()"
       />
-      <AActionSaveAndCloseButton
-        :loading="loadingCreateAnzuUser"
-        @save-record-and-close="onCreate(true)"
-      />
-      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/users-new'" />
+      <AActionCloseButtonHistory :fallback-route-name="'/(coreDam)/users'" />
     </template>
   </ActionbarWrapper>
 

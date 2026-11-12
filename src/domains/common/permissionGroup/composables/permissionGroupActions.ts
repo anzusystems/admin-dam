@@ -65,7 +65,7 @@ export const usePermissionGroupActions = () => {
       const { execute } = useDeletePermissionGroup()
       await execute({ urlParams: { id } })
       showRecordWas('deleted')
-      push({ name: '/(common)/permission-groups' })
+      push({ name: '/(common)/permission-groups-backup' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -82,7 +82,7 @@ export const usePermissionGroupActions = () => {
     })
     showRecordWas('updated')
     if (!close) return
-    push({ name: '/(common)/permission-groups' })
+    push({ name: '/(common)/permission-groups-backup' })
   })
 
   const createPermissionGroup = defineRecordSave(saveButtonLoading, v$, async (close = false) => {
@@ -90,10 +90,10 @@ export const usePermissionGroupActions = () => {
     const permissionGroupRes = await execute({ body: permissionGroupOneStore.permissionGroup })
     showRecordWas('created')
     if (close) {
-      push({ name: '/(common)/permission-groups' })
+      push({ name: '/(common)/permission-groups-backup' })
       return
     }
-    push({ name: '/(common)/permission-groups/[id]', params: { id: permissionGroupRes.id } })
+    push({ name: '/(common)/permission-groups-backup/[id]', params: { id: permissionGroupRes.id } })
   })
 
   const { addManualToCachedPermissionGroups } = useCachedPermissionGroups()

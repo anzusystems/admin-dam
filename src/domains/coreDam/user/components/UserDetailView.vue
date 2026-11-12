@@ -21,10 +21,10 @@ const { detailLoading, fetchData, resetStore } = useUserDetailActions()
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users-backup' },
   {
     title: `${t('breadcrumb.coreDam.user.detail')} #${id}`,
-    routeName: '/(coreDam)/users/[id]',
+    routeName: '/(coreDam)/users-backup/[id]',
   },
 ])
 
@@ -32,9 +32,9 @@ const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
 useRecordPage({
-  fallbackRouteName: '/(coreDam)/users',
+  fallbackRouteName: '/(coreDam)/users-backup',
   // Also skips the permissions edit of the same user, the page's second edit button.
-  skipRouteNames: ['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit'],
+  skipRouteNames: ['/(coreDam)/users-backup/[id]/edit', '/(common)/anzu-users-backup/[id]/edit'],
   loading: detailLoading,
   load: (signal) => fetchData(id, { signal }),
 })
@@ -51,19 +51,19 @@ onBeforeUnmount(() => {
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="'/(coreDam)/users/[id]/edit'"
+          :route-name="'/(coreDam)/users-backup/[id]/edit'"
         />
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="'/(common)/anzu-users/[id]/edit'"
+          :route-name="'/(common)/anzu-users-backup/[id]/edit'"
           variant="secondary"
           button-t="coreDam.user.button.editPermissions"
         />
       </Acl>
       <AActionCloseButtonHistory
-        :fallback-route-name="'/(coreDam)/users'"
-        :skip-route-names="['/(coreDam)/users/[id]/edit', '/(common)/anzu-users/[id]/edit']"
+        :fallback-route-name="'/(coreDam)/users-backup'"
+        :skip-route-names="['/(coreDam)/users-backup/[id]/edit', '/(common)/anzu-users-backup/[id]/edit']"
       />
     </template>
   </ActionbarWrapper>

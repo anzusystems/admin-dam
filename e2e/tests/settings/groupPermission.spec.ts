@@ -6,8 +6,8 @@ import {
   editPermissionGroup,
   openPermissionGroupByTitle,
 } from '@pages/settings/permissionGroupPage'
-import { closeDetail, deleteViaApi, openSettingsSection, resetFilters, rowWithCell } from '@pages/shared/crud'
-import { filterBy } from '@pages/shared/admin'
+import { closeDetail, deleteViaApi, resetFilters, rowWithCell } from '@pages/shared/crud'
+import { cardLoad, filterBy } from '@pages/shared/admin'
 
 let page: Page
 let GROUP_ID = ''
@@ -28,11 +28,12 @@ test.describe.serial(`${ADMIN_SUITE} - Permission group`, () => {
   })
 
   test('creates a permission group', async () => {
-    await openSettingsSection(page, 'permission-group-settings', '/permission-groups', 'Skupiny oprávnení')
+    await page.goto('/permission-groups-backup')
+    await cardLoad(page)
     GROUP_ID = await createPermissionGroup(page, { title: TITLE, description: DESCRIPTION })
     await openPermissionGroupByTitle(page, TITLE, GROUP_ID)
     await closeDetail(page, `/${GROUP_ID}`)
-    await expect(page).toHaveURL(/\/permission-groups$/)
+    await expect(page).toHaveURL(/\/permission-groups-backup$/)
   })
 
   test('edits the permission group', async () => {

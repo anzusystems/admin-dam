@@ -46,7 +46,7 @@ export async function createAnzuUser(page: Page, data: AnzuUserCreateData): Prom
 }
 
 export async function openUserByEmail(page: Page, listPath: string, email: string, id: string): Promise<void> {
-  await filterBy(page, email.includes('@') && listPath === '/users' ? 'Email' : 'E-mail', email)
+  await filterBy(page, email.includes('@') && listPath === '/users-backup' ? 'Email' : 'E-mail', email)
   // Click the e-mail cell. Other cells hold chips linking to the user's permission groups.
   await page.locator('tbody td').getByText(email, { exact: true }).first().click()
   await cardLoad(page)
@@ -55,7 +55,7 @@ export async function openUserByEmail(page: Page, listPath: string, email: strin
 }
 
 export async function openAnzuUserEdit(page: Page, email: string): Promise<void> {
-  await page.goto('/anzu-users')
+  await page.goto('/anzu-users-backup')
   await cardLoad(page)
   // This list only offers an e-mail filter for finding a user. The id filter is behind the advanced ones.
   await filterBy(page, 'E-mail', email)
@@ -126,7 +126,7 @@ export async function toggleUserAccess(page: Page, data: UserAccessData): Promis
 }
 
 export async function openUserEdit(page: Page, id: string): Promise<void> {
-  await page.goto(`/users/${id}/edit`)
+  await page.goto(`/users-backup/${id}/edit`)
   await cardLoad(page)
   await expect(visibleCy(page, 'button-save')).toBeVisible()
 }

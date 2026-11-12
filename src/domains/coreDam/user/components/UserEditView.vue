@@ -24,16 +24,16 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users' },
+  { title: t('breadcrumb.coreDam.user.list'), routeName: '/(coreDam)/users-backup' },
   {
     title: `${t('breadcrumb.coreDam.user.edit')} #${id}`,
-    routeName: '/(coreDam)/users/[id]/edit',
+    routeName: '/(coreDam)/users-backup/[id]/edit',
   },
 ])
 
 useRecordPage({
-  fallbackRouteName: '/(coreDam)/users',
-  skipRouteNames: ['/(coreDam)/users/[id]'],
+  fallbackRouteName: '/(coreDam)/users-backup',
+  skipRouteNames: ['/(coreDam)/users-backup/[id]'],
   loading: detailLoading,
   load: (signal) => fetchData(id, { signal }),
 })
@@ -54,8 +54,8 @@ onBeforeUnmount(() => {
       />
 
       <AActionCloseButtonHistory
-        :fallback-route-name="'/(coreDam)/users'"
-        :skip-route-names="['/(coreDam)/users/[id]']"
+        :fallback-route-name="'/(coreDam)/users-backup'"
+        :skip-route-names="['/(coreDam)/users-backup/[id]']"
       />
     </template>
   </ActionbarWrapper>

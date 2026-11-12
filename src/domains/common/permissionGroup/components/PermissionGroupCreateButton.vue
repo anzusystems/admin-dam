@@ -63,7 +63,7 @@ const onConfirm = defineRecordSave(buttonLoading, v$, async () => {
   showRecordWas('created')
   dialog.value = false
   if (!isUndefined(res.id) && !props.disableRedirect) {
-    push({ name: '/(common)/permission-groups/[id]', params: { id: res.id } })
+    push({ name: '/(common)/permission-groups-backup/[id]', params: { id: res.id } })
   }
 })
 </script>

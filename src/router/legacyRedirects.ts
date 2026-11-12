@@ -40,6 +40,15 @@ const RENAMED_ROOTS: Record<string, string> = {
   '/voice-family': '/voice-families',
 }
 
+/*
+ * The Anzu user part of an account (`/anzu-users`) and its dam part (`/users`) are one record with one id
+ * (core-dam's `User` extends `AnzuUser`). The page at `/users` edits both now, so the old Anzu user
+ * addresses go to the same record there. The old pages are at `/anzu-users-backup`, which this does not match.
+ */
+const MERGED_ROOTS: Record<string, string> = {
+  '/anzu-users': '/users',
+}
+
 // the rename went one level deeper for podcast and video-show episodes; ids never collide with it
 const RENAMED_SEGMENTS: Record<string, string> = {
   episode: 'episodes',
@@ -67,7 +76,7 @@ const rewriteRest = (rest: string | string[] | undefined) => {
 }
 
 export const addLegacyRedirects = (router: Router) => {
-  for (const [legacy, current] of Object.entries(RENAMED_ROOTS)) {
+  for (const [legacy, current] of [...Object.entries(RENAMED_ROOTS), ...Object.entries(MERGED_ROOTS)]) {
     router.addRoute({
       path: `${legacy}/:rest(.*)?`,
       redirect: (to) => {

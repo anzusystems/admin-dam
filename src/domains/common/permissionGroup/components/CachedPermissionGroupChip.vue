@@ -18,7 +18,7 @@ const { getCachedPermissionGroup } = useCachedPermissionGroups()
   <ACachedChip
     :id="id"
     :get-cached-fn="getCachedPermissionGroup"
-    :route="'/(common)/permission-groups/[id]'"
+    :route="'/(common)/permission-groups-backup/[id]'"
     display-text-path="title"
   />
 </template>

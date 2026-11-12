@@ -25,16 +25,16 @@ const { fetchAnzuUser, resetAnzuUserStore, detailLoading } = useAnzuUserActions(
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users-backup' },
   {
     title: t('breadcrumb.anzuUser.detail'),
-    routeName: '/(common)/anzu-users/[id]',
+    routeName: '/(common)/anzu-users-backup/[id]',
   },
 ])
 
 useRecordPage({
-  fallbackRouteName: '/(common)/anzu-users',
-  skipRouteNames: ['/(common)/anzu-users/[id]/edit'],
+  fallbackRouteName: '/(common)/anzu-users-backup',
+  skipRouteNames: ['/(common)/anzu-users-backup/[id]/edit'],
   loading: detailLoading,
   load: (signal) => fetchAnzuUser(id, { signal }),
 })
@@ -53,13 +53,13 @@ onBeforeUnmount(() => {
       >
         <AActionEditButton
           :record-id="id"
-          :route-name="'/(common)/anzu-users/[id]/edit'"
+          :route-name="'/(common)/anzu-users-backup/[id]/edit'"
           :loading="detailLoading"
         />
       </Acl>
       <AActionCloseButtonHistory
-        :fallback-route-name="'/(common)/anzu-users'"
-        :skip-route-names="['/(common)/anzu-users/[id]/edit']"
+        :fallback-route-name="'/(common)/anzu-users-backup'"
+        :skip-route-names="['/(common)/anzu-users-backup/[id]/edit']"
       />
     </template>
   </ActionbarWrapper>

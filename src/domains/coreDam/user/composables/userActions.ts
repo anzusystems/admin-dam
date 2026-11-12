@@ -145,7 +145,7 @@ export const useUserEditActions = () => {
       }
       showRecordWas('updated')
       if (!close) return
-      push({ name: '/(coreDam)/users' })
+      push({ name: '/(coreDam)/users-backup' })
     } catch (error) {
       showErrorsDefault(error)
     } finally {

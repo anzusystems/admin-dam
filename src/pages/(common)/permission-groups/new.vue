@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   AActionCloseButtonHistory,
-  AActionSaveAndCloseButton,
   AActionSaveButton,
   ACard,
   APermissionGroupManage,
@@ -41,24 +40,19 @@ const {
 const { push } = usePageNavigation()
 
 // The library returns the saved record instead of navigating, since it does not know this app's typed route names.
-const onCreate = async (close = false) => {
+const onCreate = async () => {
   const created = await createPermissionGroup()
   if (isNull(created)) return
-  if (close) {
-    push({ name: '/(common)/permission-groups-new' })
-
-    return
-  }
-  push({ name: '/(common)/permission-groups-new/[id]', params: { id: String(created.id) } })
+  push({ name: '/(common)/permission-groups/[id]', params: { id: String(created.id) } })
 }
 
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups-new' },
+  { title: t('breadcrumb.permissionGroup.list'), routeName: '/(common)/permission-groups' },
   {
     title: permissionGroup.value.title || t('breadcrumb.permissionGroup.create'),
-    routeName: '/(common)/permission-groups-new/new',
+    routeName: '/(common)/permission-groups/new',
   },
 ])
 
@@ -78,11 +72,7 @@ onBeforeUnmount(() => {
         :loading="loadingCreatePermissionGroup"
         @save-record="onCreate()"
       />
-      <AActionSaveAndCloseButton
-        :loading="loadingCreatePermissionGroup"
-        @save-record-and-close="onCreate(true)"
-      />
-      <AActionCloseButtonHistory :fallback-route-name="'/(common)/permission-groups-new'" />
+      <AActionCloseButtonHistory :fallback-route-name="'/(common)/permission-groups'" />
     </template>
   </ActionbarWrapper>
 

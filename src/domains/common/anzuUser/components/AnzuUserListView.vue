@@ -20,7 +20,7 @@ const { listLoading } = useAnzuUserActions()
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(() => [
-  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users' },
+  { title: t('breadcrumb.anzuUser.list'), routeName: '/(common)/anzu-users-backup' },
 ])
 </script>
 

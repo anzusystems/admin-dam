@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-import { LogTypeDefault, useDebugFeatures } from '@anzusystems/common-admin'
+import { LogTypeDefault } from '@anzusystems/common-admin'
 import { useI18n } from 'vue-i18n'
 
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
 
 const { useCurrentUser } = useAuth()
-const { showDebugFeatures } = useDebugFeatures()
 const { t } = useI18n()
 
 // Logs, and public exports for now, are gated on the role, not a permission.
@@ -119,41 +118,6 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         prepend-icon="mdi-folder-account-outline"
         :title="t('sidebar.settings.permissionGroups')"
         data-cy="permission-group-settings"
-      />
-    </Acl>
-    <Acl :permission="ACL.DAM_USER_UI">
-      <VListItem
-        :to="{ name: '/(common)/anzu-users' }"
-        prepend-icon="mdi-account-edit-outline"
-        :title="t('sidebar.settings.anzuUser')"
-        data-cy="user-permissions"
-      />
-    </Acl>
-    <!--
-      Merged view: the AnzuUser and dam parts of one record on one page, saved by one call.
-      It sits beside both originals until parity is signed off. Then
-      it takes over `/users` and the entries collapse into one.
-    -->
-    <Acl
-      v-if="showDebugFeatures"
-      :permission="ACL.DAM_USER_READ"
-    >
-      <VListItem
-        :to="{ name: '/(coreDam)/users-new' }"
-        prepend-icon="mdi-account-edit-outline"
-        :title="`${t('sidebar.settings.anzuUser')} (new)`"
-        data-cy="user-permissions-new"
-      />
-    </Acl>
-    <Acl
-      v-if="showDebugFeatures"
-      :permission="ACL.DAM_PERMISSION_GROUP_UI"
-    >
-      <VListItem
-        :to="{ name: '/(common)/permission-groups-new' }"
-        prepend-icon="mdi-folder-account-outline"
-        :title="`${t('sidebar.settings.permissionGroups')} (new)`"
-        data-cy="permission-group-settings-new"
       />
     </Acl>
     <Acl :permission="ACL.DAM_JOB_UI">

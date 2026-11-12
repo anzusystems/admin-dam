@@ -12,7 +12,8 @@ import {
   type UserAccessData,
 } from '@pages/settings/userPage'
 import { deleteUserDataViaApi } from '@pages/settings/jobPage'
-import { closeDetail, openSettingsSection, saveEdit, visibleCy } from '@pages/shared/crud'
+import { cardLoad } from '@pages/shared/admin'
+import { closeDetail, saveEdit, visibleCy } from '@pages/shared/crud'
 
 let page: Page
 let USER_CREATED = false
@@ -45,7 +46,8 @@ test.describe.serial(`${ADMIN_SUITE} - User`, () => {
   })
 
   test('creates a user', async () => {
-    await openSettingsSection(page, 'user-permissions', '/anzu-users', 'Oprávnenia používateľov')
+    await page.goto('/anzu-users-backup')
+    await cardLoad(page)
     const id = await createAnzuUser(page, {
       id: USER_ID,
       email: USER_EMAIL,
@@ -54,14 +56,15 @@ test.describe.serial(`${ADMIN_SUITE} - User`, () => {
     })
     USER_CREATED = true
     expect(id).toBe(USER_ID)
-    await openUserByEmail(page, '/anzu-users', USER_EMAIL, USER_ID)
+    await openUserByEmail(page, '/anzu-users-backup', USER_EMAIL, USER_ID)
     await closeDetail(page, `/${USER_ID}`)
-    await expect(page).toHaveURL(/\/anzu-users$/)
+    await expect(page).toHaveURL(/\/anzu-users-backup$/)
   })
 
   test('grants the user licences, ext systems, providers and distribution services', async () => {
-    await openSettingsSection(page, 'user-settings', '/users', 'Používatelia')
-    await openUserByEmail(page, '/users', USER_EMAIL, USER_ID)
+    await page.goto('/users-backup')
+    await cardLoad(page)
+    await openUserByEmail(page, '/users-backup', USER_EMAIL, USER_ID)
     await visibleCy(page, 'button-edit').click()
     await expect(page).toHaveURL(/\/edit$/)
     await openUserEdit(page, USER_ID)
