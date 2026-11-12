@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {
   ADamAuthorRemoteAutocompleteWithCached,
-  ADamExtSystemRemoteAutocomplete,
   AFormDatetimePicker,
   AFormTextField,
   ARow,
@@ -13,9 +12,9 @@ import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/current
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
-import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicence } = useAssetLicenceEditActions()
@@ -53,12 +52,9 @@ const { t } = useI18n()
             data-cy="asset-licence-ext-id"
           />
         </ARow>
-        <ARow>
-          <ADamExtSystemRemoteAutocomplete
-            v-model="assetLicence.extSystem"
-            :client="damClient"
-            :label="t('coreDam.assetLicence.model.extSystem')"
-            :v="v$.assetLicence.extSystem"
+        <ARow :title="t('coreDam.assetLicence.model.extSystem')">
+          <CachedExtSystemChip
+            :id="assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
           />
         </ARow>

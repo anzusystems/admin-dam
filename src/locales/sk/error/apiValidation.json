@@ -1,5 +1,6 @@
 {
   "error_invalid_key": "Neplatný kľúč.",
   "error_invalid_licence": "Neplatná licencia.",
-  "error_invalid_ext_system": "Neplatný externý systém."
+  "error_invalid_ext_system": "Neplatný externý systém.",
+  "error_ext_system_locked": "Ext systém licencie sa po jej založení nedá zmeniť."
 }

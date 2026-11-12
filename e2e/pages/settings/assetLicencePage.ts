@@ -9,17 +9,12 @@ export interface AssetLicenceData {
   extSystem: string
 }
 
-async function fillLicence(page: Page, data: AssetLicenceData): Promise<void> {
+/** The ext system of a licence is set only on create; the edit form shows it read-only. */
+export type AssetLicenceUpdateData = Omit<AssetLicenceData, 'extSystem'>
+
+async function fillLicence(page: Page, data: AssetLicenceUpdateData): Promise<void> {
   await page.locator('[data-cy="asset-licence-name"] input').fill(data.name)
   await page.locator('[data-cy="asset-licence-ext-id"] input').fill(data.extId)
-  // On the edit form the autocomplete search text is the current system, which filters out other options.
-  // Search for the wanted one instead of only opening the menu.
-  const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
-  await extSystem.click()
-  // Once it holds a system, the field carries a hidden input with its id beside the search box, and the field
-  // around the box has the combobox role too.
-  await extSystem.locator('input:not([type="hidden"])').fill(data.extSystem)
-  await page.getByRole('option', { name: data.extSystem, exact: true }).click()
 }
 
 export async function createAssetLicence(page: Page, data: AssetLicenceData): Promise<string> {
@@ -28,12 +23,18 @@ export async function createAssetLicence(page: Page, data: AssetLicenceData): Pr
   const panel = page.locator('[data-cy="create-panel"]')
   await expect(panel).toBeVisible()
   await fillLicence(page, data)
+  const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
+  await extSystem.click()
+  // Once it holds a system, the field carries a hidden input with its id beside the search box, and the field
+  // around the box has the combobox role too.
+  await extSystem.locator('input:not([type="hidden"])').fill(data.extSystem)
+  await page.getByRole('option', { name: data.extSystem, exact: true }).click()
   await expect(panel.locator('[data-cy="button-close"]')).toBeVisible()
   await expect(panel.locator('[data-cy="button-cancel"]')).toBeVisible()
   return confirmCreate(page, createDialog(page), '/asset-licence')
 }
 
-export async function updateAssetLicence(page: Page, id: string, data: AssetLicenceData): Promise<void> {
+export async function updateAssetLicence(page: Page, id: string, data: AssetLicenceUpdateData): Promise<void> {
   await page.goto('/asset-licences')
   await filterBy(page, 'ID', id)
   await visibleCy(page, 'table-edit').click()
