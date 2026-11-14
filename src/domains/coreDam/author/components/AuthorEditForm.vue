@@ -62,7 +62,7 @@ watch(hasCurrentAuthors, (hasParents) => {
             data-cy="author-flags-reviewed"
           />
         </ARow>
-        <ARow v-if="author.flags.source">
+        <ARow>
           <VSwitch
             v-model="author.flags.hiddenInCredit"
             :label="t('coreDam.author.model.flags.hiddenInCredit')"

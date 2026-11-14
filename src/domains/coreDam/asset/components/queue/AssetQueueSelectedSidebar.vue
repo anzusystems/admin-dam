@@ -213,26 +213,23 @@ onMounted(() => {
                 </VCol>
               </VRow>
               <VRow
-                v-if="sourceEnabled"
                 density="compact"
                 class="my-2"
               >
-                <VCol>
+                <VCol v-if="sourceEnabled">
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
                   >
-                    <div class="d-flex">
-                      <div style="min-width: 286px">
-                        <AuthorRemoteAutocompleteWithCached
-                          v-model="massOperationsSources"
-                          :label="t('coreDam.asset.model.sources')"
-                          source
-                          clearable
-                          multiple
-                          :validation-scope="false"
-                        />
-                      </div>
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="massOperationsSources"
+                      :label="t('coreDam.asset.model.sources')"
+                      source
+                      clearable
+                      multiple
+                      :validation-scope="false"
+                    />
+                    <div class="d-flex justify-end">
                       <VBtn
                         icon
                         size="small"
@@ -265,28 +262,28 @@ onMounted(() => {
                     </div>
                   </ASystemEntityScope>
                 </VCol>
-              </VRow>
-              <VRow
-                density="compact"
-                class="my-2"
-              >
+                <VCol
+                  v-if="sourceEnabled"
+                  cols="auto"
+                  class="px-0 pt-5"
+                >
+                  <VIcon icon="mdi-slash-forward" />
+                </VCol>
                 <VCol>
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
                   >
-                    <div class="d-flex">
-                      <div style="min-width: 286px">
-                        <AuthorRemoteAutocompleteWithCached
-                          v-model="massOperationsAuthors"
-                          :label="t('coreDam.asset.model.authors')"
-                          :source="sourceEnabled ? false : undefined"
-                          clearable
-                          multiple
-                          :validation-scope="false"
-                          @source-found="onSourceFound"
-                        />
-                      </div>
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="massOperationsAuthors"
+                      :label="t('coreDam.asset.model.authors')"
+                      :source="sourceEnabled ? false : undefined"
+                      clearable
+                      multiple
+                      :validation-scope="false"
+                      @source-found="onSourceFound"
+                    />
+                    <div class="d-flex justify-end">
                       <VBtn
                         icon
                         size="small"

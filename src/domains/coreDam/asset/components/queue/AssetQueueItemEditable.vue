@@ -405,11 +405,11 @@ onUnmounted(() => {
                 </VCol>
               </VRow>
               <VRow
-                v-if="sourceEnabled"
+                v-if="sourceEnabled || authorEnabled"
                 density="compact"
-                class="my-2"
+                class="my-2 align-center"
               >
-                <VCol>
+                <VCol v-if="sourceEnabled">
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
@@ -427,13 +427,14 @@ onUnmounted(() => {
                     />
                   </ASystemEntityScope>
                 </VCol>
-              </VRow>
-              <VRow
-                v-if="authorEnabled"
-                density="compact"
-                class="my-2"
-              >
-                <VCol>
+                <VCol
+                  v-if="sourceEnabled && authorEnabled"
+                  cols="auto"
+                  class="px-0"
+                >
+                  <VIcon icon="mdi-slash-forward" />
+                </VCol>
+                <VCol v-if="authorEnabled">
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
