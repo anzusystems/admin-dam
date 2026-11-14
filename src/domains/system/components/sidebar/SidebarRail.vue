@@ -146,6 +146,20 @@ const { t } = useI18n()
         </VTooltip>
       </VListItem>
     </Acl>
+    <Acl :permission="ACL.DAM_SOURCE_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/sources' }"
+        prepend-icon="mdi-source-branch"
+        data-cy="source-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.sources') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
         :to="{ name: '/(coreDam)/keywords' }"

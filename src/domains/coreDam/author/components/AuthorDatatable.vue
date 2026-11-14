@@ -25,9 +25,20 @@ import { useAuthorListActions } from '@/domains/coreDam/author/composables/autho
 import AuthorFilter from '@/domains/coreDam/author/components/AuthorFilter.vue'
 import { useAuthorListFilter } from '@/domains/coreDam/author/filter/AuthorFilter'
 import AuthorTypeChip from '@/domains/coreDam/author/components/AuthorTypeChip.vue'
-import { ACL } from '@/domains/system/auth/auth'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 
 type DatatableItem = DamAuthor
+
+const props = withDefaults(
+  defineProps<{
+    source?: boolean
+  }>(),
+  {
+    source: false,
+  }
+)
+
+const section = computed(() => getAuthorSection(props.source))
 
 const router = useRouter()
 
@@ -45,9 +56,10 @@ const { pagination } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: '/(coreDam)/authors/[id]', params: { id: item.id } })
+  router.push({ name: section.value.routeDetail, params: { id: item.id } })
 }
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
@@ -55,6 +67,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
     { key: 'identifier' },
     { key: 'type' },
     { key: 'flags.reviewed' },
+    ...(props.source ? [{ key: 'flags.hiddenInCredit' }] : []),
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -64,6 +77,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
 )
 
 const getList = useDebounceFn(() => {
+  filterData.source = props.source
   fetchList(pagination, filterData, filterConfig)
 })
 
@@ -124,6 +138,12 @@ defineExpose({
             :value="item.flags.reviewed"
           />
         </template>
+        <template #item.flags.hiddenInCredit="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.hiddenInCredit"
+          />
+        </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
         </template>
@@ -135,12 +155,12 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :record-id="item.id"
-              :route-name="'/(coreDam)/authors/[id]'"
+              :route-name="section.routeDetail"
             />
-            <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
+            <Acl :permission="section.aclUpdate">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="'/(coreDam)/authors/[id]/edit'"
+                :route-name="section.routeEdit"
               />
             </Acl>
           </div>

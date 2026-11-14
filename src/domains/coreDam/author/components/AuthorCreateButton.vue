@@ -13,12 +13,14 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { ENTITY, useCreateAuthor } from '@/domains/coreDam/author/api/authorApi'
 import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 import { AuthorCreateValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 
 const props = withDefaults(
   defineProps<{
     initialValue?: string
     disableRedirect?: boolean
+    source?: boolean
     variant?: 'button' | 'icon'
     buttonT?: string
     buttonClass?: string
@@ -29,6 +31,7 @@ const props = withDefaults(
   {
     initialValue: '',
     disableRedirect: false,
+    source: undefined,
     variant: 'button',
     buttonT: 'common.button.create',
     buttonClass: 'ml-2',
@@ -39,6 +42,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'onSuccess', data: DamAuthor): void
+  (e: 'onSourceFound', data: DamAuthor): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -50,6 +54,7 @@ const buttonLoading = ref(false)
 
 const onClick = (textOverride: string | undefined) => {
   author.value = createDefault(currentExtSystemId.value, true)
+  author.value.flags.source = props.source === true
   textOverride ? (author.value.name = textOverride) : (author.value.name = props.initialValue)
   dialog.value = true
 }
@@ -62,7 +67,7 @@ const router = useRouter()
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showValidationError, showRecordWas, showErrorsDefault, showInfo } = useAlerts()
 
 const onConfirm = async () => {
   if (buttonLoading.value) return
@@ -75,11 +80,21 @@ const onConfirm = async () => {
       return
     }
     const res = await createAuthor({ object: author.value })
-    emit('onSuccess', res)
-    showRecordWas('created')
+    if (props.source && !res.flags.source) {
+      showInfo(t('coreDam.source.isAuthor', { name: res.name }))
+      dialog.value = false
+      return
+    }
+    if (res.flags.source && props.source === false) {
+      emit('onSourceFound', res)
+      showInfo(t('common.damImage.author.sourceFound', { name: res.name }))
+    } else {
+      emit('onSuccess', res)
+      showRecordWas('created')
+    }
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
-      router.push({ name: '/(coreDam)/authors/[id]', params: { id: res.id } })
+      router.push({ name: getAuthorSection(res.flags.source).routeDetail, params: { id: res.id } })
     }
   } catch (error) {
     showErrorsDefault(error)
@@ -133,7 +148,7 @@ defineExpose({
       data-cy="create-panel"
     >
       <ADialogToolbar @on-cancel="onCancel">
-        {{ t('coreDam.author.meta.create') }}
+        {{ source ? t('coreDam.source.button.create') : t('coreDam.author.meta.create') }}
       </ADialogToolbar>
       <VCardText>
         <ASystemEntityScope
@@ -164,6 +179,7 @@ defineExpose({
               v-model="author.type"
               :label="t('coreDam.author.model.type')"
               :items="authorTypeOptions"
+              :v="v$.author.type"
               data-cy="author-type"
               @keyup.enter="onConfirm"
             />

@@ -55,6 +55,14 @@ const { currentExtSystemId } = useCurrentExtSystem()
   </VRow>
   <VRow>
     <VCol>
+      <DamAuthorFilterRemoteAutocomplete
+        name="sourceIds"
+        :ext-system="currentExtSystemId"
+      />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>
       <DamUserFilterRemoteAutocomplete name="createdByIds" />
     </VCol>
   </VRow>

@@ -6,7 +6,8 @@
     "type": "Type",
     "flags": {
       "reviewed": "Reviewed",
-      "reviewedDisabledHint": "An author with parent authors cannot be reviewed"
+      "reviewedDisabledHint": "An author with parent authors cannot be reviewed",
+      "hiddenInCredit": "Hidden in credit"
     },
     "currentAuthors": "Parent authors",
     "childAuthors": "Child authors",
@@ -31,6 +32,9 @@
   },
   "button": {
     "add": "Add new author"
+  },
+  "validation": {
+    "sourceType": "A source needs a type"
   },
   "conflicts": "Author conflicts"
 }

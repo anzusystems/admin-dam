@@ -20,6 +20,11 @@
       "detail": "Author",
       "edit": "Author"
     },
+    "source": {
+      "list": "Sources",
+      "detail": "Source",
+      "edit": "Edit source"
+    },
     "distributionCategory": {
       "list": "Distribution categories",
       "detail": "Category",

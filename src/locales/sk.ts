@@ -35,6 +35,7 @@ import publicExport from '@/locales/sk/coreDam/publicExport.json'
 import voiceFamily from '@/locales/sk/coreDam/voiceFamily.json'
 import voice from '@/locales/sk/coreDam/voice.json'
 import ttsNarrationRequest from '@/locales/sk/coreDam/ttsNarrationRequest.json'
+import source from '@/locales/sk/coreDam/source.json'
 
 export default {
   common: {
@@ -80,6 +81,7 @@ export default {
     voiceFamily,
     voice,
     ttsNarrationRequest,
+    source,
   },
   auth,
   sidebar,

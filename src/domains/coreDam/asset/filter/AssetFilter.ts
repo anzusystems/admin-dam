@@ -10,6 +10,7 @@ export const filterFieldsList = [
   { name: 'keywordIds' as const, default: [] },
   { name: 'assetAndMainFileIds' as const, default: null, type: 'string' },
   { name: 'authorIds' as const, default: [] },
+  { name: 'sourceIds' as const, default: [] },
   { name: 'createdByIds' as const, default: [] },
   { name: 'mostDominantColor' as const, default: [] },
   { name: 'closestMostDominantColor' as const, default: [] },

@@ -3,6 +3,7 @@
     "id": "ID",
     "distributionCategory": "Distribution Category",
     "authors": "Authors",
+    "sources": "Sources",
     "keywords": "Keywords",
     "ttsAudio": "TTS audio"
   },
@@ -13,6 +14,7 @@
     "inPodcast": "In podcast",
     "keywordIds": "Keywords",
     "authorIds": "Authors",
+    "sourceIds": "Sources",
     "createdByIds": "Created by",
     "fromRss": "From RSS",
     "ttsAudio": "Synthesized (TTS)",

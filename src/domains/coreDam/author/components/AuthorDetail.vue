@@ -54,6 +54,15 @@ const { getAuthorTypeOption } = useDamAuthorType()
           :value="author.flags.reviewed"
         />
       </ARow>
+      <ARow
+        v-if="author.flags.source"
+        :title="t('coreDam.author.model.flags.hiddenInCredit')"
+      >
+        <ABooleanValue
+          chip
+          :value="author.flags.hiddenInCredit"
+        />
+      </ARow>
       <ARow :title="t('coreDam.author.model.createdBy')">
         <CachedDamUserChip :id="author.createdBy" />
       </ARow>

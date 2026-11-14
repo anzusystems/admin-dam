@@ -6,7 +6,8 @@
     "type": "Typ",
     "flags": {
       "reviewed": "Skontrolovaný",
-      "reviewedDisabledHint": "Autor s nadradenými autormi nemôže byť skontrolovaný"
+      "reviewedDisabledHint": "Autor s nadradenými autormi nemôže byť skontrolovaný",
+      "hiddenInCredit": "Skrytý v kredite"
     },
     "currentAuthors": "Nadradení autori",
     "childAuthors": "Podradení autori",
@@ -31,6 +32,9 @@
   },
   "button": {
     "add": "Pridať nového autora"
+  },
+  "validation": {
+    "sourceType": "Zdroj musí mať typ"
   },
   "conflicts": "Konflikt autorov"
 }

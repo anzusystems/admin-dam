@@ -8,6 +8,7 @@ const fields = [
   { name: 'identifier' as const, default: null, type: 'string' },
   { name: 'reviewed' as const, default: null, type: 'boolean' },
   { name: 'type' as const, default: null, type: 'string' },
+  { name: 'source' as const, default: null, type: 'boolean', render: { skip: true } },
 ] satisfies readonly MakeFilterOption[]
 
 const store = createFilterStore(fields)
@@ -26,6 +27,7 @@ export function useAuthorInnerFilter() {
   const fields = [
     { name: 'text' as const, variant: 'search', default: null, type: 'string' },
     { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
+    { name: 'source' as const, default: null, type: 'boolean', render: { skip: true } },
   ] satisfies readonly MakeFilterOption[]
 
   const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {

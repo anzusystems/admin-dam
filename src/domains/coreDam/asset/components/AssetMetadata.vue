@@ -12,9 +12,10 @@ import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
+import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import type { AssetFile } from '@anzusystems/common-admin'
+import type { AssetFile, DamAuthor } from '@anzusystems/common-admin'
 import {
   ACopyText,
   ADatetime,
@@ -88,8 +89,16 @@ const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.
 
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
+const { sourceEnabled, sourceRequired } = useSourceAssetTypeConfig(assetType.value)
+
 const onAnyMetadataChange = () => {
   metadataTouch()
+}
+
+const onSourceFound = (author: DamAuthor) => {
+  if (!asset.value || asset.value.sources.includes(author.id)) return
+  asset.value.sources = [...asset.value.sources, author.id]
+  onAnyMetadataChange()
 }
 </script>
 
@@ -137,6 +146,30 @@ const onAnyMetadataChange = () => {
               </VCol>
             </VRow>
             <VRow
+              v-if="sourceEnabled"
+              density="compact"
+              class="my-2"
+            >
+              <VCol>
+                <ASystemEntityScope
+                  subject="author"
+                  system="dam"
+                >
+                  <AuthorRemoteAutocompleteWithCached
+                    v-model="asset.sources"
+                    :label="t('coreDam.asset.model.sources')"
+                    data-cy="custom-field-sources"
+                    source
+                    clearable
+                    multiple
+                    :required="sourceRequired"
+                    :validation-scope="AssetMetadataValidationScopeSymbol"
+                    @update:model-value="onAnyMetadataChange"
+                  />
+                </ASystemEntityScope>
+              </VCol>
+            </VRow>
+            <VRow
               v-if="authorEnabled"
               density="compact"
               class="my-2"
@@ -151,11 +184,13 @@ const onAnyMetadataChange = () => {
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
+                    :source="sourceEnabled ? false : undefined"
                     clearable
                     multiple
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
+                    @source-found="onSourceFound"
                   />
                 </ASystemEntityScope>
               </VCol>

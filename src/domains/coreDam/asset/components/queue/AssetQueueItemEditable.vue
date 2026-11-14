@@ -9,6 +9,7 @@ import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
+import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import {
@@ -18,6 +19,7 @@ import {
   ASystemEntityScope,
   ATableCopyIdButton,
   DamAssetStatusDefault,
+  type DamAuthor,
   prettyBytes,
   type UploadQueueItem,
   UploadQueueItemStatus,
@@ -31,6 +33,7 @@ const props = withDefaults(
     customData: AssetCustomData
     keywords: DocId[]
     authors: DocId[]
+    sources: DocId[]
     item: UploadQueueItem
     refreshDisabled: boolean
     mainFileSingleUse: boolean | null
@@ -45,6 +48,7 @@ const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
+  (e: 'update:sources', data: DocId[]): void
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
@@ -79,6 +83,19 @@ const authors = computed({
     emit('update:authors', [...newValue])
   },
 })
+
+const sources = computed({
+  get() {
+    return props.sources
+  },
+  set(newValue) {
+    emit('update:sources', [...newValue])
+  },
+})
+
+const onSourceFound = (author: DamAuthor) => {
+  if (!sources.value.includes(author.id)) sources.value = [...sources.value, author.id]
+}
 
 const mainFileSingleUse = computed({
   get() {
@@ -157,6 +174,8 @@ const status = computed(() => {
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
 
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+
+const { sourceEnabled, sourceRequired } = useSourceAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {
   emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
@@ -386,6 +405,30 @@ onUnmounted(() => {
                 </VCol>
               </VRow>
               <VRow
+                v-if="sourceEnabled"
+                density="compact"
+                class="my-2"
+              >
+                <VCol>
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="sources"
+                      :queue-id="queueId"
+                      :label="t('coreDam.asset.model.sources')"
+                      source
+                      clearable
+                      multiple
+                      :required="sourceRequired"
+                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :disabled="!item.canEditMetadata"
+                    />
+                  </ASystemEntityScope>
+                </VCol>
+              </VRow>
+              <VRow
                 v-if="authorEnabled"
                 density="compact"
                 class="my-2"
@@ -400,11 +443,13 @@ onUnmounted(() => {
                       :queue-id="queueId"
                       :label="t('coreDam.asset.model.authors')"
                       :author-conflicts="item.authorConflicts"
+                      :source="sourceEnabled ? false : undefined"
                       clearable
                       multiple
                       :required="authorRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
+                      @source-found="onSourceFound"
                     />
                   </ASystemEntityScope>
                 </VCol>

@@ -2,10 +2,12 @@
 import AssetCustomMetadataFormMassOperations from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import { isSourceEnabled } from '@/domains/coreDam/author/composables/sourceConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import {
   ASystemEntityScope,
   type CustomDataValue,
+  type DamAuthor,
   DamAssetType,
   type DamAssetTypeType,
 } from '@anzusystems/common-admin'
@@ -25,6 +27,7 @@ const massOperationsData = ref<{
 }>({ image: {}, video: {}, audio: {}, document: {} })
 const massOperationsKeywords = ref([])
 const massOperationsAuthors = ref([])
+const massOperationsSources = ref<DocId[]>([])
 
 const { t } = useI18n()
 
@@ -49,6 +52,17 @@ const fillEmptyAuthors = () => {
 }
 const replaceAuthors = () => {
   uploadQueuesStore.queueItemsReplaceEmptyAuthors(props.queueId, massOperationsAuthors.value, true)
+}
+const onSourceFound = (author: DamAuthor) => {
+  if (!massOperationsSources.value.includes(author.id)) {
+    massOperationsSources.value = [...massOperationsSources.value, author.id]
+  }
+}
+const fillEmptySources = () => {
+  uploadQueuesStore.queueItemsReplaceEmptySources(props.queueId, massOperationsSources.value)
+}
+const replaceSources = () => {
+  uploadQueuesStore.queueItemsReplaceEmptySources(props.queueId, massOperationsSources.value, true)
 }
 const fillAll = (forceReplace = false) => {
   for (const [elementProperty, value] of Object.entries(massOperationsData.value.image)) {
@@ -97,21 +111,26 @@ const fillAll = (forceReplace = false) => {
   }
   if (forceReplace) {
     replaceAuthors()
+    if (sourceEnabled.value) replaceSources()
     replaceKeywords()
     return
   }
   fillEmptyAuthors()
+  if (sourceEnabled.value) fillEmptySources()
   fillEmptyKeywords()
 }
 const clearForm = () => {
   massOperationsData.value = { image: {}, video: {}, audio: {}, document: {} }
   massOperationsAuthors.value = []
+  massOperationsSources.value = []
   massOperationsKeywords.value = []
 }
 
 const assetTypes = computed(() => {
   return uploadQueuesStore.getQueueItemsTypes(props.queueId)
 })
+
+const sourceEnabled = computed(() => assetTypes.value.some((assetType) => isSourceEnabled(assetType)))
 
 onMounted(() => {
   if (assetTypes.value[0]) {
@@ -194,6 +213,60 @@ onMounted(() => {
                 </VCol>
               </VRow>
               <VRow
+                v-if="sourceEnabled"
+                density="compact"
+                class="my-2"
+              >
+                <VCol>
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
+                    <div class="d-flex">
+                      <div style="min-width: 286px">
+                        <AuthorRemoteAutocompleteWithCached
+                          v-model="massOperationsSources"
+                          :label="t('coreDam.asset.model.sources')"
+                          source
+                          clearable
+                          multiple
+                          :validation-scope="false"
+                        />
+                      </div>
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        class="mr-1"
+                        @click.stop="fillEmptySources"
+                      >
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
+                          {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
+                        </VTooltip>
+                      </VBtn>
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        @click.stop="replaceSources"
+                      >
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
+                          {{ t('coreDam.asset.massOperations.replaceOne') }}
+                        </VTooltip>
+                      </VBtn>
+                    </div>
+                  </ASystemEntityScope>
+                </VCol>
+              </VRow>
+              <VRow
                 density="compact"
                 class="my-2"
               >
@@ -207,9 +280,11 @@ onMounted(() => {
                         <AuthorRemoteAutocompleteWithCached
                           v-model="massOperationsAuthors"
                           :label="t('coreDam.asset.model.authors')"
+                          :source="sourceEnabled ? false : undefined"
                           clearable
                           multiple
                           :validation-scope="false"
+                          @source-found="onSourceFound"
                         />
                       </div>
                       <VBtn

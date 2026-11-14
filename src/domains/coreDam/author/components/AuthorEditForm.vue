@@ -62,11 +62,19 @@ watch(hasCurrentAuthors, (hasParents) => {
             data-cy="author-flags-reviewed"
           />
         </ARow>
+        <ARow v-if="author.flags.source">
+          <VSwitch
+            v-model="author.flags.hiddenInCredit"
+            :label="t('coreDam.author.model.flags.hiddenInCredit')"
+            data-cy="author-flags-hidden-in-credit"
+          />
+        </ARow>
         <ARow>
           <AFormValueObjectOptionsSelect
             v-model="author.type"
             :label="t('coreDam.author.model.type')"
             :items="authorTypeOptions"
+            :v="v$.author.type"
             data-cy="author-type"
           />
         </ARow>

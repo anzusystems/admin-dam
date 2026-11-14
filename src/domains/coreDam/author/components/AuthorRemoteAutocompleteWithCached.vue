@@ -23,6 +23,7 @@ const props = withDefaults(
     required?: boolean | null
     disabled?: boolean | undefined
     multiple?: boolean
+    source?: boolean
     clearable?: boolean
     authorConflicts?: DocId[]
     dataCy?: string
@@ -34,6 +35,7 @@ const props = withDefaults(
     required: null,
     disabled: undefined,
     multiple: false,
+    source: undefined,
     clearable: false,
     authorConflicts: undefined,
     dataCy: undefined,
@@ -42,6 +44,7 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: DocId[]): void
+  (e: 'sourceFound', data: DamAuthor): void
 }>()
 
 const modelValueComputed = computed({
@@ -78,6 +81,14 @@ const { filterConfig, filterData } = useAuthorInnerFilter()
 provide(FilterInnerConfigKey, filterConfig)
 provide(FilterInnerDataKey, filterData)
 
+watch(
+  () => props.source,
+  (source) => {
+    filterData.source = source ?? null
+  },
+  { immediate: true }
+)
+
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
   if (!modelValueComputed.value.includes(id)) {
@@ -101,6 +112,18 @@ const afterCreate = (author: DamAuthor) => {
   }
 }
 
+const onSourceFound = (author: DamAuthor) => {
+  addManualToCachedAuthors(author)
+  search.value = ''
+  emit('sourceFound', author)
+}
+
+const sourcesEmptyAttrs = computed(() =>
+  props.source && !loadingLocal.value && search.value.length >= 2
+    ? { 'no-data-text': t('common.damImage.asset.model.sourcesEmpty') }
+    : {}
+)
+
 const itemSlotIsSelected = (item: DocId) => {
   if (isArray(modelValueComputed.value)) {
     return modelValueComputed.value.includes(item)
@@ -118,17 +141,19 @@ const removeLastComma = (value: string) => {
 }
 
 const onEnterKeyup = () => {
+  if (props.source) return
   const value = removeLastComma(search.value)
   authorCreateButton.value?.open(value)
 }
 
 const onCommaKeyup = () => {
+  if (props.source) return
   const value = removeLastComma(search.value)
   authorCreateButton.value?.open(value)
 }
 
 const showAdd = computed(() => {
-  if (loadingLocal.value) return false
+  if (props.source || loadingLocal.value) return false
   if (search.value.length < 2 || search.value.length > 255) return false
   if (fetchedItemsMinimal.value.size === 0) return true
   return ![...fetchedItemsMinimal.value.values()].some(
@@ -157,6 +182,7 @@ const showAdd = computed(() => {
       item-title="name"
       item-value="id"
       :min-search-chars="2"
+      v-bind="sourcesEmptyAttrs"
       min-search-text="common.damImage.author.filterMinChars"
       @search-change="searchChange"
       @keyup.enter="onEnterKeyup"
@@ -211,15 +237,17 @@ const showAdd = computed(() => {
         </VListItem>
       </template>
     </AFormRemoteAutocompleteWithCached>
-    <div>
+    <div v-show="!source">
       <AuthorCreateButton
         ref="authorCreateButton"
         variant="icon"
         data-cy="add-author"
         :initial-value="addNewAuthorText"
+        :source="source"
         disable-redirect
         :disabled="disabled"
         @on-success="afterCreate"
+        @on-source-found="onSourceFound"
       />
     </div>
   </div>

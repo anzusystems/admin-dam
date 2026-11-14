@@ -2,7 +2,19 @@
 import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import AuthorEditForm from '@/domains/coreDam/author/components/AuthorEditForm.vue'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+
+const props = withDefaults(
+  defineProps<{
+    source?: boolean
+  }>(),
+  {
+    source: false,
+  }
+)
+
+const section = computed(() => getAuthorSection(props.source))
 
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
@@ -14,10 +26,10 @@ const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+    { title: t(section.value.breadcrumbList), routeName: section.value.routeList },
     {
-      title: author.value.name || t('breadcrumb.coreDam.author.edit'),
-      routeName: '/(coreDam)/authors/[id]/edit',
+      title: author.value.name || t(section.value.breadcrumbEdit),
+      routeName: section.value.routeEdit,
     },
   ])
 )
@@ -44,7 +56,7 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
+      <AActionCloseButton :route-name="section.routeList" />
     </template>
   </ActionbarWrapper>
 

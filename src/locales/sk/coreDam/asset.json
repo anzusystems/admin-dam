@@ -3,6 +3,7 @@
     "id": "ID",
     "distributionCategory": "Kategória distribúcie",
     "authors": "Autori",
+    "sources": "Zdroje",
     "keywords": "Kľúčové slová",
     "ttsAudio": "TTS audio"
   },
@@ -13,6 +14,7 @@
     "inPodcast": "V podcastoch",
     "keywordIds": "Kľúčové slová",
     "authorIds": "Autori",
+    "sourceIds": "Zdroje",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
     "ttsAudio": "Syntetické (TTS)",
