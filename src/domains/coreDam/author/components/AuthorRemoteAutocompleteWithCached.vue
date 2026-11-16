@@ -48,9 +48,9 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'update:modelValue', data: DocId[]): void
-  (e: 'sourceFound', data: DamAuthor): void
-  (e: 'authorFound', data: DamAuthor): void
 }>()
+
+const counterpart = defineModel<DocId[] | undefined>('counterpart', { default: undefined })
 
 const modelValueComputed = computed({
   get() {
@@ -113,22 +113,15 @@ const { addManualToCachedAuthors } = useCachedAuthors()
 
 const afterCreate = (author: DamAuthor) => {
   addManualToCachedAuthors(author)
-  if (isArray(modelValueComputed.value)) {
-    modelValueComputed.value = [...modelValueComputed.value, author.id]
-    search.value = ''
-  }
+  search.value = ''
+  addAuthor(author.id)
 }
 
-const onSourceFound = (author: DamAuthor) => {
+const addToCounterpart = (author: DamAuthor) => {
   addManualToCachedAuthors(author)
   search.value = ''
-  emit('sourceFound', author)
-}
-
-const onAuthorFound = (author: DamAuthor) => {
-  addManualToCachedAuthors(author)
-  search.value = ''
-  emit('authorFound', author)
+  if (!counterpart.value || counterpart.value.includes(author.id)) return
+  counterpart.value = [...counterpart.value, author.id]
 }
 
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -139,7 +132,7 @@ const onCreated = (author: DamAuthor) =>
     author,
     props.source,
     (ids) => fetchAuthorListByIds(ids, { urlParams: { extSystemId: currentExtSystemId.value } }),
-    { own: afterCreate, sources: onSourceFound, authors: onAuthorFound }
+    { own: afterCreate, other: addToCounterpart }
   )
 
 const { can } = useAuth()
@@ -263,7 +256,7 @@ const showAdd = computed(() => {
         </VListItem>
       </template>
     </AFormRemoteAutocompleteWithCached>
-    <div v-show="canCreate">
+    <div v-if="canCreate">
       <AuthorCreateButton
         ref="authorCreateButton"
         variant="icon"

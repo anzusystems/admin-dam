@@ -21,7 +21,6 @@ import {
   ASystemEntityScope,
   ATableCopyIdButton,
   DamAssetStatusDefault,
-  type DamAuthor,
   prettyBytes,
   type UploadQueueItem,
   UploadQueueItemStatus,
@@ -105,14 +104,6 @@ const credit = useDamCreditPreview(
   () => sources.value,
   () => authors.value,
 )
-
-const onSourceFound = (author: DamAuthor) => {
-  if (!sources.value.includes(author.id)) sources.value = [...sources.value, author.id]
-}
-
-const onAuthorFound = (author: DamAuthor) => {
-  if (!authors.value.includes(author.id)) authors.value = [...authors.value, author.id]
-}
 
 const mainFileSingleUse = computed({
   get() {
@@ -434,6 +425,7 @@ onUnmounted(() => {
                   >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="sources"
+                      v-model:counterpart="authors"
                       :queue-id="queueId"
                       :label="t('coreDam.asset.model.sources')"
                       source
@@ -442,7 +434,6 @@ onUnmounted(() => {
                       :required="sourceRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
-                      @author-found="onAuthorFound"
                     />
                   </ASystemEntityScope>
                 </template>
@@ -453,6 +444,7 @@ onUnmounted(() => {
                   >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
+                      v-model:counterpart="sources"
                       :queue-id="queueId"
                       :label="t('coreDam.asset.model.authors')"
                       :author-conflicts="item.authorConflicts"
@@ -462,7 +454,6 @@ onUnmounted(() => {
                       :required="authorRequired"
                       :validation-scope="AssetMetadataValidationScopeSymbol"
                       :disabled="!item.canEditMetadata"
-                      @source-found="onSourceFound"
                     />
                   </ASystemEntityScope>
                 </template>

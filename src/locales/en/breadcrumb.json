@@ -23,7 +23,7 @@
     "source": {
       "list": "Sources",
       "detail": "Source",
-      "edit": "Edit source"
+      "edit": "Source"
     },
     "distributionCategory": {
       "list": "Distribution categories",

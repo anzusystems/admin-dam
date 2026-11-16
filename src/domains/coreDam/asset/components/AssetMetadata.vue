@@ -17,7 +17,7 @@ import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAut
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
-import type { AssetFile, DamAuthor } from '@anzusystems/common-admin'
+import type { AssetFile } from '@anzusystems/common-admin'
 import {
   ACopyText,
   ADatetime,
@@ -107,18 +107,6 @@ const credit = useDamCreditPreview(
   () => asset.value?.sources ?? [],
   () => asset.value?.authors ?? [],
 )
-
-const onSourceFound = (author: DamAuthor) => {
-  if (!asset.value || asset.value.sources.includes(author.id)) return
-  asset.value.sources = [...asset.value.sources, author.id]
-  onAnyMetadataChange()
-}
-
-const onAuthorFound = (author: DamAuthor) => {
-  if (!asset.value || asset.value.authors.includes(author.id)) return
-  asset.value.authors = [...asset.value.authors, author.id]
-  onAnyMetadataChange()
-}
 </script>
 
 <template>
@@ -177,6 +165,7 @@ const onAuthorFound = (author: DamAuthor) => {
                 >
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.sources"
+                    v-model:counterpart="asset.authors"
                     :label="t('coreDam.asset.model.sources')"
                     data-cy="custom-field-sources"
                     source
@@ -185,7 +174,7 @@ const onAuthorFound = (author: DamAuthor) => {
                     :required="sourceRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
-                    @author-found="onAuthorFound"
+                    @update:counterpart="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
               </template>
@@ -196,6 +185,7 @@ const onAuthorFound = (author: DamAuthor) => {
                 >
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
+                    v-model:counterpart="asset.sources"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
@@ -205,7 +195,7 @@ const onAuthorFound = (author: DamAuthor) => {
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
-                    @source-found="onSourceFound"
+                    @update:counterpart="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
               </template>

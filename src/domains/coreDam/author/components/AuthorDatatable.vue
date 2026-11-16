@@ -38,8 +38,6 @@ const props = withDefaults(
   }
 )
 
-const section = computed(() => getAuthorSection(props.source))
-
 const router = useRouter()
 
 const { filterData, filterConfig } = useAuthorListFilter()
@@ -56,7 +54,7 @@ const { pagination } = usePagination('createdAt')
 provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
-  router.push({ name: section.value.routeDetail, params: { id: item.id } })
+  router.push({ name: getAuthorSection(item.flags.source).routeDetail, params: { id: item.id } })
 }
 
 const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
@@ -76,7 +74,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
 )
 
 const getList = useDebounceFn(() => {
-  filterData.source = props.source
+  filterData.source = props.source || null
   fetchList(pagination, filterData, filterConfig)
 })
 
@@ -154,12 +152,12 @@ defineExpose({
             <ATableCopyIdButton :id="item.id" />
             <ATableDetailButton
               :record-id="item.id"
-              :route-name="section.routeDetail"
+              :route-name="getAuthorSection(item.flags.source).routeDetail"
             />
-            <Acl :permission="section.aclUpdate">
+            <Acl :permission="getAuthorSection(item.flags.source).aclUpdate">
               <ATableEditButton
                 :record-id="item.id"
-                :route-name="section.routeEdit"
+                :route-name="getAuthorSection(item.flags.source).routeEdit"
               />
             </Acl>
           </div>

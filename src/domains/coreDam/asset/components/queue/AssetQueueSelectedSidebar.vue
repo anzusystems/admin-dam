@@ -7,7 +7,6 @@ import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/compo
 import {
   ASystemEntityScope,
   type CustomDataValue,
-  type DamAuthor,
   DamAssetType,
   type DamAssetTypeType,
   DamSourcesAuthorsRow,
@@ -53,17 +52,6 @@ const fillEmptyAuthors = () => {
 }
 const replaceAuthors = () => {
   uploadQueuesStore.queueItemsReplaceEmptyAuthors(props.queueId, massOperationsAuthors.value, true)
-}
-const onSourceFound = (author: DamAuthor) => {
-  if (!massOperationsSources.value.includes(author.id)) {
-    massOperationsSources.value = [...massOperationsSources.value, author.id]
-  }
-}
-
-const onAuthorFound = (author: DamAuthor) => {
-  if (!massOperationsAuthors.value.includes(author.id)) {
-    massOperationsAuthors.value = [...massOperationsAuthors.value, author.id]
-  }
 }
 const fillEmptySources = () => {
   uploadQueuesStore.queueItemsReplaceEmptySources(props.queueId, massOperationsSources.value)
@@ -230,12 +218,12 @@ onMounted(() => {
                   >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="massOperationsSources"
+                      v-model:counterpart="massOperationsAuthors"
                       :label="t('coreDam.asset.model.sources')"
                       source
                       clearable
                       multiple
                       :validation-scope="false"
-                      @author-found="onAuthorFound"
                     />
                     <div class="d-flex justify-end">
                       <VBtn
@@ -277,12 +265,12 @@ onMounted(() => {
                   >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="massOperationsAuthors"
+                      v-model:counterpart="massOperationsSources"
                       :label="t('coreDam.asset.model.authors')"
                       :source="sourceEnabled ? false : undefined"
                       clearable
                       multiple
                       :validation-scope="false"
-                      @source-found="onSourceFound"
                     />
                     <div class="d-flex justify-end">
                       <VBtn
