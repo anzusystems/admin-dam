@@ -2,5 +2,5 @@
   "button": {
     "create": "Vytvoriť zdroj"
   },
-  "isAuthor": "„{name}“ je autor, zdroj z neho urobí operátor"
+  "isAuthor": "„{name}“ už existuje ako autor, ako zdroj sa použiť nedá"
 }

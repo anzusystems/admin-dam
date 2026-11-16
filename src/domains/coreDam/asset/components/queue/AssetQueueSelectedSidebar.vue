@@ -10,6 +10,7 @@ import {
   type DamAuthor,
   DamAssetType,
   type DamAssetTypeType,
+  DamSourcesAuthorsRow,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -26,7 +27,7 @@ const massOperationsData = ref<{
   document: Record<string, CustomDataValue>
 }>({ image: {}, video: {}, audio: {}, document: {} })
 const massOperationsKeywords = ref([])
-const massOperationsAuthors = ref([])
+const massOperationsAuthors = ref<DocId[]>([])
 const massOperationsSources = ref<DocId[]>([])
 
 const { t } = useI18n()
@@ -56,6 +57,12 @@ const replaceAuthors = () => {
 const onSourceFound = (author: DamAuthor) => {
   if (!massOperationsSources.value.includes(author.id)) {
     massOperationsSources.value = [...massOperationsSources.value, author.id]
+  }
+}
+
+const onAuthorFound = (author: DamAuthor) => {
+  if (!massOperationsAuthors.value.includes(author.id)) {
+    massOperationsAuthors.value = [...massOperationsAuthors.value, author.id]
   }
 }
 const fillEmptySources = () => {
@@ -212,11 +219,11 @@ onMounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow
-                density="compact"
+              <DamSourcesAuthorsRow
+                :source-enabled="sourceEnabled"
                 class="my-2"
               >
-                <VCol v-if="sourceEnabled">
+                <template #sources>
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
@@ -228,6 +235,7 @@ onMounted(() => {
                       clearable
                       multiple
                       :validation-scope="false"
+                      @author-found="onAuthorFound"
                     />
                     <div class="d-flex justify-end">
                       <VBtn
@@ -261,15 +269,8 @@ onMounted(() => {
                       </VBtn>
                     </div>
                   </ASystemEntityScope>
-                </VCol>
-                <VCol
-                  v-if="sourceEnabled"
-                  cols="auto"
-                  class="px-0 pt-5"
-                >
-                  <VIcon icon="mdi-slash-forward" />
-                </VCol>
-                <VCol>
+                </template>
+                <template #authors>
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
@@ -315,8 +316,8 @@ onMounted(() => {
                       </VBtn>
                     </div>
                   </ASystemEntityScope>
-                </VCol>
-              </VRow>
+                </template>
+              </DamSourcesAuthorsRow>
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel

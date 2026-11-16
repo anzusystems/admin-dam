@@ -9,6 +9,7 @@ const AUTHOR_SECTION = {
   breadcrumbEdit: 'breadcrumb.coreDam.author.edit',
   aclCreate: ACL.DAM_AUTHOR_CREATE,
   aclUpdate: ACL.DAM_AUTHOR_UPDATE,
+  otherKindExists: 'coreDam.author.isSource',
 } as const
 
 const SOURCE_SECTION = {
@@ -20,6 +21,7 @@ const SOURCE_SECTION = {
   breadcrumbEdit: 'breadcrumb.coreDam.source.edit',
   aclCreate: ACL.DAM_SOURCE_CREATE,
   aclUpdate: ACL.DAM_SOURCE_UPDATE,
+  otherKindExists: 'coreDam.source.isAuthor',
 } as const
 
 export const getAuthorSection = (source: boolean) => (source ? SOURCE_SECTION : AUTHOR_SECTION)

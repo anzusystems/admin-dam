@@ -13,6 +13,8 @@ import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/componen
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
 import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import type { AssetFile, DamAuthor } from '@anzusystems/common-admin'
@@ -27,6 +29,8 @@ import {
   DamAssetTypeDefault,
   dateTimePretty,
   prettyBytes,
+  DamSourcesAuthorsRow,
+  useDamCreditPreview,
 } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
@@ -95,9 +99,24 @@ const onAnyMetadataChange = () => {
   metadataTouch()
 }
 
+const { getCachedAuthor } = useCachedAuthors()
+const { currentExtSystemId } = useCurrentExtSystem()
+const credit = useDamCreditPreview(
+  getCachedAuthor,
+  currentExtSystemId,
+  () => asset.value?.sources ?? [],
+  () => asset.value?.authors ?? [],
+)
+
 const onSourceFound = (author: DamAuthor) => {
   if (!asset.value || asset.value.sources.includes(author.id)) return
   asset.value.sources = [...asset.value.sources, author.id]
+  onAnyMetadataChange()
+}
+
+const onAuthorFound = (author: DamAuthor) => {
+  if (!asset.value || asset.value.authors.includes(author.id)) return
+  asset.value.authors = [...asset.value.authors, author.id]
   onAnyMetadataChange()
 }
 </script>
@@ -145,12 +164,13 @@ const onSourceFound = (author: DamAuthor) => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow
-              v-if="sourceEnabled || authorEnabled"
-              density="compact"
-              class="my-2 align-center"
+            <DamSourcesAuthorsRow
+              :source-enabled="sourceEnabled"
+              :author-enabled="authorEnabled"
+              :credit="credit"
+              class="my-2"
             >
-              <VCol v-if="sourceEnabled">
+              <template #sources>
                 <ASystemEntityScope
                   subject="author"
                   system="dam"
@@ -165,17 +185,11 @@ const onSourceFound = (author: DamAuthor) => {
                     :required="sourceRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
+                    @author-found="onAuthorFound"
                   />
                 </ASystemEntityScope>
-              </VCol>
-              <VCol
-                v-if="sourceEnabled && authorEnabled"
-                cols="auto"
-                class="px-0"
-              >
-                <VIcon icon="mdi-slash-forward" />
-              </VCol>
-              <VCol v-if="authorEnabled">
+              </template>
+              <template #authors>
                 <ASystemEntityScope
                   subject="author"
                   system="dam"
@@ -194,8 +208,8 @@ const onSourceFound = (author: DamAuthor) => {
                     @source-found="onSourceFound"
                   />
                 </ASystemEntityScope>
-              </VCol>
-            </VRow>
+              </template>
+            </DamSourcesAuthorsRow>
             <VRow
               density="compact"
               class="my-2"

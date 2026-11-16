@@ -42,7 +42,6 @@ const props = withDefaults(
 )
 const emit = defineEmits<{
   (e: 'onSuccess', data: DamAuthor): void
-  (e: 'onSourceFound', data: DamAuthor): void
 }>()
 
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -67,7 +66,7 @@ const router = useRouter()
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { v$ } = useAuthorValidation(author, props.validationScope)
 const { t } = useI18n()
-const { showValidationError, showRecordWas, showErrorsDefault, showInfo } = useAlerts()
+const { showValidationError, showErrorsDefault } = useAlerts()
 
 const onConfirm = async () => {
   if (buttonLoading.value) return
@@ -80,18 +79,7 @@ const onConfirm = async () => {
       return
     }
     const res = await createAuthor({ object: author.value })
-    if (props.source && !res.flags.source) {
-      showInfo(t('coreDam.source.isAuthor', { name: res.name }))
-      dialog.value = false
-      return
-    }
-    if (res.flags.source && props.source === false) {
-      emit('onSourceFound', res)
-      showInfo(t('common.damImage.author.sourceFound', { name: res.name }))
-    } else {
-      emit('onSuccess', res)
-      showRecordWas('created')
-    }
+    emit('onSuccess', res)
     dialog.value = false
     if (!isUndefined(res.id) && !props.disableRedirect) {
       router.push({ name: getAuthorSection(res.flags.source).routeDetail, params: { id: res.id } })
@@ -137,7 +125,7 @@ defineExpose({
       activator="parent"
       location="bottom"
     >
-      {{ t('coreDam.author.button.add') }}
+      {{ source ? t('common.damImage.author.button.addSource') : t('coreDam.author.button.add') }}
     </VTooltip>
   </VBtn>
   <VDialog v-model="dialog">
