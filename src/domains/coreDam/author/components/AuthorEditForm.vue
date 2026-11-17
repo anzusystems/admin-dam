@@ -74,7 +74,6 @@ watch(hasCurrentAuthors, (hasParents) => {
             v-model="author.type"
             :label="t('coreDam.author.model.type')"
             :items="authorTypeOptions"
-            :v="v$.author.type"
             data-cy="author-type"
           />
         </ARow>

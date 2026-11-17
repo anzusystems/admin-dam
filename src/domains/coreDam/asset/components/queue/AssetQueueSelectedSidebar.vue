@@ -219,7 +219,7 @@ onMounted(() => {
                     <AuthorRemoteAutocompleteWithCached
                       v-model="massOperationsSources"
                       v-model:counterpart="massOperationsAuthors"
-                      :label="t('coreDam.asset.model.sources')"
+                      :label="t('common.damImage.asset.model.sources')"
                       source
                       clearable
                       multiple

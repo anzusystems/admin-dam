@@ -9,7 +9,7 @@ const listFields = (sourceSection: boolean) =>
     { name: 'identifier' as const, default: null, type: 'string' },
     { name: 'reviewed' as const, default: null, type: 'boolean' },
     { name: 'type' as const, default: null, type: 'string' },
-    { name: 'source' as const, default: null, type: 'boolean', render: { skip: sourceSection } },
+    { name: 'source' as const, default: sourceSection || null, type: 'boolean', render: { skip: sourceSection } },
   ] satisfies readonly MakeFilterOption[]
 
 const authorFields = listFields(false)
@@ -31,7 +31,8 @@ export function useAuthorListFilter(sourceSection: boolean) {
 export function useAuthorInnerFilter() {
   const fields = [
     { name: 'text' as const, variant: 'search', default: null, type: 'string' },
-    { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
+    // Merged authors are not offered; the API keeps canBeCurrentAuthor false exactly for authors with current authors.
+    { name: 'canBeCurrentAuthor' as const, default: true, type: 'boolean' },
     { name: 'source' as const, default: null, type: 'boolean', render: { skip: true } },
   ] satisfies readonly MakeFilterOption[]
 

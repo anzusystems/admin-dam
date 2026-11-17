@@ -136,7 +136,7 @@ defineExpose({
       data-cy="create-panel"
     >
       <ADialogToolbar @on-cancel="onCancel">
-        {{ source ? t('coreDam.source.button.create') : t('coreDam.author.meta.create') }}
+        {{ source ? t('common.damImage.author.meta.createSource') : t('coreDam.author.meta.create') }}
       </ADialogToolbar>
       <VCardText>
         <ASystemEntityScope
@@ -167,7 +167,6 @@ defineExpose({
               v-model="author.type"
               :label="t('coreDam.author.model.type')"
               :items="authorTypeOptions"
-              :v="v$.author.type"
               data-cy="author-type"
               @keyup.enter="onConfirm"
             />

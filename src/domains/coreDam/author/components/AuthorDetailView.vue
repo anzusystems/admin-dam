@@ -5,18 +5,9 @@ import AuthorDetail from '@/domains/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 
-const props = withDefaults(
-  defineProps<{
-    source?: boolean
-  }>(),
-  {
-    source: false,
-  }
-)
-
-const section = computed(() => getAuthorSection(props.source))
-
 const { detailLoading, fetchData, resetStore, author } = useAuthorDetailActions()
+
+const section = computed(() => getAuthorSection(author.value.flags.source))
 
 const { t } = useI18n()
 

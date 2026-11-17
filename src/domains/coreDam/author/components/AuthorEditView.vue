@@ -5,22 +5,13 @@ import AuthorEditForm from '@/domains/coreDam/author/components/AuthorEditForm.v
 import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
-const props = withDefaults(
-  defineProps<{
-    source?: boolean
-  }>(),
-  {
-    source: false,
-  }
-)
-
-const section = computed(() => getAuthorSection(props.source))
-
 const route = useRoute()
 const id = (route.params as { id: string }).id.toString()
 
 const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, resetStore, onUpdate, author } =
   useAuthorEditActions()
+
+const section = computed(() => getAuthorSection(author.value.flags.source))
 
 const { t } = useI18n()
 

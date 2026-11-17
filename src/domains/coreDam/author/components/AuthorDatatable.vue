@@ -76,7 +76,6 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
 )
 
 const getList = useDebounceFn(() => {
-  if (props.source) filterData.source = true
   fetchList(pagination, filterData, filterConfig)
 })
 

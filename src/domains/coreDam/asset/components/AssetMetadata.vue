@@ -166,7 +166,7 @@ const credit = useDamCreditPreview(
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.sources"
                     v-model:counterpart="asset.authors"
-                    :label="t('coreDam.asset.model.sources')"
+                    :label="t('common.damImage.asset.model.sources')"
                     data-cy="custom-field-sources"
                     source
                     clearable

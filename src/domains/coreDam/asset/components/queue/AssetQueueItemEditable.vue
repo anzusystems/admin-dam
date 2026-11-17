@@ -427,7 +427,7 @@ onUnmounted(() => {
                       v-model="sources"
                       v-model:counterpart="authors"
                       :queue-id="queueId"
-                      :label="t('coreDam.asset.model.sources')"
+                      :label="t('common.damImage.asset.model.sources')"
                       source
                       clearable
                       multiple

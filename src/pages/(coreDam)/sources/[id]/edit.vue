@@ -13,5 +13,5 @@ definePage({
 </script>
 
 <template>
-  <AuthorEditView source />
+  <AuthorEditView />
 </template>

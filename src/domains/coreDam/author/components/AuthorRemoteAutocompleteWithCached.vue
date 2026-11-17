@@ -93,8 +93,6 @@ watch(
   },
   { immediate: true }
 )
-// Merged authors are not offered; the API keeps canBeCurrentAuthor false exactly for authors with current authors.
-filterData.canBeCurrentAuthor = true
 
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
