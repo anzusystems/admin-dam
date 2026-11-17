@@ -33,9 +33,6 @@
   "button": {
     "add": "Pridať nového autora"
   },
-  "validation": {
-    "sourceType": "Zdroj musí mať typ"
-  },
   "conflicts": "Konflikt autorov",
   "isSource": "„{name}“ už existuje ako zdroj, ako autor sa použiť nedá",
   "isMerged": "„{name}“ už existuje a je zlúčený pod nadradených autorov"

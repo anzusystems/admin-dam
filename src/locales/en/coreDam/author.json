@@ -33,9 +33,6 @@
   "button": {
     "add": "Add new author"
   },
-  "validation": {
-    "sourceType": "A source needs a type"
-  },
   "conflicts": "Author conflicts",
   "isSource": "“{name}” already exists as a source and cannot be used as an author",
   "isMerged": "“{name}” already exists and is merged into its parent authors"
