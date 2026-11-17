@@ -19,7 +19,7 @@ export function useAuthorValidation(author: Ref<DamAuthor>, validationScope: Val
         minLength: minLength(2),
       },
       identifier: {
-        minLength: minLength(3),
+        minLength: minLength(2),
       },
       type: {
         sourceType,
