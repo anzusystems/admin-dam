@@ -7,7 +7,8 @@
     "flags": {
       "reviewed": "Skontrolovaný",
       "reviewedDisabledHint": "Autor s nadradenými autormi nemôže byť skontrolovaný",
-      "hiddenInCredit": "Skrytý v kredite"
+      "hiddenInCredit": "Skrytý v kredite",
+      "source": "Zdroj"
     },
     "currentAuthors": "Nadradení autori",
     "childAuthors": "Podradení autori",
@@ -19,7 +20,8 @@
     "text": "Text",
     "identifier": "Identifikátor",
     "type": "Typ",
-    "reviewed": "Skontrolovaný"
+    "reviewed": "Skontrolovaný",
+    "source": "Zdroj"
   },
   "authorType": {
     "none": "Žiaden",

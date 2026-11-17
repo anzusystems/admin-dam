@@ -2,19 +2,24 @@ import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusys
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const fields = [
-  { name: 'id' as const, default: null, type: 'string' },
-  { name: 'text' as const, default: null, type: 'string', variant: 'search', render: { skip: true } },
-  { name: 'identifier' as const, default: null, type: 'string' },
-  { name: 'reviewed' as const, default: null, type: 'boolean' },
-  { name: 'type' as const, default: null, type: 'string' },
-  { name: 'source' as const, default: null, type: 'boolean', render: { skip: true } },
-] satisfies readonly MakeFilterOption[]
+const listFields = (sourceSection: boolean) =>
+  [
+    { name: 'id' as const, default: null, type: 'string' },
+    { name: 'text' as const, default: null, type: 'string', variant: 'search', render: { skip: true } },
+    { name: 'identifier' as const, default: null, type: 'string' },
+    { name: 'reviewed' as const, default: null, type: 'boolean' },
+    { name: 'type' as const, default: null, type: 'string' },
+    { name: 'source' as const, default: null, type: 'boolean', render: { skip: sourceSection } },
+  ] satisfies readonly MakeFilterOption[]
 
-const store = createFilterStore(fields)
+const authorFields = listFields(false)
+const sourceFields = listFields(true)
+const authorStore = createFilterStore(authorFields)
+const sourceStore = createFilterStore(sourceFields)
 
-export function useAuthorListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, store, {
+export function useAuthorListFilter(sourceSection: boolean) {
+  const fields = sourceSection ? sourceFields : authorFields
+  const { filterConfig, filterData } = createFilter(fields, sourceSection ? sourceStore : authorStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,

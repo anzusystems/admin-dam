@@ -40,7 +40,8 @@ const props = withDefaults(
 
 const router = useRouter()
 
-const { filterData, filterConfig } = useAuthorListFilter()
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
+const { filterData, filterConfig } = useAuthorListFilter(props.source)
 provide(FilterConfigKey, filterConfig)
 provide(FilterDataKey, filterData)
 
@@ -65,6 +66,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
     { key: 'type' },
     { key: 'flags.reviewed' },
     { key: 'flags.hiddenInCredit' },
+    { key: 'flags.source' },
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
@@ -74,7 +76,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
 )
 
 const getList = useDebounceFn(() => {
-  filterData.source = props.source || null
+  if (props.source) filterData.source = true
   fetchList(pagination, filterData, filterConfig)
 })
 
@@ -139,6 +141,12 @@ defineExpose({
           <ABooleanValue
             chip
             :value="item.flags.hiddenInCredit"
+          />
+        </template>
+        <template #item.flags.source="{ item }: { item: DatatableItem }">
+          <ABooleanValue
+            chip
+            :value="item.flags.source"
           />
         </template>
         <template #item.createdAt="{ item }: { item: DatatableItem }">

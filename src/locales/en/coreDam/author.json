@@ -7,7 +7,8 @@
     "flags": {
       "reviewed": "Reviewed",
       "reviewedDisabledHint": "An author with parent authors cannot be reviewed",
-      "hiddenInCredit": "Hidden in credit"
+      "hiddenInCredit": "Hidden in credit",
+      "source": "Source"
     },
     "currentAuthors": "Parent authors",
     "childAuthors": "Child authors",
@@ -19,7 +20,8 @@
     "text": "Text",
     "identifier": "Identifier",
     "type": "Type",
-    "reviewed": "Reviewed"
+    "reviewed": "Reviewed",
+    "source": "Source"
   },
   "authorType": {
     "none": "None",
