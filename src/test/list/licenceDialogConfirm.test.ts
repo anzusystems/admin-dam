@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createFakeDam, httpError } from '@/test/support/fakeDam'
+import { createFakeDam, httpError, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
@@ -35,8 +35,12 @@ const sent = () => server.sent('PATCH', CURRENT_USER).length
 
 const spins = (button: HTMLButtonElement) => button.classList.contains('v-btn--loading')
 
-const withTheOtherLicencePicked = async () => {
-  const ui = await startUploadUi({ server, grants: ['dam_asset_update'] })
+const withTheOtherLicencePicked = async ({ queued = false } = {}) => {
+  const ui = await startUploadUi({
+    server,
+    grants: ['dam_asset_update'],
+    queues: queued ? { global: [queueRow({ status: 'uploaded', assetId: 'asset-9', fileId: 'file-9' })] } : {},
+  })
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = {
     ...config.damPrvConfig,
@@ -214,5 +218,40 @@ describe('the dialog that changes the licence', () => {
     change.answer()
     await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
     expect(sent()).toBe(1)
+  })
+})
+
+// With rows in a queue the switch first asks to finish all work. That question holds the change the same way.
+describe('the question to finish all work first, asked while a queue holds rows', () => {
+  it('cannot be closed while the change is on its way, and can be after a change the server refused', async () => {
+    const change = held()
+    const dialog = await withTheOtherLicencePicked({ queued: true })
+    dialog.confirm.click()
+    const confirm = await eventually(() => {
+      const found = document.body.querySelector<HTMLButtonElement>('[data-cy="button-confirm-list-view-switch"]')
+      expect(found).not.toBeNull()
+
+      return found!
+    })
+    const question = confirm.closest('.v-overlay')!
+    const cancel = question.querySelector<HTMLButtonElement>('[data-cy="button-cancel-list-view-switch"]')!
+    const cross = question.querySelector('.v-toolbar .mdi-close')!.closest('button')!
+    const isOpen = () => question.isConnected && question.classList.contains('v-overlay--active')
+    expect([sent(), cancel.disabled]).toEqual([0, false])
+
+    confirm.click()
+    await settled()
+    expect(cancel.disabled).toBe(true)
+    cross.click()
+    cancel.click()
+    await settled()
+
+    expect([isOpen(), spins(confirm), sent()]).toEqual([true, true, 1])
+
+    change.refuse()
+    await eventually(() => expect(dialog.alerts()).toEqual([SYSTEM_ERROR]))
+    expect([cancel.disabled, assign.mock.calls.length]).toEqual([false, 0])
+    cross.click()
+    await eventually(() => expect(isOpen()).toBe(false))
   })
 })

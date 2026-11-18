@@ -158,6 +158,12 @@ const onConfirmPending = () => {
   switchTo(pendingSelection.value)
 }
 
+// Closing it would not stop a change the switch is sending: the page still reloads.
+const onCancelPending = () => {
+  if (saving.value) return
+  pendingSelection.value = null
+}
+
 onMounted(async () => {
   availableListViews.value.forEach((listView) => {
     if (listView.uploadLicence) addToCachedAssetLicences(listView.uploadLicence)
@@ -239,10 +245,10 @@ onMounted(async () => {
   <VDialog
     :model-value="!!pendingSelection"
     :width="500"
-    @update:model-value="pendingSelection = null"
+    @update:model-value="onCancelPending"
   >
     <VCard v-if="pendingSelection">
-      <ADialogToolbar @cancel="pendingSelection = null">
+      <ADialogToolbar @cancel="onCancelPending">
         {{ t('system.mainBar.listViewSwitch.title') }}
       </ADialogToolbar>
       <VCardText>
@@ -250,7 +256,11 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="pendingSelection = null">
+        <ABtnTertiary
+          :disabled="saving"
+          data-cy="button-cancel-list-view-switch"
+          @click.stop="onCancelPending"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary
