@@ -143,6 +143,7 @@ const { t } = useI18n()
       >
         <ARow>
           <ImagePreview
+            v-if="podcastEpisode.licence"
             v-model="podcastEpisode.imagePreview"
             :licence="podcastEpisode.licence"
             show-actions
