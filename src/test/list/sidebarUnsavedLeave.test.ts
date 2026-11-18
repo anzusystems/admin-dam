@@ -554,11 +554,11 @@ describe('metadata typed into the panel beside the list and not saved, when the 
   })
 
   /*
-   * Vuetify leaves the way back alone when the history entry it leads
-   * to was written by `replace`, as the first page of a session is.
-   * The page would then be left with its detail open. The question is the detail's own dialog over it.
+   * Before 4.3.4 Vuetify left the way back alone when the history entry it leads to
+   * was written by `replace`, as the first page of a session is. Now only code leaves
+   * the page with its detail open. The question is the detail's own dialog over it.
    */
-  it('are asked about by the back button over an open detail where that would leave the page', async () => {
+  it('are asked about over an open detail when code leaves the page, the back button onto a loaded entry moves nothing', async () => {
     const list = await openList()
     list.pencil(1).click()
     await eventually(() => expect(held()).toBe('asset-2'))
@@ -566,6 +566,9 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     await typeInto(typedInto)
 
     await list.goBackInTheBrowser({ replaced: true })
+    expect([questions(), list.at(), held(), typedInto.value]).toEqual([[], LIST, 'asset-2', TYPED])
+
+    await list.goTo('/')
 
     expect([questions().length, list.at(), held()]).toEqual([1, LIST, 'asset-2'])
     expect(document.body.querySelectorAll('.v-dialog.v-overlay--active')).toHaveLength(2)
@@ -578,7 +581,7 @@ describe('metadata typed into the panel beside the list and not saved, when the 
       TYPED,
     ])
 
-    await list.goBackInTheBrowser({ replaced: true })
+    await list.goTo('/')
     await answer(LEAVE)
     expect([questions(), list.at(), list.tiles()]).toEqual([[], '/', []])
   })

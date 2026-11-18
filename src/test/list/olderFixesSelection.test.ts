@@ -7,8 +7,8 @@ import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
 /*
- * The mass edit went back into its strip when left by the browser back button onto
- * an entry where ADAM was loaded or reloaded. Vuetify lets that pass an open dialog.
+ * The mass edit went back into its strip when its page was left from under it: by code, or before
+ * Vuetify 4.3.4 by the browser back button onto an entry where ADAM was loaded or reloaded.
  * The next list then emptied it. A page that is not a list kept it until a list came.
  * "Save and finish" empties it once the server answers, only on its
  * own page. Another query of the same list was taken for another page.
@@ -132,10 +132,8 @@ const openList = async () => {
       await settled()
       expect(server.sent('PATCH', BULK)).toHaveLength(1)
     },
-    backToALoadedEntry: async () => {
-      ui.router.back()
-      for (let turn = 0; turn < 50; turn++) await Promise.resolve()
-      window.dispatchEvent(new PopStateEvent('popstate', { state: { replaced: true } }))
+    leaveTo: async (address: string) => {
+      void ui.router.push(address)
       await settled()
     },
   }
@@ -159,12 +157,12 @@ afterEach(() => {
 })
 
 describe('the mass edit of the list of DAM', () => {
-  it('is emptied as the list is left by the back button onto a page that is no list', async () => {
+  it('is emptied as the list is left from under it onto a page that is no list', async () => {
     const list = await openList()
     await list.openMassEdit(2)
     expect(await massEdit()).toEqual(['full', 1])
 
-    await list.backToALoadedEntry()
+    await list.leaveTo(ELSEWHERE)
 
     expect([list.at(), fullScreen(), list.page.querySelector('.elsewhere') !== null]).toEqual([ELSEWHERE, null, true])
     expect(await massEdit()).toEqual(['hidden', 0])

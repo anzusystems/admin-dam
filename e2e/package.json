@@ -21,10 +21,10 @@
     "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint"
   },
   "devDependencies": {
-    "@playwright/test": "^1.65.0",
+    "@playwright/test": "^1.65.1",
     "@types/node": "^24.19.2",
-    "oxfmt": "^0.78.0",
-    "oxlint": "1.93.0",
+    "oxfmt": "^0.79.0",
+    "oxlint": "1.94.0",
     "typescript": "~7.0.2"
   },
   "engines": {

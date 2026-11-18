@@ -9,11 +9,11 @@ import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } fr
 
 /*
  * The DAM mass edit, the provider selection and the upload queue are drawn over the whole page.
- * Vuetify keeps the browser back and forward buttons from leaving a page from under them, except
- * onto a history entry where ADAM was loaded or reloaded, which vue-router writes by `replace`.
+ * Vuetify keeps the browser back and forward buttons from leaving a page from under them. Before 4.3.4
+ * it let them onto a history entry where ADAM was loaded or reloaded, which vue-router writes by `replace`.
  * Left that way, the next page drew an empty dialog with no button and no strip, and only a reload helped.
- * A selection over the whole page is put back into its strip as its page
- * goes, and the answer of its "save and finish" leaves the next page alone.
+ * Code can still leave the page from under them. A selection over the whole page is put back into its
+ * strip as its page goes, and the answer of its "save and finish" leaves the next page alone.
  * Real pages; fake server and fake new-version address.
  */
 
@@ -205,9 +205,19 @@ const openList = async () => {
      * Simulates the browser back button onto a history entry where ADAM was loaded or reloaded.
      * The router hears it first, then other `popstate` listeners on the window.
      * The entry state says it was written by `replace`, as vue-router writes the entry of every load.
-     * Returns whether a full-page dialog was put into the page on the way, also one removed again at once.
      */
     backToALoadedEntry: async () => {
+      ui.router.back()
+      // The router guards run up to the Vuetify guard, which waits a moment for the event below.
+      for (let turn = 0; turn < 50; turn++) await Promise.resolve()
+      window.dispatchEvent(new PopStateEvent('popstate', { state: { replaced: true } }))
+      await settled()
+    },
+    /**
+     * Leaves the page from code, as a link or a redirect does: no back button for Vuetify to hold.
+     * Returns whether a full-page dialog was put into the page on the way, also one removed again at once.
+     */
+    leaveTo: async (address: string) => {
       let drawn = false
       const note = (records: MutationRecord[]) => {
         for (const record of records) {
@@ -218,10 +228,7 @@ const openList = async () => {
       }
       const watcher = new MutationObserver(note)
       watcher.observe(document.body, { childList: true, subtree: true })
-      ui.router.back()
-      // The router guards run up to the Vuetify guard, which waits a moment for the event below.
-      for (let turn = 0; turn < 50; turn++) await Promise.resolve()
-      window.dispatchEvent(new PopStateEvent('popstate', { state: { replaced: true } }))
+      void ui.router.push(address)
       await settled()
       note(watcher.takeRecords())
       watcher.disconnect()
@@ -241,6 +248,8 @@ const openList = async () => {
     },
   }
 }
+
+type List = Awaited<ReturnType<typeof openList>>
 
 beforeEach(() => {
   server = createFakeDam()
@@ -264,14 +273,32 @@ afterEach(() => {
   stopUploadUi()
 })
 
-describe('a queue drawn over the whole page, left by the back button of the browser', () => {
+describe('a queue drawn over the whole page', () => {
+  it.each<[string, string, (list: List) => Promise<void>]>([
+    ['the selection of a provider', PROVIDED, (list) => list.openProviderSelection(0)],
+    ['the mass edit of DAM', LIST, (list) => list.openMassEdit(2)],
+    ['the upload queue', LIST, (list) => list.openUploadQueue()],
+  ])('%s holds its page against the back button, also onto an entry where ADAM was loaded', async (_view, at, open) => {
+    const list = await openList()
+    await list.goTo(PROVIDED)
+    if (at === LIST) await list.goTo(LIST)
+    await open(list)
+    const drawn = await positions()
+
+    await list.backToALoadedEntry()
+
+    expect([list.at(), fullScreen() !== null, await positions()]).toEqual([at, true, drawn])
+  })
+})
+
+describe('a queue drawn over the whole page, its page left from under it', () => {
   it('the selection of a provider: the list of DAM draws its own strip, and so does the provider when come back to', async () => {
     const list = await openList()
     await list.goTo(PROVIDED)
     await list.openProviderSelection(0)
     expect(await positions()).toEqual([true, 'hidden', 'full', 'hidden'])
 
-    const drawnOnTheWay = await list.backToALoadedEntry()
+    const drawnOnTheWay = await list.leaveTo(LIST)
 
     expect([drawnOnTheWay, list.at(), list.titles(), fullScreen()]).toEqual([false, LIST, DAM_TITLES, null])
     expect(await positions()).toEqual([false, 'hidden', 'hidden', 'hidden'])
@@ -292,7 +319,7 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     await list.openMassEdit(2)
     expect(await positions()).toEqual([true, 'full', 'hidden', 'minimal'])
 
-    const drawnOnTheWay = await list.backToALoadedEntry()
+    const drawnOnTheWay = await list.leaveTo(PROVIDED)
 
     expect([drawnOnTheWay, list.at(), list.titles(), fullScreen()]).toEqual([false, PROVIDED, PROVIDED_TITLES, null])
     expect(await positions()).toEqual([false, 'hidden', 'hidden', 'minimal'])
@@ -316,7 +343,7 @@ describe('a queue drawn over the whole page, left by the back button of the brow
       await list.openUploadQueue()
       expect(await positions()).toEqual([true, 'hidden', 'hidden', 'full'])
 
-      await list.backToALoadedEntry()
+      await list.leaveTo(to)
 
       expect([list.at(), list.titles()]).toEqual([to, to === LIST ? DAM_TITLES : PROVIDED_TITLES])
       expect(await positions()).toEqual([true, 'hidden', 'hidden', 'full'])
@@ -343,7 +370,7 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     await list.openMassEdit(2)
     await saveAndFinish(list.queue)
 
-    await list.backToALoadedEntry()
+    await list.leaveTo(PROVIDED)
     await list.pick(0)
     expect([list.at(), list.picked(), list.strip()?.className]).toEqual([
       PROVIDED,
@@ -373,7 +400,7 @@ describe('a queue drawn over the whole page, left by the back button of the brow
     await list.openMassEdit(2)
     await saveAndFinish(list.queue)
 
-    await list.backToALoadedEntry()
+    await list.leaveTo(PROVIDED)
     expect([questions().length, list.at()]).toEqual([1, LIST])
     await answer()
     buttonsNamed(questions()[0], 'Stay')[0].click()
