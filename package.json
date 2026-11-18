@@ -30,7 +30,7 @@
     "browserslist:update": "npx --yes browserslist@latest --update-db"
   },
   "dependencies": {
-    "@anzusystems/common-admin": "1.51.0-author-source-87355.3",
+    "@anzusystems/common-admin": "1.51.0-author-source-87355.4",
     "@floating-ui/dom": "^1.8.0",
     "@mdi/font": "7.4.47",
     "@sentry/vue": "^10.70.0",
