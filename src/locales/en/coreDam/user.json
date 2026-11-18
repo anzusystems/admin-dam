@@ -4,13 +4,10 @@
     "user": "User"
   },
   "model": {
-    "id": "ID",
     "firstName": "First name",
     "lastName": "Last name",
-    "email": "Email",
     "roles": "Roles",
     "enabled": "Enabled",
-    "plainPassword": "New password",
     "assetLicences": "Licences",
     "licenceGroups": "Licence groups",
     "userToExtSystems": "User in external systems",
@@ -19,8 +16,6 @@
     "permissionGroups": "Permission groups",
     "allowedAssetExternalProviders": "Allowed external asset providers",
     "allowedDistributionServices": "Allowed distribution services",
-    "createdBy": "Created by",
-    "modifiedBy": "Modified by",
     "person": {
       "firstName": "First name",
       "lastName": "Last name",
@@ -33,13 +28,9 @@
     "permissions": "Permissions"
   },
   "filter": {
-    "id": "ID",
     "email": "Email"
   },
   "meta": {
     "create": "Create user"
-  },
-  "button": {
-    "editPermissions": "Edit permissions"
   }
 }

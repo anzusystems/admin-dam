@@ -82,12 +82,4 @@ describe('an anzu user address', () => {
       '/(coreDam)/users/[id]/edit',
     ])
   })
-
-  it.each([
-    ['/anzu-users-backup', '/(common)/anzu-users-backup'],
-    ['/anzu-users-backup/5', '/(common)/anzu-users-backup/[id]'],
-    ['/anzu-users-backup/5/edit', '/(common)/anzu-users-backup/[id]/edit'],
-  ])('%s, the old page, stays as it is', async (address, name) => {
-    expect(await landsOn(address)).toEqual([address, name])
-  })
 })

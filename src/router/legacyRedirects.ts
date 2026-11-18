@@ -43,7 +43,7 @@ const RENAMED_ROOTS: Record<string, string> = {
 /*
  * The Anzu user part of an account (`/anzu-users`) and its dam part (`/users`) are one record with one id
  * (core-dam's `User` extends `AnzuUser`). The page at `/users` edits both now, so the old Anzu user
- * addresses go to the same record there. The old pages are at `/anzu-users-backup`, which this does not match.
+ * addresses go to the same record there.
  */
 const MERGED_ROOTS: Record<string, string> = {
   '/anzu-users': '/users',

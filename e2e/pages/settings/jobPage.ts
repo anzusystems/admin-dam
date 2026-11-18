@@ -39,30 +39,10 @@ export async function confirmJob(page: Page, dialog: ReturnType<typeof createDia
   return String((await response.json()).id)
 }
 
-export async function createUserDataDeleteJob(page: Page, userId: string): Promise<string> {
-  const dialog = await openJobCreateDialog(page, JOB_DELETE)
-  await dialog.locator('[data-cy="targetUser"] input').fill(userId)
-  await dialog.getByRole('checkbox', { name: 'Anonymizuj používateľa' }).check()
-  return confirmJob(page, dialog)
-}
-
 export async function createPodcastSyncJob(page: Page, podcastId: string): Promise<string> {
   const dialog = await openJobCreateDialog(page, JOB_SYNC)
   await dialog.locator('[data-cy="podcastId"] input').fill(podcastId)
   return confirmJob(page, dialog)
-}
-
-/**
- * Users cannot be deleted, so this anonymises and strips a test user instead.
- * Swallows errors, cleanup only.
- */
-export async function deleteUserDataViaApi(page: Page, userId: string): Promise<void> {
-  await page.request
-    .post(`${CORE_DAM_API}/job/user-data-delete`, {
-      data: { targetUserId: Number(userId), anonymizeUser: true },
-      failOnStatusCode: false,
-    })
-    .catch(() => {})
 }
 
 export function detailValue(page: Page, heading: string) {

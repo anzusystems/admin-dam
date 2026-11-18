@@ -60,11 +60,6 @@
       "detail": "Keyword",
       "edit": "Keyword"
     },
-    "user": {
-      "list": "Users",
-      "detail": "User",
-      "edit": "User"
-    },
     "job": {
       "list": "Jobs",
       "detail": "Job"

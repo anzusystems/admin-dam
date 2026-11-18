@@ -1,5 +1,5 @@
 import type { PermissionGroup } from '@anzusystems/common-admin'
-import { useApiCommand, useApiFetchByIds, useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+import { useApiFetchByIds, useApiFetchList } from '@anzusystems/common-admin'
 
 import { damClient } from '@/shared/apiClients/damClient'
 
@@ -22,40 +22,4 @@ export const useFetchPermissionGroupListByIds = () =>
     system: SYSTEM,
     entity: ENTITY,
     urlTemplate: END_POINT,
-  })
-
-export const useFetchPermissionGroup = () =>
-  useApiRequest<PermissionGroup, null>({
-    client: damClient,
-    method: 'GET',
-    system: SYSTEM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
-
-export const useCreatePermissionGroup = () =>
-  useApiRequest<PermissionGroup, PermissionGroup>({
-    client: damClient,
-    method: 'POST',
-    system: SYSTEM,
-    entity: ENTITY,
-    urlTemplate: END_POINT,
-  })
-
-export const useUpdatePermissionGroup = () =>
-  useApiRequest<PermissionGroup, PermissionGroup>({
-    client: damClient,
-    method: 'PUT',
-    system: SYSTEM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
-
-export const useDeletePermissionGroup = () =>
-  useApiCommand<null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
   })
