@@ -119,6 +119,9 @@ const switchTo = async (selection: Selection) => {
     await updateCurrentUser(selection)
     // Already given up above. Reset so the browser does not ask about them again on reload.
     if (leavesUnsaved) assetDetailStore.reset()
+    // `assign` returns before the page goes. Closed first, the dialogs cannot be confirmed or cancelled meanwhile.
+    dialog.value = false
+    pendingSelection.value = null
     window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
   } catch (error) {
     showErrorsDefault(error)

@@ -150,6 +150,11 @@ describe('the dialog that changes the licence', () => {
     await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
     await settled()
     expect([sent(), assign.mock.calls, dialog.alerts()]).toEqual([1, [['/assets']], []])
+    // The page has not gone yet. The dialog is closed by then, so it is not confirmed a second time.
+    await eventually(() => expect(dialog.isOpen()).toBe(false))
+    dialog.confirm.click()
+    await settled()
+    expect(sent()).toBe(1)
     expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({
       selectedLicence: 2,
       selectedListView: null,
@@ -253,5 +258,30 @@ describe('the question to finish all work first, asked while a queue holds rows'
     expect([cancel.disabled, assign.mock.calls.length]).toEqual([false, 0])
     cross.click()
     await eventually(() => expect(isOpen()).toBe(false))
+  })
+
+  it('is closed once the change went through, while the page goes', async () => {
+    const change = held()
+    const dialog = await withTheOtherLicencePicked({ queued: true })
+    dialog.confirm.click()
+    const confirm = await eventually(() => {
+      const found = document.body.querySelector<HTMLButtonElement>('[data-cy="button-confirm-list-view-switch"]')
+      expect(found).not.toBeNull()
+
+      return found!
+    })
+    const question = confirm.closest('.v-overlay')!
+    const cancel = question.querySelector<HTMLButtonElement>('[data-cy="button-cancel-list-view-switch"]')!
+
+    confirm.click()
+    await settled()
+    change.answer()
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    await eventually(() => expect(question.isConnected && question.classList.contains('v-overlay--active')).toBe(false))
+    confirm.click()
+    cancel.click()
+    await settled()
+
+    expect([sent(), assign.mock.calls.length]).toEqual([1, 1])
   })
 })
