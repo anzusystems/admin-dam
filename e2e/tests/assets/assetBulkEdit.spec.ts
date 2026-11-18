@@ -128,7 +128,7 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit`, () => {
 
   // On staging an operation reached rows that were still loading, and their metadata then overwrote what it wrote.
   test('the mass operations wait until the selected assets have their metadata', async () => {
-    const metadataOfSelected = '**/asset/licence/*/ids/**'
+    const metadataOfSelected = '**/asset/ext-system/*/ids/**'
     let release = () => {}
     const held = new Promise<void>((resolve) => (release = resolve))
     await page.route(metadataOfSelected, async (route) => {
