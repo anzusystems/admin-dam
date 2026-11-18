@@ -40,7 +40,10 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="section.aclUpdate">
+      <Acl
+        :key="section.aclUpdate"
+        :permission="section.aclUpdate"
+      >
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"

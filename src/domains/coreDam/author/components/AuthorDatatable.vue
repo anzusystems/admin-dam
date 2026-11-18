@@ -58,6 +58,7 @@ const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: getAuthorSection(item.flags.source).routeDetail, params: { id: item.id } })
 }
 
+// eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConfig(
   [
     { key: 'id' },
@@ -66,7 +67,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
     { key: 'type' },
     { key: 'flags.reviewed' },
     { key: 'flags.hiddenInCredit' },
-    { key: 'flags.source' },
+    ...(props.source ? [] : [{ key: 'flags.source' }]),
     { key: 'createdAt' },
     { key: 'modifiedAt' },
   ],
