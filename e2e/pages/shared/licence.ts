@@ -1,6 +1,8 @@
 import { type Page, expect } from '@playwright/test'
-import { openAppsMenu } from '@pages/navigation/appsMenu'
 import { isAssetListSearch } from '@pages/shared/constants'
+
+/** The list view and licence switch in the asset list header, labelled with the current view or licence name. */
+export const LICENCE_MENU = 'header .v-btn:has(.mdi-chevron-down)'
 
 export async function changeLicence(page: Page, licenceId: string): Promise<void> {
   // The admin is still booting when `goto` resolves. The header button is in the DOM,
@@ -11,8 +13,7 @@ export async function changeLicence(page: Page, licenceId: string): Promise<void
     .catch(() => null)
   await page.goto('/assets')
   await listed
-  // The licence switch is an entry of the apps menu (AssetToolbarOptions), not a header button of its own.
-  await openAppsMenu(page)
+  await page.locator(LICENCE_MENU).first().click()
   await page.locator('.v-overlay--active [data-cy="button-switch-licence"]').click()
   const dialog = page.getByRole('dialog').filter({ hasText: 'Prepnutie externého systému a licencie' })
   await dialog.locator('[data-cy="field-change-on-id-licence"] input').fill(licenceId)

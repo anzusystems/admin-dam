@@ -9,7 +9,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const OF_SAVED = /^\/adm\/v1\/image\/image-saved$/
 
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'

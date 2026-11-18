@@ -26,6 +26,7 @@ import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailSt
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
@@ -98,8 +99,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     populateUrlParams: false,
     storeFiltersLocalStorage: false,
   })
-  const { currentAssetLicenceId } = useCurrentAssetLicence()
+  const { listLicenceIds } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
+  const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -177,7 +179,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('hard')
       const answered = paginationForRequest()
-      const firstPage = await apiFetchAssetList(currentAssetLicenceId.value, answered, filterData, filterConfig)
+      const firstPage = await apiFetchAssetList(listLicenceIds.value, answered, filterData, filterConfig)
       // Two filter changes can answer in any order. Without this check the older one wins.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)
@@ -185,6 +187,8 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         // Also update the detail or panel holding one of them whose main file is still loading.
         firstPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
       }
+      addToCachedAssetLicences(listLicenceIds.value)
+      fetchCachedAssetLicences()
     } catch (error) {
       // Also drop a scroll made while this was loading. Its page two would land on a missing page one.
       if (generation === listGeneration) nextPageAskedInGeneration = 0
@@ -238,7 +242,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     try {
       assetListStore.showLoader('soft')
       const answered = paginationForRequest()
-      const nextPage = await apiFetchAssetList(currentAssetLicenceId.value, answered, filterData, filterConfig)
+      const nextPage = await apiFetchAssetList(listLicenceIds.value, answered, filterData, filterConfig)
       // Apply only to the list that requested it, not one a filter change has put in its place.
       if (generation === listGeneration) {
         acceptPaginationAnswer(answered)

@@ -24,7 +24,11 @@ vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
 }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
   useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
-  useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
+  useCurrentAssetLicence: () => ({
+    currentAssetLicenceId: { value: 1 },
+    uploadAllowed: { value: true },
+    listLicenceIds: { value: [1] },
+  }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/externalProviders', () => ({
   useExternalProviders: () => ({ activeExternalProvider: ref('provider-1') }),

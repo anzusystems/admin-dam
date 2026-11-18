@@ -36,7 +36,11 @@ vi.mock('@anzusystems/common-admin', async (importOriginal) => {
   }
 })
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
+  useCurrentAssetLicence: () => ({
+    currentAssetLicenceId: { value: 1 },
+    uploadAllowed: { value: true },
+    listLicenceIds: { value: [1] },
+  }),
   useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/externalProviders', () => ({
@@ -242,7 +246,7 @@ describe('the queues emptied by their reset', () => {
    */
   it('forget which mass-edit row its batch left without metadata', async () => {
     const { store } = await load()
-    server.on('GET', /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/, () => {
+    server.on('GET', /^\/adm\/v1\/asset\/ext-system\/1\/ids\/.+$/, () => {
       throw httpError(500)
     })
     await store.addByAssets(EDIT, [

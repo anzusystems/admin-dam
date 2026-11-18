@@ -17,7 +17,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const DOWNLOAD_LINK = /^\/adm\/v1\/video\/file-1\/download-link$/
 const SIGNED = 'https://storage.test/file-1?signature=1'
 

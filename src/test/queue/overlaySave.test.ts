@@ -34,7 +34,7 @@ const UPDATED = 'Record was updated'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const FIX = 'Please, fix these errors'
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
-const LIST = /^\/adm\/v1\/asset\/licence\/1\/search$/
+const LIST = /^\/adm\/v1\/asset\/licence\/search$/
 
 // Put into the queue as is: nothing is known of what the server has, so the save sends such a row whole.
 const editable = (assetId: string, over: Partial<UploadQueueItem> = {}) =>
@@ -214,7 +214,7 @@ describe('the overlay of the uploads', () => {
           { id: 'asset-5', keywords: [], authors: [], described: true, customData: {} },
         ],
       ])
-      expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search'])
+      expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/search'])
       expect([held(), shown()]).toEqual([5, 'full'])
     })
 
@@ -227,7 +227,7 @@ describe('the overlay of the uploads', () => {
       await eventually(() => expect(alerts()).toEqual([UPDATED]))
 
       expect(server.sent('PATCH')).toEqual([])
-      expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search'])
+      expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/search'])
       expect([held(), shown()]).toEqual([2, 'full'])
     })
 
@@ -347,7 +347,7 @@ describe('the overlay of the uploads', () => {
       expect(alerts()).toEqual([UPDATED])
       expect(held()).toBe(0)
       expect(rows.map((row) => row.status)).toEqual(['stop', 'stop'])
-      await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search']))
+      await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/search']))
     })
 
     it('empties the queue, hides the overlay and reads the asset list, with no request, when no row has anything to send', async () => {
@@ -360,7 +360,7 @@ describe('the overlay of the uploads', () => {
       expect(server.sent('PATCH')).toEqual([])
       expect(alerts()).toEqual([UPDATED])
       expect(held()).toBe(0)
-      await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/1/search']))
+      await eventually(() => expect(sentTo(server.sent('GET', LIST))).toEqual(['GET /adm/v1/asset/licence/search']))
     })
 
     it('sends nothing and keeps the queue and the overlay while a row that would be saved is invalid', async () => {

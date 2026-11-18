@@ -5,7 +5,7 @@ import { assetDetail, assetFile, createFakeDam, httpError } from '@/test/support
 import type { FakeDam } from '@/test/support/fakeDam'
 
 /*
- * Reads that ask about several things at once: assets of a licence by ids, and files of
+ * Reads that ask about several things at once: assets of an ext system or of a licence by ids, and files of
  * the slots of an asset. Each must tell an unusable answer from "there is none", because
  * the upload queue poll treats a file missing from an answer as unknown to the server.
  * The poll's two reads are run both ways it calls them: with failure
@@ -21,7 +21,9 @@ const assetApi = async () => await import('@/domains/coreDam/asset/api/assetApi'
 const assetSlotApi = async () => await import('@/domains/coreDam/asset/api/assetSlotApi')
 
 const BY_IDS = /^\/adm\/v1\/asset\/licence\/7\/ids\//
-const idsAsked = () => server.sent('GET', BY_IDS).map((request) => request.url.split('/ids/')[1].split(','))
+const BY_IDS_OF_EXT_SYSTEM = /^\/adm\/v1\/asset\/ext-system\/7\/ids\//
+const idsAsked = (pattern = BY_IDS) =>
+  server.sent('GET', pattern).map((request) => request.url.split('/ids/')[1].split(','))
 const many = (count: number) => Array.from({ length: count }, (_, index) => 'asset-' + (index + 1))
 
 /*
@@ -60,13 +62,13 @@ afterEach(() => {
 })
 
 describe('the read of several assets by their ids', () => {
-  it('asks for up to fifty of them in one request, under the licence', async () => {
+  it('asks for up to fifty of them in one request, under the ext system', async () => {
     const { fetchAssetListByIds } = await assetApi()
     many(50).forEach((id) => server.asset(assetDetail(id)))
 
     const found = await fetchAssetListByIds(many(50), 7)
 
-    expect(idsAsked()).toEqual([many(50)])
+    expect(idsAsked(BY_IDS_OF_EXT_SYSTEM)).toEqual([many(50)])
     expect(found.map((asset) => asset.id)).toEqual(many(50))
   })
 
@@ -76,11 +78,11 @@ describe('the read of several assets by their ids', () => {
 
     const found = await fetchAssetListByIds(many(101), 7)
 
-    expect(idsAsked().map((ids) => ids.length)).toEqual([50, 50, 1])
+    expect(idsAsked(BY_IDS_OF_EXT_SYSTEM).map((ids) => ids.length)).toEqual([50, 50, 1])
     expect(found.map((asset) => asset.id)).toEqual(many(101))
   })
 
-  it('answers without an asset the licence does not hold', async () => {
+  it('answers without an asset the ext system does not hold', async () => {
     const { fetchAssetListByIds } = await assetApi()
     server.asset(assetDetail('asset-1'))
 
@@ -91,7 +93,7 @@ describe('the read of several assets by their ids', () => {
 
   it.each(noList)('is refused when the answer carries %s', async (_name, answer) => {
     const { fetchAssetListByIds } = await assetApi()
-    server.on('GET', BY_IDS, () => answer)
+    server.on('GET', BY_IDS_OF_EXT_SYSTEM, () => answer)
 
     await expect(fetchAssetListByIds(['asset-1', 'asset-2'], 7)).rejects.toBeDefined()
   })
@@ -99,7 +101,7 @@ describe('the read of several assets by their ids', () => {
   it('is refused when one of its requests is, whatever the others brought, and writes nothing down', async () => {
     const { fetchAssetListByIds } = await assetApi()
     let requests = 0
-    server.on('GET', BY_IDS, () => {
+    server.on('GET', BY_IDS_OF_EXT_SYSTEM, () => {
       requests++
       if (requests === 2) throw httpError(500)
 
@@ -112,7 +114,7 @@ describe('the read of several assets by their ids', () => {
 })
 
 describe.each(ways)('the read of the assets the upload queue waits for, with %s', (_way, report) => {
-  it('asks for up to fifty of them in one request, under the licence, by the address the list read uses', async () => {
+  it('asks for up to fifty of them in one request, under the licence', async () => {
     const { fetchWaitingAssets } = await assetApi()
     many(50).forEach((id) => server.asset(assetDetail(id)))
 

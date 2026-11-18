@@ -148,8 +148,10 @@ export const createFakeDam = () => {
 
     return { status: 200, data: await copyOf(assets.get(match[1])) }
   })
-  // An asset that the licence does not hold is left out of the answer.
-  on('GET', /^\/adm\/v1\/asset\/licence\/(\d+)\/ids\/(.+)$/, async (_request, match) => {
+  // The names of licences, which the asset list and detail cache. None is known unless a test says so.
+  on('GET', /^\/adm\/v1\/asset-licence$/, () => ({ status: 200, data: { data: [] } }))
+  // An asset that the licence or the ext system does not hold is left out of the answer.
+  on('GET', /^\/adm\/v1\/asset\/(?:licence|ext-system)\/(\d+)\/ids\/(.+)$/, async (_request, match) => {
     const found: unknown[] = []
     for (const id of match[2].split(',')) {
       if (assets.has(id)) found.push(await copyOf(assets.get(id)))
@@ -216,7 +218,7 @@ export const createFakeDam = () => {
   const assetReads = (assetId: string) =>
     sent('GET').filter((request) => {
       if (request.url === '/adm/v1/asset/' + assetId) return true
-      const several = request.url.match(/^\/adm\/v1\/asset\/licence\/\d+\/ids\/(.+)$/)
+      const several = request.url.match(/^\/adm\/v1\/asset\/(?:licence|ext-system)\/\d+\/ids\/(.+)$/)
 
       return !!several && several[1].split(',').includes(assetId)
     }).length
@@ -278,6 +280,7 @@ export const assetDetail = (
   over: Record<string, unknown> = {}
 ): { id: string } & Record<string, unknown> => ({
   id,
+  licence: 1,
   attributes: { assetType: 'image', assetStatus: 'with_file' },
   texts: { displayTitle: id },
   mainFile: assetFile('file-1', 'processed', { asset: id }),

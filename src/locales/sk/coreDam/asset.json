@@ -170,6 +170,7 @@
         "id": "Asset ID",
         "mainFileId": "ID hlavného súboru",
         "type": "Typ",
+        "licence": "Licencia",
         "mimeType": "Formát",
         "size": "Veľkosť",
         "dominantColor": "Farba",

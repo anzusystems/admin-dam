@@ -170,6 +170,7 @@
         "id": "Asset ID",
         "mainFileId": "Main file ID",
         "type": "Type",
+        "licence": "Licence",
         "mimeType": "Format",
         "size": "Size",
         "dominantColor": "Color",

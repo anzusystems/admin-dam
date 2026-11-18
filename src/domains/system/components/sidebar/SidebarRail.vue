@@ -134,6 +134,21 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
+    <Acl :permission="[ACL.DAM_ASSET_LIST_VIEW_UI, ACL.DAM_ASSET_LIST_VIEW_LIST]">
+      <VListItem
+        :aria-label="t('sidebar.settings.assetListViews')"
+        :to="{ name: '/(coreDam)/asset-list-views' }"
+        prepend-icon="mdi-view-list"
+        data-cy="asset-list-view-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.assetListViews') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
         :aria-label="t('sidebar.settings.authors')"

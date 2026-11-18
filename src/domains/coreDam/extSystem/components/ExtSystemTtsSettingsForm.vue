@@ -9,8 +9,8 @@ import {
   FilterInnerConfigKey,
   FilterInnerDataKey,
 } from '@anzusystems/common-admin'
-import type { AssetSelectReturnData, IntegerId } from '@anzusystems/common-admin'
-import { computed, provide } from 'vue'
+import type { AssetSelectReturnData } from '@anzusystems/common-admin'
+import { provide } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
@@ -26,7 +26,7 @@ import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { listLicenceIds } = useCurrentAssetLicence()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 
 const { filterConfig: keywordFilterConfig, filterData: keywordFilterData } = useKeywordInnerFilter()
@@ -34,8 +34,6 @@ provide(FilterInnerConfigKey, keywordFilterConfig)
 provide(FilterInnerDataKey, keywordFilterData)
 
 const { t } = useI18n()
-
-const epilogLicenceIds = computed<IntegerId[]>(() => [currentAssetLicenceId.value])
 
 const onEpilogSelect = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
@@ -117,7 +115,7 @@ const clearEpilog = () => {
                 </VTooltip>
               </VBtn>
               <AAssetSelect
-                :select-licences="epilogLicenceIds"
+                :select-licences="listLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"

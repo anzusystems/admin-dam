@@ -48,7 +48,9 @@ beforeEach(() => {
   currentUser.value = {
     id: 1,
     selectedLicenceDto: { id: 30, extSystem: 3 },
-    assetLicencesDto: [{ id: 40, extSystem: 4 }],
+    resolvedAssetLicences: [{ id: 40, extSystem: 4 }],
+    listViews: [{ id: 9, name: 'View', extSystem: 6, licences: [60, 61], uploadLicence: null }],
+    selectedListView: null,
   }
 })
 
@@ -58,6 +60,13 @@ describe('the ext system the name caches ask under', () => {
   it('is the one of the licence the user picked', async () => {
     expect(await initCurrentExtSystemAndLicence()).toBe(true)
     expectExtSystem(3)
+  })
+
+  it('is the one of the list view the user picked', async () => {
+    currentUser.value.selectedListView = 9
+
+    expect(await initCurrentExtSystemAndLicence()).toBe(true)
+    expectExtSystem(6)
   })
 
   it('is the one of their first licence when they picked none', async () => {

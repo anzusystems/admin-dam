@@ -70,11 +70,12 @@ const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
 const FETCH_BY_IDS_MAX_LIMIT = 50
 
-export const useFetchAssetList = () =>
+export const useFetchAssetList = (licenceIds: IntegerId[]) =>
   useApiFetchList<AssetSearchListItemDto>({
     ...damApiBase,
     entity: ENTITY,
-    urlTemplate: END_POINT + '/licence/:licenceId',
+    urlTemplate: END_POINT + '/licence',
+    options: { params: { licences: licenceIds.join(',') } },
   })
 
 /**
@@ -96,16 +97,16 @@ export function withRangeLowerBounds(filterData: FilterData): FilterData {
 }
 
 export const fetchAssetList = (
-  licenceId: number,
+  licenceIds: IntegerId[],
   pagination: Ref<Pagination>,
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { execute } = useFetchAssetList()
-  return execute(pagination, withRangeLowerBounds(filterData), filterConfig, { urlParams: { licenceId } })
+  const { execute } = useFetchAssetList(licenceIds)
+  return execute(pagination, withRangeLowerBounds(filterData), filterConfig)
 }
 
-async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
+async function fetchAssetListByIdsSequence(ids: DocId[], extSystemId: IntegerId) {
   if (ids.length === 0) return Promise.resolve([])
   const totalCalls = Math.ceil(ids.length / FETCH_BY_IDS_MAX_LIMIT)
   const responses = []
@@ -113,18 +114,18 @@ async function fetchAssetListByIdsSequence(ids: DocId[], licenceId: number) {
   for (let i = 0; i < totalCalls; i++) {
     const offset = i * FETCH_BY_IDS_MAX_LIMIT
     const reduced = ids.slice(offset, offset + FETCH_BY_IDS_MAX_LIMIT)
-    const res = await damClient().get(END_POINT + `/licence/${licenceId}/ids/${reduced.join(',')}`)
+    const res = await damClient().get(END_POINT + `/ext-system/${extSystemId}/ids/${reduced.join(',')}`)
     responses.push(res)
   }
   return responses
 }
 
-export const fetchAssetListByIds: (ids: DocId[], licenceId: number) => Promise<AssetDetailItemDto[]> = (
+export const fetchAssetListByIds: (ids: DocId[], extSystemId: IntegerId) => Promise<AssetDetailItemDto[]> = (
   ids: DocId[],
-  licenceId: number
+  extSystemId: IntegerId
 ) =>
   new Promise((resolve, reject) => {
-    fetchAssetListByIdsSequence(ids, licenceId)
+    fetchAssetListByIdsSequence(ids, extSystemId)
       .then((responses) => {
         if (responses.length === 0) {
           reject(responses)

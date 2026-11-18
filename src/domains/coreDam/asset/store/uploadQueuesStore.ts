@@ -471,7 +471,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   async function addByAssets(queueId: string, assets: AssetSearchListItemDto[]) {
-    const { currentAssetLicenceId } = useCurrentAssetLicence()
     const assetIds: DocId[] = []
     for await (const asset of assets) {
       assetIds.push(asset.id)
@@ -481,7 +480,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         UploadQueueItemStatus.Loading,
         asset.attributes.assetType,
         UPLOAD_QUEUE_ITEM_CHUNK_SIZE,
-        currentAssetLicenceId.value
+        asset.licence
       )
       queueItem.assetStatus = asset.attributes.assetStatus
       queueItem.displayTitle = asset.texts.displayTitle
@@ -493,7 +492,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       core.addRow(queueId, queueItem)
     }
     // Fire-and-forget. Without this catch a rejection leaves every fetched item on `Loading`.
-    fetchLazyAdditionalMetadata(queueId, currentAssetLicenceId.value, assetIds).catch((error) => {
+    fetchLazyAdditionalMetadata(queueId, assetIds).catch((error) => {
       console.error('uploadQueue: additional metadata could not be loaded', error)
       failStillLoading(queueId, assetIds)
     })
@@ -554,14 +553,15 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
   }
 
-  async function fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
+  async function fetchLazyAdditionalMetadata(queueId: string, assetIds: DocId[]) {
     const { getAuthorConflicts } = useAssetSuggestions()
+    const { currentExtSystemId } = useCurrentExtSystem()
     // Order of this read among metadata reads and saves, taken when sent.
     // Anything a row receives after this point is newer than this read's answer.
     const sentAt = nextMetadataOrder()
     // Sent while a save of the asset is in flight: the answer may be from before or after the save.
     const sentDuringSave = assetIds.filter(metadataSaveOnItsWay)
-    const res = await fetchAssetListByIds(assetIds, licenceId)
+    const res = await fetchAssetListByIds(assetIds, currentExtSystemId.value)
     for (let i = 0; i < res.length; i++) {
       const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
       if (foundIndex > -1 && metadataMayStillChange(res[i])) {
@@ -628,13 +628,13 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
      * The rules above still apply. After that save is answered the asset is read again,
      * so an unchanged row gets the server's latest data, including other editors' saves.
      */
-    sentDuringSave.forEach((assetId) => afterMetadataSaves(assetId, () => readAgain(queueId, licenceId, assetId)))
+    sentDuringSave.forEach((assetId) => afterMetadataSaves(assetId, () => readAgain(queueId, assetId)))
   }
 
-  function readAgain(queueId: string, licenceId: number, assetId: DocId) {
+  function readAgain(queueId: string, assetId: DocId) {
     // Skip if the row was removed meanwhile.
     if (!queues.value[queueId]?.items.some((item) => item.assetId === assetId)) return
-    fetchLazyAdditionalMetadata(queueId, licenceId, [assetId]).catch((error) => {
+    fetchLazyAdditionalMetadata(queueId, [assetId]).catch((error) => {
       console.error('uploadQueue: additional metadata could not be read again', error)
       failStillLoading(queueId, [assetId])
     })

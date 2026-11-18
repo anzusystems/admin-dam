@@ -16,7 +16,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const DOWNLOAD_LINK = /^\/adm\/v1\/image\/([^/]+)\/download-link$/
 
 const NO_TAB = 'The browser did not open a new tab. Allow pop-up windows for this site and try again.'

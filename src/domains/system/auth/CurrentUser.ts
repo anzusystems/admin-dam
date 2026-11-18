@@ -1,5 +1,6 @@
-import type { IntegerId } from '@anzusystems/common-admin'
+import type { IntegerIdNullable } from '@anzusystems/common-admin'
 
 export interface UpdateCurrentUserDto {
-  selectedLicence: IntegerId
+  selectedLicence: IntegerIdNullable
+  selectedListView: IntegerIdNullable
 }

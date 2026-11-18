@@ -17,7 +17,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const MAKE_PUBLIC = /^\/adm\/v1\/(image|audio|document)\/([^/]+)\/make-public$/
 
 const UPDATED = 'Record was updated'

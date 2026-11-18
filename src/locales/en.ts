@@ -5,6 +5,7 @@ import breadcrumb from '@/locales/en/breadcrumb.json'
 import asset from '@/locales/en/coreDam/asset.json'
 import assetLicence from '@/locales/en/coreDam/assetLicence.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
+import assetListView from '@/locales/en/coreDam/assetListView.json'
 import audioFile from '@/locales/en/coreDam/audioFile.json'
 import author from '@/locales/en/coreDam/author.json'
 import authorCleanPhrase from '@/locales/en/coreDam/authorCleanPhrase.json'
@@ -41,6 +42,7 @@ export default {
     asset,
     assetLicence,
     assetLicenceGroup,
+    assetListView,
     author,
     distribution,
     distributionCategory,

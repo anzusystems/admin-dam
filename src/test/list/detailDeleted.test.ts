@@ -37,7 +37,7 @@ vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   }),
 }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const DELETE_ASSET = /^\/adm\/v1\/asset\/([^/]+)$/
 
 const LIST = '/assets'

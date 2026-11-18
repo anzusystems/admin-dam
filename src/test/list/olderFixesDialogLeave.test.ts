@@ -7,7 +7,7 @@ import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi
 
 /*
  * The licence dialog and the "Create empty asset" dialog cannot be closed while their
- * request is on its way, because the guard against a second confirm goes with the dialog.
+ * request is on its way, because the guard against a second confirm goes with the dialog or its switch.
  * A way out of the page still removed them: the browser back button onto an entry where
  * ADAM was loaded or reloaded gets past Vuetify, which otherwise only closes a dialog.
  */
@@ -16,11 +16,9 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const OTHER_LICENCE = /^\/adm\/v1\/asset-licence\/2$/
 const CURRENT_USER = /^\/adm\/users\/current$/
 const CREATE = /^\/adm\/v1\/asset\/licence\/1$/
 
-const UPDATED = 'Record was updated'
 const CREATED = 'Record was created'
 const CHANGE_LICENCE = 'Switch Media Library ext system and asset licence'
 
@@ -34,7 +32,21 @@ const dialogSaying = (text: string) =>
     found.textContent?.includes(text)
   ) ?? null
 
-const openMenu = async () => {
+const MENUS = {
+  options: {
+    load: () => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'),
+    open: (page: HTMLElement) => page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click(),
+  },
+  listViewSwitch: {
+    load: () => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarListViewSwitch.vue'),
+    open: (page: HTMLElement) =>
+      Array.from(page.querySelectorAll<HTMLButtonElement>('.v-btn'))
+        .find((button) => button.querySelector('.mdi-chevron-down'))!
+        .click(),
+  },
+}
+
+const openMenu = async (menu: keyof typeof MENUS) => {
   const ui = await startUploadUi({ server, grants: ['dam_asset_create', 'dam_asset_update'] })
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = {
@@ -46,17 +58,17 @@ const openMenu = async () => {
   setCurrentUser({
     ...currentUser.value,
     userToExtSystemsDto: [{ id: 1, name: 'Ext system' }],
-    assetLicencesDto: [
+    resolvedAssetLicences: [
       { id: 1, name: 'Licence', extSystem: 1 },
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
   } as never)
-  const Menu = (await import('@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue')).default
+  const Menu = (await MENUS[menu].load()).default
   ui.router.addRoute({ path: PAGE, name: '/(coreDam)/assets', component: Menu })
   ui.router.addRoute({ path: ELSEWHERE, component: { render: () => null } })
   await ui.router.push(PAGE)
   const page = await ui.mount(async () => ({ default: RouterView }))
-  page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
+  MENUS[menu].open(page)
 
   return {
     ...ui,
@@ -80,7 +92,7 @@ beforeEach(() => {
   server.on('GET', /^\/adm\/v1\/asset-licence\/1$/, () => ({ status: 200, data: { id: 1, name: 'Licence' } }))
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
-  vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
+  vi.spyOn(window.location, 'assign').mockImplementation(() => undefined)
 })
 
 afterEach(() => {
@@ -92,14 +104,14 @@ describe('a dialog of the menu of the page while its request is on its way', () 
   it('the change of the licence: keeps the page, and the dialog, until the change is answered', async () => {
     let answer: () => void = () => undefined
     server.on(
-      'GET',
-      OTHER_LICENCE,
+      'PATCH',
+      CURRENT_USER,
       () =>
         new Promise<FakeDamAnswer>((resolve) => {
-          answer = () => resolve({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } })
+          answer = () => resolve({ status: 200, data: { id: 7 } })
         })
     )
-    const menu = await openMenu()
+    const menu = await openMenu('listViewSwitch')
     ;(await menu.item('button-switch-licence')).click()
     const dialog = await eventually(() => {
       const open = dialogSaying(CHANGE_LICENCE)
@@ -110,7 +122,7 @@ describe('a dialog of the menu of the page while its request is on its way', () 
     const licence = Array.from(dialog.querySelectorAll<HTMLElement>('.v-select'))[1]
     licence.querySelector('.v-field')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     const other = await eventually(() => {
-      const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-menu .v-list-item')).find(
+      const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-select__content .v-list-item')).find(
         (found) => found.textContent?.trim() === 'Other licence'
       )
       expect(option).toBeTruthy()
@@ -127,8 +139,7 @@ describe('a dialog of the menu of the page while its request is on its way', () 
     expect([menu.at(), dialogSaying(CHANGE_LICENCE) === dialog]).toEqual([PAGE, true])
 
     answer()
-    await eventually(() => expect(window.location.reload).toHaveBeenCalledTimes(1))
-    expect(menu.alerts()).toEqual([UPDATED])
+    await eventually(() => expect(window.location.assign).toHaveBeenCalledTimes(1))
     await menu.leave()
     expect(menu.at()).toBe(ELSEWHERE)
   })
@@ -143,7 +154,7 @@ describe('a dialog of the menu of the page while its request is on its way', () 
           answer = () => resolve({ status: 201, data: { ...assetDetail('asset-new'), keywords: [], authors: [] } })
         })
     )
-    const menu = await openMenu()
+    const menu = await openMenu('options')
     ;(await menu.item('button-main-empty-asset')).click()
     const panel = await menu.item('create-panel')
     panel.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()

@@ -8,7 +8,7 @@ import logoNoText from '@/assets/logo-adam-no-text.svg'
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetFooterUploadOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadOverlay.vue'
 import AssetFooterUploadSlotsOverlay from '@/domains/coreDam/asset/components/footer/AssetFooterUploadSlotsOverlay.vue'
-import AssetToolbarIntegrations from '@/domains/coreDam/asset/components/toolbar/AssetToolbarIntegrations.vue'
+import AssetToolbarListViewSwitch from '@/domains/coreDam/asset/components/toolbar/AssetToolbarListViewSwitch.vue'
 import AssetToolbarOptions from '@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import {
@@ -17,7 +17,6 @@ import {
 } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import { ACL } from '@/domains/system/auth/auth'
 import CurrentUserDropdown from '@/domains/system/components/CurrentUserDropdown.vue'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { envConfig } from '@/shared/EnvConfigService'
@@ -82,9 +81,7 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="d-flex align-center">
-          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-            <AssetToolbarIntegrations />
-          </Acl>
+          <AssetToolbarListViewSwitch />
           <slot name="main-bar-middle" />
         </div>
 

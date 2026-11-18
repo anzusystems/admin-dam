@@ -40,6 +40,7 @@ export function usePodcastEpisodeFactory() {
     modifiedAt: dateTimeNow(),
     createdBy: null,
     modifiedBy: null,
+    licence: 0,
     imagePreview: null,
     _resourceName: ENTITY,
     _system: SYSTEM_CORE_DAM,

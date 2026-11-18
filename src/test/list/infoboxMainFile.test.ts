@@ -30,7 +30,7 @@ vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   }),
 }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 
 const TYPED = 'typed and not saved'
 const STILL_PROCESSED = 'The file is still being processed.'

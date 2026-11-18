@@ -198,7 +198,9 @@ const onCancel = () => {
           data-cy="select-image-preview"
         >
           <ImagePreview
+            v-if="podcast.licence"
             v-model="podcast.imagePreview"
+            :licence="podcast.licence"
             show-actions
           />
         </ARow>
@@ -207,7 +209,9 @@ const onCancel = () => {
           data-cy="select-image-alt"
         >
           <ImagePreview
+            v-if="podcast.licence"
             v-model="podcast.altImage"
+            :licence="podcast.licence"
             show-actions
           />
         </ARow>

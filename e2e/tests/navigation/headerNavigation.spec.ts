@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE } from '@pages/shared/constants'
 import { backToAssets, openAppsMenu, openFromAppsMenu } from '@pages/navigation/appsMenu'
+import { LICENCE_MENU } from '@pages/shared/licence'
 
 let page: Page
 
@@ -36,7 +37,7 @@ test.describe.serial(`${ADMIN_SUITE} - Header navigation`, { tag: '@smoke' }, ()
   })
 
   test('opens the licence switch dialog', async () => {
-    await openAppsMenu(page)
+    await page.locator(LICENCE_MENU).first().click()
     await page.locator('.v-overlay--active [data-cy="button-switch-licence"]').click()
     const dialog = page.getByRole('dialog').filter({ hasText: 'Prepnutie externého systému a licencie' })
     await expect(dialog).toBeVisible()

@@ -13,11 +13,12 @@ import {
   assetFileIsImageFile,
   assetFileIsVideoFile,
   dateTimePretty,
+  isUndefined,
   prettyBytes,
   useDamAuthorAssetTypeConfig,
   useDamKeywordAssetTypeConfig,
 } from '@anzusystems/common-admin'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
@@ -26,6 +27,8 @@ import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/Ass
 import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
@@ -52,6 +55,18 @@ const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
 const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
 
 const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
+
+const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+
+watch(
+  () => asset.value?.licence,
+  (licence) => {
+    if (isUndefined(licence)) return
+    addToCachedAssetLicences(licence)
+    fetchCachedAssetLicences()
+  },
+  { immediate: true }
+)
 
 const assetMainFile = computed<null | AssetFile>(() =>
   asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
@@ -225,6 +240,14 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             {{ asset.attributes.assetType }}
+          </VCol>
+        </VRow>
+        <VRow>
+          <VCol cols="3">
+            {{ t('coreDam.asset.detail.info.field.licence') }}
+          </VCol>
+          <VCol cols="9">
+            <CachedAssetLicenceChip :id="asset.licence" />
           </VCol>
         </VRow>
         <VRow>

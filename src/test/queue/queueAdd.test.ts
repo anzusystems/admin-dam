@@ -8,7 +8,11 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 7 } }),
+  useCurrentAssetLicence: () => ({
+    currentAssetLicenceId: { value: 7 },
+    uploadAllowed: { value: true },
+    listLicenceIds: { value: [7] },
+  }),
   useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/externalProviders', () => ({
@@ -165,8 +169,10 @@ describe('files picked for a slot of an asset', () => {
 })
 
 describe('assets picked for mass edit', () => {
+  // A list view lists the assets of several licences; the current upload licence is 7.
   const listed = (id: string, over: Record<string, unknown> = {}) => ({
     id,
+    licence: 8,
     attributes: { assetType: 'image', assetStatus: 'with_file' },
     texts: { displayTitle: 'title of ' + id },
     mainFile: {
@@ -201,7 +207,7 @@ describe('assets picked for mass edit', () => {
       'asset-a',
       'file-of-asset-a',
       'title of asset-a',
-      7,
+      8,
     ])
     // A `true` must be kept, or the form switch shows it as off.
     expect(first.mainFileSingleUse).toBe(true)
@@ -235,7 +241,7 @@ describe('assets picked for mass edit', () => {
     await store.addByAssets('edit', [listed('asset-a'), listed('asset-b')] as never)
     await vi.advanceTimersByTimeAsync(0)
 
-    expect(server.sent('GET').map((request) => request.url)).toEqual(['/adm/v1/asset/licence/7/ids/asset-a,asset-b'])
+    expect(server.sent('GET').map((request) => request.url)).toEqual(['/adm/v1/asset/ext-system/1/ids/asset-a,asset-b'])
     const [first, second] = store.getQueueItems('edit')
     expect([first.status, first.canEditMetadata]).toEqual(['uploaded', true])
     expect([first.keywords, first.authors, first.customData]).toEqual([

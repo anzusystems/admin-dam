@@ -16,7 +16,13 @@ vi.mock('@/domains/coreDam/assetLicence/api/assetLicenceApi', () => ({
   fetchAssetLicence: () => fetchAssetLicence(),
 }))
 vi.mock('@/domains/system/auth/auth', () => ({
-  useAuth: () => ({ useCurrentUser: () => ({ currentUser: { value: { id: 1, assetLicencesDto: [] } } }) }),
+  useAuth: () => ({
+    useCurrentUser: () => ({
+      currentUser: {
+        value: { id: 1, assetLicencesDto: [], resolvedAssetLicences: [], listViews: [], selectedListView: null },
+      },
+    }),
+  }),
 }))
 // Declared here rather than inline in the factory: `defineStore(...)()` in one expression makes
 // eslint-plugin-pinia throw while linting this file.

@@ -12,16 +12,17 @@ import type {
   AssetFileImagePreviewNullable,
   AssetSelectReturnData,
   DocId,
+  IntegerId,
 } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
 withDefaults(
   defineProps<{
+    licence: IntegerId
     width?: number
     height?: number
     showActions?: boolean
@@ -81,8 +82,6 @@ const fetchImage = async (id: DocId) => {
     if (asked === latestImageRead) loading.value = false
   }
 }
-
-const { currentAssetLicenceId } = useCurrentAssetLicence()
 
 const imagePreviewModel = computed({
   get() {
@@ -232,7 +231,7 @@ watch(
         {{ t('system.imagePreview.actions.unassign') }}
       </VBtn>
       <AAssetSelect
-        :select-licences="[currentAssetLicenceId]"
+        :select-licences="[licence]"
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"

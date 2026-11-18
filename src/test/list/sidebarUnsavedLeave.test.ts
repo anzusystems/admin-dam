@@ -11,10 +11,9 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const CREATE = /^\/adm\/v1\/asset\/licence\/1$/
-const OTHER_LICENCE = /^\/adm\/v1\/asset-licence\/2$/
 const CURRENT_USER = /^\/adm\/users\/current$/
 const PROVIDER = 'provider-1'
 const PROVIDER_LIST = /^\/adm\/v1\/asset-external-provider\/provider-1\/search$/
@@ -29,6 +28,7 @@ const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const TYPED = 'typed and not saved'
 const FROM_SERVER = 'from the server'
 const CHANGE_LICENCE = 'Switch Media Library ext system and asset licence'
+const WORK_IN_PROGRESS = 'Important: Please finish all work first, any progress will be lost!'
 
 const LIST = '/assets'
 const SETTINGS = '/settings'
@@ -100,7 +100,7 @@ const openList = async () => {
     person: { firstName: 'Test', lastName: 'User', fullName: 'Test User' },
     avatar: { color: '', text: 'TU' },
     userToExtSystemsDto: [{ id: 1, name: 'Ext system' }],
-    assetLicencesDto: [
+    resolvedAssetLicences: [
       { id: 1, name: 'Licence', extSystem: 1 },
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
@@ -201,6 +201,9 @@ const openList = async () => {
       })
     },
     openLicenceChange: async () => {
+      Array.from(page.querySelectorAll<HTMLButtonElement>('header .v-btn'))
+        .find((button) => button.querySelector('.mdi-chevron-down'))!
+        .click()
       ;(await menuItem('button-switch-licence')).click()
       const dialog = await eventually(() => {
         const open = dialogOf(CHANGE_LICENCE)
@@ -211,7 +214,7 @@ const openList = async () => {
       const licence = Array.from(dialog.querySelectorAll<HTMLElement>('.v-select'))[1]
       licence.querySelector('.v-field')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
       const other = await eventually(() => {
-        const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-menu .v-list-item')).find(
+        const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-select__content .v-list-item')).find(
           (item) => item.textContent?.trim() === 'Other licence'
         )
         expect(option).toBeTruthy()
@@ -280,7 +283,7 @@ const closeDetail = async () => {
   await eventually(() => expect(detail()).toBeNull())
 }
 
-let reload: ReturnType<typeof vi.spyOn>
+let assign: ReturnType<typeof vi.spyOn>
 
 beforeEach(() => {
   server = createFakeDam()
@@ -297,7 +300,6 @@ beforeEach(() => {
     data: { data: ['asset-1', 'asset-2', 'asset-3'].map((id) => onServer(id)), hasNextPage: false },
   }))
   server.on('GET', /^\/adm\/v1\/asset-licence\/1$/, () => ({ status: 200, data: { id: 1, name: 'Licence' } }))
-  server.on('GET', OTHER_LICENCE, () => ({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } }))
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('GET', /^\/adm\/v1\/distribution\/asset(-file)?\/[^/]+$/, empty)
   server.on('GET', /^\/adm\/v1\/(keyword|author)\/ext-system\/1\/search$/, empty)
@@ -311,11 +313,11 @@ beforeEach(() => {
   // The window and its address are shared by the whole file.
   // It must not be reloaded under the cases.
   window.history.replaceState(null, '', LIST)
-  reload = vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
+  assign = vi.spyOn(window.location, 'assign').mockImplementation(() => undefined)
 })
 
 afterEach(() => {
-  reload.mockRestore()
+  assign.mockRestore()
   stopUploadUi()
 })
 
@@ -694,52 +696,63 @@ describe('metadata typed and not saved, when the window is reloaded or closed', 
 })
 
 /*
- * The licence is changed in a dialog of the page menu.
- * The page is reloaded once the server accepts the change, and everything the page holds goes with it.
+ * The licence is changed in a dialog of the list view switch.
+ * The asset list is loaded anew once the server accepts the change, and everything the page holds goes with it.
+ * The upload queue holds rows here, so the switch first asks whether that work may be given up.
  */
-describe('metadata typed into the panel beside the list and not saved, when the licence is changed', () => {
-  const confirm = async (dialog: HTMLElement) => {
-    dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
-    await settled()
-  }
-  const sent = () => [server.sent('GET', OTHER_LICENCE).length, server.sent('PATCH', CURRENT_USER).length]
+const confirm = async (dialog: HTMLElement) => {
+  dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
+  await settled()
+}
 
-  it('are asked about as the change is confirmed: "Stay" sends nothing, "Leave anyway" changes it and reloads', async () => {
+const giveUpWorkInProgress = async () => {
+  const asked = await eventually(() => {
+    const open = dialogOf(WORK_IN_PROGRESS)
+    expect(open).not.toBeNull()
+
+    return open!
+  })
+  asked.querySelector<HTMLButtonElement>('button[data-cy="button-confirm-list-view-switch"]')!.click()
+  await settled()
+}
+
+describe('metadata typed into the panel beside the list and not saved, when the licence is changed', () => {
+  const sent = () => server.sent('PATCH', CURRENT_USER).length
+
+  it('are asked about as the change is confirmed: "Stay" sends nothing, "Leave anyway" changes it and goes', async () => {
     const list = await openList()
     const typedInto = await typedIntoTheSecond(list)
     const dialog = await list.openLicenceChange()
     expect(questions()).toEqual([])
-    const askedOnReload: boolean[] = []
-    reload.mockImplementation(() => void askedOnReload.push(windowAsksBeforeItGoes()))
+    const askedAsItGoes: boolean[] = []
+    assign.mockImplementation(() => void askedAsItGoes.push(windowAsksBeforeItGoes()))
 
     await confirm(dialog)
+    await giveUpWorkInProgress()
 
-    expect([questions().length, sent(), reload.mock.calls, dialog.isConnected]).toEqual([1, [0, 0], [], true])
+    expect([questions().length, sent(), assign.mock.calls]).toEqual([1, 0, []])
     typedIsKept(list, typedInto)
 
     await answer(STAY)
 
-    expect([questions(), sent(), reload.mock.calls, dialogOf(CHANGE_LICENCE) === dialog]).toEqual([
-      [],
-      [0, 0],
-      [],
-      true,
-    ])
-    expect(dialog.textContent).toContain('Other licence')
+    expect([questions(), sent(), assign.mock.calls, !!dialogOf(WORK_IN_PROGRESS)]).toEqual([[], 0, [], true])
     typedIsKept(list, typedInto)
 
-    await confirm(dialog)
+    await giveUpWorkInProgress()
     expect(questions()).toHaveLength(1)
     await answer(LEAVE)
 
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
-    expect([questions(), sent(), list.alerts()]).toEqual([[], [1, 1], [UPDATED]])
-    expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({ selectedLicence: 2 })
-    // The answer was given to the page's question, so the browser does not ask again on the reload.
-    expect(askedOnReload).toEqual([false])
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect([questions(), sent(), list.alerts()]).toEqual([[], 1, []])
+    expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({
+      selectedLicence: 2,
+      selectedListView: null,
+    })
+    // The answer was given to the page's question, so the browser does not ask again as the page goes.
+    expect(askedAsItGoes).toEqual([false])
   })
 
-  it('are kept when the server refuses the change after "Leave anyway": nothing is reloaded', async () => {
+  it('are kept when the server refuses the change after "Leave anyway": the page stays', async () => {
     server.on('PATCH', CURRENT_USER, () => {
       throw httpError(500)
     })
@@ -748,22 +761,24 @@ describe('metadata typed into the panel beside the list and not saved, when the 
     const dialog = await list.openLicenceChange()
 
     await confirm(dialog)
+    await giveUpWorkInProgress()
     await answer(LEAVE)
 
     await eventually(() => expect(list.alerts()).toEqual([SYSTEM_ERROR]))
-    expect([sent(), reload.mock.calls, dialogOf(CHANGE_LICENCE) === dialog]).toEqual([[1, 1], [], true])
+    expect([sent(), assign.mock.calls, !!dialogOf(WORK_IN_PROGRESS)]).toEqual([1, [], true])
     typedIsKept(list, typedInto)
     expect(windowAsksBeforeItGoes()).toBe(true)
   })
 
-  it('are not there to be asked about when nothing was typed: the licence is changed at once', async () => {
+  it('are not there to be asked about when nothing was typed: the licence is changed with no question', async () => {
     const list = await openList()
     await list.pick(1)
 
     await confirm(await list.openLicenceChange())
+    await giveUpWorkInProgress()
 
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
-    expect([questions(), sent()]).toEqual([[], [1, 1]])
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect([questions(), sent()]).toEqual([[], 1])
   })
 })
 
@@ -814,13 +829,13 @@ describe('the page of the list of an external provider, come to from metadata ty
     expect([questions(), reads(), open.mock.calls.length]).toEqual([[], [0, 1, 0, 0], 1])
   })
 
-  it('changes the licence at once', async () => {
+  it('changes the licence with no question', async () => {
     const list = await onTheProviderPage()
-    const dialog = await list.openLicenceChange()
 
-    dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
+    await confirm(await list.openLicenceChange())
+    await giveUpWorkInProgress()
 
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
     expect([questions(), server.sent('PATCH', CURRENT_USER).length]).toEqual([[], 1])
   })
 })

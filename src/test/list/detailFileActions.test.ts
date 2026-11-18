@@ -23,7 +23,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const TYPE = '(image|audio|video|document)'
 const MAIN = new RegExp(`^/adm/v1/${TYPE}/([^/]+)/asset/([^/]+)/main$`)
 const SLOT = new RegExp(`^/adm/v1/${TYPE}/([^/]+)/asset/([^/]+)/slot-name/([^/]+)$`)

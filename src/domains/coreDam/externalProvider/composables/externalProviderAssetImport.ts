@@ -1,6 +1,7 @@
 import { isNull, useAlerts } from '@anzusystems/common-admin'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useExternalProviderAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/externalProviderAssetFooterSelected'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import type {
@@ -17,9 +18,12 @@ export const useExternalProviderAssetImport = () => {
   const { showWarning } = useAlerts()
   const { canForAll } = useAuth()
 
-  // Import creates the asset on the current licence, requiring dam_<type>_create for each imported type.
+  const { uploadAllowed } = useCurrentAssetLicence()
+
+  // Import creates the asset on the upload licence, which a read-only list view lacks, requiring dam_<type>_create for
+  // each imported type.
   const canImport = (assetTypes: DamAssetTypeType[]) =>
-    canForAll([...new Set(assetTypes.map((assetType) => assetTypeAcl(assetType, 'create')))])
+    uploadAllowed.value && canForAll([...new Set(assetTypes.map((assetType) => assetTypeAcl(assetType, 'create')))])
 
   /*
    * Uses the asset the panel or dialog shows, not the active tile.

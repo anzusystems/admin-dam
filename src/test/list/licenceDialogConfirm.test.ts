@@ -5,21 +5,18 @@ import type { FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
 
 /*
- * The licence is changed in a menu dialog: the licence is read, the change is sent, and the page is reloaded.
+ * The licence is changed in a dialog of the list view switch: the change is sent, and the asset list is loaded anew.
  * While that runs, the confirm button spins and a second confirm does
- * nothing. Before, the same change was read, sent and reloaded twice.
- * The dialog also cannot be closed meanwhile: the guard against a second
- * confirm goes with the dialog, and a reopened one would send the change again.
+ * nothing. Before, the same change was sent and the page reloaded twice.
+ * The dialog also cannot be closed meanwhile: closing it would not stop the change, the page still goes.
  */
 
 let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const OTHER_LICENCE = /^\/adm\/v1\/asset-licence\/2$/
 const CURRENT_USER = /^\/adm\/users\/current$/
 
-const UPDATED = 'Record was updated'
 const SYSTEM_ERROR = 'System error, try again later or contact administrator'
 const CHANGE_LICENCE = 'Switch Media Library ext system and asset licence'
 
@@ -34,7 +31,7 @@ const dismiss = async (dialog: Element) => {
   await settled()
 }
 
-const sent = () => [server.sent('GET', OTHER_LICENCE).length, server.sent('PATCH', CURRENT_USER).length]
+const sent = () => server.sent('PATCH', CURRENT_USER).length
 
 const spins = (button: HTMLButtonElement) => button.classList.contains('v-btn--loading')
 
@@ -50,15 +47,18 @@ const withTheOtherLicencePicked = async () => {
   setCurrentUser({
     ...currentUser.value,
     userToExtSystemsDto: [{ id: 1, name: 'Ext system' }],
-    assetLicencesDto: [
+    resolvedAssetLicences: [
       { id: 1, name: 'Licence', extSystem: 1 },
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
   } as never)
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
-  ui.router.addRoute({ path: '/settings', component: { render: () => null } })
-  const menu = await ui.mount(() => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarOptions.vue'))
-  menu.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
+  const listViewSwitch = await ui.mount(
+    () => import('@/domains/coreDam/asset/components/toolbar/AssetToolbarListViewSwitch.vue')
+  )
+  Array.from(listViewSwitch.querySelectorAll<HTMLButtonElement>('.v-btn'))
+    .find((button) => button.querySelector('.mdi-chevron-down'))!
+    .click()
   const item = await eventually(() => {
     const found = document.body.querySelector<HTMLElement>('[data-cy="button-switch-licence"]')
     expect(found).not.toBeNull()
@@ -77,7 +77,7 @@ const withTheOtherLicencePicked = async () => {
   const licence = Array.from(dialog.querySelectorAll<HTMLElement>('.v-select'))[1]
   licence.querySelector('.v-field')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
   const other = await eventually(() => {
-    const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-menu .v-list-item')).find(
+    const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-select__content .v-list-item')).find(
       (found) => found.textContent?.trim() === 'Other licence'
     )
     expect(option).toBeTruthy()
@@ -97,49 +97,59 @@ const withTheOtherLicencePicked = async () => {
   }
 }
 
-let reload: ReturnType<typeof vi.spyOn>
+const held = () => {
+  let answer: () => void = () => undefined
+  let refuse: () => void = () => undefined
+  server.on(
+    'PATCH',
+    CURRENT_USER,
+    () =>
+      new Promise<FakeDamAnswer>((resolve, reject) => {
+        answer = () => resolve({ status: 200, data: { id: 7 } })
+        refuse = () => reject(httpError(500))
+      })
+  )
+
+  return { answer: () => answer(), refuse: () => refuse() }
+}
+
+let assign: ReturnType<typeof vi.spyOn>
 
 beforeEach(() => {
   server = createFakeDam()
   server.on('GET', /^\/adm\/v1\/asset-licence\/1$/, () => ({ status: 200, data: { id: 1, name: 'Licence' } }))
-  server.on('GET', OTHER_LICENCE, () => ({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } }))
   server.on('GET', /^\/adm\/v1\/ext-system\/1$/, () => ({ status: 200, data: { id: 1, name: 'Ext system' } }))
   server.on('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
-  reload = vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
+  assign = vi.spyOn(window.location, 'assign').mockImplementation(() => undefined)
 })
 
 afterEach(() => {
-  reload.mockRestore()
+  assign.mockRestore()
   stopUploadUi()
 })
 
 describe('the dialog that changes the licence', () => {
   it('takes one confirm while the change is on its way, and its button spins meanwhile', async () => {
-    let answerLicence: () => void = () => undefined
-    server.on(
-      'GET',
-      OTHER_LICENCE,
-      () =>
-        new Promise<FakeDamAnswer>((resolve) => {
-          answerLicence = () => resolve({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } })
-        })
-    )
+    const change = held()
     const dialog = await withTheOtherLicencePicked()
     expect(spins(dialog.confirm)).toBe(false)
 
     dialog.confirm.click()
     await settled()
-    expect([sent(), spins(dialog.confirm)]).toEqual([[1, 0], true])
+    expect([sent(), spins(dialog.confirm)]).toEqual([1, true])
 
     dialog.confirm.click()
     await settled()
-    expect(sent()).toEqual([1, 0])
+    expect(sent()).toBe(1)
 
-    answerLicence()
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
+    change.answer()
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
     await settled()
-    expect([sent(), reload.mock.calls.length, dialog.alerts()]).toEqual([[1, 1], 1, [UPDATED]])
-    expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({ selectedLicence: 2 })
+    expect([sent(), assign.mock.calls, dialog.alerts()]).toEqual([1, [['/assets']], []])
+    expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[0].data as string)).toEqual({
+      selectedLicence: 2,
+      selectedListView: null,
+    })
   })
 
   it('can be confirmed again after a change the server refused: its button spins no more', async () => {
@@ -153,13 +163,13 @@ describe('the dialog that changes the licence', () => {
 
     dialog.confirm.click()
     await eventually(() => expect(dialog.alerts()).toEqual([SYSTEM_ERROR]))
-    expect([sent(), reload.mock.calls.length, spins(dialog.confirm)]).toEqual([[1, 1], 0, false])
+    expect([sent(), assign.mock.calls.length, spins(dialog.confirm)]).toEqual([1, 0, false])
 
     refuse = false
     dialog.confirm.click()
 
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
-    expect(sent()).toEqual([2, 2])
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect(sent()).toBe(2)
   })
 
   /*
@@ -168,12 +178,7 @@ describe('the dialog that changes the licence', () => {
    * sent the change a second time under the reload of the first.
    */
   it('cannot be closed while the change is on its way, and can be after a change the server refused', async () => {
-    let refuseLicence: () => void = () => undefined
-    server.on(
-      'GET',
-      OTHER_LICENCE,
-      () => new Promise<FakeDamAnswer>((_resolve, reject) => (refuseLicence = () => reject(httpError(500))))
-    )
+    const change = held()
     const dialog = await withTheOtherLicencePicked()
     expect(dialog.cancel.disabled).toBe(false)
 
@@ -183,11 +188,11 @@ describe('the dialog that changes the licence', () => {
     dialog.cross.click()
     await settled()
 
-    expect([dialog.isOpen(), spins(dialog.confirm), sent()]).toEqual([true, true, [1, 0]])
+    expect([dialog.isOpen(), spins(dialog.confirm), sent()]).toEqual([true, true, 1])
 
-    refuseLicence()
+    change.refuse()
     await eventually(() => expect(dialog.alerts()).toEqual([SYSTEM_ERROR]))
-    expect([dialog.cancel.disabled, reload.mock.calls.length]).toEqual([false, 0])
+    expect([dialog.cancel.disabled, assign.mock.calls.length]).toEqual([false, 0])
     dialog.cross.click()
     await eventually(() => expect(dialog.isOpen()).toBe(false))
   })
@@ -197,25 +202,17 @@ describe('the dialog that changes the licence', () => {
    * The library sets every dialog up as persistent, so neither ever closes one.
    */
   it('is not closed by Escape nor by a press outside it while the change is on its way', async () => {
-    let answerLicence: () => void = () => undefined
-    server.on(
-      'GET',
-      OTHER_LICENCE,
-      () =>
-        new Promise<FakeDamAnswer>((resolve) => {
-          answerLicence = () => resolve({ status: 200, data: { id: 2, name: 'Other licence', extSystem: 1 } })
-        })
-    )
+    const change = held()
     const dialog = await withTheOtherLicencePicked()
 
     dialog.confirm.click()
     await settled()
     await dialog.dismiss()
 
-    expect([dialog.isOpen(), spins(dialog.confirm), sent()]).toEqual([true, true, [1, 0]])
+    expect([dialog.isOpen(), spins(dialog.confirm), sent()]).toEqual([true, true, 1])
 
-    answerLicence()
-    await eventually(() => expect(reload).toHaveBeenCalledTimes(1))
-    expect(sent()).toEqual([1, 1])
+    change.answer()
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect(sent()).toBe(1)
   })
 })

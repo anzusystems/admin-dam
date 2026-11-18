@@ -143,9 +143,10 @@ onMounted(async () => {
         color="primary"
       />
     </div>
-    <div v-else-if="videoFile">
+    <div v-else-if="videoFile && assetDetailStore.asset">
       <ImagePreview
         v-model="videoFile.imagePreview"
+        :licence="assetDetailStore.asset.licence"
         :show-actions="can(ACL.DAM_VIDEO_UPDATE) && !assetDetailStore.isDeleting"
         @changed="onSave"
       >

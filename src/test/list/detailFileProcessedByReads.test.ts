@@ -17,8 +17,8 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
-const BY_IDS = /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
+const BY_IDS = /^\/adm\/v1\/asset\/ext-system\/1\/ids\/.+$/
 
 const FROM_SERVER = 'from the server'
 const STILL_PROCESSED = 'The file is still being processed.'

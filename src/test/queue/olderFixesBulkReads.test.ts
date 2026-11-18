@@ -16,7 +16,7 @@ let server: FakeDam
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
-const BATCH_READ = /^\/adm\/v1\/asset\/licence\/1\/ids\/.+$/
+const BATCH_READ = /^\/adm\/v1\/asset\/ext-system\/1\/ids\/.+$/
 const EDIT = 'edit'
 
 const onServer = (keywords: string[]) =>

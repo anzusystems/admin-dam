@@ -35,9 +35,8 @@ export const CORE_DAM_API = `${coreDamUrl()}/api/adm/v1`
 const ASSET_LIST_SEARCH = /^\/asset\/licence\/(?:(\d+)\/)?search(?:\?|$)/
 
 /**
- * The asset list's search. develop and `next` name the licence in the path, `/asset/licence/<licence>/search?…`; the
- * mixed-licence listing of #86490 (on devel from a feature branch) asks `/asset/licence/search?licences=<licence>`.
- * With `licenceId`, that licence's only.
+ * The asset list's search, `/asset/licence/search?licences=<licences>`; before the list views of #86490 the licence was
+ * in the path, `/asset/licence/<licence>/search?…`. With `licenceId`, that licence's only.
  */
 export function isAssetListSearch(url: string, licenceId?: string): boolean {
   if (!url.startsWith(`${CORE_DAM_API}/`)) return false

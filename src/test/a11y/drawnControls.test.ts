@@ -87,7 +87,7 @@ const tooltipOf = async (element: HTMLElement) => {
   return said
 }
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 
 beforeEach(() => {
   server = createFakeDam()

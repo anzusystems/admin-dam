@@ -31,7 +31,11 @@ vi.mock('@/plugins/vuetify', () => ({ vuetify: { install: () => undefined } }))
 vi.mock('@anzusystems/common-admin/styles', () => ({}))
 vi.mock('@sentry/vue', () => ({}))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
+  useCurrentAssetLicence: () => ({
+    currentAssetLicenceId: { value: 1 },
+    uploadAllowed: { value: true },
+    listLicenceIds: { value: [1] },
+  }),
   useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/externalProviders', () => ({

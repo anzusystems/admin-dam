@@ -29,7 +29,7 @@ const { t } = useI18n()
 const IMAGE_HEIGHT = 200
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { asset, assetType, assetStatus, imageProperties } = useAssetItemActions(props.item)
+const { asset, assetType, assetStatus, imageProperties, licenceBadge } = useAssetItemActions(props.item)
 
 const showDetail = () => {
   emit('showDetail', { assetId: asset.value.id, index: props.index })
@@ -81,6 +81,7 @@ const selectMultiple = () => {
         :fallback-height="IMAGE_HEIGHT"
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
+        :licence-badge="licenceBadge"
         :auto-delete-at="asset.autoDeleteAt"
         show-tts
       />

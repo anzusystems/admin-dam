@@ -10,7 +10,7 @@ import type { DamAssetTypeType, DocId } from '@anzusystems/common-admin'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import FileUpload from '@/domains/coreDam/shared/components/FileUpload.vue'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -131,12 +131,15 @@ const canUpload = computed(() => {
   )
 })
 
+const { uploadAllowed } = useCurrentAssetLicence()
+const uploadVisible = computed(() => props.type === 'slots' || uploadAllowed.value)
+
 const { t } = useI18n()
 </script>
 
 <template>
   <FileUpload
-    v-if="canUpload"
+    v-if="canUpload && uploadVisible"
     :variant="variant"
     :button-text="buttonText"
     :height="height"
@@ -147,6 +150,30 @@ const { t } = useI18n()
     :disabled="disabled"
     @files-input="assetUpload"
   />
+  <div
+    v-else-if="canUpload && variant === 'button'"
+    class="d-inline-flex"
+    data-cy="button-upload-read-only"
+  >
+    <VBtn
+      color="primary"
+      rounded="pill"
+      variant="flat"
+      :height="height ?? 34"
+      disabled
+    >
+      <template #prepend>
+        <VIcon icon="mdi-upload" />
+      </template>
+      {{ buttonText }}
+    </VBtn>
+    <VTooltip
+      activator="parent"
+      location="bottom"
+    >
+      {{ t('system.upload.readOnlyListView') }}
+    </VTooltip>
+  </div>
   <VDialog
     v-model="uploadDialog"
     :width="500"

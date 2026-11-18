@@ -19,10 +19,9 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const PROVIDER_LIST = /^\/adm\/v1\/asset-external-provider\/provider-\d\/search$/
 const CREATE = /^\/adm\/v1\/asset\/licence\/1$/
-const OTHER_LICENCE = /^\/adm\/v1\/asset-licence\/2$/
 const CURRENT_USER = /^\/adm\/users\/current$/
 
 const CREATED = 'Record was created'
@@ -59,7 +58,7 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
     avatar: { color: '', text: 'TU' },
     allowedAssetExternalProviders: ['provider-1', 'provider-2'],
     userToExtSystemsDto: [{ id: 1, name: 'Ext system' }],
-    assetLicencesDto: [
+    resolvedAssetLicences: [
       { id: 1, name: 'Licence', extSystem: 1 },
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
@@ -120,7 +119,9 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
       return panel
     },
     changeLicence: async () => {
-      page.querySelector<HTMLButtonElement>('[data-cy="button-main"]')!.click()
+      Array.from(page.querySelectorAll<HTMLButtonElement>('header .v-btn'))
+        .find((button) => button.querySelector('.mdi-chevron-down'))!
+        .click()
       ;(await item('button-switch-licence')).click()
       const dialog = await eventually(() => {
         const open = dialogSaying(CHANGE_LICENCE)
@@ -131,7 +132,7 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
       const licence = Array.from(dialog.querySelectorAll<HTMLElement>('.v-select'))[1]
       licence.querySelector('.v-field')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
       const other = await eventually(() => {
-        const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-menu .v-list-item')).find(
+        const option = Array.from(document.body.querySelectorAll<HTMLElement>('.v-select__content .v-list-item')).find(
           (found) => found.textContent?.trim() === 'Other licence'
         )
         expect(option).toBeTruthy()
@@ -141,7 +142,7 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
       other.click()
       await settled()
       dialog.querySelector<HTMLButtonElement>('button[data-cy="button-confirm"]')!.click()
-      await eventually(() => expect(server.sent('GET', OTHER_LICENCE)).toHaveLength(1))
+      await eventually(() => expect(server.sent('PATCH', CURRENT_USER)).toHaveLength(1))
 
       return dialog
     },
@@ -154,7 +155,7 @@ const openProvider = async (address: typeof FIRST | typeof SECOND) => {
   }
 }
 
-const hold = (method: 'GET' | 'POST', pattern: RegExp, answered: () => FakeDamAnswer) => {
+const hold = (method: 'POST' | 'PATCH', pattern: RegExp, answered: () => FakeDamAnswer) => {
   let answer: () => void = () => undefined
   server.on(method, pattern, () => new Promise<FakeDamAnswer>((resolve) => (answer = () => resolve(answered()))))
 
@@ -179,7 +180,7 @@ beforeEach(() => {
     close: () => undefined,
     location: { href: 'about:blank', replace: () => undefined },
   }))
-  vi.spyOn(window.location, 'reload').mockImplementation(() => undefined)
+  vi.spyOn(window.location, 'assign').mockImplementation(() => undefined)
   window.history.replaceState(null, '', FIRST)
 })
 
@@ -209,10 +210,7 @@ describe('a dialog of the menu of the page of a provider while its request is on
   })
 
   it('the change of the licence: keeps the page when the back button leads to the page of the provider before', async () => {
-    const answer = hold('GET', OTHER_LICENCE, () => ({
-      status: 200,
-      data: { id: 2, name: 'Other licence', extSystem: 1 },
-    }))
+    const answer = hold('PATCH', CURRENT_USER, () => ({ status: 200, data: { id: 7 } }))
     const provider = await openProvider(SECOND)
     const dialog = await provider.changeLicence()
 
@@ -220,7 +218,7 @@ describe('a dialog of the menu of the page of a provider while its request is on
 
     expect([provider.at(), dialog.isConnected]).toEqual([SECOND, true])
     await answer()
-    await eventually(() => expect(window.location.reload).toHaveBeenCalledTimes(1))
+    await eventually(() => expect(window.location.assign).toHaveBeenCalledTimes(1))
   })
 
   it('"Create empty asset": lets another query of the same provider through', async () => {

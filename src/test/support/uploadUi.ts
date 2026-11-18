@@ -148,8 +148,12 @@ export const startUploadUi = async (setup: UploadUiSetup) => {
       id: 7,
       roles: [],
       resolvedPermissions: grants,
+      selectedLicence: null,
       selectedLicenceDto: null,
       assetLicencesDto: [],
+      resolvedAssetLicences: [],
+      listViews: [],
+      selectedListView: null,
     } as never)
   const { initCurrentExtSystemAndLicence } = await import('@/domains/coreDam/asset/composables/currentExtSystem')
   if (!(await initCurrentExtSystemAndLicence())) throw new Error('uploadUi: no ext system for the user')

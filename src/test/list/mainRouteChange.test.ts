@@ -25,7 +25,7 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const MAKE_PRIVATE = /^\/adm\/v1\/(image|audio|document)\/([^/]+)\/make-private$/
 const MAKE_PUBLIC = /^\/adm\/v1\/(image|audio|document)\/([^/]+)\/make-public$/

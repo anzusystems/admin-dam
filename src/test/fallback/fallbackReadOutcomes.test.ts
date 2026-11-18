@@ -17,7 +17,11 @@ let server: FakeDam
 
 vi.mock('@/shared/apiClients/damClient', () => ({ damClient: () => server.client }))
 vi.mock('@/domains/coreDam/asset/composables/currentExtSystem', () => ({
-  useCurrentAssetLicence: () => ({ currentAssetLicenceId: { value: 1 } }),
+  useCurrentAssetLicence: () => ({
+    currentAssetLicenceId: { value: 1 },
+    uploadAllowed: { value: true },
+    listLicenceIds: { value: [1] },
+  }),
   useCurrentExtSystem: () => ({ currentExtSystemId: { value: 1 } }),
 }))
 vi.mock('@/domains/coreDam/asset/composables/externalProviders', () => ({

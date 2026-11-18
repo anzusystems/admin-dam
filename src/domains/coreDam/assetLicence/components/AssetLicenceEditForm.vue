@@ -11,7 +11,10 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import {
+  BADGE_MAX_LENGTH,
+  useAssetLicenceValidation,
+} from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
@@ -50,6 +53,16 @@ const { t } = useI18n()
             :label="t('coreDam.assetLicence.model.extId')"
             :v="v$.assetLicence.extId"
             data-cy="asset-licence-ext-id"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            :model-value="assetLicence.badge"
+            :label="t('coreDam.assetLicence.model.badge')"
+            :v="v$.assetLicence.badge"
+            :maxlength="BADGE_MAX_LENGTH"
+            data-cy="asset-licence-badge"
+            @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
           />
         </ARow>
         <ARow :title="t('coreDam.assetLicence.model.extSystem')">

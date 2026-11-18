@@ -7,7 +7,6 @@ import { useI18n } from 'vue-i18n'
 
 import AssetChip from '@/domains/coreDam/asset/components/detail/components/AssetChip.vue'
 import { useAssetDetailSidebarSlotsAssetSiblingActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailSidebarSlotsAssetSiblingActions'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -21,7 +20,6 @@ const props = withDefaults(
 
 const assetDetailStore = useAssetDetailStore()
 const { siblingLoader } = storeToRefs(assetDetailStore)
-const { currentAssetLicenceId } = useCurrentAssetLicence()
 const { t } = useI18n()
 const sort = ref(1)
 
@@ -92,7 +90,7 @@ const pickAssetType = computed(() => {
           <AAssetSelect
             v-if="pickAssetType"
             v-model:sort="sort"
-            :select-licences="[currentAssetLicenceId]"
+            :select-licences="[assetDetailStore.asset.licence]"
             :min-count="1"
             :max-count="1"
             return-type="assetId"

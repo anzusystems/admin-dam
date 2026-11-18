@@ -31,7 +31,7 @@ vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   }),
 }))
 
-const SEARCH = /^\/adm\/v1\/asset\/licence\/1(\/search)?$/
+const SEARCH = /^\/adm\/v1\/asset\/licence(\/1)?(\/search)?$/
 
 const TYPED = 'typed and not saved'
 const FROM_FILE = 'filled in from the file'

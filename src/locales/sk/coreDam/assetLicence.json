@@ -4,6 +4,7 @@
     "name": "Názov",
     "extSystem": "Externý systém",
     "extId": "Externé ID",
+    "badge": "Odznak",
     "flags": {
       "manualUploadAllowed": "Povolený manuálny upload",
       "directUseAllowed": "Povolené priame použitie"
@@ -25,5 +26,8 @@
   },
   "meta": {
     "create": "Vytvoriť licenciu"
+  },
+  "validation": {
+    "badge": "Povolené znaky pre odznak: A-Z a 0-9"
   }
 }

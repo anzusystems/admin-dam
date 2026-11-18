@@ -2,7 +2,9 @@ import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { assetFileIsImageFile } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
@@ -45,6 +47,12 @@ export function useAssetItemActions(item: AssetListItem) {
     return DEFAULT_IMAGE_PROPERTIES
   })
 
+  const { getCachedAssetLicence } = useCachedAssetLicences()
+  const { listLicenceIds } = useCurrentAssetLicence()
+  const licenceBadge = computed(() =>
+    listLicenceIds.value.length > 1 ? (getCachedAssetLicence(asset.value.licence)?.badge ?? '') : ''
+  )
+
   const getBgColor = () =>
     assetFileIsImageFile(asset.value.mainFile) &&
     asset.value.mainFile.imageAttributes &&
@@ -58,5 +66,6 @@ export function useAssetItemActions(item: AssetListItem) {
     assetStatus,
     imageProperties,
     tableImageProperties,
+    licenceBadge,
   }
 }
