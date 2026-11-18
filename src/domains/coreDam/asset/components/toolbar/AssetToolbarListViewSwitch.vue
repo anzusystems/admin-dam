@@ -131,6 +131,8 @@ const switchTo = async (selection: Selection) => {
 }
 
 const requestSwitch = (selection: Selection) => {
+  // The change on its way decides where the page goes; a newer pick would only sit behind it.
+  if (saving.value) return
   // Switching reloads the page, which drops uploads and edits that live only in the queues.
   const workInProgress = [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some(
     (queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0

@@ -55,6 +55,7 @@ const withTheOtherLicencePicked = async ({ queued = false } = {}) => {
       { id: 1, name: 'Licence', extSystem: 1 },
       { id: 2, name: 'Other licence', extSystem: 1 },
     ],
+    listViews: [{ id: 5, name: 'View', extSystem: 1, uploadLicence: null }],
   } as never)
   ui.router.addRoute({ path: '/assets', name: '/(coreDam)/assets', component: { render: () => null } })
   const listViewSwitch = await ui.mount(
@@ -258,6 +259,53 @@ describe('the question to finish all work first, asked while a queue holds rows'
     expect([cancel.disabled, assign.mock.calls.length]).toEqual([false, 0])
     cross.click()
     await eventually(() => expect(isOpen()).toBe(false))
+  })
+
+  it('keeps the change on its way when another view is picked meanwhile', async () => {
+    let refuse: () => void = () => undefined
+    let first = true
+    server.on('PATCH', CURRENT_USER, () => {
+      if (!first) return { status: 200, data: { id: 7 } }
+      first = false
+
+      return new Promise<FakeDamAnswer>((_resolve, reject) => {
+        refuse = () => reject(httpError(500))
+      })
+    })
+    const dialog = await withTheOtherLicencePicked({ queued: true })
+    dialog.confirm.click()
+    const confirm = await eventually(() => {
+      const found = document.body.querySelector<HTMLButtonElement>('[data-cy="button-confirm-list-view-switch"]')
+      expect(found).not.toBeNull()
+
+      return found!
+    })
+    confirm.click()
+    await settled()
+    expect(sent()).toBe(1)
+
+    Array.from(document.body.querySelectorAll<HTMLButtonElement>('.v-btn'))
+      .find((button) => button.querySelector('.mdi-chevron-down'))!
+      .click()
+    const view = await eventually(() => {
+      const found = Array.from(document.body.querySelectorAll<HTMLElement>('.v-list-item')).find(
+        (item) => item.querySelector('.v-list-item-title')?.textContent?.trim() === 'View'
+      )
+      expect(found).toBeTruthy()
+
+      return found!
+    })
+    view.click()
+    await settled()
+
+    refuse()
+    await eventually(() => expect(dialog.alerts()).toEqual([SYSTEM_ERROR]))
+    confirm.click()
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect(JSON.parse(server.sent('PATCH', CURRENT_USER)[1].data as string)).toEqual({
+      selectedLicence: 2,
+      selectedListView: null,
+    })
   })
 
   it('is closed once the change went through, while the page goes', async () => {
