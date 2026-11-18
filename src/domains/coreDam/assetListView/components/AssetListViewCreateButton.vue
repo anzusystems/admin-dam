@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { ACreateDialog, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { useAssetListViewFactory } from '@/domains/coreDam/assetListView/factory/AssetListViewFactory'
+import { useVuelidate } from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { ENTITY, useCreateAssetListView } from '@/domains/coreDam/assetListView/api/assetListViewApi'
 import AssetListViewFormFields from '@/domains/coreDam/assetListView/components/AssetListViewFormFields.vue'
+import { useAssetListViewFactory } from '@/domains/coreDam/assetListView/factory/AssetListViewFactory'
 import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -16,9 +20,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: AssetListView): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: AssetListView] }>()
 
 const { createDefault } = useAssetListViewFactory()
 const assetListView = ref<AssetListView>(createDefault())
@@ -31,11 +33,9 @@ const onOpen = () => {
   assetListView.value = createDefault()
 }
 
-const { executeRequest: createAssetListView } = useCreateAssetListView()
+const { execute: createAssetListView } = useCreateAssetListView()
 
-const create = async () => {
-  return await createAssetListView({ object: assetListView.value })
-}
+const create = async () => await createAssetListView({ body: assetListView.value })
 </script>
 
 <template>
@@ -47,9 +47,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.assetListView.meta.create') }}

@@ -1,7 +1,18 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { usePublicExportEditActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import PublicExportEditForm from '@/domains/coreDam/publicExport/components/PublicExportEditForm.vue'
+import { usePublicExportEditActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,22 +23,20 @@ const { detailLoading, fetchData, resetStore, onUpdate, saveButtonLoading, saveA
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
-    {
-      title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.edit'),
-      routeName: '/(coreDam)/public-exports/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
+  {
+    title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.edit'),
+    routeName: '/(coreDam)/public-exports/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+// Not the Close button's fallback: that is this record's detail, which failed to load too.
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/public-exports',
+  skipRouteNames: ['/(coreDam)/public-exports/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -44,9 +53,9 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton
-        :route-name="'/(coreDam)/public-exports/[id]'"
-        :route-params="{ id: id }"
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/public-exports/[id]'"
+        :fallback-route-params="{ id: id }"
       />
     </template>
   </ActionbarWrapper>

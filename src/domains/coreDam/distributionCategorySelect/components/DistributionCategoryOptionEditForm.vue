@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import { AFormTextField } from '@anzusystems/common-admin'
-import { useDistributionCategoryOptionValidation } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
+import { useI18n } from 'vue-i18n'
+
 import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import { useDistributionCategoryOptionValidation } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategoryOptionValidation'
 
 withDefaults(
   defineProps<{

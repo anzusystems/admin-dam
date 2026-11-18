@@ -1,9 +1,21 @@
-import { useAuth } from '@/domains/system/auth/auth'
-import { SYSTEM_DAM } from '@/shared/systems'
+import {
+  HTTP_STATUS_NOT_FOUND,
+  isAnzuApiForbiddenError,
+  isDocId,
+  isString,
+  isUndefined,
+  useDamConfigStore,
+  useExtSystemIdForCached,
+} from '@anzusystems/common-admin'
+import type { DamCurrentUserDto, DamPrvConfig, DocId, IntegerId, IntegerIdNullable } from '@anzusystems/common-admin'
+import { isAxiosError } from 'axios'
+import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
+
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { type DamCurrentUserDto, type DamPrvConfig, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import { useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 interface AssetScope {
   extSystem: IntegerId
@@ -13,6 +25,14 @@ interface AssetScope {
 }
 
 const scope = ref<AssetScope>({ extSystem: 0, licences: [], uploadLicence: null, listView: null })
+
+// The library name caches read their own ext system id, so it is written along with the current one.
+const { cachedExtSystemId } = useExtSystemIdForCached()
+
+const setScope = (value: AssetScope) => {
+  scope.value = value
+  cachedExtSystemId.value = value.extSystem
+}
 
 const licenceScope = (id: IntegerId, extSystem: IntegerId): AssetScope => ({
   extSystem,
@@ -57,7 +77,7 @@ export const initCurrentExtSystemAndLicence = async (
   const selected = resolveSelectedScope(currentUser.value, damPrvConfig.value.settings)
 
   if (isUndefined(loadConfig)) {
-    scope.value = selected
+    setScope(selected)
     return true
   }
   if (!isString(loadConfig.id) || !isDocId(loadConfig.id)) return false
@@ -66,18 +86,32 @@ export const initCurrentExtSystemAndLicence = async (
   try {
     asset = loadConfig.type === 'assetId' ? await fetchAsset(loadConfig.id) : await fetchAssetByFileId(loadConfig.id)
   } catch (e) {
-    return false
+    /*
+     * Only "not found" returns `false`, which shows the not-found page. An outage
+     * must reach the caller, or the user would be told the asset was deleted.
+     * The status is on `cause` because `useApiRequest` wraps every failure, and the wrapper is not an axios error.
+     */
+    if (isAnzuApiForbiddenError(e)) return false
+    const cause = (e as { cause?: unknown })?.cause
+    if (isAxiosError(cause) && cause.response?.status === HTTP_STATUS_NOT_FOUND) return false
+    throw e
   }
   if (selected.licences.includes(asset.licence)) {
-    scope.value = selected
-  } else {
-    const licence = await fetchAssetLicence(asset.licence)
-    if (!licence.id || !licence.extSystem) return false
-    scope.value = licenceScope(licence.id, licence.extSystem)
+    setScope(selected)
+    return true
   }
-  const assetDetailStore = useAssetDetailStore()
-  assetDetailStore.directDetailLoad = true
-  assetDetailStore.setAsset(asset)
+  // Same classification: a licence this user may not read is a dead link, not an outage.
+  let licence
+  try {
+    licence = await fetchAssetLicence(asset.licence)
+  } catch (e) {
+    if (isAnzuApiForbiddenError(e)) return false
+    const licenceCause = (e as { cause?: unknown })?.cause
+    if (isAxiosError(licenceCause) && licenceCause.response?.status === HTTP_STATUS_NOT_FOUND) return false
+    throw e
+  }
+  if (!licence.id || !licence.extSystem) return false
+  setScope(licenceScope(licence.id, licence.extSystem))
   return true
 }
 

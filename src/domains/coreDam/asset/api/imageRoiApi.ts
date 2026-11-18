@@ -1,14 +1,9 @@
-import { damClient } from '@/shared/apiClients/damClient'
-import {
-  type FilterConfig,
-  type FilterData,
-  type Pagination,
-  useApiFetchList,
-  useApiRequest,
-} from '@anzusystems/common-admin/labs'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
+import { useApiFetchList, useApiRequest } from '@anzusystems/common-admin'
+import type { DocId, FilterConfig, FilterData, Pagination } from '@anzusystems/common-admin'
 import type { Ref } from 'vue'
+
+import type { RegionOfInterest } from '@/domains/coreDam/asset/types/Roi'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
 
 export interface AssetMetadataBulkItem {
   id: DocId
@@ -23,39 +18,32 @@ export const ENTITY = 'asset'
 
 export const useFetchRoi = () =>
   useApiRequest<RegionOfInterest, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
 
 export const fetchRoi = (id: DocId) => {
-  const { executeRequest } = useFetchRoi()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchRoi()
+  return execute({ urlParams: { id } })
 }
 
 export const useUpdateRoi = () =>
   useApiRequest<RegionOfInterest, RegionOfInterest>({
-    client: damClient,
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
 
 export const updateRoi = (id: DocId, data: RegionOfInterest) => {
-  const { executeRequest } = useUpdateRoi()
-  return executeRequest({ urlParams: { id }, object: data })
+  const { execute } = useUpdateRoi()
+  return execute({ urlParams: { id }, body: data })
 }
 
 export const useFetchImageRoiList = () =>
-  useApiFetchList<RegionOfInterest[]>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT_IMAGE_ROI,
-  })
+  useApiFetchList<RegionOfInterest>({ ...damApiBase, entity: ENTITY, urlTemplate: END_POINT_IMAGE_ROI })
 
 export const fetchImageRoiList = (
   imageId: DocId,
@@ -63,6 +51,6 @@ export const fetchImageRoiList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchImageRoiList()
-  return executeFetch(pagination, filterData, filterConfig, { urlParams: { id: imageId } })
+  const { execute } = useFetchImageRoiList()
+  return execute(pagination, filterData, filterConfig, { urlParams: { id: imageId } })
 }

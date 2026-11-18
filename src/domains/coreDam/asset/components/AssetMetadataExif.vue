@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { AssetFileImage } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   file: AssetFileImage
 }>()
-
-type ExifData = Record<string, string | number | boolean | null>
 
 interface ExifEntry {
   key: string
@@ -15,12 +15,10 @@ interface ExifEntry {
 
 const { t } = useI18n()
 
-// Until a common-admin release types exifData as the object DAM sends, not an empty array.
-const exifData = computed(() => props.file.metadata?.exifData as unknown as ExifData | undefined)
-
 const entries = computed<ExifEntry[]>(() => {
-  if (!exifData.value) return []
-  return Object.entries(exifData.value)
+  const exifData = props.file.metadata?.exifData
+  if (!exifData) return []
+  return Object.entries(exifData)
     .map(([key, value]) => ({
       key,
       label: key.replace(/([a-z0-9])([A-Z])/g, '$1 $2'),

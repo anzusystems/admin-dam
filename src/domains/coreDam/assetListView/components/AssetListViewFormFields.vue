@@ -1,16 +1,20 @@
 <script lang="ts" setup>
 import {
+  ADamAssetLicenceGroupRemoteAutocomplete,
+  ADamAssetLicenceRemoteAutocomplete,
+  ADamExtSystemRemoteAutocomplete,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
-  DamAssetLicenceGroupRemoteAutocomplete,
-  DamAssetLicenceRemoteAutocomplete,
-  DamExtSystemRemoteAutocomplete,
+  isNull,
 } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
-import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useAssetListViewValidation } from '@/domains/coreDam/assetListView/composables/assetListViewValidation'
+import type { AssetListView } from '@/domains/coreDam/assetListView/types/AssetListView'
+import { damClient } from '@/shared/apiClients/damClient'
 
 const assetListView = defineModel<AssetListView>({ required: true })
 
@@ -54,7 +58,7 @@ watch(
     />
   </ARow>
   <ARow>
-    <DamExtSystemRemoteAutocomplete
+    <ADamExtSystemRemoteAutocomplete
       v-model="assetListView.extSystem"
       :client="damClient"
       :label="t('coreDam.assetListView.model.extSystem')"
@@ -64,7 +68,7 @@ watch(
     />
   </ARow>
   <ARow>
-    <DamAssetLicenceGroupRemoteAutocomplete
+    <ADamAssetLicenceGroupRemoteAutocomplete
       v-model="assetListView.groups"
       :client="damClient"
       :disabled="!assetListView.extSystem"
@@ -77,7 +81,7 @@ watch(
     />
   </ARow>
   <ARow>
-    <DamAssetLicenceRemoteAutocomplete
+    <ADamAssetLicenceRemoteAutocomplete
       v-model="assetListView.licences"
       :client="damClient"
       :disabled="!assetListView.extSystem"

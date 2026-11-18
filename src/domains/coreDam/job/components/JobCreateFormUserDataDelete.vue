@@ -1,13 +1,14 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow, type JobUserDataDelete, useCommonJobFactory } from '@anzusystems/common-admin'
-import { useJobApi } from '@anzusystems/common-admin/labs'
+import { AFormTextField, ARow, useAlerts, useCommonJobFactory, useJobApi, useValidate } from '@anzusystems/common-admin'
+import type { JobUserDataDelete } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-  (e: 'closeDialog'): void
-}>()
+const emit = defineEmits<{ onSuccess: []; closeDialog: [] }>()
 
 const buttonLoading = ref(false)
 const { createUserDataDelete } = useCommonJobFactory()

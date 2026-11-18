@@ -30,7 +30,8 @@
       "fromRss": "Z RSS",
       "webPublicExportEnabled": "Povolené na webe",
       "mobilePublicExportEnabled": "Povolené v appke"
-    }
+    },
+    "image": "Obrázok"
   },
   "filter": {
     "id": "ID",

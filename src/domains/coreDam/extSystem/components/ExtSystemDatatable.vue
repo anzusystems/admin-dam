@@ -1,46 +1,35 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DamExtSystem,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
   createDatatableColumnsConfig,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+} from '@anzusystems/common-admin'
+import type { DamExtSystem } from '@anzusystems/common-admin'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { useExtSystemListFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
-import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import ExtSystemFilter from '@/domains/coreDam/extSystem/components/ExtSystemFilter.vue'
+import { useExtSystemListActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
+import { useExtSystemListFilter } from '@/domains/coreDam/extSystem/filter/ExtSystemFilter'
 import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = DamExtSystem
 
 const router = useRouter()
 
 const { filterData, filterConfig } = useExtSystemListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useExtSystemListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination('createdAt')
-provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   if (item.id) {
@@ -55,29 +44,13 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ENTITY
 )
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
-
-const sortByChange = () => {
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
-
-defineExpose({
-  refresh: getList,
-})
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 </script>
 
 <template>
@@ -103,7 +76,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.createdAt="{ item }: { item: DatatableItem }">
@@ -130,10 +102,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

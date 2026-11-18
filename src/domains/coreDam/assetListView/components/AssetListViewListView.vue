@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import AssetListViewCreateButton from '@/domains/coreDam/assetListView/components/AssetListViewCreateButton.vue'
 import AssetListViewDatatable from '@/domains/coreDam/assetListView/components/AssetListViewDatatable.vue'
 import { useAssetListViewListActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import AssetListViewCreateButton from '@/domains/coreDam/assetListView/components/AssetListViewCreateButton.vue'
-
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useAssetListViewListActions()
 
@@ -17,9 +19,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' },
+])
 </script>
 
 <template>

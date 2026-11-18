@@ -1,5 +1,10 @@
-import type { Ref } from 'vue'
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
 import { helpers } from '@vuelidate/validators'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 export const BADGE_MAX_LENGTH = 4

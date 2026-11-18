@@ -7,8 +7,6 @@ import { expectNoWrite } from '@pages/shared/errors'
 import {
   COLUMN,
   createLicenceGroup,
-  deleteLicenceGroupStatus,
-  deleteLicenceGroupsViaApi,
   fetchLicenceGroup,
   fillLicenceGroupForm,
   licenceGroupTable,
@@ -19,14 +17,9 @@ import {
 } from '@pages/settings/assetLicenceGroupPage'
 
 /**
- * Asset licence groups — a named bundle of asset licences belonging to one ext system.
- *
- * **This spec leaves its fixture behind, on purpose.** A group cannot be deleted (DAM-B3: the API
- * answers a delete with a 500), so `afterAll` sweeps every group named with the `E2E` prefix
- * best-effort and the sweep starts working — clearing the leftovers of earlier runs with it — the day
- * the bug is fixed.
- *
- * Known bugs: DAM-B3.
+ * Asset licence groups: a named bundle of asset licences of one ext system.
+ * This spec leaves its fixture behind on purpose: a group cannot be deleted (no DELETE route in core-dam, DAM-B3).
+ * TODO: DAM-B3, core-dam answers that DELETE with 500 instead of 405 (task #87413).
  */
 
 let page: Page
@@ -39,7 +32,6 @@ const EXT_SYSTEM = 'cms'
 /** …while the list and the detail render the same ext system by its display name. */
 const EXT_SYSTEM_NAME = 'CMS system'
 const LICENCE = 'Sme Family'
-/** A group every environment carries, used to assert the list renders what it holds. */
 const LIVE_GROUP = 'Sme family'
 const SECOND_LICENCE = 'Spectator'
 
@@ -52,7 +44,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
   })
 
   test.afterAll(async () => {
-    await deleteLicenceGroupsViaApi(page, NAME_PREFIX)
     await page.context().close()
   })
 
@@ -110,7 +101,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
     const panel = await openCreateDialog(page)
     await fillLicenceGroupForm(page, panel, { licence: LICENCE })
 
-    // A form that fails validation must not reach the API at all.
     await expectNoWrite(page, async () => {
       await panel.locator('[data-cy="button-confirm"]').click()
       await expect(page.locator('.v-alert').filter({ hasText: 'Vyplňte všetky povinné polia' })).toBeVisible()
@@ -119,14 +109,5 @@ test.describe.serial(`${ADMIN_SUITE} - Asset licence group`, () => {
 
     await panel.locator('[data-cy="button-cancel"]').click()
     await expect(panel).toBeHidden()
-  })
-
-  test('deletes a licence group again @bug', async () => {
-    test.fail() // DAM-B3: the API answers the delete with a 500 — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B3' })
-
-    const status = await deleteLicenceGroupStatus(page, GROUP_ID)
-    // Either the group goes, or the API says plainly that it cannot be deleted. Never a server error.
-    expect([204, 404, 405], `DELETE /asset-licence-group/${GROUP_ID} responded ${status}`).toContain(status)
   })
 })

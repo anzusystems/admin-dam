@@ -3,7 +3,6 @@ import { ALERT_UPDATE } from '@pages/shared/constants'
 import { alertMessage, cardLoad, detailId, filterBy } from '@pages/shared/admin'
 import { openSettingsSection, rowWithCell, visibleCy } from '@pages/shared/crud'
 
-/** Find an ext system by its slug in the list, open its detail and return its id. */
 export async function openExtSystemBySlug(page: Page, slug: string): Promise<string> {
   await openSettingsSection(page, 'ext-system-settings', 'ext-systems', 'Externé systémy')
   await filterBy(page, 'Slug', slug)
@@ -12,7 +11,6 @@ export async function openExtSystemBySlug(page: Page, slug: string): Promise<str
   return detailId(page)
 }
 
-/** Edit the ext system shown on the current detail: set its name and save. */
 export async function renameExtSystem(page: Page, name: string): Promise<void> {
   await visibleCy(page, 'button-edit').click()
   await expect(page).toHaveURL(/\/edit$/)

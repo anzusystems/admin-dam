@@ -1,3 +1,5 @@
+import { ref } from 'vue'
+
 export const AssetDetailTab = {
   Info: 'meta',
   ROI: 'roi',

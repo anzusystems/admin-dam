@@ -11,11 +11,6 @@ import {
   updateVoiceFamily,
 } from '@pages/settings/voiceFamilyPage'
 
-/**
- * Voice families — the TTS voices an ext system narrates with, and the thing a narration request
- * points at. They are fully editable records, unlike the requests themselves.
- */
-
 let page: Page
 let VOICE_FAMILY_ID = ''
 

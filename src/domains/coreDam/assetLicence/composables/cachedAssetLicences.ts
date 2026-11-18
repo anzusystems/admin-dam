@@ -1,38 +1,28 @@
-import { fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
-import { damClient } from '@/shared/apiClients/damClient'
-import type {
-  DamAssetLicenceCached,
-  DamAssetLicenceExtended,
-} from '@/domains/coreDam/assetLicence/types/AssetLicence'
+import type { DamAssetLicence, DamAssetLicenceCached, IntegerId } from '@anzusystems/common-admin'
+import { defineCached, fetchDamAssetLicenceListByIds } from '@anzusystems/common-admin'
 
-const mapFullToMinimal = (assetLicence: DamAssetLicenceExtended): DamAssetLicenceCached => ({
+import { damClient } from '@/shared/apiClients/damClient'
+
+const mapFullToMinimal = (assetLicence: DamAssetLicence): DamAssetLicenceCached => ({
   id: assetLicence.id,
   name: assetLicence.name,
   badge: assetLicence.badge,
 })
 
-const mapIdToMinimal = (id: IntegerId): DamAssetLicenceCached => {
-  return { id: id, name: '', badge: '' }
-}
+const mapIdToMinimal = (id: IntegerId): DamAssetLicenceCached => ({ id: id, name: '', badge: '' })
 
 const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   IntegerId,
-  DamAssetLicenceExtended,
+  DamAssetLicence,
   DamAssetLicenceCached
->(
-  mapFullToMinimal,
-  mapIdToMinimal,
-  (ids: IntegerId[]) => fetchDamAssetLicenceListByIds(damClient, ids) as Promise<DamAssetLicenceExtended[]>
-)
+>(mapFullToMinimal, mapIdToMinimal, (ids: IntegerId[]) => fetchDamAssetLicenceListByIds(damClient, ids))
 
-export const useCachedAssetLicences = () => {
-  return {
-    addManualToCachedAssetLicences: addManual,
-    addToCachedAssetLicences: add,
-    fetchCachedAssetLicences: fetch,
-    cachedAssetLicences: cache,
-    hasCachedAssetLicence: has,
-    getCachedAssetLicence: get,
-    isLoadedCachedAssetLicence: isLoaded,
-  }
-}
+export const useCachedAssetLicences = () => ({
+  addManualToCachedAssetLicences: addManual,
+  addToCachedAssetLicences: add,
+  fetchCachedAssetLicences: fetch,
+  cachedAssetLicences: cache,
+  hasCachedAssetLicence: has,
+  getCachedAssetLicence: get,
+  isLoadedCachedAssetLicence: isLoaded,
+})

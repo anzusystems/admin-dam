@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import KeywordEditForm from '@/domains/coreDam/keyword/components/KeywordEditForm.vue'
+import { useKeywordEditActions } from '@/domains/coreDam/keyword/composables/keywordActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,22 +22,19 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
-    {
-      title: keyword.value.name || t('breadcrumb.coreDam.keyword.edit'),
-      routeName: '/(coreDam)/keywords/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.keyword.list'), routeName: '/(coreDam)/keywords' },
+  {
+    title: keyword.value.name || t('breadcrumb.coreDam.keyword.edit'),
+    routeName: '/(coreDam)/keywords/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/keywords',
+  skipRouteNames: ['/(coreDam)/keywords/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -44,7 +51,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/keywords'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/keywords'"
+        :skip-route-names="['/(coreDam)/keywords/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

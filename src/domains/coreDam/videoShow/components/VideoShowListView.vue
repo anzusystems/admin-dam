@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import VideoShowCreateButton from '@/domains/coreDam/videoShow/components/VideoShowCreateButton.vue'
 import VideoShowDatatable from '@/domains/coreDam/videoShow/components/VideoShowDatatable.vue'
 import { useVideoShowListActions } from '@/domains/coreDam/videoShow/composables/videoShowActions'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = useVideoShowListActions()
 
@@ -16,9 +19,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.videoShow.list'), routeName: '/(coreDam)/video-shows' },
+])
 </script>
 
 <template>

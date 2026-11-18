@@ -10,7 +10,6 @@ export interface PodcastEpisodeData {
   episodeNumber: string
 }
 
-/** Id of the record created by a POST to `/<resource>`. */
 async function createdId(page: Page, resource: string, action: () => Promise<void>): Promise<string> {
   const created = page.waitForResponse(
     (response: Response) => response.request().method() === 'POST' && response.url() === `${CORE_DAM_API}/${resource}`
@@ -21,7 +20,6 @@ async function createdId(page: Page, resource: string, action: () => Promise<voi
   return String((await response.json()).id)
 }
 
-/** Pick an option of the combobox inside a dialog — the first one when `option` is omitted. */
 async function pickFromCombobox(page: Page, dataCy: string, option?: string): Promise<string> {
   await page.locator(`.v-overlay--active [data-cy="${dataCy}"]`).click()
   const options = page.getByRole('option')
@@ -32,10 +30,6 @@ async function pickFromCombobox(page: Page, dataCy: string, option?: string): Pr
   return name
 }
 
-/**
- * From the podcast tab of an audio asset, add the asset to a new episode of the first podcast offered.
- * Returns the created episode id.
- */
 export async function addAssetToNewPodcastEpisode(page: Page, data: PodcastEpisodeData): Promise<string> {
   await visibleCy(page, 'button-podcast').click()
   await visibleCy(page, 'button-add-new-podcast-episode').click()
@@ -54,13 +48,11 @@ export async function addAssetToNewPodcastEpisode(page: Page, data: PodcastEpiso
   return id
 }
 
-/** The podcast tab lists the episode with `title`. */
 export async function expectPodcastEpisodeListed(page: Page, title: string): Promise<void> {
   await visibleCy(page, 'button-podcast').click()
   await expect(page.getByText(title, { exact: true })).toBeVisible()
 }
 
-/** Remove the asset's only podcast episode from the podcast tab, checking the confirmation dialog buttons. */
 export async function deletePodcastEpisodeFromTab(page: Page): Promise<void> {
   await visibleCy(page, 'button-podcast').click()
   await visibleCy(page, 'button-delete').click()
@@ -72,15 +64,10 @@ export async function deletePodcastEpisodeFromTab(page: Page): Promise<void> {
   await expectNothingInTab(page)
 }
 
-/** The active sidebar tab shows the empty state. */
 export async function expectNothingInTab(page: Page): Promise<void> {
   await expect(page.getByText('Nie je čo zobraziť').filter({ visible: true })).toBeVisible()
 }
 
-/**
- * From the video show tab of a video asset, add the asset to a new episode of the video show `videoShowTitle`.
- * Returns the created episode id.
- */
 export async function addAssetToNewVideoShowEpisode(
   page: Page,
   videoShowTitle: string,
@@ -100,7 +87,6 @@ export async function addAssetToNewVideoShowEpisode(
   return id
 }
 
-/** The video show tab lists the episode with `title`. */
 export async function expectVideoShowEpisodeListed(page: Page, title: string): Promise<void> {
   await visibleCy(page, 'button-video-show').click()
   await expect(page.getByText(title, { exact: true })).toBeVisible()

@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { ACreateDialog, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY, useCreateVideoShow } from '@/domains/coreDam/videoShow/api/videoShowApi'
+import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
 import { useVideoShowFactory } from '@/domains/coreDam/videoShow/factory/VideoShowFactory'
 import type { VideoShow } from '@/domains/coreDam/videoShow/types/VideoShow'
-import { useVideoShowValidation } from '@/domains/coreDam/videoShow/composables/videoShowValidation'
-import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -21,9 +24,7 @@ withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess', data: VideoShow): void
-}>()
+const emit = defineEmits<{ onSuccess: [data: VideoShow] }>()
 
 const { currentAssetLicenceId, uploadAllowed } = useCurrentAssetLicence()
 
@@ -34,15 +35,13 @@ const dialog = ref(false)
 const { v$ } = useVideoShowValidation(videoShow)
 const { t } = useI18n()
 
-const { executeRequest: createVideoShow } = useCreateVideoShow()
+const { execute: createVideoShow } = useCreateVideoShow()
 
 const onOpen = () => {
   videoShow.value = createDefault(currentAssetLicenceId.value)
 }
 
-const create = async () => {
-  return await createVideoShow({ object: videoShow.value })
-}
+const create = async () => await createVideoShow({ body: videoShow.value })
 </script>
 
 <template>
@@ -55,9 +54,9 @@ const create = async () => {
     :button-class="buttonClass"
     :data-cy="dataCy"
     :max-width="500"
-    @on-open="onOpen"
-    @on-success="emit('onSuccess', $event)"
-    @on-close="dialog = false"
+    @open="onOpen"
+    @success="emit('onSuccess', $event)"
+    @close="dialog = false"
   >
     <template #title>
       {{ t('coreDam.videoShow.meta.create') }}

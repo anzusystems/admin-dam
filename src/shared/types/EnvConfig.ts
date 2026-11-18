@@ -2,12 +2,10 @@ export interface EnvConfig {
   adminSwitcherConfigUrl: string
   appEnvironment: string
   appVersion: string
-  apiLogError: {
-    enabled: boolean
-    apiUrl: string
-  }
+  appLabel: string
   logoutCoreDamUrl: string
-  uploadStatusFallback: boolean
+  /** @deprecated The poll of the upload queue always runs; the value is not read. */
+  uploadStatusFallback?: boolean
   cookies: {
     refreshTokenExistsName: string
     jwtPayloadName: string
@@ -15,15 +13,22 @@ export interface EnvConfig {
   dam: {
     apiUrl: string
     apiTimeout: number
-    imageUrl: string
     adminUrl: string
     authorCleanPhraseTestSample: string
   }
   notification: {
-    enabled: boolean
+    /** On for `true` or the string `true` in any case, trimmed. Only with a non-empty address. */
+    enabled: boolean | string
     webSocketUrl: string
   }
   sentry: {
     dsn: string
   }
+}
+
+/**
+ * `config.json` as deployed. A deployment without the notification service may omit its block or some of its fields.
+ */
+export type DeployedEnvConfig = Omit<EnvConfig, 'notification'> & {
+  notification?: Partial<EnvConfig['notification']>
 }

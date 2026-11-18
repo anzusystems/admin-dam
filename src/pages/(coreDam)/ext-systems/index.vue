@@ -5,7 +5,7 @@ import { ACL } from '@/domains/system/auth/auth'
 definePage({
   meta: {
     requiresAuth: true,
-    requiredPermissions: [ACL.DAM_EXT_SYSTEM_READ],
+    requiredPermissions: [ACL.DAM_EXT_SYSTEM_UI, ACL.DAM_EXT_SYSTEM_LIST],
     layout: 'AppLayoutDrawer',
     breadcrumbT: 'breadcrumb.coreDam.extSystem.list',
   },

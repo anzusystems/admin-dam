@@ -3,6 +3,7 @@ import PodcastEpisodeDetailView from '@/domains/coreDam/podcastEpisode/component
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/podcasts/:id([0-9a-f-]{36})/episodes/:episodeId([0-9a-f-]{36})',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_PODCAST_EPISODE_READ],

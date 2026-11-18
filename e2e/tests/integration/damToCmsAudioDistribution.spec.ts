@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
-import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
+import { ADMIN_SUITE, IS_LOCAL, NO_JOB_RUNNER_LOCALLY, RAND_NUM } from '@pages/shared/constants'
 import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { uploadAndDescribe } from '@pages/shared/upload'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
@@ -9,6 +9,8 @@ import { addAssetToNewEpisode } from '@pages/settings/podcastSyncPage'
 import { switchMainFileToSlot } from '@pages/assets/assetSlotsPage'
 import {
   deleteAssetFromDetail,
+  dropLeftoverManualEpisodes,
+  dropReimportedTwins,
   newestImportedEpisode,
   podcastIdByTitle,
   runFullPodcastSync,
@@ -45,6 +47,9 @@ test.describe.serial(
   `${ADMIN_SUITE} - DAM to CMS audio distribution`,
   { tag: ['@integration', '@destructive'] },
   () => {
+    // The re-import is a podcast synchronization job.
+    test.skip(IS_LOCAL, NO_JOB_RUNNER_LOCALLY)
+
     test.beforeAll(async ({ browser }) => {
       const ctx = await browser.newContext()
       page = await ctx.newPage()
@@ -52,8 +57,11 @@ test.describe.serial(
     })
 
     test.afterAll(async () => {
-      // The article embeds the asset, so it goes first.
+      // The article embeds the asset and the episode holds it, so both go first.
       await deleteCmsArticlesViaApi(page, ARTICLE_TITLE)
+      if (PODCAST_ID && episode) {
+        await dropLeftoverManualEpisodes(page, PODCAST_ID, episode.title, assetIds).catch(() => {})
+      }
       await cleanupAssets(page, assetIds)
       await page.context().close()
     })
@@ -75,7 +83,6 @@ test.describe.serial(
       assetIds.push(await uploadAndDescribe(page, uniqueFixtureCopy('audio/sample.mp3'), episode.title))
       await waitForAssetProcessed(page, assetIds[0])
       await addAssetToNewEpisode(page, assetIds[0], PODCAST, episode.title)
-      // With the free slot empty, the episode cannot be played on the web until the synchronizer fills it.
       await switchMainFileToSlot(page, 'premium')
     })
 
@@ -90,6 +97,7 @@ test.describe.serial(
     })
 
     test('synchronizes the podcast', async () => {
+      await dropReimportedTwins(page, PODCAST_ID, episode.title, assetIds[0])
       await runFullPodcastSync(page, PODCAST_ID)
     })
 

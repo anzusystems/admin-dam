@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
-import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
 import { ADialogToolbar } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetSlotsStore } from '@/domains/coreDam/asset/store/assetSlotsStore'
+import type { AssetSlot } from '@/domains/coreDam/asset/types/AssetSlot'
 
 const props = withDefaults(
   defineProps<{
@@ -13,11 +17,11 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'switchSlot', targetName: string): void
-}>()
+const emit = defineEmits<{ switchSlot: [targetName: string] }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 
 const dialog = ref(false)
 const targetSlot = ref<string | null>(null)
@@ -53,6 +57,7 @@ const onSwitch = () => {
   <VListItem
     :title="t('coreDam.asset.slots.actions.switchSlots')"
     data-cy="button-slot-switch"
+    :disabled="assetDetailStore.isDeleting"
     @click.stop="openDialog"
   />
   <VDialog
@@ -60,27 +65,23 @@ const onSwitch = () => {
     :width="600"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.asset.slots.actions.switchSlots') }}
       </ADialogToolbar>
       <VCardText>
         <div class="mb-1">
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.name') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.name') }}:</div>
           {{ item?.slotName }}
         </div>
         <div class="mb-1">
-          <div class="font-weight-bold">
-            {{ t('coreDam.asset.slots.file') }}:
-          </div>
+          <div class="font-weight-bold">{{ t('coreDam.asset.slots.file') }}:</div>
           {{ fileTitle }}
         </div>
         <div
           v-if="targetOptions.length === 0"
           class="my-2 text-warning"
         >
-          {{ t('coreDam.asset.slots.switch.no') }}
+          {{ t('coreDam.asset.slots.switch.noTargetSlots') }}
         </div>
         <div
           v-else

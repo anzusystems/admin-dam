@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import LinkDialog from '@/domains/coreDam/shared/components/anzutap/marks/link/components/LinkDialog.vue'
 import type { Editor } from '@tiptap/core'
+
+import LinkDialog from '@/domains/coreDam/shared/components/anzutap/marks/link/components/LinkDialog.vue'
 
 withDefaults(
   defineProps<{

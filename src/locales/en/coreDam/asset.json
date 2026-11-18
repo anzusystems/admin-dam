@@ -52,19 +52,8 @@
   "meta": {
     "createEmpty": "Create empty asset"
   },
-  "metaIcons": {
-    "low": "Low quality",
-    "slots": "Slots",
-    "rss": "RSS",
-    "tts": "Synthesized (TTS)",
-    "fullHd": "FullHD",
-    "2k": "2K",
-    "qhd": "QHD",
-    "4k": "4K",
-    "8k": "8K",
-    "autoDeleteAt": "Auto delete {date}"
-  },
   "filterTitle": "Filter",
+  "filterIdIgnoresOthers": "With an Id filled in, the other filters are not applied.",
   "noItemsFound": "No matching assets found",
   "sibling": {
     "title": "Sibling",
@@ -82,13 +71,17 @@
     "withFile": "With File",
     "deleting": "Deleting"
   },
-  "assetFileFailReason": {
-    "none": "None",
-    "unknown": "Unknown",
-    "invalidChecksum": "Invalid checksum",
-    "invalidMimeType": "Invalid mime type",
-    "downloadFailed": "Download failed",
-    "invalidSize": "Invalid size"
+  "color": {
+    "red": "Red",
+    "yellow": "Yellow",
+    "blue": "Blue",
+    "orange": "Orange",
+    "green": "Green",
+    "purple": "Purple",
+    "white": "White",
+    "black": "Black",
+    "pink": "Pink",
+    "brown": "Brown"
   },
   "imageOrientation": {
     "landscape": "landscape",
@@ -125,6 +118,7 @@
     "next": "Next asset",
     "refresh": "Reload list"
   },
+  "newTabBlocked": "The browser did not open a new tab. Allow pop-up windows for this site and try again.",
   "detail": {
     "incorrectId": "Incorrect asset ID or rights",
     "licenceMismatch": "Active licence and asset licence mismatch",
@@ -134,6 +128,10 @@
       "hide": "Show more metadata"
     },
     "noAssetSelected": "No asset selected",
+    "fileStillProcessing": "The file is still being processed. You can save once it is processed; then open the asset again.",
+    "fileFailedOpenAgain": "Processing of the file failed. You can save after opening the asset again.",
+    "fileProcessedOpenAgain": "The file is processed. Saving becomes possible after the detail is opened again.",
+    "deletedMeanwhile": "The asset has been deleted meanwhile.",
     "exif": {
       "title": "Main file EXIF ({count})"
     },
@@ -191,6 +189,7 @@
       "title": "Previews",
       "description": "Previews are intended for the main image in the article, article lists, titles, and sections. In the body of the article, the format is displayed without cropping.",
       "refresh": "Refresh previews",
+      "slotWithoutImage": "The slot has no image.",
       "rotate": {
         "rotateMainFileImage": "Rotate image (main file)",
         "rotateClockwise": "Rotate clockwise",
@@ -215,6 +214,7 @@
   },
   "selected": {
     "selectedFiles": "Selected files",
+    "remove": "Remove from selection",
     "edit": "Edit",
     "clear": "Clear",
     "more": "View more",
@@ -230,27 +230,19 @@
   },
   "massOperations": {
     "title": "Mass operations",
-    "description": "Bulk edit of all content data or selected fields.",
-    "fillOneEmpty": "Fill empty",
-    "fillAllEmpty": "Fill all empty",
-    "replaceOne": "Replace in all assets",
-    "replaceAll": "Replace all",
-    "clearForm": "Clear form",
-    "general": "General"
+    "waitingForMetadata": "Loading the metadata of the selected files. Mass operations will be available then."
   },
   "externalProvider": {
     "importToDam": "Import to ADAM",
     "viewDetail": "View detail",
     "id": "ID",
-    "title": "Title"
+    "title": "Title",
+    "searchTermRequired": "Type a search term"
   },
   "queueItem": {
     "edit": "Edit more",
     "duplicate": "Duplicate",
-    "viewOriginal": "View original",
-    "displayTitle": "Original name",
-    "error": "Error",
-    "copyAssetId": "Copy Asset ID"
+    "viewOriginal": "View original"
   },
   "assetFilePublicLink": {
     "model": {
@@ -288,6 +280,7 @@
     "remove": {
       "descriptionBothOptions": "Asset file is used in several slots. Do you want to unset file only from selected slot or remove file permanently?",
       "descriptionOnlyRemove": "Do you want to permanently remove file from system?",
+      "descriptionOnlyUnset": "Asset file is used in several slots. Do you want to unset file from selected slot?",
       "removeFile": "Remove asset file permanently",
       "unsetSlot": "Unset asset slot only"
     },

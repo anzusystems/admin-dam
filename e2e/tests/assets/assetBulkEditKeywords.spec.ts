@@ -28,15 +28,12 @@ import {
 } from '@pages/assets/assetBulkEditPage'
 
 /**
- * Mass operations on the two chip fields. They are the reason the feature exists — tagging a batch of
- * freshly uploaded photos with one keyword and one author — and they go through autocompletes and their
- * own store mutations rather than the plain text path the sibling spec covers.
+ * Mass operations on the two chip fields: tagging a batch of uploaded photos with one keyword and one author.
+ * They go through autocompletes and their own store mutations, not the plain text path the sibling spec covers.
  */
 
 let page: Page
-/** The three uploaded assets, in upload order. */
 const assetIds: string[] = []
-/** Keywords and authors created along the way, deleted in `afterAll`. */
 const keywordIds: string[] = []
 const authorIds: string[] = []
 
@@ -45,7 +42,6 @@ const SEEDED = `BulkSeeded${RAND_NUM}`
 const FILLED = `BulkFilledKw${RAND_NUM}`
 const REPLACED = `BulkReplacedKw${RAND_NUM}`
 
-/** Keyword and author ids of each asset as the API has them, in upload order. */
 async function savedChips(): Promise<Array<{ keywords: string[]; authors: string[] }>> {
   const chips = []
   for (const id of assetIds) {
@@ -55,13 +51,12 @@ async function savedChips(): Promise<Array<{ keywords: string[]; authors: string
   return chips
 }
 
-/** Select all three uploaded assets and open the mass operations form on them. */
 async function selectUploadedAssets(): Promise<void> {
   await page.goto('/assets')
   await waitForAssetList(page)
   for (const index of [0, 1, 2]) await reloadUntilVisible(page, tileSelector(TITLE(index)))
 
-  // By caption, not by position: a batch shares a `createdAt` second and comes back in no fixed order.
+  // Select by caption, not position: a batch shares a `createdAt` second and comes back in no fixed order.
   for (const index of [0, 1, 2]) await selectTile(page, await tileWithCaption(page, TITLE(index)))
   await expectSelectedCount(page, 3)
   await openSelectionEditor(page, 3)
@@ -89,7 +84,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit keywords and authors`, ()
     await waitForUpload(page, ALERT_UPLOAD, 180000)
     await finishUpload(page)
 
-    // A title per asset, so the tiles can be told apart; only the last one gets a keyword and an author.
     for (const [index, id] of assetIds.entries()) {
       await openAssetDetail(page, id)
       await fillMetadataText(page, 'title', TITLE(index))
@@ -118,7 +112,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset bulk edit keywords and authors`, ()
     expect(await savedChips()).toEqual([
       { keywords: [keywordIds[1]], authors: [authorIds[1]] },
       { keywords: [keywordIds[1]], authors: [authorIds[1]] },
-      // Already tagged, so the fill left it alone.
       { keywords: [keywordIds[0]], authors: [authorIds[0]] },
     ])
   })

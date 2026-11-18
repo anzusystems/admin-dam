@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { ABooleanValue, ACopyText, ADatetime, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
-import PodcastModeChip from '@/domains/coreDam/podcast/components/PodcastModeChip.vue'
+import { ABooleanValue, ACopyText, ADamAssetImage, ADatetime, ARow } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
-import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
+import PodcastModeChip from '@/domains/coreDam/podcast/components/PodcastModeChip.vue'
+import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { podcast } = storeToRefs(usePodcastOneStore())
 
 const { t } = useI18n()
 
-const imageSrc = computed(() => {
-  return podcast.value.links ? podcast.value.links.image_list.url : undefined
-})
-const altImgSrc = computed(() => {
-  return podcast.value.altLinks ? podcast.value.altLinks.image_list.url : undefined
-})
+const imageSrc = computed(() => (podcast.value.links ? podcast.value.links.image_list.url : undefined))
+const altImgSrc = computed(() => (podcast.value.altLinks ? podcast.value.altLinks.image_list.url : undefined))
 </script>
 
 <template>
@@ -71,7 +71,7 @@ const altImgSrc = computed(() => {
         v-if="imageSrc"
         :title="t('coreDam.podcast.model.imagePreview')"
       >
-        <AssetImage
+        <ADamAssetImage
           :src="imageSrc"
           use-component
         />
@@ -80,12 +80,12 @@ const altImgSrc = computed(() => {
         v-if="altImgSrc"
         :title="t('coreDam.podcast.model.altImage')"
       >
-        <AssetImage
+        <ADamAssetImage
           :src="altImgSrc"
           use-component
         />
       </ARow>
-      <AUserAndTimeTrackingFields :data="podcast" />
+      <DamTrackingFields :data="podcast" />
     </VCol>
   </VRow>
 </template>

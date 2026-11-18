@@ -6,8 +6,9 @@ import type {
   IntegerIdNullable,
   ResourceNameSystemAware,
 } from '@anzusystems/common-admin'
-import type { AuthorCleanPhraseTypeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
+
 import type { AuthorCleanPhraseModeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseMode'
+import type { AuthorCleanPhraseTypeType } from '@/domains/coreDam/authorCleanPhrase/valueObject/AuthorCleanPhraseType'
 
 export interface AuthorCleanPhrase extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId

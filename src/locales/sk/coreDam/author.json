@@ -8,9 +8,7 @@
       "reviewed": "Skontrolovaný"
     },
     "currentAuthors": "Nadradení autori",
-    "childAuthors": "Podradení autori",
-    "createdBy": "Vytvoril",
-    "modifiedBy": "Upravil"
+    "childAuthors": "Podradení autori"
   },
   "filter": {
     "id": "ID",
@@ -24,12 +22,6 @@
     "internal": "Interný",
     "external": "Externý",
     "agency": "Agentúra"
-  },
-  "meta": {
-    "create": "Vytvorenie autora"
-  },
-  "button": {
-    "add": "Pridať nového autora"
   },
   "conflicts": "Konflikt autorov"
 }

@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AuthorEditForm from '@/domains/coreDam/author/components/AuthorEditForm.vue'
+import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,22 +22,19 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
-    {
-      title: author.value.name || t('breadcrumb.coreDam.author.edit'),
-      routeName: '/(coreDam)/authors/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+  {
+    title: author.value.name || t('breadcrumb.coreDam.author.edit'),
+    routeName: '/(coreDam)/authors/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/authors',
+  skipRouteNames: ['/(coreDam)/authors/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -44,7 +51,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/authors'"
+        :skip-route-names="['/(coreDam)/authors/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

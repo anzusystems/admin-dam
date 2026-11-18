@@ -1,35 +1,35 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import {
   ABooleanValue,
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-  type DatatableOrderingOption,
-  type DatatableOrderingOptions,
-  SortOrder,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
-  type Pagination,
+  SortOrder,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import type { Ref } from 'vue'
+} from '@anzusystems/common-admin'
+import type { DatatableOrderingOption, DatatableOrderingOptions, Pagination } from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
-import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+import type { Ref } from 'vue'
+import { onMounted, provide } from 'vue'
+import { useRouter } from 'vue-router'
+
+import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import PodcastFilter from '@/domains/coreDam/podcast/components/PodcastFilter.vue'
-import { usePodcastListFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
+import { usePodcastListActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+import { usePodcastListFilter } from '@/domains/coreDam/podcast/filter/PodcastFilter'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
+import { ACL } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = Podcast
 
@@ -135,7 +135,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.attributes.lastImportStatus="{ item }: { item: DatatableItem }">
@@ -169,14 +168,12 @@ defineExpose({
             <ATableEditButton
               :record-id="item.id"
               :route-name="'/(coreDam)/podcasts/[id]/edit'"
+              :acl="ACL.DAM_PODCAST_UPDATE"
             />
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

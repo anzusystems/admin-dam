@@ -1,10 +1,4 @@
 <script lang="ts" setup>
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
-import { useDistributionCategoryCreateActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
-import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
-import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
   ADialogToolbar,
@@ -12,7 +6,17 @@ import {
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
+  useAlerts,
 } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
+import { ENTITY } from '@/domains/coreDam/distributionCategory/api/distributionCategoryApi'
+import { useDistributionCategoryCreateActions } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryActions'
+import { useDistributionCategoryValidation } from '@/domains/coreDam/distributionCategory/composables/distributionCategoryValidation'
+import DistributionCategorySelectOptionSelect from '@/domains/coreDam/distributionCategorySelect/components/DistributionCategorySelectOptionSelect.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
@@ -27,9 +31,7 @@ const props = withDefaults(
     dataCy: '',
   }
 )
-const emit = defineEmits<{
-  (e: 'onCreateSuccess', data: DamAssetTypeType): void
-}>()
+const emit = defineEmits<{ onCreateSuccess: [data: DamAssetTypeType] }>()
 
 const dialog = ref(false)
 
@@ -99,7 +101,7 @@ const { assetTypeOptions } = useAssetType()
       v-if="dialog"
       data-cy="create-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('coreDam.distributionCategory.createButton') }}
       </ADialogToolbar>
       <VCardText

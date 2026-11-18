@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/assetListView/api/assetListViewApi'
 import { ASystemEntityScope } from '@anzusystems/common-admin'
-import { useAssetListViewEditActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
+
+import { ENTITY } from '@/domains/coreDam/assetListView/api/assetListViewApi'
 import AssetListViewFormFields from '@/domains/coreDam/assetListView/components/AssetListViewFormFields.vue'
+import { useAssetListViewEditActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetListView } = useAssetListViewEditActions()
 </script>
@@ -19,6 +21,7 @@ const { assetListView } = useAssetListViewEditActions()
         md="8"
       >
         <AssetListViewFormFields v-model="assetListView" />
+        <DamTrackingFields :data="assetListView" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page, type Request } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, ALERT_SYSTEM_ERROR } from '@pages/shared/constants'
 import { cleanupAssets, getAsset, waitForAssetProcessed } from '@pages/shared/api'
@@ -18,28 +18,24 @@ import {
 } from '@pages/assets/externalProviderPage'
 
 /**
- * Importing photos from Unsplash into the current licence.
- *
- * **The provider's search is broken (DAM-B1)** — it answers 500 on every environment and for every
- * query, which is what the second test documents. Everything reachable only through a result tile
- * would be untestable if the spec stopped there, so the import tests stand the search's response in
- * locally. That stub is the *only* thing faked: its payload is fetched live from the provider's
- * working single-photo endpoint, and the import it feeds really imports those photos into DAM.
+ * The provider's search is broken (DAM-B1): it answers 500 for every query on every environment. The admin sent the
+ * text as `text` while core-dam reads `term`, so every search reached Unsplash empty (fixed in the admin), and
+ * core-dam also fails on Unsplash's answer to a real query (`UnsplashImageDto::$tags` read before it is set,
+ * Sentry ANZU-CORE-DAM-2YD). The import tests stub only the search response. The payload is fetched live from the
+ * provider's single-photo endpoint, and the import really imports those photos into DAM.
  * Delete `stubProviderSearch` and this note once the search is fixed.
  */
 
 let page: Page
-/** Photos fetched once and reused as the stubbed search results. */
 let photos: ProviderPhoto[] = []
-/** Everything imported into DAM, deleted in `afterAll`. */
 const importedIds: string[] = []
 
 /**
- * Unsplash photo ids that resolved through the provider. They are real, so a photo taken down at
- * Unsplash would make `fetchProviderPhotos` fail on that id — which is the right failure, and is fixed
- * by swapping the id rather than by loosening the test.
+ * Real Unsplash photo ids. If a photo is taken down, `fetchProviderPhotos` fails on that id.
+ * Fix it by swapping the id, not by loosening the test. A photo Unsplash sends without tags fails too, on core-dam's
+ * side (`UnsplashImageDto::$tags`, ANZU-CORE-DAM-2YD): `jFCViYFYcus` did from 2026-11-09 and was swapped.
  */
-const PHOTO_IDS = ['zNN6ubHmruI', 'jFCViYFYcus', 'CQl3Y5bV6FA']
+const PHOTO_IDS = ['zNN6ubHmruI', 'eOpewngf68w', 'CQl3Y5bV6FA']
 
 test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
   test.beforeAll(async ({ browser }) => {
@@ -53,14 +49,23 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     await page.context().close()
   })
 
-  test('opens the Unsplash grid with its search form', async () => {
+  // Unsplash refuses an empty query, so the page asks it nothing until a term is typed.
+  test('opens the Unsplash grid with its search form, and searches nothing before a term is typed', async () => {
+    const searches: string[] = []
+    const onRequest = (request: Request) => {
+      if (request.url().includes('/asset-external-provider/unsplash_cms/search')) searches.push(request.url())
+    }
+    page.on('request', onRequest)
     await openProvider(page)
     expect(page.url()).toContain('/external-providers/unsplash_cms')
     await expect(providerSearchInput(page)).toBeVisible()
+    await expect(page.getByText('Zadajte hľadaný výraz', { exact: true })).toBeVisible()
+    page.off('request', onRequest)
+    expect(searches, 'the page should not search before a term is typed').toEqual([])
   })
 
   test('searches Unsplash and lists the results', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B1: the provider search answers 500 for every query — see KNOWN-BUGS.md
+    test.fail() // TODO: DAM-B1 (task #87413), drop once the provider search stops answering 500 for every query
     test.info().annotations.push({ type: 'bug', description: 'DAM-B1' })
 
     const status = await searchProvider(page, 'forest')
@@ -73,6 +78,7 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     photos = await fetchProviderPhotos(page, PHOTO_IDS)
     await stubProviderSearch(page, photos)
     await openProvider(page)
+    expect(await searchProvider(page, 'forest'), 'the stubbed search').toBe(200)
     await expect(providerTiles(page)).toHaveCount(photos.length)
 
     await activateProviderTile(page, 0)
@@ -80,7 +86,6 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
     importedIds.push(assetId)
     await finishUpload(page)
 
-    // The import is real even though the search was not: DAM fetched the photo and stored it.
     const asset = await waitForAssetProcessed(page, assetId)
     expect(asset.attributes.assetType).toBe('image')
     expect(asset.texts.displayTitle).toBe(photos[0].texts.displayTitle)
@@ -88,6 +93,7 @@ test.describe.serial(`${ADMIN_SUITE} - Unsplash external provider`, () => {
 
   test('imports a ticked selection in one go', async () => {
     await openProvider(page)
+    expect(await searchProvider(page, 'forest'), 'the stubbed search').toBe(200)
     await expect(providerTiles(page)).toHaveCount(photos.length)
 
     // The two photos the single import did not take, so the assertion cannot pass on a leftover.

@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 
-/** Public bucket holding the media files the upload tests use. */
 export const TEST_DATA_BUCKET_URL = 'https://storage.googleapis.com/anzu-e2e-test-data-devel-bel'
 
 export const FIXTURES_DIR = path.resolve(__dirname, '../../fixtures')
@@ -13,7 +12,6 @@ export const AUDIO_TYPES = ['mp3', 'm4a', 'wav'] as const
 export const VIDEO_TYPES = ['mp4', 'mov'] as const
 export const DOCUMENT_TYPES = ['doc', 'pdf', 'xls', 'txt'] as const
 
-/** Every file globalSetup downloads, relative to FIXTURES_DIR. */
 export const FIXTURE_FILES: string[] = [
   ...IMAGE_TYPES.map((type) => `image/sample.${type}`),
   ...AUDIO_TYPES.map((type) => `audio/sample.${type}`),
@@ -25,17 +23,14 @@ export const FIXTURE_FILES: string[] = [
   'image/sampleMeta2.jpg',
 ]
 
-/** Absolute path of a fixture, e.g. `fixture('audio/sample.mp3')`. Absolute paths are returned as they are. */
 export function fixture(file: string): string {
   return path.isAbsolute(file) ? file : path.join(FIXTURES_DIR, file)
 }
 
 /**
- * Write `content` to a file named `name` in a directory of its own, and return the absolute path.
- *
- * For the files no suite uploads on purpose — a type the ext system does not accept, say. Those are
- * built here rather than downloaded with the fixtures, because the bucket holds the media the suite
- * uploads *successfully* and a file that exists only to be refused has no business there.
+ * Write `content` to a file named `name` in its own directory and return the absolute path.
+ * For files no suite uploads on purpose, such as a type the ext system does not accept. They are
+ * not downloaded with the fixtures because the bucket holds only media that uploads successfully.
  */
 export function tempFile(name: string, content: Buffer | string): string {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'adam-e2e-'))
@@ -44,7 +39,6 @@ export function tempFile(name: string, content: Buffer | string): string {
   return target
 }
 
-/** Remove a file made by `tempFile`, directory and all. Best-effort — cleanup only. */
 export function removeTempFile(file: string): void {
   try {
     fs.rmSync(path.dirname(file), { recursive: true, force: true })
@@ -54,13 +48,12 @@ export function removeTempFile(file: string): void {
 }
 
 /**
- * Copy a fixture under its own name with a random tail appended, so DAM stores it as a new file instead of a
- * duplicate of the samples other suites upload (a duplicate main file leaves the asset a draft). The tail is
- * printable text: media decoders and document readers skip it, and a text file stays `text/plain` - raw random
- * bytes would turn it into `application/octet-stream`. Returns the absolute path of the copy.
- *
- * `name` renames the copy. The asset list captions a tile with the original file name until the asset
- * has a title, so a unique name is what lets a test find an untitled upload among the tiles.
+ * Copy a fixture under its own name with a random tail appended, so DAM stores it as a new file and
+ * not a duplicate of the samples other suites upload (a duplicate main file leaves the asset a draft).
+ * The tail is printable text: media decoders and document readers skip it, and a text
+ * file stays `text/plain`. Raw random bytes would make it `application/octet-stream`.
+ * `name` renames the copy. The asset list captions a tile with the original file name
+ * until the asset has a title, so a unique name lets a test find an untitled upload.
  */
 export function uniqueFixtureCopy(file: string, name?: string): string {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'adam-e2e-'))

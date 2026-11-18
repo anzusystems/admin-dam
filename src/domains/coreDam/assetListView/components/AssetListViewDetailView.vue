@@ -1,37 +1,46 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import AssetListViewDetail from '@/domains/coreDam/assetListView/components/AssetListViewDetail.vue'
 import {
   useAssetListViewDetailActions,
   useAssetListViewRemoveActions,
 } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
-import AssetListViewDetail from '@/domains/coreDam/assetListView/components/AssetListViewDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, assetListView } = useAssetListViewDetailActions()
 const { removeAssetListView } = useAssetListViewRemoveActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' },
-    {
-      title: assetListView.value.name || t('breadcrumb.coreDam.assetListView.detail'),
-      routeName: '/(coreDam)/asset-list-views/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' },
+  {
+    title: assetListView.value.name || t('breadcrumb.coreDam.assetListView.detail'),
+    routeName: '/(coreDam)/asset-list-views/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/asset-list-views',
+  skipRouteNames: ['/(coreDam)/asset-list-views/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -56,7 +65,10 @@ onBeforeUnmount(() => {
           @delete-record="removeAssetListView(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/asset-list-views'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-list-views'"
+        :skip-route-names="['/(coreDam)/asset-list-views/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

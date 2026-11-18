@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import type { AssetFileImage } from '@anzusystems/common-admin'
-import { ADialogToolbar, AssetFileProcessStatus } from '@anzusystems/common-admin'
+import type { AssetFileImage, DocId, DocIdNullable } from '@anzusystems/common-admin'
+import { ADialogToolbar, AssetFileProcessStatus, isNull } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import { fetchImageFile } from '@/domains/coreDam/asset/api/imageApi'
 import AssetByImageIdLink from '@/domains/coreDam/asset/components/AssetByImageIdLink.vue'
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    modelValue: DocIdNullable
     width?: number
     height?: number
     showActions?: boolean
@@ -18,10 +20,7 @@ const props = withDefaults(
     showActions: false,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocIdNullable): void
-}>()
-
+const modelValue = defineModel<DocIdNullable>({ required: true })
 const { t } = useI18n()
 
 const loading = ref(false)
@@ -37,10 +36,10 @@ const fetchImage = async (id: DocId) => {
 
 const fileIdModel = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
@@ -101,7 +100,7 @@ watch(
   <VImg
     v-else
     :width="width"
-    :height="width"
+    :height="height"
     :src="src"
   >
     <template #placeholder />
@@ -112,7 +111,7 @@ watch(
       <div
         :class="
           'dam-upload-queue__overlay dam-upload-queue__overlay--warning' +
-            ' d-flex align-center justify-center flex-column'
+          ' d-flex align-center justify-center flex-column'
         "
       >
         <VIcon
@@ -125,10 +124,10 @@ watch(
           {{ t('coreDam.asset.queueItem.duplicate') }}
         </div>
         <AssetByImageIdLink
-          v-if="imageFile"
+          v-if="imageFile?.originAssetFile"
           variant="text"
           size="small"
-          :image-id="imageFile.id"
+          :image-id="imageFile.originAssetFile"
         >
           {{ t('coreDam.asset.queueItem.viewOriginal') }}&nbsp;<VIcon icon="mdi-open-in-new" />
         </AssetByImageIdLink>
@@ -161,7 +160,7 @@ watch(
       v-if="dialog"
       data-cy="delete-panel"
     >
-      <ADialogToolbar @on-cancel="onCancel">
+      <ADialogToolbar @cancel="onCancel">
         {{ t('system.imagePreview.actions.selectImage') }}
       </ADialogToolbar>
       <VCardText>

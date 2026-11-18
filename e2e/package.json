@@ -7,27 +7,28 @@
     "test:open": "playwright test --ui --config playwright.config.ts",
     "test:open:win": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8080 --config playwright.config.ts",
     "test:run": "playwright test --config playwright.config.ts",
-    "test:run:local": "ADAM_ENV=local playwright test --config playwright.config.ts",
-    "test:run:devel": "ADAM_ENV=devel playwright test --config playwright.config.ts",
-    "test:run:staging": "ADAM_ENV=staging playwright test --config playwright.config.ts",
-    "oxlint": "oxlint",
-    "oxlint:fix": "oxlint --fix",
-    "lint": "yarn type-check && yarn oxlint && yarn oxfmt:check",
-    "lint:fix": "yarn type-check && yarn oxlint:fix && yarn oxfmt",
-    "oxfmt": "oxfmt .",
-    "oxfmt:check": "oxfmt --check .",
-    "type-check": "tsc -b"
+    "test:run:local": "E2E_ENV=local playwright test --config playwright.config.ts",
+    "test:run:devel": "E2E_ENV=devel playwright test --config playwright.config.ts",
+    "test:run:staging": "E2E_ENV=staging playwright test --config playwright.config.ts",
+    "test:routes": "playwright test --config playwright.routes.config.ts",
+    "lint": "yarn ci",
+    "lint:fix": "yarn lint:oxlint:fix && yarn format",
+    "lint:tsc": "tsc -b",
+    "lint:oxlint": "oxlint . --disable-nested-config",
+    "lint:oxlint:fix": "oxlint . --fix --disable-nested-config",
+    "format": "oxfmt --disable-nested-config pages setup tests playwright.config.ts playwright.routes.config.ts",
+    "format:check": "oxfmt --disable-nested-config pages setup tests playwright.config.ts playwright.routes.config.ts --check",
+    "ci": "yarn lint:tsc && yarn format:check && yarn lint:oxlint"
   },
   "devDependencies": {
-    "@playwright/test": "^1.63.0",
-    "@types/node": "^26.5.1",
-    "dotenv": "^17.4.2",
-    "oxfmt": "^0.67.0",
-    "oxlint": "^1.82.0",
-    "typescript": "^7.0.2"
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^24.19.2",
+    "oxfmt": "^0.79.0",
+    "oxlint": "1.94.0",
+    "typescript": "~7.0.2"
   },
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
-  "packageManager": "yarn@4.18.0"
+  "packageManager": "yarn@4.18.1"
 }

@@ -1,6 +1,16 @@
 <script lang="ts" setup>
-import { AAnzuUserAvatar, COMMON_CONFIG, useDamCachedUsers } from '@anzusystems/common-admin'
-import type { UserMinimal } from '@/domains/coreDam/user/types/User'
+import {
+  AAnzuUserAvatar,
+  COMMON_CONFIG,
+  isNull,
+  isUndefined,
+  useCachedItem,
+  useDamCachedUsers,
+} from '@anzusystems/common-admin'
+import type { IntegerId } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const props = withDefaults(
   defineProps<{
@@ -9,15 +19,14 @@ const props = withDefaults(
   {}
 )
 
+const { t } = useI18n()
 const router = useRouter()
-const cached = shallowRef<undefined | UserMinimal>(undefined)
-const loaded = shallowRef<boolean>(false)
 
 const { getCachedUser } = useDamCachedUsers()
 
-const item = computed(() => {
-  return getCachedUser(props.id)
-})
+// `useCachedItem` also settles on an item the fetch could not resolve.
+// Waiting for `_loaded` alone left the chip spinning forever on a missing or unreadable user.
+const { cached, loaded, unresolved } = useCachedItem(() => getCachedUser(props.id))
 
 const text = computed(() => {
   if (cached.value) {
@@ -30,22 +39,24 @@ const onClick = () => {
   if (!props.id) return
   router.push({ name: '/(coreDam)/users/[id]', params: { id: String(props.id) } })
 }
-
-watch(
-  item,
-  async (newValue) => {
-    if (loaded.value) return
-    if (isUndefined(newValue) || newValue._loaded === false) return
-    cached.value = newValue
-    loaded.value = true
-  },
-  { immediate: true }
-)
 </script>
 
 <template>
   <div class="d-inline-flex">
     <span v-if="isNull(id) || isUndefined(id)">-</span>
+    <!-- No avatar, link or click: there is no user to show or open, only the id. -->
+    <VChip
+      v-else-if="unresolved"
+      size="small"
+    >
+      #{{ id }}
+      <VTooltip
+        activator="parent"
+        location="bottom"
+      >
+        {{ t('common.model.tracking.userUnavailable') }}
+      </VTooltip>
+    </VChip>
     <VChip
       v-else
       class="pl-1"

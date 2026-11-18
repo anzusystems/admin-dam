@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed, watch } from 'vue'
+import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin'
+import type { IntegerIdNullable } from '@anzusystems/common-admin'
+import { computed, provide, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { type IntegerIdNullable } from '@anzusystems/common-admin'
-import { AFormRemoteAutocomplete, FilterInnerConfigKey, FilterInnerDataKey } from '@anzusystems/common-admin/labs'
+
 import { useVoiceFamilySlugSelectActions } from '@/domains/coreDam/voiceFamily/composables/voiceFamilyActions'
 import { useVoiceFamilyFilter } from '@/domains/coreDam/voiceFamily/filter/VoiceFamilyFilter'
 
@@ -42,7 +43,9 @@ const disabledComputed = computed(() => props.disabled || props.extSystemId === 
 </script>
 
 <template>
+  <!-- Keyed by ext system: the autocomplete caches its fetched list and prefetches only once. -->
   <AFormRemoteAutocomplete
+    :key="extSystemId ?? ''"
     v-model="modelValue"
     :label="label ?? t('coreDam.ttsNarrationRequest.model.voiceFamilySlug')"
     :fetch-items="fetchItems"

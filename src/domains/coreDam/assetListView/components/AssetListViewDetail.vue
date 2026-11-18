@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { useI18n } from 'vue-i18n'
+
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import CachedAssetLicenceGroupChip from '@/domains/coreDam/assetLicenceGroup/components/CachedAssetLicenceGroupChip.vue'
 import { useAssetListViewOneStore } from '@/domains/coreDam/assetListView/store/assetListViewStore'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
-import CachedAssetLicenceGroupChip from '@/domains/coreDam/assetLicenceGroup/components/CachedAssetLicenceGroupChip.vue'
-import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 
 const { assetListView } = storeToRefs(useAssetListViewOneStore())
 
@@ -48,7 +52,7 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetListView.model.id')">
         <ACopyText :value="assetListView.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="assetListView" />
+      <DamTrackingFields :data="assetListView" />
     </VCol>
   </VRow>
 </template>
