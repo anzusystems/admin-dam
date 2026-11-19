@@ -44,5 +44,8 @@ const { authorTypeOptions } = useDamAuthorType()
     <template #item.reviewed>
       <AFilterBooleanSelect name="reviewed" />
     </template>
+    <template #item.source>
+      <AFilterBooleanSelect name="source" />
+    </template>
   </AFilterWrapper>
 </template>

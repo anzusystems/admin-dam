@@ -3,18 +3,20 @@ import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusyst
 import { useAuthorDetailActions } from '@/domains/coreDam/author/composables/authorActions'
 import AuthorDetail from '@/domains/coreDam/author/components/AuthorDetail.vue'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { ACL } from '@/domains/system/auth/auth'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 
 const { detailLoading, fetchData, resetStore, author } = useAuthorDetailActions()
+
+const section = computed(() => getAuthorSection(author.value.flags.source))
 
 const { t } = useI18n()
 
 const breadcrumbs = defineBreadcrumbs(
   computed(() => [
-    { title: t('breadcrumb.coreDam.author.list'), routeName: '/(coreDam)/authors' },
+    { title: t(section.value.breadcrumbList), routeName: section.value.routeList },
     {
-      title: author.value.name || t('breadcrumb.coreDam.author.detail'),
-      routeName: '/(coreDam)/authors/[id]',
+      title: author.value.name || t(section.value.breadcrumbDetail),
+      routeName: section.value.routeDetail,
     },
   ])
 )
@@ -38,14 +40,17 @@ onBeforeUnmount(() => {
 <template>
   <ActionbarWrapper :breadcrumbs="breadcrumbs">
     <template #buttons>
-      <Acl :permission="ACL.DAM_AUTHOR_UPDATE">
+      <Acl
+        :key="section.aclUpdate"
+        :permission="section.aclUpdate"
+      >
         <AActionEditButton
           v-if="!detailLoading"
           :record-id="id"
-          :route-name="'/(coreDam)/authors/[id]/edit'"
+          :route-name="section.routeEdit"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/authors'" />
+      <AActionCloseButton :route-name="section.routeList" />
     </template>
   </ActionbarWrapper>
 
