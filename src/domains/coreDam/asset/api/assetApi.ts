@@ -1,6 +1,7 @@
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { damClient } from '@/shared/apiClients/damClient'
+import { isSourceEnabled } from '@/domains/coreDam/author/composables/sourceConfig'
 import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
 import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
@@ -35,6 +36,7 @@ export interface AssetMetadataBulkItem {
   id: DocId
   keywords: DocId[]
   authors: DocId[]
+  sources?: DocId[]
   described: boolean
   customData: AssetCustomData
   mainFileSingleUse: boolean | null
@@ -161,6 +163,7 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
         id: item.assetId,
         keywords: item.keywords,
         authors: item.authors,
+        ...(isSourceEnabled(item.assetType) ? { sources: item.sources } : {}),
         described: true,
         customData: item.customData,
         mainFileSingleUse: item.mainFileSingleUse,
@@ -253,6 +256,7 @@ export const updateAssetMetadata = (
       id: asset.id,
       keywords: asset.keywords,
       authors: asset.authors,
+      ...(isSourceEnabled(asset.attributes.assetType) ? { sources: asset.sources } : {}),
       described: true,
       customData: asset.metadata.customData,
       mainFileSingleUse: mainFileSingleUse,

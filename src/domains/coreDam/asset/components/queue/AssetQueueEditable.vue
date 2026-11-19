@@ -62,6 +62,7 @@ onMounted(() => {
   list.value.forEach((item) => {
     addToCachedKeywords(item.keywords)
     addToCachedAuthors(item.authors)
+    addToCachedAuthors(item.sources)
     // objectGetValues(item.authorSuggestions)
     //   .filter((ids) => ids.length > 1)
     //   .forEach((ids) => ids.filter((id) => addToCachedAuthors(id)))
@@ -85,6 +86,7 @@ onMounted(() => {
             v-model:custom-data="item.customData"
             v-model:keywords="item.keywords"
             v-model:authors="item.authors"
+            v-model:sources="item.sources"
             v-model:main-file-single-use="item.mainFileSingleUse"
             :refresh-disabled="refreshDisabled"
             :item="item"

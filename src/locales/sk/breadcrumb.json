@@ -20,6 +20,11 @@
       "detail": "Autor",
       "edit": "Autor"
     },
+    "source": {
+      "list": "Zdroje",
+      "detail": "Zdroj",
+      "edit": "Zdroj"
+    },
     "distributionCategory": {
       "list": "Kategórie distribúcie",
       "detail": "Kategória",

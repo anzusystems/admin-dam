@@ -1,0 +1,6 @@
+{
+  "button": {
+    "create": "Create source"
+  },
+  "isAuthor": "“{name}” already exists as an author and cannot be used as a source"
+}

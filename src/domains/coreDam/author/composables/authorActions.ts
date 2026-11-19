@@ -11,6 +11,7 @@ import {
 import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
 
@@ -136,7 +137,7 @@ export const useAuthorEditActions = () => {
       await updateAuthor({ urlParams: { id: authorOneStore.author.id }, object: author.value })
       showRecordWas('updated')
       if (!close) return
-      router.push({ name: '/(coreDam)/authors' })
+      router.push({ name: getAuthorSection(author.value.flags.source).routeList })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -165,6 +166,7 @@ export const useAuthorSelectActions = () => {
     name: author.name,
     identifier: author.identifier,
     reviewed: author.flags.reviewed,
+    hiddenInCredit: author.flags.hiddenInCredit,
   })
 
   const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({

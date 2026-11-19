@@ -12,6 +12,9 @@ import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
+import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import type { AssetFile } from '@anzusystems/common-admin'
@@ -26,6 +29,8 @@ import {
   DamAssetTypeDefault,
   dateTimePretty,
   prettyBytes,
+  DamSourcesAuthorsRow,
+  useDamCreditPreview,
 } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
@@ -88,9 +93,20 @@ const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.
 
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
 
+const { sourceEnabled, sourceRequired } = useSourceAssetTypeConfig(assetType.value)
+
 const onAnyMetadataChange = () => {
   metadataTouch()
 }
+
+const { getCachedAuthor } = useCachedAuthors()
+const { currentExtSystemId } = useCurrentExtSystem()
+const credit = useDamCreditPreview(
+  getCachedAuthor,
+  currentExtSystemId,
+  () => asset.value?.sources ?? [],
+  () => asset.value?.authors ?? [],
+)
 </script>
 
 <template>
@@ -136,30 +152,54 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow
-              v-if="authorEnabled"
-              density="compact"
+            <DamSourcesAuthorsRow
+              :source-enabled="sourceEnabled"
+              :author-enabled="authorEnabled"
+              :credit="credit"
               class="my-2"
             >
-              <VCol>
+              <template #sources>
+                <ASystemEntityScope
+                  subject="author"
+                  system="dam"
+                >
+                  <AuthorRemoteAutocompleteWithCached
+                    v-model="asset.sources"
+                    v-model:counterpart="asset.authors"
+                    :label="t('common.damImage.asset.model.sources')"
+                    data-cy="custom-field-sources"
+                    source
+                    clearable
+                    multiple
+                    :required="sourceRequired"
+                    :validation-scope="AssetMetadataValidationScopeSymbol"
+                    @update:model-value="onAnyMetadataChange"
+                    @update:counterpart="onAnyMetadataChange"
+                  />
+                </ASystemEntityScope>
+              </template>
+              <template #authors>
                 <ASystemEntityScope
                   subject="author"
                   system="dam"
                 >
                   <AuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
+                    v-model:counterpart="asset.sources"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
+                    :source="sourceEnabled ? false : undefined"
                     clearable
                     multiple
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
+                    @update:counterpart="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
-              </VCol>
-            </VRow>
+              </template>
+            </DamSourcesAuthorsRow>
             <VRow
               density="compact"
               class="my-2"

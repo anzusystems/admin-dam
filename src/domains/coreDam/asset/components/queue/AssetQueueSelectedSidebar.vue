@@ -2,12 +2,14 @@
 import AssetCustomMetadataFormMassOperations from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataFormMassOperations.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
+import { isSourceEnabled } from '@/domains/coreDam/author/composables/sourceConfig'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import {
   ASystemEntityScope,
   type CustomDataValue,
   DamAssetType,
   type DamAssetTypeType,
+  DamSourcesAuthorsRow,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -24,7 +26,8 @@ const massOperationsData = ref<{
   document: Record<string, CustomDataValue>
 }>({ image: {}, video: {}, audio: {}, document: {} })
 const massOperationsKeywords = ref([])
-const massOperationsAuthors = ref([])
+const massOperationsAuthors = ref<DocId[]>([])
+const massOperationsSources = ref<DocId[]>([])
 
 const { t } = useI18n()
 
@@ -49,6 +52,12 @@ const fillEmptyAuthors = () => {
 }
 const replaceAuthors = () => {
   uploadQueuesStore.queueItemsReplaceEmptyAuthors(props.queueId, massOperationsAuthors.value, true)
+}
+const fillEmptySources = () => {
+  uploadQueuesStore.queueItemsReplaceEmptySources(props.queueId, massOperationsSources.value)
+}
+const replaceSources = () => {
+  uploadQueuesStore.queueItemsReplaceEmptySources(props.queueId, massOperationsSources.value, true)
 }
 const fillAll = (forceReplace = false) => {
   for (const [elementProperty, value] of Object.entries(massOperationsData.value.image)) {
@@ -97,21 +106,26 @@ const fillAll = (forceReplace = false) => {
   }
   if (forceReplace) {
     replaceAuthors()
+    if (sourceEnabled.value) replaceSources()
     replaceKeywords()
     return
   }
   fillEmptyAuthors()
+  if (sourceEnabled.value) fillEmptySources()
   fillEmptyKeywords()
 }
 const clearForm = () => {
   massOperationsData.value = { image: {}, video: {}, audio: {}, document: {} }
   massOperationsAuthors.value = []
+  massOperationsSources.value = []
   massOperationsKeywords.value = []
 }
 
 const assetTypes = computed(() => {
   return uploadQueuesStore.getQueueItemsTypes(props.queueId)
 })
+
+const sourceEnabled = computed(() => assetTypes.value.some((assetType) => isSourceEnabled(assetType)))
 
 onMounted(() => {
   if (assetTypes.value[0]) {
@@ -193,25 +207,72 @@ onMounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow
-                density="compact"
+              <DamSourcesAuthorsRow
+                :source-enabled="sourceEnabled"
                 class="my-2"
               >
-                <VCol>
+                <template #sources>
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
                   >
-                    <div class="d-flex">
-                      <div style="min-width: 286px">
-                        <AuthorRemoteAutocompleteWithCached
-                          v-model="massOperationsAuthors"
-                          :label="t('coreDam.asset.model.authors')"
-                          clearable
-                          multiple
-                          :validation-scope="false"
-                        />
-                      </div>
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="massOperationsSources"
+                      v-model:counterpart="massOperationsAuthors"
+                      :label="t('common.damImage.asset.model.sources')"
+                      source
+                      clearable
+                      multiple
+                      :validation-scope="false"
+                    />
+                    <div class="d-flex justify-end">
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        class="mr-1"
+                        @click.stop="fillEmptySources"
+                      >
+                        <VIcon icon="mdi-file-arrow-left-right-outline" />
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
+                          {{ t('coreDam.asset.massOperations.fillOneEmpty') }}
+                        </VTooltip>
+                      </VBtn>
+                      <VBtn
+                        icon
+                        size="small"
+                        variant="text"
+                        @click.stop="replaceSources"
+                      >
+                        <VIcon icon="mdi-file-replace-outline" />
+                        <VTooltip
+                          activator="parent"
+                          location="bottom"
+                        >
+                          {{ t('coreDam.asset.massOperations.replaceOne') }}
+                        </VTooltip>
+                      </VBtn>
+                    </div>
+                  </ASystemEntityScope>
+                </template>
+                <template #authors>
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="massOperationsAuthors"
+                      v-model:counterpart="massOperationsSources"
+                      :label="t('coreDam.asset.model.authors')"
+                      :source="sourceEnabled ? false : undefined"
+                      clearable
+                      multiple
+                      :validation-scope="false"
+                    />
+                    <div class="d-flex justify-end">
                       <VBtn
                         icon
                         size="small"
@@ -243,8 +304,8 @@ onMounted(() => {
                       </VBtn>
                     </div>
                   </ASystemEntityScope>
-                </VCol>
-              </VRow>
+                </template>
+              </DamSourcesAuthorsRow>
             </VExpansionPanelText>
           </VExpansionPanel>
           <VExpansionPanel
