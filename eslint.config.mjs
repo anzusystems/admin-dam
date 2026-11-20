@@ -15,7 +15,7 @@ export default defineConfigWithVueTs(
   },
   {
     name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', '**/cypress/**', 'src/typed-router.d.ts', 'src/auto-imports.d.ts'],
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '.stylelintrc.js', 'e2e/**', 'src/typed-router.d.ts', 'src/auto-imports.d.ts'],
   },
   pluginVue.configs['flat/essential'],
   pluginVue.configs['flat/strongly-recommended'],

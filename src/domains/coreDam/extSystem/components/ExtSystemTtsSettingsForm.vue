@@ -21,7 +21,7 @@ import { useKeywordInnerFilter } from '@/domains/coreDam/keyword/filter/KeywordF
 
 const { extSystem } = useExtSystemEditActions()
 const { valueObjectOptions } = useTtsActiveProviderMode()
-const { currentAssetLicenceId } = useCurrentAssetLicence()
+const { listLicenceIds } = useCurrentAssetLicence()
 const { fetchItems: fetchKeywordItems, fetchItemsByIds: fetchKeywordItemsByIds } = useKeywordSelectActions()
 
 const { filterConfig: keywordFilterConfig, filterData: keywordFilterData } = useKeywordInnerFilter()
@@ -29,8 +29,6 @@ provide(FilterInnerConfigKey, keywordFilterConfig)
 provide(FilterInnerDataKey, keywordFilterData)
 
 const { t } = useI18n()
-
-const epilogLicenceIds = computed<IntegerId[]>(() => [currentAssetLicenceId.value])
 
 const onEpilogSelect = (data: AssetSelectReturnData) => {
   if (data.type === 'assetId') {
@@ -103,7 +101,7 @@ const clearEpilog = () => {
                 @click.stop="clearEpilog"
               />
               <AAssetSelect
-                :select-licences="epilogLicenceIds"
+                :select-licences="listLicenceIds"
                 :min-count="1"
                 :max-count="1"
                 return-type="assetId"

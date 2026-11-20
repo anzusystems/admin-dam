@@ -1,4 +1,11 @@
-import type { DamAssetLicence, DatetimeUTCNullable, DocId, DocIdNullable, IntegerId } from '@anzusystems/common-admin'
+import type {
+  DamAssetLicence,
+  DamAssetLicenceMinimal,
+  DatetimeUTCNullable,
+  DocId,
+  DocIdNullable,
+  IntegerId,
+} from '@anzusystems/common-admin'
 
 export interface AssetLicenceInternalRule {
   active: boolean
@@ -22,4 +29,8 @@ export interface DamAssetLicenceExtended extends DamAssetLicence {
   flags: AssetLicenceFlags
   autoDelete: AssetLicenceAutoDelete
   defaultAuthor: DocIdNullable
+}
+
+export type DamAssetLicenceCached = DamAssetLicenceMinimal & {
+  badge: string
 }

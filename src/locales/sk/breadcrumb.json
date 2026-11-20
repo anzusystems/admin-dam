@@ -10,10 +10,20 @@
       "detail": "Skupina licencie",
       "edit": "Skupina licencie"
     },
+    "assetListView": {
+      "list": "Výbery assetov",
+      "detail": "Výber",
+      "edit": "Výber"
+    },
     "author": {
       "list": "Autori",
       "detail": "Autor",
       "edit": "Autor"
+    },
+    "source": {
+      "list": "Zdroje",
+      "detail": "Zdroj",
+      "edit": "Zdroj"
     },
     "distributionCategory": {
       "list": "Kategórie distribúcie",

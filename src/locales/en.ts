@@ -29,10 +29,12 @@ import apiForbiddenOperation from '@/locales/en/error/apiForbiddenOperation.json
 import jsValidation from '@/locales/en/error/jsValidation.json'
 import breadcrumb from '@/locales/en/breadcrumb.json'
 import assetLicenceGroup from '@/locales/en/coreDam/assetLicenceGroup.json'
+import assetListView from '@/locales/en/coreDam/assetListView.json'
 import publicExport from '@/locales/en/coreDam/publicExport.json'
 import voiceFamily from '@/locales/en/coreDam/voiceFamily.json'
 import voice from '@/locales/en/coreDam/voice.json'
 import ttsNarrationRequest from '@/locales/en/coreDam/ttsNarrationRequest.json'
+import source from '@/locales/en/coreDam/source.json'
 
 export default {
   common: {
@@ -54,6 +56,7 @@ export default {
     asset,
     assetLicence,
     assetLicenceGroup,
+    assetListView,
     author,
     distribution,
     distributionCategory,
@@ -76,6 +79,7 @@ export default {
     voiceFamily,
     voice,
     ttsNarrationRequest,
+    source,
   },
   auth,
   sidebar,

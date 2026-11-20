@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useResizeObserver } from '@vueuse/core'
 import type { CachedItem, DamAuthorMinimal } from '@anzusystems/common-admin'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
@@ -51,6 +52,13 @@ const displayTitle = computed(() => {
   return ''
 })
 
+const nameElement = useTemplateRef<HTMLElement>('name')
+const nameTruncated = ref(false)
+useResizeObserver(nameElement, () => {
+  if (!nameElement.value) return
+  nameTruncated.value = nameElement.value.scrollWidth > nameElement.value.clientWidth
+})
+
 const displayReviewed = computed(() => {
   if (props.forceReviewed) return true
   if (item.value?.reviewed) return true
@@ -72,7 +80,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div :class="containerClass">
+  <div :class="[containerClass, 'a-author-chip']">
     <template v-if="isNull(id) || isUndefined(id)">
       <slot name="empty">
         -
@@ -100,9 +108,20 @@ const { t } = useI18n()
       :size="size"
       :append-icon="displayNewIcon"
       :label="forceRounded ? undefined : true"
-      :title="displayReviewed ? t('common.damImage.author.model.flags.reviewed') : undefined"
     >
-      {{ displayTitle }}
+      <span
+        ref="name"
+        class="text-truncate"
+      >
+        {{ displayTitle }}
+      </span>
+      <VTooltip
+        activator="parent"
+        location="bottom"
+        :disabled="!nameTruncated"
+      >
+        {{ displayTitle }}
+      </VTooltip>
       <VProgressCircular
         v-if="!loaded && title.length === 0"
         :size="12"
@@ -120,3 +139,14 @@ const { t } = useI18n()
     </VChip>
   </div>
 </template>
+
+<style lang="scss" scoped>
+// A long author name must not push the chip over the field's clear and menu icons.
+.a-author-chip {
+  max-width: 100%;
+}
+
+.a-author-chip :deep(.v-chip__content) {
+  min-width: 0;
+}
+</style>

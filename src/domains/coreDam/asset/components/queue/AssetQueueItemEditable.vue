@@ -9,6 +9,9 @@ import AssetImage from '@/domains/coreDam/asset/components/AssetImage.vue'
 import AssetLink from '@/domains/coreDam/asset/components/AssetLink.vue'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
+import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
 import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import {
@@ -22,6 +25,8 @@ import {
   type UploadQueueItem,
   UploadQueueItemStatus,
   type UploadQueueItemStatusType,
+  DamSourcesAuthorsRow,
+  useDamCreditPreview,
 } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -31,6 +36,7 @@ const props = withDefaults(
     customData: AssetCustomData
     keywords: DocId[]
     authors: DocId[]
+    sources: DocId[]
     item: UploadQueueItem
     refreshDisabled: boolean
     mainFileSingleUse: boolean | null
@@ -45,6 +51,7 @@ const emit = defineEmits<{
   (e: 'update:customData', data: AssetCustomData): void
   (e: 'update:keywords', data: DocId[]): void
   (e: 'update:authors', data: DocId[]): void
+  (e: 'update:sources', data: DocId[]): void
   (e: 'update:mainFileSingleUse', data: boolean | null): void
   (e: 'cancelItem', data: { index: number; item: UploadQueueItem; queueId: string }): void
   (e: 'removeItem', index: number): void
@@ -79,6 +86,24 @@ const authors = computed({
     emit('update:authors', [...newValue])
   },
 })
+
+const sources = computed({
+  get() {
+    return props.sources
+  },
+  set(newValue) {
+    emit('update:sources', [...newValue])
+  },
+})
+
+const { getCachedAuthor } = useCachedAuthors()
+const { currentExtSystemId } = useCurrentExtSystem()
+const credit = useDamCreditPreview(
+  getCachedAuthor,
+  currentExtSystemId,
+  () => sources.value,
+  () => authors.value,
+)
 
 const mainFileSingleUse = computed({
   get() {
@@ -157,6 +182,8 @@ const status = computed(() => {
 const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
 
 const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+
+const { sourceEnabled, sourceRequired } = useSourceAssetTypeConfig(assetType.value)
 
 const cancelItem = () => {
   emit('cancelItem', { index: props.index, item: props.item, queueId: props.queueId })
@@ -385,21 +412,43 @@ onUnmounted(() => {
                   </ASystemEntityScope>
                 </VCol>
               </VRow>
-              <VRow
-                v-if="authorEnabled"
-                density="compact"
+              <DamSourcesAuthorsRow
+                :source-enabled="sourceEnabled"
+                :author-enabled="authorEnabled"
+                :credit="credit"
                 class="my-2"
               >
-                <VCol>
+                <template #sources>
+                  <ASystemEntityScope
+                    subject="author"
+                    system="dam"
+                  >
+                    <AuthorRemoteAutocompleteWithCached
+                      v-model="sources"
+                      v-model:counterpart="authors"
+                      :queue-id="queueId"
+                      :label="t('common.damImage.asset.model.sources')"
+                      source
+                      clearable
+                      multiple
+                      :required="sourceRequired"
+                      :validation-scope="AssetMetadataValidationScopeSymbol"
+                      :disabled="!item.canEditMetadata"
+                    />
+                  </ASystemEntityScope>
+                </template>
+                <template #authors>
                   <ASystemEntityScope
                     subject="author"
                     system="dam"
                   >
                     <AuthorRemoteAutocompleteWithCached
                       v-model="authors"
+                      v-model:counterpart="sources"
                       :queue-id="queueId"
                       :label="t('coreDam.asset.model.authors')"
                       :author-conflicts="item.authorConflicts"
+                      :source="sourceEnabled ? false : undefined"
                       clearable
                       multiple
                       :required="authorRequired"
@@ -407,8 +456,8 @@ onUnmounted(() => {
                       :disabled="!item.canEditMetadata"
                     />
                   </ASystemEntityScope>
-                </VCol>
-              </VRow>
+                </template>
+              </DamSourcesAuthorsRow>
               <VRow
                 density="compact"
                 class="my-2"

@@ -4,6 +4,7 @@ import system from '@/locales/sk/system.json'
 import asset from '@/locales/sk/coreDam/asset.json'
 import assetLicence from '@/locales/sk/coreDam/assetLicence.json'
 import assetLicenceGroup from '@/locales/sk/coreDam/assetLicenceGroup.json'
+import assetListView from '@/locales/sk/coreDam/assetListView.json'
 import author from '@/locales/sk/coreDam/author.json'
 import distribution from '@/locales/sk/coreDam/distribution.json'
 import distributionCategory from '@/locales/sk/coreDam/distributionCategory.json'
@@ -34,6 +35,7 @@ import publicExport from '@/locales/sk/coreDam/publicExport.json'
 import voiceFamily from '@/locales/sk/coreDam/voiceFamily.json'
 import voice from '@/locales/sk/coreDam/voice.json'
 import ttsNarrationRequest from '@/locales/sk/coreDam/ttsNarrationRequest.json'
+import source from '@/locales/sk/coreDam/source.json'
 
 export default {
   common: {
@@ -55,6 +57,7 @@ export default {
     asset,
     assetLicence,
     assetLicenceGroup,
+    assetListView,
     author,
     distribution,
     distributionCategory,
@@ -78,6 +81,7 @@ export default {
     voiceFamily,
     voice,
     ttsNarrationRequest,
+    source,
   },
   auth,
   sidebar,

@@ -1,0 +1,6 @@
+{
+  "button": {
+    "create": "Vytvoriť zdroj"
+  },
+  "isAuthor": "„{name}“ už existuje ako autor, ako zdroj sa použiť nedá"
+}

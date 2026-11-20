@@ -118,6 +118,20 @@ const { t } = useI18n()
         </VTooltip>
       </VListItem>
     </Acl>
+    <Acl :permission="ACL.DAM_ASSET_LIST_VIEW_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/asset-list-views' }"
+        prepend-icon="mdi-view-list"
+        data-cy="asset-list-view-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.assetListViews') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_AUTHOR_UI">
       <VListItem
         :to="{ name: '/(coreDam)/authors' }"
@@ -129,6 +143,20 @@ const { t } = useI18n()
           activator="parent"
         >
           {{ t('sidebar.settings.authors') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
+    <Acl :permission="ACL.DAM_SOURCE_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/sources' }"
+        prepend-icon="mdi-source-branch"
+        data-cy="source-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.sources') }}
         </VTooltip>
       </VListItem>
     </Acl>

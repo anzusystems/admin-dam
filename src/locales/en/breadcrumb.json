@@ -10,10 +10,20 @@
       "detail": "Licence group",
       "edit": "Licence group"
     },
+    "assetListView": {
+      "list": "Asset list views",
+      "detail": "List view",
+      "edit": "List view"
+    },
     "author": {
       "list": "Authors",
       "detail": "Author",
       "edit": "Author"
+    },
+    "source": {
+      "list": "Sources",
+      "detail": "Source",
+      "edit": "Source"
     },
     "distributionCategory": {
       "list": "Distribution categories",

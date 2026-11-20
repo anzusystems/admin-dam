@@ -6,13 +6,12 @@ import {
   AFormTextField,
   ARow,
   ASystemEntityScope,
-  DamExtSystemRemoteAutocomplete,
 } from '@anzusystems/common-admin'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
-import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import { damClient } from '@/shared/apiClients/damClient'
+import { BADGE_MAX_LENGTH, useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 
 const { assetLicence } = useAssetLicenceEditActions()
 
@@ -48,11 +47,18 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <DamExtSystemRemoteAutocomplete
-            v-model="assetLicence.extSystem"
-            :client="damClient"
-            :label="t('coreDam.assetLicence.model.extSystem')"
-            :v="v$.assetLicence.extSystem"
+          <AFormTextField
+            :model-value="assetLicence.badge"
+            :label="t('coreDam.assetLicence.model.badge')"
+            :v="v$.assetLicence.badge"
+            :maxlength="BADGE_MAX_LENGTH"
+            data-cy="asset-licence-badge"
+            @update:model-value="assetLicence.badge = String($event ?? '').toUpperCase()"
+          />
+        </ARow>
+        <ARow :title="t('coreDam.assetLicence.model.extSystem')">
+          <CachedExtSystemChip
+            :id="assetLicence.extSystem"
             data-cy="asset-licence-ext-system"
           />
         </ARow>

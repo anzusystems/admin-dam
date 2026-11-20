@@ -12,7 +12,8 @@
     "type": "Typ",
     "inPodcast": "V podcastoch",
     "keywordIds": "Kľúčové slová",
-    "authorIds": "Autori",
+    "authorIds": "Autori a zdroje",
+    "sourceIds": "Zdroje",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
     "ttsAudio": "Syntetické (TTS)",
@@ -61,7 +62,8 @@
     "2k": "2K",
     "qhd": "QHD",
     "4k": "4K",
-    "8k": "8K"
+    "8k": "8K",
+    "autoDeleteAt": "Automatické zmazanie {date}"
   },
   "filterTitle": "Filter",
   "noItemsFound": "Žiadne nájdené assety",
@@ -133,6 +135,9 @@
       "hide": "Zobraziť viac detailov"
     },
     "noAssetSelected": "Žiadne vybrané assety",
+    "exif": {
+      "title": "EXIF hlavného súboru ({count})"
+    },
     "tabs": {
       "info": "Info",
       "roi": "Fókus",
@@ -153,6 +158,7 @@
       "sourceRequest": "Zdrojová požiadavka"
     },
     "info": {
+      "autoDeleteAt": "Automatické zmazanie",
       "status": {
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",
@@ -167,6 +173,7 @@
         "id": "Asset ID",
         "mainFileId": "ID hlavného súboru",
         "type": "Typ",
+        "licence": "Licencia",
         "mimeType": "Formát",
         "size": "Veľkosť",
         "dominantColor": "Farba",

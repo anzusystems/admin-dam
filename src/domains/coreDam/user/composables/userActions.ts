@@ -90,6 +90,8 @@ export const useUserEditActions = () => {
     try {
       const user = await fetchDamUser(damClient, id)
       userOneStore.setUser(user)
+      addToCachedExtSystems(user.userToExtSystems)
+      fetchCachedExtSystems()
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -108,7 +110,10 @@ export const useUserEditActions = () => {
         return
       }
       const userUpdateCloned = cloneDeep(userUpdate.value)
-      await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      const updatedUser = await updateDamUser(damClient, userOneStore.user.id, userUpdateCloned)
+      userOneStore.setUser(updatedUser)
+      addToCachedExtSystems(updatedUser.userToExtSystems)
+      fetchCachedExtSystems()
       showRecordWas('updated')
       if (!close) return
       router.push({ name: '/(coreDam)/users' })

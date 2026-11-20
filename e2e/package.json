@@ -1,0 +1,33 @@
+{
+  "name": "adam-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "End-to-end tests for ADAM using Playwright",
+  "scripts": {
+    "test:open": "playwright test --ui --config playwright.config.ts",
+    "test:open:win": "playwright test --ui --ui-host=0.0.0.0 --ui-port=8080 --config playwright.config.ts",
+    "test:run": "playwright test --config playwright.config.ts",
+    "test:run:local": "ADAM_ENV=local playwright test --config playwright.config.ts",
+    "test:run:devel": "ADAM_ENV=devel playwright test --config playwright.config.ts",
+    "test:run:staging": "ADAM_ENV=staging playwright test --config playwright.config.ts",
+    "oxlint": "oxlint",
+    "oxlint:fix": "oxlint --fix",
+    "lint": "yarn type-check && yarn oxlint && yarn oxfmt:check",
+    "lint:fix": "yarn type-check && yarn oxlint:fix && yarn oxfmt",
+    "oxfmt": "oxfmt .",
+    "oxfmt:check": "oxfmt --check .",
+    "type-check": "tsc -b"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^26.5.1",
+    "dotenv": "^17.4.2",
+    "oxfmt": "^0.67.0",
+    "oxlint": "^1.82.0",
+    "typescript": "^7.0.2"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "packageManager": "yarn@4.18.0"
+}

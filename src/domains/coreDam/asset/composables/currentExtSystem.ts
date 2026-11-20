@@ -3,11 +3,38 @@ import { SYSTEM_DAM } from '@/shared/systems'
 import { fetchAsset, fetchAssetByFileId } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
-import { type DamCurrentUserDto, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
+import { type DamCurrentUserDto, type DamPrvConfig, isDocId, useDamConfigStore } from '@anzusystems/common-admin'
 
-const currentExtSystemId = ref(0)
+interface AssetScope {
+  extSystem: IntegerId
+  licences: IntegerId[]
+  uploadLicence: IntegerIdNullable
+  listView: IntegerIdNullable
+}
 
-const currentAssetLicenceId = ref(0)
+const scope = ref<AssetScope>({ extSystem: 0, licences: [], uploadLicence: null, listView: null })
+
+const licenceScope = (id: IntegerId, extSystem: IntegerId): AssetScope => ({
+  extSystem,
+  licences: [id],
+  uploadLicence: id,
+  listView: null,
+})
+
+export const licenceSelectionAllowed = (settings: DamPrvConfig['settings']) =>
+  settings.allowSelectExtSystem && settings.allowSelectLicenceId
+
+const resolveSelectedScope = (user: DamCurrentUserDto, settings: DamPrvConfig['settings']): AssetScope => {
+  const view = user.listViews.find((v) => v.id === user.selectedListView)
+  if (view) {
+    return { extSystem: view.extSystem, licences: view.licences, uploadLicence: view.uploadLicence, listView: view.id }
+  }
+  const allowed = licenceSelectionAllowed(settings)
+  const licence = allowed ? (user.selectedLicenceDto ?? user.resolvedAssetLicences[0]) : undefined
+  return licence
+    ? licenceScope(licence.id, licence.extSystem)
+    : licenceScope(settings.defaultAssetLicenceId, settings.defaultExtSystemId)
+}
 
 export const initCurrentExtSystemAndLicence = async (
   loadConfig: { type: 'assetId' | 'assetFileId'; id: DocId | undefined } | undefined = undefined
@@ -26,56 +53,46 @@ export const initCurrentExtSystemAndLicence = async (
     console.error('Current user must be loaded first.')
     return false
   }
+
+  const selected = resolveSelectedScope(currentUser.value, damPrvConfig.value.settings)
+
   if (isUndefined(loadConfig)) {
-    if (damPrvConfig.value.settings.allowSelectExtSystem && damPrvConfig.value.settings.allowSelectLicenceId) {
-      if (currentUser.value.selectedLicenceDto) {
-        currentExtSystemId.value = currentUser.value.selectedLicenceDto.extSystem
-        currentAssetLicenceId.value = currentUser.value.selectedLicenceDto.id
-        return true
-      } else if (currentUser.value.assetLicencesDto[0]) {
-        currentExtSystemId.value = currentUser.value.assetLicencesDto[0].extSystem
-        currentAssetLicenceId.value = currentUser.value.assetLicencesDto[0].id
-        return true
-      }
-    }
-    currentExtSystemId.value = damPrvConfig.value.settings.defaultExtSystemId
-    currentAssetLicenceId.value = damPrvConfig.value.settings.defaultAssetLicenceId
+    scope.value = selected
     return true
-  } else if (isString(loadConfig.id) && isDocId(loadConfig.id)) {
-    let assetRes = null
-    try {
-      if (loadConfig.type === 'assetId') {
-        assetRes = await fetchAsset(loadConfig.id)
-      } else if (loadConfig.type === 'assetFileId') {
-        assetRes = await fetchAssetByFileId(loadConfig.id)
-      }
-    } catch (e) {
-      return false
-    }
-    if (isNull(assetRes)) {
-      return false
-    }
-    const licenceRes = await fetchAssetLicence(assetRes.licence)
-    if (licenceRes.id && licenceRes.extSystem) {
-      const assetDetailStore = useAssetDetailStore()
-      assetDetailStore.directDetailLoad = true
-      assetDetailStore.setAsset(assetRes)
-      currentAssetLicenceId.value = licenceRes.id
-      currentExtSystemId.value = licenceRes.extSystem
-      return true
-    }
   }
-  return false
+  if (!isString(loadConfig.id) || !isDocId(loadConfig.id)) return false
+
+  let asset
+  try {
+    asset = loadConfig.type === 'assetId' ? await fetchAsset(loadConfig.id) : await fetchAssetByFileId(loadConfig.id)
+  } catch (e) {
+    return false
+  }
+  if (selected.licences.includes(asset.licence)) {
+    scope.value = selected
+  } else {
+    const licence = await fetchAssetLicence(asset.licence)
+    if (!licence.id || !licence.extSystem) return false
+    scope.value = licenceScope(licence.id, licence.extSystem)
+  }
+  const assetDetailStore = useAssetDetailStore()
+  assetDetailStore.directDetailLoad = true
+  assetDetailStore.setAsset(asset)
+  return true
 }
 
 export function useCurrentExtSystem() {
   return {
-    currentExtSystemId: readonly(currentExtSystemId),
+    currentExtSystemId: computed(() => scope.value.extSystem),
+    currentListViewId: computed(() => scope.value.listView),
   }
 }
 
 export function useCurrentAssetLicence() {
+  const currentAssetLicenceId = computed(() => scope.value.uploadLicence ?? 0)
   return {
-    currentAssetLicenceId: readonly(currentAssetLicenceId),
+    currentAssetLicenceId,
+    uploadAllowed: computed(() => currentAssetLicenceId.value > 0),
+    listLicenceIds: computed(() => scope.value.licences),
   }
 }

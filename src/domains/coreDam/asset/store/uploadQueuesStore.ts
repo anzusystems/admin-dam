@@ -49,7 +49,7 @@ const CHUNK_SIZE = 10485760
 
 export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   const { createDefault } = useUploadQueueItemFactory()
-  const { showError } = useAlerts()
+  const { showError, showErrorsDefault } = useAlerts()
   const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { fetchCachedKeywords, addToCachedKeywords } = useCachedKeywords()
 
@@ -177,7 +177,6 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   async function addByAssets(queueId: string, assets: AssetSearchListItemDto[]) {
-    const { currentAssetLicenceId } = useCurrentAssetLicence()
     const assetIds: DocId[] = []
     for await (const asset of assets) {
       assetIds.push(asset.id)
@@ -187,7 +186,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         UploadQueueItemStatus.Loading,
         asset.attributes.assetType,
         CHUNK_SIZE,
-        currentAssetLicenceId.value
+        asset.licence
       )
       queueItem.assetStatus = asset.attributes.assetStatus
       queueItem.displayTitle = asset.texts.displayTitle
@@ -200,7 +199,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
       recalculateQueueCounts(queueId)
       processUpload(queueId)
     }
-    fetchLazyAdditionalMetadata(queueId, currentAssetLicenceId.value, assetIds)
+    fetchLazyAdditionalMetadata(queueId, assetIds)
   }
 
   async function addByExternalProviderAsset(
@@ -245,22 +244,31 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queues.value[queueId].fileInputKey++
   }
 
-  async function fetchLazyAdditionalMetadata(queueId: string, licenceId: number, assetIds: DocId[]) {
+  async function fetchLazyAdditionalMetadata(queueId: string, assetIds: DocId[]) {
     const { getAuthorConflicts } = useAssetSuggestions()
-    const res = await fetchAssetListByIds(assetIds, licenceId)
-    for (let i = 0; i < res.length; i++) {
-      const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
-      if (foundIndex > -1) {
-        queues.value[queueId].items[foundIndex].keywords = res[i].keywords
-        queues.value[queueId].items[foundIndex].authors = res[i].authors
-        queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
-        queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
-        queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(res[i].metadata.authorSuggestions)
-        queues.value[queueId].items[foundIndex].canEditMetadata = true
-        addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    try {
+      const res = await fetchAssetListByIds(assetIds, currentExtSystemId.value)
+      for (let i = 0; i < res.length; i++) {
+        const foundIndex = queues.value[queueId].items.findIndex((item) => item.assetId === res[i].id)
+        if (foundIndex > -1) {
+          queues.value[queueId].items[foundIndex].keywords = res[i].keywords
+          queues.value[queueId].items[foundIndex].authors = res[i].authors
+          queues.value[queueId].items[foundIndex].sources = res[i].sources
+          queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
+          queues.value[queueId].items[foundIndex].status = UploadQueueItemStatus.Uploaded
+          queues.value[queueId].items[foundIndex].authorConflicts = getAuthorConflicts(
+            res[i].metadata.authorSuggestions
+          )
+          queues.value[queueId].items[foundIndex].canEditMetadata = true
+          addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
+          addToCachedAuthors(queues.value[queueId].items[foundIndex].sources)
+        }
       }
+      fetchCachedAuthors()
+    } catch (error) {
+      showErrorsDefault(error)
     }
-    fetchCachedAuthors()
   }
 
   async function removeByAssetId(queueId: string, assetId: DocId) {
@@ -427,6 +435,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         if (item.assetId === asset.id && item.type !== UploadQueueItemType.SlotFile) {
           item.keywords = asset.keywords
           item.authors = asset.authors
+          item.sources = asset.sources
           item.customData = asset.metadata.customData
           item.mainFileSingleUse = asset.mainFileSingleUse
           updateNewNames(asset.metadata.authorSuggestions, queues.value[queueId].suggestions.newAuthorNames)
@@ -435,6 +444,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           item.canEditMetadata = true
           addToCachedKeywords(item.keywords)
           addToCachedAuthors(item.authors)
+          addToCachedAuthors(item.sources)
           addToCachedAuthors(item.authorConflicts)
         } else if (
           item.assetId === asset.id &&
@@ -558,12 +568,23 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     }
   }
 
+  function queueItemsReplaceEmptySources(queueId: string, value: string[], forceReplace = false) {
+    const items = queues.value[queueId].items
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (forceReplace || isUndefined(item.sources) || item.sources.length === 0) {
+        item.sources = value
+      }
+    }
+  }
+
   function updateAssetMetadata(asset: AssetDetailItemDto) {
     for (const queueId in queues.value) {
       queues.value[queueId].items.forEach((item) => {
         if (item.assetId === asset.id) {
           item.keywords = asset.keywords
           item.authors = asset.authors
+          item.sources = asset.sources
           item.customData = asset.metadata.customData
           item.mainFileSingleUse = asset.mainFileSingleUse
         }
@@ -610,6 +631,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queueItemsReplaceEmptyCustomDataValue,
     queueItemsReplaceEmptyKeywords,
     queueItemsReplaceEmptyAuthors,
+    queueItemsReplaceEmptySources,
     updateAssetMetadata,
     reset,
   }
