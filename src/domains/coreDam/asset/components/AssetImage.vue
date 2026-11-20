@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
-import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType, DatetimeUTCNullable } from '@anzusystems/common-admin'
+import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
 import { DamAssetStatus, DamAssetType, useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -30,7 +30,6 @@ const props = withDefaults(
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
     licenceBadge?: string
-    autoDeleteAt?: DatetimeUTCNullable
   }>(),
   {
     assetType: DamAssetType.Image,
@@ -57,7 +56,6 @@ const props = withDefaults(
     showMetaIcons: false,
     assetFileProperties: undefined,
     licenceBadge: '',
-    autoDeleteAt: null,
   }
 )
 const emit = defineEmits<{
@@ -236,7 +234,6 @@ const { remainingTimeShort } = useRemainingTime()
         :asset-file-properties="assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
-        :auto-delete-at="autoDeleteAt"
       />
     </template>
   </VImg>
@@ -274,7 +271,6 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
-      :auto-delete-at="autoDeleteAt"
     />
   </div>
   <div
@@ -317,7 +313,6 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
-      :auto-delete-at="autoDeleteAt"
     />
   </div>
 </template>
