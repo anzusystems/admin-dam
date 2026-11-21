@@ -15,10 +15,12 @@ const props = withDefaults(
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
     licenceBadge?: string
+    singleUse?: boolean
   }>(),
   {
     disableAbsolute: false,
     licenceBadge: '',
+    singleUse: false,
   }
 )
 
@@ -84,7 +86,7 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0 || licenceBadge.length > 0"
+    v-show="data.icons.length > 0 || licenceBadge.length > 0 || singleUse"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
@@ -94,6 +96,14 @@ const data = computed(() => {
       data-cy="asset-licence-badge"
     >
       {{ licenceBadge }}
+    </span>
+    <span
+      v-if="singleUse"
+      class="asset-image__licence-badge"
+      :title="t('coreDam.asset.metaIcons.singleUse')"
+      data-cy="asset-single-use-badge"
+    >
+      1×
     </span>
     <img
       v-for="(item, index) in data.icons"

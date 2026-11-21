@@ -62,7 +62,8 @@
     "2k": "2K",
     "qhd": "QHD",
     "4k": "4K",
-    "8k": "8K"
+    "8k": "8K",
+    "singleUse": "Single use"
   },
   "filterTitle": "Filter",
   "noItemsFound": "No matching assets found",
