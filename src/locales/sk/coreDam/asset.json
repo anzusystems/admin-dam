@@ -62,8 +62,7 @@
     "2k": "2K",
     "qhd": "QHD",
     "4k": "4K",
-    "8k": "8K",
-    "autoDeleteAt": "Automatické zmazanie {date}"
+    "8k": "8K"
   },
   "filterTitle": "Filter",
   "noItemsFound": "Žiadne nájdené assety",
@@ -158,7 +157,8 @@
       "sourceRequest": "Zdrojová požiadavka"
     },
     "info": {
-      "autoDeleteAt": "Automatické zmazanie",
+      "autoDeleteAt": "Zmaže sa",
+      "autoDeleteIn": "o {time}",
       "status": {
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",

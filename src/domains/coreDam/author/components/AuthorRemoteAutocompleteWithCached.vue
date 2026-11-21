@@ -21,7 +21,7 @@ import {
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DocId[]
+    modelValue: DocId[] | DocId | null
     queueId?: string | undefined
     label?: string | undefined
     required?: boolean | null
@@ -47,7 +47,7 @@ const props = withDefaults(
   }
 )
 const emit = defineEmits<{
-  (e: 'update:modelValue', data: DocId[]): void
+  (e: 'update:modelValue', data: DocId[] | DocId | null): void
 }>()
 
 const counterpart = defineModel<DocId[] | undefined>('counterpart', { default: undefined })
@@ -96,6 +96,7 @@ watch(
 
 const addAuthor = async (id: null | DocId | undefined) => {
   if (!id) return
+  if (!isArray(modelValueComputed.value)) return
   if (!modelValueComputed.value.includes(id)) {
     modelValueComputed.value = [...modelValueComputed.value, ...[id]]
   }
@@ -112,7 +113,12 @@ const { addManualToCachedAuthors } = useCachedAuthors()
 const afterCreate = (author: DamAuthor) => {
   addManualToCachedAuthors(author)
   search.value = ''
-  addAuthor(author.id)
+  if (isArray(modelValueComputed.value)) {
+    addAuthor(author.id)
+
+    return
+  }
+  modelValueComputed.value = author.id
 }
 
 const addToCounterpart = (author: DamAuthor) => {
