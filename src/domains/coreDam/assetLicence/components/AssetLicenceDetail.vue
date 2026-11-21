@@ -34,6 +34,9 @@ const { t } = useI18n()
       <ARow :title="t('coreDam.assetLicence.model.flags.directUseAllowed')">
         <ABooleanValue :value="assetLicence.flags.directUseAllowed" />
       </ARow>
+      <ARow :title="t('coreDam.assetLicence.model.flags.singleUseEnforced')">
+        <ABooleanValue :value="assetLicence.flags.singleUseEnforced" />
+      </ARow>
       <ARow :title="t('coreDam.assetLicence.model.autoDelete.active')">
         <ABooleanValue :value="assetLicence.autoDelete.active" />
       </ARow>
@@ -67,10 +70,10 @@ const { t } = useI18n()
         />
       </ARow>
       <ARow
-        v-if="assetLicence.defaultAuthor"
-        :title="t('coreDam.assetLicence.model.defaultAuthor')"
+        v-if="assetLicence.defaultSource"
+        :title="t('coreDam.assetLicence.model.defaultSource')"
       >
-        <AuthorRemoteAutocompleteCachedAuthorChip :id="assetLicence.defaultAuthor" />
+        <AuthorRemoteAutocompleteCachedAuthorChip :id="assetLicence.defaultSource" />
       </ARow>
     </VCol>
     <VCol cols="4">

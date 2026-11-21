@@ -80,6 +80,16 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <VSwitch
+            v-model="assetLicence.flags.singleUseEnforced"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.singleUseEnforced')"
+            :hint="t('coreDam.assetLicence.model.flags.singleUseEnforcedHint')"
+            persistent-hint
+            data-cy="asset-licence-single-use-enforced"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
             v-model="assetLicence.autoDelete.active"
             class="pl-2"
             :label="t('coreDam.assetLicence.model.autoDelete.active')"
@@ -135,11 +145,12 @@ const { t } = useI18n()
              own ext system. Same pre-existing limitation as internalRuleAuthors above; out of scope here. -->
         <ARow>
           <AuthorRemoteAutocompleteWithCached
-            v-model="assetLicence.defaultAuthor"
-            :label="t('coreDam.assetLicence.model.defaultAuthor')"
+            v-model="assetLicence.defaultSource"
+            :label="t('coreDam.assetLicence.model.defaultSource')"
             :validation-scope="false"
+            source
             clearable
-            data-cy="asset-licence-default-author"
+            data-cy="asset-licence-default-source"
           />
         </ARow>
       </VCol>

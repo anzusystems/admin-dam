@@ -15,6 +15,7 @@ export interface AssetLicenceInternalRule {
 export interface AssetLicenceFlags {
   manualUploadAllowed: boolean
   directUseAllowed: boolean
+  singleUseEnforced: boolean
 }
 
 export interface AssetLicenceAutoDelete {
@@ -28,7 +29,7 @@ export interface DamAssetLicenceExtended extends DamAssetLicence {
   internalRuleUsers: IntegerId[]
   flags: AssetLicenceFlags
   autoDelete: AssetLicenceAutoDelete
-  defaultAuthor: DocIdNullable
+  defaultSource: DocIdNullable
 }
 
 export type DamAssetLicenceCached = DamAssetLicenceMinimal & {
