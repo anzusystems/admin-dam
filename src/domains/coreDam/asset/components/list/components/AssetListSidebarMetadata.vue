@@ -61,13 +61,14 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(
+    const [saved] = await updateAssetMetadata(
       asset.value,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    mainFileSingleUse.value = saved.mainFileSingleUse ?? false
     assetListStore.setMainFileSingleUseById(asset.value.id, mainFileSingleUse.value)
     showRecordWas('updated')
   } catch (error) {

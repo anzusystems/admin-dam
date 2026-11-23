@@ -48,13 +48,14 @@ const onSave = async () => {
     return
   }
   try {
-    await updateAssetMetadata(
+    const [saved] = await updateAssetMetadata(
       asset.value,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    mainFileSingleUse.value = saved.mainFileSingleUse ?? false
     assetListStore.setMainFileSingleUseById(asset.value.id, mainFileSingleUse.value)
     if (view.value === 'queue') {
       uploadQueueStore.updateAssetMetadata(asset.value)
