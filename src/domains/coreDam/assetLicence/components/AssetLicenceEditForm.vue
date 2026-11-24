@@ -15,7 +15,6 @@ import {
   BADGE_MAX_LENGTH,
   useAssetLicenceValidation,
 } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
-import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
@@ -152,14 +151,13 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AuthorRemoteAutocomplete
+          <ADamAuthorRemoteAutocompleteWithCached
             v-model="assetLicence.defaultSource"
+            :ext-system="currentExtSystemId"
             :label="t('coreDam.assetLicence.model.defaultSource')"
+            :validation-scope="false"
             source
-            can-be-current-author
             clearable
-            prefetch="focus"
-            :min-search-chars="0"
             data-cy="asset-licence-default-source"
           />
         </ARow>

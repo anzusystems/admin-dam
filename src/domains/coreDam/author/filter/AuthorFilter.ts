@@ -32,7 +32,6 @@ export function useAuthorInnerFilter() {
   const fields = [
     { name: 'text' as const, variant: 'search', default: null, type: 'string' },
     { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
-    { name: 'source' as const, default: null, type: 'boolean' },
   ] satisfies readonly MakeFilterOption[]
 
   return createFilter(fields, createFilterStore(fields), {
