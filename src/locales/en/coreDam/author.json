@@ -10,6 +10,8 @@
       "hiddenInCredit": "Hidden in credit",
       "source": "Source"
     },
+    "priority": "Priority in credit",
+    "priorityHint": "A higher number comes first in the credit, 0 – {max}",
     "currentAuthors": "Parent authors",
     "childAuthors": "Child authors",
     "createdBy": "Created by",

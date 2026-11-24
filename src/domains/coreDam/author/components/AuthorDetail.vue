@@ -60,6 +60,10 @@ const { getAuthorTypeOption } = useDamAuthorType()
           :value="author.flags.hiddenInCredit"
         />
       </ARow>
+      <ARow
+        :title="t('coreDam.author.model.priority')"
+        :value="author.priority"
+      />
       <ARow :title="t('coreDam.author.model.createdBy')">
         <CachedDamUserChip :id="author.createdBy" />
       </ARow>

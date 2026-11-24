@@ -9,7 +9,7 @@ import {
   useDamAuthorType,
 } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import { PRIORITY_MAX, useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
 
@@ -67,6 +67,18 @@ watch(hasCurrentAuthors, (hasParents) => {
             v-model="author.flags.hiddenInCredit"
             :label="t('coreDam.author.model.flags.hiddenInCredit')"
             data-cy="author-flags-hidden-in-credit"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model.number="author.priority"
+            :label="t('coreDam.author.model.priority')"
+            :v="v$.author.priority"
+            type="number"
+            :step="1"
+            :hint="t('coreDam.author.model.priorityHint', { max: PRIORITY_MAX })"
+            persistent-hint
+            data-cy="author-priority"
           />
         </ARow>
         <ARow>
