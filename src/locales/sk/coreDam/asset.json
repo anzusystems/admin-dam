@@ -12,7 +12,8 @@
     "type": "Typ",
     "inPodcast": "V podcastoch",
     "keywordIds": "Kľúčové slová",
-    "authorIds": "Autori",
+    "authorIds": "Autori a zdroje",
+    "sourceIds": "Zdroje",
     "createdByIds": "Založené používateľmi",
     "fromRss": "Z RSS",
     "ttsAudio": "Syntetické (TTS)",
@@ -155,7 +156,8 @@
       "sourceRequest": "Zdrojová požiadavka"
     },
     "info": {
-      "autoDeleteAt": "Automatické zmazanie",
+      "autoDeleteAt": "Zmaže sa",
+      "autoDeleteIn": "o {time}",
       "status": {
         "duplicate": "Hlavný súbor je duplikát.",
         "draft": "Neobsahuje žiaden súbor.",

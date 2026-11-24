@@ -30,6 +30,7 @@ const props = withDefaults(
     customData: AssetCustomData
     keywords: DocId[]
     authors: DocId[]
+    sources: DocId[]
     item: UploadQueueItem
     refreshDisabled: boolean
     mainFileSingleUse: boolean | null
@@ -44,6 +45,7 @@ const emit = defineEmits<{
   'update:customData': [data: AssetCustomData]
   'update:keywords': [data: DocId[]]
   'update:authors': [data: DocId[]]
+  'update:sources': [data: DocId[]]
   'update:mainFileSingleUse': [data: boolean | null]
   cancelItem: [data: { index: number; item: UploadQueueItem; queueId: string }]
   refreshItem: [data: { index: number; assetId: DocId; item: UploadQueueItem }]
@@ -216,6 +218,7 @@ onUnmounted(() => {
     :custom-data="customData"
     :keywords="keywords"
     :authors="authors"
+    :sources="sources"
     :main-file-single-use="mainFileSingleUse"
     :item="item"
     :refresh-disabled="refreshDisabled"
@@ -230,6 +233,7 @@ onUnmounted(() => {
     @update:custom-data="emit('update:customData', $event)"
     @update:keywords="emit('update:keywords', $event)"
     @update:authors="emit('update:authors', $event)"
+    @update:sources="emit('update:sources', $event)"
     @update:main-file-single-use="emit('update:mainFileSingleUse', $event)"
     @cancel-item="emit('cancelItem', { index: $event.index, item: $event.item, queueId: $event.queueKey })"
     @refresh-item="emit('refreshItem', { ...$event, item })"

@@ -95,6 +95,14 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         data-cy="author-settings"
       />
     </Acl>
+    <Acl :permission="ACL.DAM_SOURCE_UI">
+      <VListItem
+        :to="{ name: '/(coreDam)/sources' }"
+        prepend-icon="mdi-source-branch"
+        :title="t('sidebar.settings.sources')"
+        data-cy="source-settings"
+      />
+    </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
         :to="{ name: '/(coreDam)/keywords' }"

@@ -73,6 +73,7 @@ export const useAssetLicenceDetailActions = () => {
     addToCachedExtSystems(assetLicence.extSystem)
     fetchCachedExtSystems()
     addToCachedAuthors(...assetLicence.internalRuleAuthors)
+    if (assetLicence.defaultSource) addToCachedAuthors(assetLicence.defaultSource)
     addToCachedUsers(...assetLicence.internalRuleUsers)
     fetchCachedAuthors()
     fetchCachedUsers()

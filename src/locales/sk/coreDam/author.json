@@ -5,7 +5,10 @@
     "identifier": "Identifikátor",
     "type": "Typ",
     "flags": {
-      "reviewed": "Skontrolovaný"
+      "reviewed": "Skontrolovaný",
+      "reviewedDisabledHint": "Autor s nadradenými autormi nemôže byť skontrolovaný",
+      "hiddenInCredit": "Skrytý v kredite",
+      "source": "Zdroj"
     },
     "currentAuthors": "Nadradení autori",
     "childAuthors": "Podradení autori"
@@ -15,7 +18,8 @@
     "text": "Text",
     "identifier": "Identifikátor",
     "type": "Typ",
-    "reviewed": "Skontrolovaný"
+    "reviewed": "Skontrolovaný",
+    "source": "Zdroj"
   },
   "authorType": {
     "none": "Žiaden",
@@ -23,5 +27,7 @@
     "external": "Externý",
     "agency": "Agentúra"
   },
-  "conflicts": "Konflikt autorov"
+  "conflicts": "Konflikt autorov",
+  "isSource": "„{name}“ už existuje ako zdroj, ako autor sa použiť nedá",
+  "isMerged": "„{name}“ už existuje a je zlúčený pod nadradených autorov"
 }

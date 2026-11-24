@@ -5,7 +5,10 @@
     "identifier": "Identifier",
     "type": "Type",
     "flags": {
-      "reviewed": "Reviewed"
+      "reviewed": "Reviewed",
+      "reviewedDisabledHint": "An author with parent authors cannot be reviewed",
+      "hiddenInCredit": "Hidden in credit",
+      "source": "Source"
     },
     "currentAuthors": "Parent authors",
     "childAuthors": "Child authors"
@@ -15,7 +18,8 @@
     "text": "Text",
     "identifier": "Identifier",
     "type": "Type",
-    "reviewed": "Reviewed"
+    "reviewed": "Reviewed",
+    "source": "Source"
   },
   "authorType": {
     "none": "None",
@@ -23,5 +27,7 @@
     "external": "External",
     "agency": "Agency"
   },
-  "conflicts": "Author conflicts"
+  "conflicts": "Author conflicts",
+  "isSource": "“{name}” already exists as a source and cannot be used as an author",
+  "isMerged": "“{name}” already exists and is merged into its parent authors"
 }

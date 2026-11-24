@@ -21,6 +21,7 @@ import podcast from '@/locales/en/coreDam/podcast.json'
 import podcastEpisode from '@/locales/en/coreDam/podcastEpisode.json'
 import podcastExportData from '@/locales/en/coreDam/podcastExportData.json'
 import publicExport from '@/locales/en/coreDam/publicExport.json'
+import source from '@/locales/en/coreDam/source.json'
 import ttsNarrationRequest from '@/locales/en/coreDam/ttsNarrationRequest.json'
 import user from '@/locales/en/coreDam/user.json'
 import videoFile from '@/locales/en/coreDam/videoFile.json'
@@ -66,6 +67,7 @@ export default {
     voiceFamily,
     voice,
     ttsNarrationRequest,
+    source,
   },
   auth,
   sidebar,

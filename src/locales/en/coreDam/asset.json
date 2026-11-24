@@ -12,7 +12,8 @@
     "type": "Type",
     "inPodcast": "In podcast",
     "keywordIds": "Keywords",
-    "authorIds": "Authors",
+    "authorIds": "Authors and sources",
+    "sourceIds": "Sources",
     "createdByIds": "Created by",
     "fromRss": "From RSS",
     "ttsAudio": "Synthesized (TTS)",
@@ -155,7 +156,8 @@
       "sourceRequest": "Source request"
     },
     "info": {
-      "autoDeleteAt": "Auto delete",
+      "autoDeleteAt": "Deletes on",
+      "autoDeleteIn": "in {time}",
       "status": {
         "duplicate": "Asset main file is duplicate",
         "draft": "Asset is without file",

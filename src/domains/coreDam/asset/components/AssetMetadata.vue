@@ -5,6 +5,7 @@ import {
   ADamAssetCustomMetadataForm,
   ADamAuthorRemoteAutocompleteWithCached,
   ADamKeywordRemoteAutocompleteWithCached,
+  ADamSourcesAuthorsRow,
   ADatetime,
   ASystemEntityScope,
   DamAssetType,
@@ -12,11 +13,17 @@ import {
   assetFileIsAudioFile,
   assetFileIsImageFile,
   assetFileIsVideoFile,
+  dateDiff,
+  dateNow,
   dateTimePretty,
+  dateTimeToDate,
   isUndefined,
   prettyBytes,
   useDamAuthorAssetTypeConfig,
+  useDamCreditPreview,
   useDamKeywordAssetTypeConfig,
+  useDamSourceAssetTypeConfig,
+  useRemainingTime,
 } from '@anzusystems/common-admin'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -29,6 +36,7 @@ import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
@@ -87,6 +95,25 @@ const { keywordEnabled, keywordRequired } = useDamKeywordAssetTypeConfig(assetTy
 // eslint-disable-next-line vue/no-ref-object-reactivity-loss
 const { authorEnabled, authorRequired } = useDamAuthorAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
+// The same as for authors above.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { sourceEnabled, sourceRequired } = useDamSourceAssetTypeConfig(assetType.value, currentExtSystemId.value)
+
+const { getCachedAuthor } = useCachedAuthors()
+const credit = useDamCreditPreview(
+  getCachedAuthor,
+  currentExtSystemId,
+  () => asset.value?.sources ?? [],
+  () => asset.value?.authors ?? []
+)
+
+const { remainingTimeShort } = useRemainingTime()
+const autoDeleteIn = computed(() =>
+  asset.value?.autoDeleteAt
+    ? remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(asset.value.autoDeleteAt), dateNow(), 's')))
+    : ''
+)
+
 const onAnyMetadataChange = () => {
   metadataTouch()
 }
@@ -138,31 +165,56 @@ const onAnyMetadataChange = () => {
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <VRow
-              v-if="authorEnabled"
-              density="compact"
+            <ADamSourcesAuthorsRow
+              :source-enabled="sourceEnabled"
+              :author-enabled="authorEnabled"
+              :credit="credit"
               class="my-2"
             >
-              <VCol>
+              <template #sources>
+                <ASystemEntityScope
+                  subject="author"
+                  system="dam"
+                >
+                  <ADamAuthorRemoteAutocompleteWithCached
+                    v-model="asset.sources"
+                    v-model:counterpart="asset.authors"
+                    :ext-system="currentExtSystemId"
+                    :label="t('common.damImage.asset.model.sources')"
+                    data-cy="custom-field-sources"
+                    source
+                    clearable
+                    multiple
+                    :required="sourceRequired"
+                    :validation-scope="AssetMetadataValidationScopeSymbol"
+                    @update:model-value="onAnyMetadataChange"
+                    @update:counterpart="onAnyMetadataChange"
+                  />
+                </ASystemEntityScope>
+              </template>
+              <template #authors>
                 <ASystemEntityScope
                   subject="author"
                   system="dam"
                 >
                   <ADamAuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
+                    v-model:counterpart="asset.sources"
                     :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
+                    :source="sourceEnabled ? false : undefined"
                     clearable
                     multiple
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
+                    @update:counterpart="onAnyMetadataChange"
                   />
                 </ASystemEntityScope>
-              </VCol>
-            </VRow>
+              </template>
+            </ADamSourcesAuthorsRow>
             <VRow
               density="compact"
               class="my-2"
@@ -273,6 +325,9 @@ const onAnyMetadataChange = () => {
           </VCol>
           <VCol cols="9">
             <ADatetime :date-time="asset.autoDeleteAt" />
+            <span class="text-medium-emphasis">
+              ({{ t('coreDam.asset.detail.info.autoDeleteIn', { time: autoDeleteIn }) }})
+            </span>
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

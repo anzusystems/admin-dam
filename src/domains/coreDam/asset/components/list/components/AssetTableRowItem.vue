@@ -118,7 +118,6 @@ onMounted(() => {
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
-        :auto-delete-at="asset.autoDeleteAt"
         disable-absolute
         show-tts
       />

@@ -7,6 +7,7 @@ import {
   ASystemEntityScope,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
+import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
@@ -21,6 +22,12 @@ const { v$ } = useAuthorValidation(author)
 const { t } = useI18n()
 
 const { authorTypeOptions } = useDamAuthorType()
+
+const hasCurrentAuthors = computed(() => !!author.value.currentAuthors?.length)
+
+watch(hasCurrentAuthors, (hasParents) => {
+  if (hasParents) author.value.flags.reviewed = false
+})
 </script>
 
 <template>
@@ -53,7 +60,17 @@ const { authorTypeOptions } = useDamAuthorType()
           <VSwitch
             v-model="author.flags.reviewed"
             :label="t('coreDam.author.model.flags.reviewed')"
+            :disabled="hasCurrentAuthors"
+            :hint="hasCurrentAuthors ? t('coreDam.author.model.flags.reviewedDisabledHint') : undefined"
+            :persistent-hint="hasCurrentAuthors"
             data-cy="author-flags-reviewed"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
+            v-model="author.flags.hiddenInCredit"
+            :label="t('coreDam.author.model.flags.hiddenInCredit')"
+            data-cy="author-flags-hidden-in-credit"
           />
         </ARow>
         <ARow>

@@ -2,6 +2,7 @@ import {
   AnzuApiValidationError,
   HTTP_STATUS_OK,
   isAnzuApiValidationError,
+  isDamSourceEnabled,
   isNull,
   isUndefined,
   useAlerts,
@@ -58,6 +59,7 @@ export interface AssetMetadataBulkItem {
    */
   keywords?: DocId[]
   authors?: DocId[]
+  sources?: DocId[]
   customData?: AssetCustomData
   mainFileSingleUse?: boolean | null
   mainFileOverrideInternal?: boolean
@@ -221,6 +223,13 @@ export const fetchAssetMetadata = (id: DocId) => {
   return execute({ urlParams: { id } })
 }
 
+/** Whether a save sends sources of an asset of the type: only where the current ext system has them. */
+const sourcesSent = (assetType: DamAssetTypeType) => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
+  return isDamSourceEnabled(assetType, currentExtSystemId.value)
+}
+
 /** Items the bulk save sends: those with an asset whose metadata the user may edit. */
 export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
   !isNull(item.assetId) && item.canEditMetadata
@@ -247,6 +256,10 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
       const changed: Partial<QueueRowMetadata> = {}
       if (whole || !sameMetadataValue(metadata.keywords, known.keywords)) changed.keywords = metadata.keywords
       if (whole || !sameMetadataValue(metadata.authors, known.authors)) changed.authors = metadata.authors
+      // Only where the ext system has sources for the asset type. The row offers them only there.
+      if (sourcesSent(item.assetType) && (whole || !sameMetadataValue(metadata.sources, known.sources))) {
+        changed.sources = metadata.sources
+      }
       // Sent whole when any part differs. The server treats an omitted form field as emptied.
       if (whole || !sameMetadataValue(metadata.customData, known.customData)) changed.customData = metadata.customData
       if (!isNull(metadata.mainFileSingleUse) && (whole || metadata.mainFileSingleUse !== known.mainFileSingleUse)) {
@@ -295,6 +308,7 @@ const metadataFieldName = (key: string, assetTypeAt: (index: number) => DamAsset
   const path = indexed ? indexed[2] : key
   if (path === 'keywords') return t('coreDam.asset.model.keywords')
   if (path === 'authors') return t('coreDam.asset.model.authors')
+  if (path === 'sources') return t('common.damImage.asset.model.sources')
   const property = path.split('.').at(-1) ?? path
   const assetType = indexed ? assetTypeAt(Number(indexed[1])) : undefined
   if (path.startsWith('customData.') && !isUndefined(assetType)) {
@@ -414,6 +428,7 @@ export const updateAssetMetadata = async (
     id: asset.id,
     keywords: asset.keywords,
     authors: asset.authors,
+    ...(sourcesSent(asset.attributes.assetType) ? { sources: asset.sources } : {}),
     described: true,
     customData: asset.metadata.customData,
     mainFileSingleUse: mainFileSingleUse,

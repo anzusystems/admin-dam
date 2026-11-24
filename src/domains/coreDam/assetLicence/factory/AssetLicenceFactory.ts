@@ -20,11 +20,13 @@ export function useAssetLicenceFactory() {
     flags: {
       manualUploadAllowed: true,
       directUseAllowed: true,
+      singleUseEnforced: false,
     },
     autoDelete: {
       active: false,
       olderThanDays: 0,
     },
+    defaultSource: null,
     createdAt: dateTimeNow(),
     modifiedAt: dateTimeNow(),
     createdBy: 0,

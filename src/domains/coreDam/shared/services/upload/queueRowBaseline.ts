@@ -11,6 +11,7 @@ import { toRaw } from 'vue'
 export interface QueueRowMetadata {
   keywords: DocId[]
   authors: DocId[]
+  sources: DocId[]
   customData: AssetCustomData
   mainFileSingleUse: boolean | null
 }
@@ -72,6 +73,8 @@ const baselines = new WeakMap<UploadQueueItem, { baseline: QueueRowBaseline; at:
 export const baselineOfAsset = (asset: AssetDetailItemDto): QueueRowBaseline => ({
   keywords: asset.keywords,
   authors: asset.authors,
+  // A core-dam without sources sends none.
+  sources: asset.sources ?? [],
   customData: asset.metadata.customData,
   mainFileSingleUse: asset.mainFileSingleUse,
   described: asset.flags?.described,
@@ -81,6 +84,7 @@ export const metadataOfQueueRow = (item: UploadQueueItem): QueueRowMetadata =>
   cloneDeep({
     keywords: item.keywords,
     authors: item.authors,
+    sources: item.sources ?? [],
     customData: item.customData,
     mainFileSingleUse: item.mainFileSingleUse,
   })
@@ -132,6 +136,7 @@ export const queueRowTakesAnswer = (item: UploadQueueItem, sentAt: number) => {
     known.at < sentAt &&
     sameMetadataValue(item.keywords, known.baseline.keywords) &&
     sameMetadataValue(item.authors, known.baseline.authors) &&
+    sameMetadataValue(item.sources ?? [], known.baseline.sources) &&
     sameMetadataValue(item.customData, known.baseline.customData) &&
     item.mainFileSingleUse === known.baseline.mainFileSingleUse
   )

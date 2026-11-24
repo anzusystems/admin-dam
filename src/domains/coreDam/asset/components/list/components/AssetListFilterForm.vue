@@ -65,6 +65,15 @@ const idHint = computed(() => (filterData?.assetAndMainFileIds ? t('coreDam.asse
   </VRow>
   <VRow>
     <VCol>
+      <ADamAuthorFilterRemoteAutocomplete
+        name="sourceIds"
+        :ext-system="currentExtSystemId"
+        source
+      />
+    </VCol>
+  </VRow>
+  <VRow>
+    <VCol>
       <ADamUserFilterRemoteAutocomplete name="createdByIds" />
     </VCol>
   </VRow>

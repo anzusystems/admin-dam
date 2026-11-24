@@ -15,6 +15,7 @@ import {
   BADGE_MAX_LENGTH,
   useAssetLicenceValidation,
 } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
@@ -89,6 +90,16 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <VSwitch
+            v-model="assetLicence.flags.singleUseEnforced"
+            class="pl-2"
+            :label="t('coreDam.assetLicence.model.flags.singleUseEnforced')"
+            :hint="t('coreDam.assetLicence.model.flags.singleUseEnforcedHint')"
+            persistent-hint
+            data-cy="asset-licence-single-use-enforced"
+          />
+        </ARow>
+        <ARow>
+          <VSwitch
             v-model="assetLicence.autoDelete.active"
             class="pl-2"
             :label="t('coreDam.assetLicence.model.autoDelete.active')"
@@ -138,6 +149,18 @@ const { t } = useI18n()
             :label="t('coreDam.assetLicence.model.internalRuleUsers')"
             multiple
             data-cy="asset-licence-internal-rule-users"
+          />
+        </ARow>
+        <ARow>
+          <AuthorRemoteAutocomplete
+            v-model="assetLicence.defaultSource"
+            :label="t('coreDam.assetLicence.model.defaultSource')"
+            source
+            can-be-current-author
+            clearable
+            prefetch="focus"
+            :min-search-chars="0"
+            data-cy="asset-licence-default-source"
           />
         </ARow>
         <DamTrackingFields :data="assetLicence" />

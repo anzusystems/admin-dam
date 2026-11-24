@@ -164,6 +164,21 @@ const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
         </VTooltip>
       </VListItem>
     </Acl>
+    <Acl :permission="ACL.DAM_SOURCE_UI">
+      <VListItem
+        :aria-label="t('sidebar.settings.sources')"
+        :to="{ name: '/(coreDam)/sources' }"
+        prepend-icon="mdi-source-branch"
+        data-cy="source-settings"
+      >
+        <VTooltip
+          location="right"
+          activator="parent"
+        >
+          {{ t('sidebar.settings.sources') }}
+        </VTooltip>
+      </VListItem>
+    </Acl>
     <Acl :permission="ACL.DAM_KEYWORD_UI">
       <VListItem
         :aria-label="t('sidebar.settings.keywords')"

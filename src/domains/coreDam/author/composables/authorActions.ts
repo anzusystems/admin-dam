@@ -25,6 +25,7 @@ import {
   useFetchAuthorListByIds,
   useUpdateAuthor,
 } from '@/domains/coreDam/author/api/authorApi'
+import { getAuthorSection } from '@/domains/coreDam/author/composables/authorSection'
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useAuthorOneStore } from '@/domains/coreDam/author/store/authorStore'
 
@@ -106,7 +107,7 @@ export const useAuthorEditActions = () => {
   const { push } = usePageNavigation()
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
-  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+  const { addToCachedAuthors, addManualToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { execute: fetchAuthor } = useFetchAuthor()
   const { execute: updateAuthor } = useUpdateAuthor()
 
@@ -134,9 +135,11 @@ export const useAuthorEditActions = () => {
       }
       const res = await updateAuthor({ urlParams: { id: authorOneStore.author.id }, body: author.value })
       syncUserAndTimeTracking(authorOneStore.author, res)
+      // The name cache feeds chips and credit previews, which would keep the old name and "hidden in credit".
+      addManualToCachedAuthors(res)
       showRecordWas('updated')
       if (!close) return
-      push({ name: '/(coreDam)/authors' })
+      push({ name: getAuthorSection(author.value.flags.source).routeList })
     } catch (error) {
       showErrorsDefault(error)
     } finally {
@@ -165,6 +168,7 @@ export const useAuthorSelectActions = () => {
     name: author.name,
     identifier: author.identifier,
     reviewed: author.flags.reviewed,
+    hiddenInCredit: author.flags.hiddenInCredit,
   })
 
   const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({

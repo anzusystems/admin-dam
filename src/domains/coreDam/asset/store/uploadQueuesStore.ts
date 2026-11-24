@@ -21,6 +21,7 @@ import {
   uploadQueueFillAuthors,
   uploadQueueFillCustomDataValue,
   uploadQueueFillKeywords,
+  uploadQueueFillSources,
   useAlerts,
   useAssetSuggestions,
   useDamConfigState,
@@ -600,6 +601,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
         if (!queueRowGivenSince(queues.value[queueId].items[foundIndex], sentAt)) {
           queues.value[queueId].items[foundIndex].keywords = res[i].keywords
           queues.value[queueId].items[foundIndex].authors = res[i].authors
+          queues.value[queueId].items[foundIndex].sources = res[i].sources ?? []
           queues.value[queueId].items[foundIndex].customData = res[i].metadata.customData
           queues.value[queueId].items[foundIndex].mainFileSingleUse = res[i].mainFileSingleUse
           setQueueRowBaseline(queues.value[queueId].items[foundIndex], baselineOfAsset(res[i]), sentAt)
@@ -615,6 +617,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           queues.value[queueId].items[foundIndex].error.message = ''
         }
         addToCachedAuthors(queues.value[queueId].items[foundIndex].authors)
+        addToCachedAuthors(queues.value[queueId].items[foundIndex].sources ?? [])
         // Cache author conflicts too, as the detail does, so their chips show names.
         addToCachedAuthors(queues.value[queueId].items[foundIndex].authorConflicts)
       }
@@ -769,10 +772,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
   }
 
   /*
-   * Keywords and authors go only to items whose asset type enables them, like custom values per type.
+   * Keywords, authors and sources go only to items whose asset type enables them, like custom values per type.
    * Other rows have no input for them, and the bulk save would send them.
    */
-  function takesMassOperationOf(feature: 'keywords' | 'authors') {
+  function takesMassOperationOf(feature: 'keywords' | 'authors' | 'sources') {
     const { getDamConfigExtSystem } = useDamConfigState(damClient)
     const { currentExtSystemId } = useCurrentExtSystem()
     const configExtSystem = getDamConfigExtSystem(currentExtSystemId.value)
@@ -789,6 +792,10 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     uploadQueueFillAuthors(queues.value[queueId].items, value, forceReplace, takesMassOperationOf('authors'))
   }
 
+  function queueItemsReplaceEmptySources(queueId: string, value: string[], forceReplace = false) {
+    uploadQueueFillSources(queues.value[queueId].items, value, forceReplace, takesMassOperationOf('sources'))
+  }
+
   function updateAssetMetadata(asset: AssetDetailItemDto) {
     // Called when the detail or panel save is answered, so the order is taken here.
     const savedAt = nextMetadataOrder()
@@ -800,6 +807,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
           const saved = cloneDeep(baselineOfAsset(asset))
           item.keywords = saved.keywords
           item.authors = saved.authors
+          item.sources = saved.sources
           item.customData = saved.customData
           item.mainFileSingleUse = saved.mainFileSingleUse
           // The server's current state of the row. That save marks the asset described; the local flag predates it.
@@ -852,6 +860,7 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     queueItemsReplaceEmptyCustomDataValue,
     queueItemsReplaceEmptyKeywords,
     queueItemsReplaceEmptyAuthors,
+    queueItemsReplaceEmptySources,
     updateAssetMetadata,
     reset,
   }

@@ -7,7 +7,9 @@
     "badge": "Odznak",
     "flags": {
       "manualUploadAllowed": "Povolený manuálny upload",
-      "directUseAllowed": "Povolené priame použitie"
+      "directUseAllowed": "Povolené priame použitie",
+      "singleUseEnforced": "Vynútené jednorazové použitie",
+      "singleUseEnforcedHint": "Nové a upravené súbory licencie budú vždy jednorazové."
     },
     "autoDelete": {
       "active": "Automatické mazanie",
@@ -18,7 +20,8 @@
       "markAsInternalSince": "Označovať ako interné od"
     },
     "internalRuleAuthors": "Interní autori",
-    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky"
+    "internalRuleUsers": "Používatelia nahrávajúci interné obrázky",
+    "defaultSource": "Predvolený zdroj"
   },
   "filter": {
     "id": "ID",
