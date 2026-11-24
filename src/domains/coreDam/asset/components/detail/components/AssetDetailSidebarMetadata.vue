@@ -58,7 +58,7 @@ const onSave = async () => {
     mainFileSingleUse.value = saved.mainFileSingleUse ?? false
     assetListStore.setMainFileSingleUseById(asset.value.id, mainFileSingleUse.value)
     if (view.value === 'queue') {
-      uploadQueueStore.updateAssetMetadata(asset.value)
+      uploadQueueStore.updateAssetMetadata({ ...asset.value, mainFileSingleUse: mainFileSingleUse.value })
     }
     showRecordWas('updated')
   } catch (error) {
