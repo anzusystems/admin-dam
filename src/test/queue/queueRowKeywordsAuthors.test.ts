@@ -161,8 +161,9 @@ describe('the author input of a row', () => {
 
     await search('Authors', 'Jane')
 
+    // Merged authors are not offered: the search asks only for authors that can be current ones.
     expect(asked.filter((url) => url.includes('text='))).toEqual([
-      '/adm/v1/author/ext-system/1/search?limit=25&offset=0&text=Jane',
+      '/adm/v1/author/ext-system/1/search?limit=25&offset=0&text=Jane&canBeCurrentAuthor=true',
     ])
     offered().found[0].click()
     await vi.advanceTimersByTimeAsync(1000)

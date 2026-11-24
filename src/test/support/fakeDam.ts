@@ -311,6 +311,7 @@ export const queueRow = (over: Partial<UploadQueueItem> = {}): UploadQueueItem =
   externalProviderMetadata: {},
   keywords: [],
   authors: [],
+  sources: [],
   authorConflicts: [],
   customData: {},
   latestChunkAbortController: null,
