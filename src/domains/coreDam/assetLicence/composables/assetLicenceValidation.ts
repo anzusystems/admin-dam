@@ -1,18 +1,11 @@
 import type { Ref } from 'vue'
-import { helpers } from '@vuelidate/validators'
 import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
+import { useBadgeRules } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
 
-export const BADGE_MAX_LENGTH = 4
-
-const { required, minLength, maxLength, minValue } = useValidate()
+const { required, minLength, minValue } = useValidate()
 
 export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExtended>) {
-  const { t } = useI18n()
-
-  const badgeFormat = helpers.withMessage(
-    () => t('coreDam.assetLicence.validation.badge'),
-    helpers.regex(/^[A-Z0-9]*$/)
-  )
+  const badgeRules = useBadgeRules()
 
   const rules = computed(() => ({
     assetLicence: {
@@ -20,10 +13,7 @@ export function useAssetLicenceValidation(assetLicence: Ref<DamAssetLicenceExten
         required,
         minLength: minLength(2),
       },
-      badge: {
-        maxLength: maxLength(BADGE_MAX_LENGTH),
-        format: badgeFormat,
-      },
+      badge: badgeRules,
       autoDelete: {
         olderThanDays: assetLicence.value.autoDelete.active
           ? {

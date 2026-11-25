@@ -1,8 +1,13 @@
 import type { DamAuthor, ValidationScope } from '@anzusystems/common-admin'
+import { useBadgeRules } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
 
-const { required, minLength } = useValidate()
+const { required, minLength, between } = useValidate()
+
+export const PRIORITY_MAX = 100_000
 
 export function useAuthorValidation(author: Ref<DamAuthor>, validationScope: ValidationScope = undefined) {
+  const badgeRules = useBadgeRules()
+
   const rules = computed(() => ({
     author: {
       name: {
@@ -12,6 +17,11 @@ export function useAuthorValidation(author: Ref<DamAuthor>, validationScope: Val
       identifier: {
         minLength: minLength(2),
       },
+      priority: {
+        required,
+        between: between(0, PRIORITY_MAX),
+      },
+      badge: badgeRules,
     },
   }))
   const v$ = useVuelidate(rules, { author }, { $scope: validationScope })
