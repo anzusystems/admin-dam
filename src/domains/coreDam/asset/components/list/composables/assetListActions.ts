@@ -1,3 +1,4 @@
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetListFilter } from '@/domains/coreDam/asset/filter/AssetFilter'
@@ -62,6 +63,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { listLicenceIds } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -81,14 +83,18 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     return await apiFetchAsset(assetId)
   }
 
+  const cacheSources = (assets: AssetSearchListItemDto[]) => {
+    addToCachedAuthors(...assets.map((asset) => asset.sources))
+    fetchCachedAuthors()
+  }
+
   const fetchAssetList = async () => {
     pagination.value.page = 1
     try {
       assetListStore.showLoader('hard')
-      assetListStore.setList(
-        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
-        uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
-      )
+      const assets = await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig)
+      assetListStore.setList(assets, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
+      cacheSources(assets)
       addToCachedAssetLicences(...listLicenceIds.value)
       fetchCachedAssetLicences()
     } catch (error) {
@@ -112,10 +118,9 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     pagination.value.page = pagination.value.page + 1
     try {
       assetListStore.showLoader('soft')
-      assetListStore.appendList(
-        await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig),
-        uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT)
-      )
+      const assets = await apiFetchAssetList(listLicenceIds.value, pagination, filterData, filterConfig)
+      assetListStore.appendList(assets, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT))
+      cacheSources(assets)
     } catch (error) {
       showErrorsDefault(error)
     } finally {

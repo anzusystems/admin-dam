@@ -1,6 +1,7 @@
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
-import { assetFileIsImageFile } from '@anzusystems/common-admin'
+import { assetFileIsImageFile, resolveSourceBadges } from '@anzusystems/common-admin'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
 
@@ -57,6 +58,9 @@ export function useAssetItemActions(item: AssetListItem) {
     listLicenceIds.value.length > 1 ? (getCachedAssetLicence(asset.value.licence)?.badge ?? '') : ''
   )
 
+  const { getCachedAuthor } = useCachedAuthors()
+  const sourceBadges = computed(() => resolveSourceBadges(asset.value.sources, getCachedAuthor))
+
   const getBgColor = () => {
     return assetFileIsImageFile(asset.value.mainFile) &&
       asset.value.mainFile.imageAttributes &&
@@ -72,5 +76,6 @@ export function useAssetItemActions(item: AssetListItem) {
     imageProperties,
     tableImageProperties,
     licenceBadge,
+    sourceBadges,
   }
 }

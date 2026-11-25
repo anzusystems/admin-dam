@@ -41,7 +41,9 @@ const IMAGE_WIDTH = 128
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const { asset, assetType, assetStatus, tableImageProperties, licenceBadge } = useAssetItemActions(props.item)
+const { asset, assetType, assetStatus, tableImageProperties, licenceBadge, sourceBadges } = useAssetItemActions(
+  props.item
+)
 
 const { addToCachedPodcasts, fetchCachedPodcasts } = useCachedPodcasts()
 
@@ -112,6 +114,7 @@ onMounted(() => {
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
+        :source-badges="sourceBadges"
         :single-use="asset.mainFileSingleUse === true"
         disable-absolute
       />
