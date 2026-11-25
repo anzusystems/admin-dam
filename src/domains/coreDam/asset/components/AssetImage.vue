@@ -30,6 +30,7 @@ const props = withDefaults(
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
     licenceBadge?: string
+    singleUse?: boolean
   }>(),
   {
     assetType: DamAssetType.Image,
@@ -56,6 +57,7 @@ const props = withDefaults(
     showMetaIcons: false,
     assetFileProperties: undefined,
     licenceBadge: '',
+    singleUse: false,
   }
 )
 const emit = defineEmits<{
@@ -234,6 +236,7 @@ const { remainingTimeShort } = useRemainingTime()
         :asset-file-properties="assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
+        :single-use="singleUse"
       />
     </template>
   </VImg>
@@ -271,6 +274,7 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
+      :single-use="singleUse"
     />
   </div>
   <div
@@ -313,6 +317,7 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
+      :single-use="singleUse"
     />
   </div>
 </template>

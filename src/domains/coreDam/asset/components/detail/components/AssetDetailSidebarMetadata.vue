@@ -2,6 +2,7 @@
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
 import { deleteAsset, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
@@ -29,6 +30,7 @@ const { t } = useI18n()
 
 const { asset, view, mainFileSingleUse, mainFileOverrideInternal, mainFileInternal, ttsAudio } = useAssetDetailActions()
 const uploadQueueStore = useUploadQueuesStore()
+const assetListStore = useAssetListStore()
 
 const saveButtonLoading = ref(false)
 
@@ -46,15 +48,17 @@ const onSave = async () => {
     return
   }
   try {
-    await updateAssetMetadata(
+    const [saved] = await updateAssetMetadata(
       asset.value,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    mainFileSingleUse.value = saved.mainFileSingleUse ?? false
+    assetListStore.setMainFileSingleUseById(asset.value.id, mainFileSingleUse.value)
     if (view.value === 'queue') {
-      uploadQueueStore.updateAssetMetadata(asset.value)
+      uploadQueueStore.updateAssetMetadata({ ...asset.value, mainFileSingleUse: mainFileSingleUse.value })
     }
     showRecordWas('updated')
   } catch (error) {

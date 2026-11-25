@@ -251,7 +251,7 @@ export const updateAssetMetadata = (
   mainFileInternal: boolean,
   ttsAudio: boolean
 ) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<AssetMetadataBulkItem[]>((resolve, reject) => {
     const data: AssetMetadataBulkItem = {
       id: asset.id,
       keywords: asset.keywords,

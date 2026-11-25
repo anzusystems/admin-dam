@@ -2,6 +2,7 @@
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import { browserHistoryReplaceUrlByRouter, DamAssetStatus, useDamCachedUsers } from '@anzusystems/common-admin'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetInfobox from '@/domains/coreDam/asset/components/AssetInfobox.vue'
@@ -34,6 +35,7 @@ const {
 const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
 
 const assetDetailStore = useAssetDetailStore()
+const assetListStore = useAssetListStore()
 
 const { showRecordWas, showValidationError, showErrorsDefault } = useAlerts()
 
@@ -59,13 +61,15 @@ const onSave = async () => {
   }
   try {
     metadataUnTouch()
-    await updateAssetMetadata(
+    const [saved] = await updateAssetMetadata(
       asset.value,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    mainFileSingleUse.value = saved.mainFileSingleUse ?? false
+    assetListStore.setMainFileSingleUseById(asset.value.id, mainFileSingleUse.value)
     showRecordWas('updated')
   } catch (error) {
     showErrorsDefault(error)

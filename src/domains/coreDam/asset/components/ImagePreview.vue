@@ -181,6 +181,7 @@ watch(
         :min-count="1"
         :max-count="1"
         :asset-type="AssetTypeValue.Image"
+        :single-use-allowed="false"
         :initial-pagination-sort="{ key: SORT_BY_SCORE_DATE, order: SortOrder.Desc }"
         :custom-sort-options="customSortOptions"
         @on-confirm="selectAsset"

@@ -140,9 +140,6 @@ const { t } = useI18n()
             data-cy="asset-licence-internal-rule-users"
           />
         </ARow>
-        <!-- Picker searches/creates authors in the globally selected ext system (useAuthorSelectActions →
-             currentExtSystemId, AuthorCreateButton → createDefault(currentExtSystemId)), not the licence's
-             own ext system. Same pre-existing limitation as internalRuleAuthors above; out of scope here. -->
         <ARow>
           <AuthorRemoteAutocompleteWithCached
             v-model="assetLicence.defaultSource"
