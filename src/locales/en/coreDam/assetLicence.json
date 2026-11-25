@@ -7,7 +7,9 @@
     "badge": "Badge",
     "flags": {
       "manualUploadAllowed": "Manual upload allowed",
-      "directUseAllowed": "Direct use allowed"
+      "directUseAllowed": "Direct use allowed",
+      "singleUseEnforced": "Single use enforced",
+      "singleUseEnforcedHint": "New and updated files of the licence are always single use."
     },
     "autoDelete": {
       "active": "Auto delete",
@@ -18,7 +20,8 @@
       "markAsInternalSince": "Mark as internal since"
     },
     "internalRuleAuthors": "Internal rule authors",
-    "internalRuleUsers": "Internal rule users"
+    "internalRuleUsers": "Internal rule users",
+    "defaultSource": "Default source"
   },
   "filter": {
     "id": "ID",

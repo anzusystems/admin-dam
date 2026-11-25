@@ -1,4 +1,11 @@
-import type { DamAssetLicence, DamAssetLicenceMinimal, DatetimeUTCNullable, DocId, IntegerId } from '@anzusystems/common-admin'
+import type {
+  DamAssetLicence,
+  DamAssetLicenceMinimal,
+  DatetimeUTCNullable,
+  DocId,
+  DocIdNullable,
+  IntegerId,
+} from '@anzusystems/common-admin'
 
 export interface AssetLicenceInternalRule {
   active: boolean
@@ -8,6 +15,7 @@ export interface AssetLicenceInternalRule {
 export interface AssetLicenceFlags {
   manualUploadAllowed: boolean
   directUseAllowed: boolean
+  singleUseEnforced: boolean
 }
 
 export interface AssetLicenceAutoDelete {
@@ -21,6 +29,7 @@ export interface DamAssetLicenceExtended extends DamAssetLicence {
   internalRuleUsers: IntegerId[]
   flags: AssetLicenceFlags
   autoDelete: AssetLicenceAutoDelete
+  defaultSource: DocIdNullable
 }
 
 export type DamAssetLicenceCached = DamAssetLicenceMinimal & {

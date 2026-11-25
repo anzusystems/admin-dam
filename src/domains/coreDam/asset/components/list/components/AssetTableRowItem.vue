@@ -112,7 +112,7 @@ onMounted(() => {
         :asset-file-properties="item.asset.assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
-        :auto-delete-at="asset.autoDeleteAt"
+        :single-use="asset.mainFileSingleUse === true"
         disable-absolute
       />
       <CachedPodcastChip

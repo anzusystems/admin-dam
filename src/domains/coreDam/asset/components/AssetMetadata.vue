@@ -27,10 +27,14 @@ import {
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
+  dateDiff,
+  dateNow,
   dateTimePretty,
+  dateTimeToDate,
   prettyBytes,
   DamSourcesAuthorsRow,
   useDamCreditPreview,
+  useRemainingTime,
 } from '@anzusystems/common-admin'
 
 const emit = defineEmits<{
@@ -39,6 +43,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { remainingTimeShort } = useRemainingTime()
 
 const panels = ref(['metadata', 'file'])
 
@@ -83,6 +88,12 @@ watch(
 const assetMainFile = computed<null | AssetFile>(() => {
   return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
 })
+
+const autoDeleteIn = computed(() =>
+  asset.value?.autoDeleteAt
+    ? remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(asset.value.autoDeleteAt), dateNow(), 's')))
+    : ''
+)
 
 const routableAssetFile = computed(() => {
   if (asset?.value?.mainFile && !assetFileIsVideoFile(asset.value.mainFile)) return asset.value.mainFile
@@ -308,6 +319,9 @@ const credit = useDamCreditPreview(
           </VCol>
           <VCol cols="9">
             <ADatetime :date-time="asset.autoDeleteAt" />
+            <span class="text-medium-emphasis">
+              ({{ t('coreDam.asset.detail.info.autoDeleteIn', { time: autoDeleteIn }) }})
+            </span>
           </VCol>
         </VRow>
         <div v-if="assetMainFile">

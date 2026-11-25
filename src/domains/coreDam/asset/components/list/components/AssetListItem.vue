@@ -78,7 +78,7 @@ const selectMultiple = () => {
         :asset-file-properties="item.asset.assetFileProperties"
         :show-meta-icons="showMetaIcons"
         :licence-badge="licenceBadge"
-        :auto-delete-at="asset.autoDeleteAt"
+        :single-use="asset.mainFileSingleUse === true"
       />
       <div class="dam-image-grid__item-text text-body-small px-2 py-1">
         <div class="d-flex align-center justify-space-between position-relative">
