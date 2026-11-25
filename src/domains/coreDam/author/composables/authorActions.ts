@@ -101,7 +101,7 @@ export const useAuthorEditActions = () => {
   const router = useRouter()
   const authorOneStore = useAuthorOneStore()
   const { author } = storeToRefs(authorOneStore)
-  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
+  const { addToCachedAuthors, fetchCachedAuthors, addManualToCachedAuthors } = useCachedAuthors()
   const { executeRequest: fetchAuthor } = useFetchAuthor()
   const { executeRequest: updateAuthor } = useUpdateAuthor()
 
@@ -134,7 +134,8 @@ export const useAuthorEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      await updateAuthor({ urlParams: { id: authorOneStore.author.id }, object: author.value })
+      const updated = await updateAuthor({ urlParams: { id: authorOneStore.author.id }, object: author.value })
+      addManualToCachedAuthors(updated)
       showRecordWas('updated')
       if (!close) return
       router.push({ name: getAuthorSection(author.value.flags.source).routeList })
@@ -168,6 +169,7 @@ export const useAuthorSelectActions = () => {
     reviewed: author.flags.reviewed,
     hiddenInCredit: author.flags.hiddenInCredit,
     priority: author.priority,
+    badge: author.badge,
   })
 
   const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({

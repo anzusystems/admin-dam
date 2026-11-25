@@ -9,6 +9,7 @@ import {
   useDamAuthorType,
 } from '@anzusystems/common-admin'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+import { BADGE_MAX_LENGTH } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
 import { PRIORITY_MAX, useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
@@ -79,6 +80,16 @@ watch(hasCurrentAuthors, (hasParents) => {
             :hint="t('coreDam.author.model.priorityHint', { max: PRIORITY_MAX })"
             persistent-hint
             data-cy="author-priority"
+          />
+        </ARow>
+        <ARow v-if="author.flags.source">
+          <AFormTextField
+            :model-value="author.badge"
+            :label="t('coreDam.author.model.badge')"
+            :v="v$.author.badge"
+            :maxlength="BADGE_MAX_LENGTH"
+            data-cy="author-badge"
+            @update:model-value="author.badge = String($event ?? '').toUpperCase()"
           />
         </ARow>
         <ARow>

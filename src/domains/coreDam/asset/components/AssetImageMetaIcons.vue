@@ -7,7 +7,13 @@ import {
   ICON_TTS,
   LOW_DIMENSION,
 } from '@/domains/coreDam/asset/components/assetImageIconsConfig'
-import { type AssetFileProperties, DamAssetType, type DamAssetTypeType, useDamConfigStore } from '@anzusystems/common-admin'
+import {
+  type AssetFileProperties,
+  DamAssetType,
+  type DamAssetTypeType,
+  type DamSourceBadge,
+  useDamConfigStore,
+} from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -15,11 +21,13 @@ const props = withDefaults(
     assetFileProperties: AssetFileProperties
     disableAbsolute?: boolean
     licenceBadge?: string
+    sourceBadges?: DamSourceBadge[]
     singleUse?: boolean
   }>(),
   {
     disableAbsolute: false,
     licenceBadge: '',
+    sourceBadges: () => [],
     singleUse: false,
   }
 )
@@ -86,7 +94,7 @@ const data = computed(() => {
 
 <template>
   <div
-    v-show="data.icons.length > 0 || licenceBadge.length > 0 || singleUse"
+    v-show="data.icons.length > 0 || licenceBadge.length > 0 || sourceBadges.length > 0 || singleUse"
     class="asset-image__meta-icons"
     :class="{ 'asset-image__meta-icons-absolute': !disableAbsolute }"
   >
@@ -96,6 +104,15 @@ const data = computed(() => {
       data-cy="asset-licence-badge"
     >
       {{ licenceBadge }}
+    </span>
+    <span
+      v-for="source in sourceBadges"
+      :key="source.id"
+      class="asset-image__licence-badge"
+      :title="t('common.damImage.asset.metaIcons.source', { name: source.name })"
+      data-cy="asset-source-badge"
+    >
+      {{ source.badge }}
     </span>
     <span
       v-if="singleUse"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import placeholder16x9 from '@/assets/image/placeholder16x9.jpg'
 import AssetImageMetaIcons from '@/domains/coreDam/asset/components/AssetImageMetaIcons.vue'
-import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType } from '@anzusystems/common-admin'
+import type { AssetFileProperties, DamAssetStatusType, DamAssetTypeType, DamSourceBadge } from '@anzusystems/common-admin'
 import { DamAssetStatus, DamAssetType, useRemainingTime } from '@anzusystems/common-admin'
 
 const props = withDefaults(
@@ -30,6 +30,7 @@ const props = withDefaults(
     showMetaIcons?: boolean
     assetFileProperties?: AssetFileProperties
     licenceBadge?: string
+    sourceBadges?: DamSourceBadge[]
     singleUse?: boolean
   }>(),
   {
@@ -57,6 +58,7 @@ const props = withDefaults(
     showMetaIcons: false,
     assetFileProperties: undefined,
     licenceBadge: '',
+    sourceBadges: () => [],
     singleUse: false,
   }
 )
@@ -236,6 +238,7 @@ const { remainingTimeShort } = useRemainingTime()
         :asset-file-properties="assetFileProperties"
         :asset-type="assetType"
         :licence-badge="licenceBadge"
+        :source-badges="sourceBadges"
         :single-use="singleUse"
       />
     </template>
@@ -274,6 +277,7 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
+      :source-badges="sourceBadges"
       :single-use="singleUse"
     />
   </div>
@@ -317,6 +321,7 @@ const { remainingTimeShort } = useRemainingTime()
       :asset-file-properties="assetFileProperties"
       :asset-type="assetType"
       :licence-badge="licenceBadge"
+      :source-badges="sourceBadges"
       :single-use="singleUse"
     />
   </div>
