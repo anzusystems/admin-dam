@@ -3,7 +3,7 @@ import { useBadgeRules } from '@/domains/coreDam/assetLicence/composables/badgeV
 
 const { required, minLength, between } = useValidate()
 
-export const PRIORITY_MAX = 1000
+export const PRIORITY_MAX = 100_000
 
 export function useAuthorValidation(author: Ref<DamAuthor>, validationScope: ValidationScope = undefined) {
   const badgeRules = useBadgeRules()
