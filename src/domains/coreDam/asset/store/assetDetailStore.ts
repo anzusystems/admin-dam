@@ -415,6 +415,15 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   }
 
   /**
+   * A form save of the asset was answered with the single use core-dam saved, which a licence that enforces single use
+   * turns on whatever was sent. The switch takes it while the form holds that asset and the switch still shows `sent`.
+   */
+  function savedMainFileSingleUse(assetId: DocId, sent: boolean, saved: boolean) {
+    if (asset.value?.id !== assetId || mainFileSingleUse.value !== sent) return
+    mainFileSingleUse.value = saved
+  }
+
+  /**
    * Reads made outside the detail (list, mass-edit batch) bring each asset's main file as the server has it.
    * For an ended main file this is the same news as the notification and is handled the same way.
    */
@@ -526,6 +535,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     fileStatusOnServer,
     mainFileOfRead,
     savedAsDescribed,
+    savedMainFileSingleUse,
     prefetchLazyData,
     setView,
     setDistributionCategory,

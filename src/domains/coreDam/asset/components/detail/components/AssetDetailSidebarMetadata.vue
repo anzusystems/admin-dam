@@ -13,6 +13,7 @@ import { useAssetDeleted } from '@/domains/coreDam/asset/components/detail/compo
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { assetDeleteOnItsWay, deleteAssetOnce } from '@/domains/coreDam/asset/composables/assetDeleteOnce'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
@@ -42,6 +43,7 @@ const {
 } = useAssetDetailActions()
 const assetDetailStore = useAssetDetailStore()
 const uploadQueueStore = useUploadQueuesStore()
+const assetListStore = useAssetListStore()
 
 const saveButtonLoading = ref(false)
 /*
@@ -95,15 +97,19 @@ const onSave = async () => {
   const saveAnswered = assetDetailStore.saveSent(asset.value)
   let failed = false
   try {
-    await updateAssetMetadata(
+    const onServer = await updateAssetMetadata(
       saved,
       mainFileSingleUse.value,
       mainFileOverrideInternal.value,
       mainFileInternal.value,
       ttsAudio.value
     )
+    // As core-dam saved it: a licence that enforces single use turns it on. Its tile badge and queue row follow.
+    const singleUse = onServer?.mainFileSingleUse ?? saved.mainFileSingleUse
+    assetDetailStore.savedMainFileSingleUse(saved.id, saved.mainFileSingleUse, singleUse)
+    assetListStore.setMainFileSingleUseById(saved.id, singleUse)
     // Also update the asset's queue row: a later bulk save sends that row.
-    uploadQueueStore.updateAssetMetadata(saved)
+    uploadQueueStore.updateAssetMetadata({ ...saved, mainFileSingleUse: singleUse })
     showRecordWas('updated')
   } catch (error) {
     failed = true

@@ -119,6 +119,13 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     })
   }
 
+  // Every tile of the asset, as above.
+  function setMainFileSingleUseById(id: DocId, mainFileSingleUse: boolean) {
+    list.value.forEach((item) => {
+      if (item.asset.id === id) item.asset.mainFileSingleUse = mainFileSingleUse
+    })
+  }
+
   function toggleSelectedByIndex(index: number) {
     if (!list.value[index]) return
     list.value[index].selected = !list.value[index].selected
@@ -219,6 +226,7 @@ export const useAssetListStore = defineStore('damAssetListStore', () => {
     appendList,
     setList,
     setDeletingById,
+    setMainFileSingleUseById,
     toggleSelectedByIndex,
     setSelectedByIds,
     toggleSelectedByIds,

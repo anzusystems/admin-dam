@@ -27,6 +27,7 @@ import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 import { useWhileOnPage } from '@/domains/system/composables/whileOnPage'
@@ -102,6 +103,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
   const { listLicenceIds } = useCurrentAssetLicence()
   const { fetchCachedUsers, addToCachedUsers } = useDamCachedUsers()
   const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
+  const { addToCachedAuthors, fetchCachedAuthors } = useCachedAuthors()
   const { maxSelectedItems } = useBetaTestFeatures()
   const showMetaIcons = ref(true)
 
@@ -172,6 +174,12 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
     pagination.value.currentViewCount = answered.value.currentViewCount
   }
 
+  // For the source badges of the tiles and rows.
+  const cacheSources = (assets: AssetSearchListItemDto[]) => {
+    addToCachedAuthors(...assets.map((asset) => asset.sources))
+    fetchCachedAuthors()
+  }
+
   const fetchAssetList = async () => {
     pagination.value.page = 1
     const generation = ++listGeneration
@@ -186,6 +194,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         assetListStore.setList(firstPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
         // Also update the detail or panel holding one of them whose main file is still loading.
         firstPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
+        cacheSources(firstPage)
       }
       addToCachedAssetLicences(listLicenceIds.value)
       fetchCachedAssetLicences()
@@ -248,6 +257,7 @@ export function useAssetListActions(sidebarRight: Ref<boolean> | null = null) {
         acceptPaginationAnswer(answered)
         assetListStore.appendList(nextPage, uploadQueuesStore.getQueueItems(QUEUE_ID_MASS_EDIT), shownInPanel())
         nextPage.forEach((asset) => assetDetailStore.mainFileOfRead(asset))
+        cacheSources(nextPage)
       }
     } catch (error) {
       // Otherwise the next scroll skips the failed page.

@@ -10,6 +10,9 @@
       "hiddenInCredit": "Skrytý v kredite",
       "source": "Zdroj"
     },
+    "priority": "Priorita v kredite",
+    "priorityHint": "Vyššie číslo je v kredite skôr, 0 – {max}",
+    "badge": "Odznak",
     "currentAuthors": "Nadradení autori",
     "childAuthors": "Podradení autori"
   },

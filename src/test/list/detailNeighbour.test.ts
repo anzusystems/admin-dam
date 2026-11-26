@@ -418,7 +418,15 @@ describe('metadata typed into the detail and not saved, when the detail is switc
   // The save sends what the form held when it started. Text typed after that is not part of it.
   it('are asked about after a save that went through, for what was typed while it was on the wire', async () => {
     let answer: () => void = () => undefined
-    server.on('PATCH', BULK, () => new Promise<FakeDamAnswer>((resolve) => (answer = () => resolve({ status: 200 }))))
+    // core-dam answers with what it saved.
+    server.on(
+      'PATCH',
+      BULK,
+      (request) =>
+        new Promise<FakeDamAnswer>(
+          (resolve) => (answer = () => resolve({ status: 200, data: JSON.parse(request.data as string) }))
+        )
+    )
     const detail = await openDetail()
     await detail.typeTitle('typed')
     detail.save().click()

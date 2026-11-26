@@ -11,10 +11,8 @@ import { useI18n } from 'vue-i18n'
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
-import {
-  BADGE_MAX_LENGTH,
-  useAssetLicenceValidation,
-} from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
+import { BADGE_MAX_LENGTH } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'

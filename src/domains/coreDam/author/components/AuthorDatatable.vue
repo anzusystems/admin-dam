@@ -56,6 +56,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
     { key: 'type' },
     { key: 'flags.reviewed' },
     { key: 'flags.hiddenInCredit' },
+    { key: 'priority' },
     ...(props.source ? [] : [{ key: 'flags.source' }]),
     { key: 'createdAt' },
     { key: 'modifiedAt' },

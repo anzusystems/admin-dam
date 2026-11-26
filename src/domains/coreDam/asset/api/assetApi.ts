@@ -7,6 +7,7 @@ import {
   isUndefined,
   useAlerts,
   useApiCommand,
+  useApiFetchItems,
   useApiFetchList,
   useApiRequest,
   useDamConfigState,
@@ -417,6 +418,21 @@ export const showMetadataSaveError = (error: unknown) => {
   if (!showErrorsDefault(error)) showUnknownError()
 }
 
+/*
+ * The same request for the one asset of the detail or the panel, which reads the answer: the metadata as core-dam
+ * saved them. A licence that enforces single use turns the main file's single use on whatever was sent.
+ */
+const useSaveAssetMetadata = () =>
+  useApiFetchItems<AssetMetadataBulkItem, AssetMetadataBulkItem[]>({
+    ...damApiBase,
+    method: 'PATCH',
+    shape: 'array',
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/metadata-bulk-update',
+    options: { validateStatus: (status) => status === HTTP_STATUS_OK },
+  })
+
+/** Saves the form of one asset. Resolves to the asset as core-dam saved it, `undefined` when the answer lacks it. */
 export const updateAssetMetadata = async (
   asset: AssetDetailItemDto,
   mainFileSingleUse: boolean | null,
@@ -436,14 +452,17 @@ export const updateAssetMetadata = async (
     mainFileInternal: mainFileInternal,
     ttsAudio: ttsAudio,
   }
-  const { execute } = useUpdateMetadataBulk()
+  const { execute } = useSaveAssetMetadata()
+  let answer: AssetMetadataBulkItem[]
   try {
-    await execute({ body: [data] })
+    answer = await execute({ body: [data] })
   } catch (error) {
     throw withNamedFields(error, () => asset.attributes.assetType)
   }
   // Also marks the asset described in the detail or panel if it holds this asset.
   useAssetDetailStore().savedAsDescribed([asset.id])
+
+  return answer.find((item) => item.id === asset.id)
 }
 
 export const useDeleteAsset = () =>

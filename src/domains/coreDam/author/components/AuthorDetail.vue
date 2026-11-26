@@ -62,6 +62,15 @@ const { getAuthorTypeOption } = useDamAuthorType()
           :value="author.flags.hiddenInCredit"
         />
       </ARow>
+      <ARow
+        :title="t('coreDam.author.model.priority')"
+        :value="author.priority"
+      />
+      <ARow
+        v-if="author.flags.source"
+        :title="t('coreDam.author.model.badge')"
+        :value="author.badge"
+      />
       <DamTrackingFields :data="author" />
     </VCol>
   </VRow>

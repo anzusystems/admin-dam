@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { nextTick } from 'vue'
 
 import { createFakeDam } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
@@ -7,7 +8,8 @@ import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi
 /*
  * The edit view serves authors and sources. A record can be opened under the address of the other kind,
  * whose route asks only for the update permission of that kind. Saving it needs the permission of its own.
- * A save also writes the record into the name cache, which chips and credit previews read.
+ * A save also writes the record into the name cache, which chips, credit previews and source badges read.
+ * The priority in the credit is edited for both kinds, the badge only for a source.
  */
 
 let server: FakeDam
@@ -23,6 +25,8 @@ const record = (id: string, source: boolean) => ({
   type: 'none',
   extSystem: 1,
   flags: { reviewed: false, source, hiddenInCredit: false },
+  priority: 0,
+  badge: '',
   currentAuthors: [],
   childAuthors: [],
   createdAt: '2026-10-09T10:00:00.000000Z',
@@ -69,6 +73,13 @@ const mountEdit = async (address: string, grants: string[]) => {
   return { ...ui, page, save }
 }
 
+const typeInto = async (page: HTMLElement, field: string, value: string) => {
+  const input = page.querySelector<HTMLInputElement>(`[data-cy="${field}"] input`)!
+  input.value = value
+  input.dispatchEvent(new Event('input'))
+  await nextTick()
+}
+
 beforeEach(() => {
   server = createFakeDam()
   server.on('GET', ONE, (_request, match) => ({ status: 200, data: record(match[1]!, match[1]!.startsWith('source')) }))
@@ -109,5 +120,40 @@ describe('the edit view of authors and sources', () => {
 
     await eventually(() => expect(server.sent('PUT', ONE)).toHaveLength(1))
     await eventually(() => expect(getCachedAuthor('source-1')?.hiddenInCredit).toBe(true))
+  })
+
+  it('writes the saved priority and badge into the name cache, which orders the credit and draws the source badges', async () => {
+    const { page, save, library } = await mountEdit('/sources/source-1/edit', ['dam_author_read', 'dam_source_update'])
+    const { getCachedAuthor } = library.useDamCachedAuthors()
+
+    await typeInto(page, 'author-priority', '250')
+    await typeInto(page, 'author-badge', 'ta5r')
+    expect(page.querySelector<HTMLInputElement>('[data-cy="author-badge"] input')!.value).toBe('TA5R')
+    save()!.click()
+
+    await eventually(() => expect(server.sent('PUT', ONE)).toHaveLength(1))
+    expect(JSON.parse(server.sent('PUT', ONE)[0]!.data as string)).toMatchObject({ priority: 250, badge: 'TA5R' })
+    await eventually(() => expect(getCachedAuthor('source-1')).toMatchObject({ priority: 250, badge: 'TA5R' }))
+  })
+
+  it('has a badge only for a source', async () => {
+    const { page } = await mountEdit('/authors/author-1/edit', ['dam_author_read', 'dam_author_update'])
+
+    expect(page.querySelector('[data-cy="author-priority"]')).not.toBeNull()
+    expect(page.querySelector('[data-cy="author-badge"]')).toBeNull()
+  })
+
+  it.each([
+    ['a priority over 100000', 'author-priority', '100001'],
+    ['an emptied priority', 'author-priority', ''],
+    ['a badge of other characters than A-Z and 0-9', 'author-badge', 'T-1'],
+  ])('sends nothing with %s', async (_case, field, value) => {
+    const { page, save, alerts } = await mountEdit('/sources/source-1/edit', ['dam_author_read', 'dam_source_update'])
+
+    await typeInto(page, field, value)
+    save()!.click()
+
+    await eventually(() => expect(alerts()).not.toEqual([]))
+    expect(server.sent('PUT', ONE)).toHaveLength(0)
   })
 })

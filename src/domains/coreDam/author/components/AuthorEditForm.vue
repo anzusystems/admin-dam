@@ -10,10 +10,11 @@ import {
 import { computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { BADGE_MAX_LENGTH } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
 import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
-import { useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import { PRIORITY_MAX, useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
 import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -71,6 +72,28 @@ watch(hasCurrentAuthors, (hasParents) => {
             v-model="author.flags.hiddenInCredit"
             :label="t('coreDam.author.model.flags.hiddenInCredit')"
             data-cy="author-flags-hidden-in-credit"
+          />
+        </ARow>
+        <ARow>
+          <AFormTextField
+            v-model.number="author.priority"
+            :label="t('coreDam.author.model.priority')"
+            :v="v$.author.priority"
+            type="number"
+            :step="1"
+            :hint="t('coreDam.author.model.priorityHint', { max: PRIORITY_MAX })"
+            persistent-hint
+            data-cy="author-priority"
+          />
+        </ARow>
+        <ARow v-if="author.flags.source">
+          <AFormTextField
+            :model-value="author.badge"
+            :label="t('coreDam.author.model.badge')"
+            :v="v$.author.badge"
+            :maxlength="BADGE_MAX_LENGTH"
+            data-cy="author-badge"
+            @update:model-value="author.badge = String($event ?? '').toUpperCase()"
           />
         </ARow>
         <ARow>

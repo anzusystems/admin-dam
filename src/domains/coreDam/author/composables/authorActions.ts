@@ -135,7 +135,8 @@ export const useAuthorEditActions = () => {
       }
       const res = await updateAuthor({ urlParams: { id: authorOneStore.author.id }, body: author.value })
       syncUserAndTimeTracking(authorOneStore.author, res)
-      // The name cache feeds chips and credit previews, which would keep the old name and "hidden in credit".
+      // The name cache feeds chips, credit previews and source badges, which would keep the old name, "hidden in
+      // credit", priority and badge.
       addManualToCachedAuthors(res)
       showRecordWas('updated')
       if (!close) return
@@ -169,6 +170,8 @@ export const useAuthorSelectActions = () => {
     identifier: author.identifier,
     reviewed: author.flags.reviewed,
     hiddenInCredit: author.flags.hiddenInCredit,
+    priority: author.priority,
+    badge: author.badge,
   })
 
   const mapToValueObject = (author: DamAuthor): ValueObjectOption<string> => ({
