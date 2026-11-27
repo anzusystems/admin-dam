@@ -1,30 +1,32 @@
 <script lang="ts" setup>
-import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
-import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
-import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   AJobStatusChip,
   ATableCopyIdButton,
   ATableDetailButton,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
-  createDatatableColumnsConfig,
   DatatablePaginationKey,
   FilterConfigKey,
   FilterDataKey,
+  SORT_BY_ID,
+  createDatatableColumnsConfig,
   useFilterHelpers,
   usePagination,
-} from '@anzusystems/common-admin/labs'
+} from '@anzusystems/common-admin'
 import { useDebounceFn } from '@vueuse/core'
+import { onMounted, provide } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
+
+import JobFilter from '@/domains/coreDam/job/components/JobFilter.vue'
 import JobResourceChip from '@/domains/coreDam/job/components/JobResourceChip.vue'
-import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
+import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
+import { useJobListFilter } from '@/domains/coreDam/job/filter/JobFilter'
 import type { Job } from '@/domains/coreDam/job/types/Job'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 type DatatableItem = Job
 
@@ -65,7 +67,7 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ],
   datatableHiddenColumns,
   SYSTEM_CORE_DAM,
-  ENTITY
+  'job'
 )
 
 const getList = useDebounceFn(() => {
@@ -114,7 +116,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item._resourceName="{ item }: { item: DatatableItem }">
@@ -132,9 +133,6 @@ defineExpose({
         <template #item.createdAt="{ item }: { item: DatatableItem }">
           <ADatetime :date-time="item.createdAt" />
         </template>
-        <template #item.modifiedAt="{ item }: { item: DatatableItem }">
-          <ADatetime :date-time="item.modifiedAt" />
-        </template>
         <template #item.actions="{ item }: { item: DatatableItem }">
           <div class="d-flex justify-end">
             <ATableCopyIdButton :id="item.id" />
@@ -147,10 +145,7 @@ defineExpose({
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+import { isEmptyObject, isUndefined, useDamConfigState } from '@anzusystems/common-admin'
+import type { DamCurrentUserDto } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import AssetCreateButton from '@/domains/coreDam/asset/components/AssetCreateButton.vue'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { ACL } from '@/domains/system/auth/auth'
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_DAM } from '@/shared/systems'
 
 withDefaults(
   defineProps<{
@@ -28,10 +33,26 @@ if (isUndefined(configExtSystem)) {
 }
 
 const externalProviders = computed(() => configExtSystem.assetExternalProviders ?? {})
+
+const { useCurrentUser, can } = useAuth()
+const { currentUser, isSuperAdmin } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
+
+// A super admin may open any provider. Others only the ones on their account
+// (`AssetExternalProviderVoter`), and only with the access grant the provider list requires.
+const offeredExternalProviders = computed(() => {
+  if (isSuperAdmin.value) return externalProviders.value
+  if (!can(ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS)) return {}
+  return Object.fromEntries(
+    Object.entries(externalProviders.value).filter(
+      ([provider]) => currentUser.value?.allowedAssetExternalProviders.includes(provider) ?? false
+    )
+  )
+})
 </script>
 
 <template>
   <VBtn
+    :aria-label="t('system.mainBar.options')"
     variant="text"
     icon
     size="small"
@@ -62,18 +83,16 @@ const externalProviders = computed(() => configExtSystem.assetExternalProviders 
               data-cy="button-main-video-show"
             />
           </Acl>
-          <Acl :permission="ACL.DAM_ASSET_EXTERNAL_PROVIDER_ACCESS">
-            <template v-if="!isEmptyObject(externalProviders)">
-              <VDivider />
-              <VListItem
-                v-for="(provider, key) in externalProviders"
-                :key="key"
-                :to="{ name: '/(coreDam)/external-providers/[provider]', params: { provider: key } }"
-                :title="provider.title"
-                prepend-icon="mdi-puzzle-outline"
-              />
-            </template>
-          </Acl>
+          <template v-if="!isEmptyObject(offeredExternalProviders)">
+            <VDivider />
+            <VListItem
+              v-for="(provider, key) in offeredExternalProviders"
+              :key="key"
+              :to="{ name: '/(coreDam)/external-providers/[provider]', params: { provider: key } }"
+              :title="provider.title"
+              prepend-icon="mdi-puzzle-outline"
+            />
+          </template>
           <VDivider />
           <VListItem
             v-show="variant === 'main'"

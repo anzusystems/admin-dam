@@ -65,11 +65,6 @@
       "detail": "Keyword",
       "edit": "Keyword"
     },
-    "user": {
-      "list": "Users",
-      "detail": "User",
-      "edit": "User"
-    },
     "job": {
       "list": "Jobs",
       "detail": "Job"
@@ -95,9 +90,10 @@
     }
   },
   "anzuUser": {
-    "list": "User permissions",
+    "list": "Users",
     "detail": "User",
-    "edit": "User"
+    "edit": "User",
+    "create": "New user"
   },
   "log": {
     "list": "Logs",
@@ -106,7 +102,8 @@
   "permissionGroup": {
     "list": "Permission groups",
     "detail": "Group",
-    "edit": "Group"
+    "edit": "Group",
+    "create": "New group"
   },
   "settings": "Settings"
 }

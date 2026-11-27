@@ -6,7 +6,6 @@ import { confirmCreate, createDialog, openSettingsSection, visibleCy } from '@pa
 export interface AssetLicenceData {
   name: string
   extId: string
-  /** Ext system slug as the select lists it, e.g. "cms". */
   extSystem: string
 }
 
@@ -18,7 +17,6 @@ async function fillLicence(page: Page, data: AssetLicenceUpdateData): Promise<vo
   await page.locator('[data-cy="asset-licence-ext-id"] input').fill(data.extId)
 }
 
-/** Create an asset licence through the create dialog of the licence list and return its id. */
 export async function createAssetLicence(page: Page, data: AssetLicenceData): Promise<string> {
   await openSettingsSection(page, 'asset-licence-settings', 'asset-licences', 'Licencie assetov')
   await visibleCy(page, 'button-create').click()
@@ -27,14 +25,15 @@ export async function createAssetLicence(page: Page, data: AssetLicenceData): Pr
   await fillLicence(page, data)
   const extSystem = page.locator('[data-cy="asset-licence-ext-system"]').filter({ visible: true }).first()
   await extSystem.click()
-  await extSystem.locator('input').fill(data.extSystem)
+  // Once it holds a system, the field carries a hidden input with its id beside the search box, and the field
+  // around the box has the combobox role too.
+  await extSystem.locator('input:not([type="hidden"])').fill(data.extSystem)
   await page.getByRole('option', { name: data.extSystem, exact: true }).click()
   await expect(panel.locator('[data-cy="button-close"]')).toBeVisible()
   await expect(panel.locator('[data-cy="button-cancel"]')).toBeVisible()
   return confirmCreate(page, createDialog(page), '/asset-licence')
 }
 
-/** Edit an asset licence found by id in the list. */
 export async function updateAssetLicence(page: Page, id: string, data: AssetLicenceUpdateData): Promise<void> {
   await page.goto('/asset-licences')
   await filterBy(page, 'ID', id)

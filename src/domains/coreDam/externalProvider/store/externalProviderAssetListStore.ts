@@ -1,10 +1,13 @@
 import type { UploadQueueItem } from '@anzusystems/common-admin'
-import { UploadQueueItemType } from '@anzusystems/common-admin'
+import { UploadQueueItemType, isNull } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
+import type { ListLoader } from '@/domains/coreDam/asset/store/assetListStore'
 import type {
   AssetExternalProviderId,
   AssetExternalProviderListDto,
 } from '@/domains/coreDam/asset/types/AssetExternalProvider'
-import type { ListLoader } from '@/domains/coreDam/asset/store/assetListStore'
 
 export interface ExternalProviderAssetListItem {
   asset: AssetExternalProviderListDto
@@ -15,6 +18,16 @@ export interface ExternalProviderAssetListItem {
 export const useExternalProviderAssetListStore = defineStore('damExternalProviderAssetListStore', () => {
   const list = ref<ExternalProviderAssetListItem[]>([])
   const activeItemIndex = ref<null | number>(null)
+  /*
+   * Tracks the active tile by asset, as in the asset list.
+   * After a reload the same index may hold another asset or none.
+   */
+  let activeAssetId: AssetExternalProviderId | null = null
+  /*
+   * Set once a list came without that asset. No tile is active, and
+   * the asset is awaited in a later page or the next list read.
+   */
+  let activeAssetIsAwaited = false
   const keyboardNavigation = ref(false)
   const loader = ref<{ soft: boolean; hard: boolean }>({
     soft: false,
@@ -29,27 +42,26 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     loader.value[type] = false
   }
 
-  function appendList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
-    const selectedIds: Array<AssetExternalProviderId> = []
-    for (let i = 0; i < selectedItems.length; i++) {
-      if (
-        selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset &&
-        selectedItems[i].externalProviderAssetId
-      ) {
-        selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
-      }
+  /*
+   * With no active tile, the previously active asset's tile becomes active again at its new index.
+   * An awaited asset is awaited only while the side panel still shows it (`shownAssetId`).
+   * Otherwise the panel may have lost it, and activating its tile would select something nobody picked.
+   */
+  function restoreActive(shownAssetId: AssetExternalProviderId | null) {
+    if (!isNull(activeItemIndex.value) || isNull(activeAssetId)) return
+    if (activeAssetIsAwaited && shownAssetId !== activeAssetId) {
+      activeAssetId = null
+
+      return
     }
-    const items = assets.map((asset) => {
-      return {
-        asset: asset,
-        active: false,
-        selected: selectedIds.includes(asset.id),
-      }
-    })
-    list.value = list.value.concat(items)
+    setActiveByIndex(list.value.findIndex((item) => item.asset.id === activeAssetId))
   }
 
-  function setList(assets: AssetExternalProviderListDto[], selectedItems: UploadQueueItem[] = []) {
+  function appendList(
+    assets: AssetExternalProviderListDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: AssetExternalProviderId | null = null
+  ) {
     const selectedIds: Array<AssetExternalProviderId> = []
     for (let i = 0; i < selectedItems.length; i++) {
       if (
@@ -59,18 +71,51 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
         selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
       }
     }
-    list.value = assets.map((asset) => {
-      return {
-        asset: asset,
-        active: false,
-        selected: selectedIds.includes(asset.id),
+    const items = assets.map((asset) => ({
+      asset: asset,
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
+    list.value = list.value.concat(items)
+    // An asset missing from the first page of a re-read list can be on a later page.
+    restoreActive(shownAssetId)
+  }
+
+  function setList(
+    assets: AssetExternalProviderListDto[],
+    selectedItems: UploadQueueItem[] = [],
+    shownAssetId: AssetExternalProviderId | null = null
+  ) {
+    const selectedIds: Array<AssetExternalProviderId> = []
+    for (let i = 0; i < selectedItems.length; i++) {
+      if (
+        selectedItems[i].type === UploadQueueItemType.ExternalProviderAsset &&
+        selectedItems[i].externalProviderAssetId
+      ) {
+        selectedIds.push(selectedItems[i].externalProviderAssetId as AssetExternalProviderId)
       }
-    })
+    }
+    list.value = assets.map((asset) => ({
+      asset: asset,
+      active: false,
+      selected: selectedIds.includes(asset.id),
+    }))
+    // The old active position now belongs to another asset or to none.
+    activeItemIndex.value = null
+    restoreActive(shownAssetId)
+    activeAssetIsAwaited = isNull(activeItemIndex.value) && !isNull(activeAssetId)
   }
 
   function toggleSelectedByIndex(index: number) {
     if (!list.value[index]) return
     list.value[index].selected = !list.value[index].selected
+  }
+
+  /* Same rule `setList` applies: a row is selected exactly while its asset is in the mass-edit queue. */
+  function setSelectedByIds(ids: AssetExternalProviderId[]) {
+    list.value.forEach((item) => {
+      item.selected = ids.includes(item.asset.id)
+    })
   }
 
   function toggleSelectedByIds(ids: AssetExternalProviderId[]) {
@@ -87,16 +132,16 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     if (!list.value[index]) return
     list.value[index].active = true
     activeItemIndex.value = index
+    activeAssetId = list.value[index].asset.id
+    activeAssetIsAwaited = false
     if (isNull(oldActiveIndex)) return
+    // The list may now be shorter than when the index was stored.
+    if (!(oldActiveIndex in list.value)) return
     list.value[oldActiveIndex].active = false
   }
 
   function setActiveNext() {
-    let activeIndex = 0
-    if (!isNull(activeItemIndex.value)) {
-      activeIndex = activeItemIndex.value
-    }
-    const wantedIndex = activeIndex + 1
+    const wantedIndex = isNull(activeItemIndex.value) ? 0 : activeItemIndex.value + 1
     if (wantedIndex >= list.value.length) return
     setActiveByIndex(wantedIndex)
   }
@@ -125,8 +170,10 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     keyboardNavigation.value = false
   }
 
+  /** Empties the list before a re-read. No tile stays active, but the active asset is remembered. */
   function resetList() {
     list.value = []
+    activeItemIndex.value = null
     loader.value.soft = false
     loader.value.hard = true
   }
@@ -134,6 +181,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
   function reset() {
     list.value = []
     activeItemIndex.value = null
+    activeAssetId = null
     keyboardNavigation.value = false
     loader.value.soft = false
     loader.value.hard = true
@@ -149,6 +197,7 @@ export const useExternalProviderAssetListStore = defineStore('damExternalProvide
     appendList,
     setList,
     toggleSelectedByIndex,
+    setSelectedByIds,
     toggleSelectedByIds,
     setActiveByIndex,
     setActiveNext,

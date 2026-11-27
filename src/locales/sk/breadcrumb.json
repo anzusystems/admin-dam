@@ -65,11 +65,6 @@
       "detail": "Kľúčové slovo",
       "edit": "Kľúčové slovo"
     },
-    "user": {
-      "list": "Používatelia",
-      "detail": "Používateľ",
-      "edit": "Používateľ"
-    },
     "job": {
       "list": "Systémové úlohy",
       "detail": "Systémová úloha"
@@ -95,9 +90,10 @@
     }
   },
   "anzuUser": {
-    "list": "Oprávnenia používateľov",
+    "list": "Používatelia",
     "detail": "Používateľ",
-    "edit": "Používateľ"
+    "edit": "Používateľ",
+    "create": "Nový používateľ"
   },
   "log": {
     "list": "Logy",
@@ -106,7 +102,8 @@
   "permissionGroup": {
     "list": "Skupiny oprávnení",
     "detail": "Skupina",
-    "edit": "Skupina"
+    "edit": "Skupina",
+    "create": "Nová skupina"
   },
   "settings": "Nastavenia"
 }

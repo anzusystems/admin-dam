@@ -4,9 +4,8 @@ import * as path from 'path'
 import { FIXTURE_FILES, FIXTURES_DIR, TEST_DATA_BUCKET_URL } from '../pages/shared/fixtures'
 
 /**
- * Playwright globalSetup — runs once before any test.
- * Validates all required environment variables so tests fail fast with a clear message instead of
- * cryptic errors mid-run, and downloads the media fixtures the upload tests need.
+ * Runs once before any test. Validates required environment variables so tests fail
+ * fast with a clear message, and downloads the media fixtures the upload tests need.
  */
 export default async function globalSetup(config: FullConfig): Promise<void> {
   const required: string[] = ['BASE_URL', 'FORCE_LOGIN_URL', 'ADMIN_USER_ID', 'URL_DOMAIN', 'URL_PROTO', 'LICENCE_ID']
@@ -15,7 +14,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
 
   if (missing.length > 0) {
     throw new Error(
-      `Missing required environment variables:\n  ${missing.join('\n  ')}\n\nCopy .env.dist to .env.devel (or .env.staging) and fill in all values.`
+      `Missing required environment variables:\n  ${missing.join('\n  ')}\n\nCopy .env.dist to .env.${process.env.E2E_ENV} and fill in all values.`
     )
   }
 
@@ -30,7 +29,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
   await downloadFixtures()
 }
 
-/** Fetch every media fixture that is not on disk yet. The files are too large to keep in git. */
+/** Fetch every media fixture that is not on disk yet. The files are too large for git. */
 async function downloadFixtures(): Promise<void> {
   for (const file of FIXTURE_FILES) {
     const target = path.join(FIXTURES_DIR, file)

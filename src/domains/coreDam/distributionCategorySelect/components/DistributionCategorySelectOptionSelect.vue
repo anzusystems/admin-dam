@@ -1,30 +1,31 @@
 <script lang="ts" setup>
-import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
-import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import { cloneDeep, isUndefined, useDamConfigState, useValidate } from '@anzusystems/common-admin'
 import type { ErrorObject } from '@vuelidate/core'
-import { useDamConfigState } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed } from 'vue'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import type { DistributionCategoryOption } from '@/domains/coreDam/distributionCategory/types/DistributionCategoryOption'
+import type { DistributionCategorySelect } from '@/domains/coreDam/distributionCategorySelect/types/DistributionCategorySelect'
 import { damClient } from '@/shared/apiClients/damClient'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: DistributionCategoryOption | null | undefined
     select: DistributionCategorySelect
   }>(),
   {}
 )
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: DistributionCategoryOption | null | undefined): void
-  (e: 'blur', data: DistributionCategoryOption | null | undefined): void
-}>()
+const emit = defineEmits<{ blur: [data: DistributionCategoryOption | null | undefined] }>()
+
+const modelValue = defineModel<DistributionCategoryOption | null | undefined>({ required: true })
 
 const modelValueComputed = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: DistributionCategoryOption | null | undefined) {
-    emit('update:modelValue', cloneDeep<DistributionCategoryOption | null | undefined>(newValue))
+    modelValue.value = cloneDeep<DistributionCategoryOption | null | undefined>(newValue)
   },
 })
 
@@ -35,16 +36,15 @@ if (isUndefined(configExtSystem)) {
   throw new Error('Ext system must be initialised.')
 }
 
-const isRequired = computed(() => {
-  return (
+const isRequired = computed(
+  () =>
     configExtSystem[props.select.type]?.distribution?.distributionRequirements[props.select.serviceSlug]?.categorySelect
       ?.required ?? false
-  )
-})
+)
 
 const { requiredIf } = useValidate()
 
-const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired.value) } }, { modelValueComputed })
+const v$ = useVuelidate({ modelValueComputed: { required: requiredIf(isRequired) } }, { modelValueComputed })
 
 const errorMessageComputed = computed(() => {
   if (v$.value.$errors?.length) return [v$.value.$errors.map((item: ErrorObject) => item.$message).join(' ')]
@@ -76,7 +76,7 @@ const onBlur = () => {
       <span>{{ select.serviceSlug }}</span>
       <span
         v-if="isRequired"
-        class="required"
+        class="a-required-mark"
       />
     </template>
   </VSelect>

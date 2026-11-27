@@ -1,4 +1,6 @@
+import { isDefined } from '@anzusystems/common-admin'
 import type { Editor } from '@tiptap/core'
+
 import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 
 export interface ToolbarItemButton {
@@ -9,6 +11,8 @@ export interface ToolbarItemButton {
   show: () => boolean
   active: () => boolean | undefined
   titleT: string
+  /** A toggled mark: the button shows whether it is active. */
+  toggle?: boolean
 }
 
 export interface ToolbarItemSeparator {
@@ -24,28 +28,31 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       id: 'textBold',
       type: 'button',
       icon: 'mdi-format-bold',
-      titleT: 'Bold',
+      titleT: 'system.editor.bold',
       command: () => editor?.chain().focus().toggleBold().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.bold),
       active: () => editor?.isActive('bold'),
+      toggle: true,
     },
     {
       id: 'textItalic',
       type: 'button',
       icon: 'mdi-format-italic',
-      titleT: 'Italic',
+      titleT: 'system.editor.italic',
       command: () => editor?.chain().focus().toggleItalic().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.italic),
       active: () => editor?.isActive('italic'),
+      toggle: true,
     },
     {
       id: 'textUnderline',
       type: 'button',
       icon: 'mdi-format-underline',
-      titleT: 'Underline',
+      titleT: 'system.editor.underline',
       command: () => editor?.chain().focus().toggleUnderline().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.underline),
       active: () => editor?.isActive('underline'),
+      toggle: true,
     },
     {
       id: 'sep1',
@@ -55,7 +62,7 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       id: 'openLink',
       type: 'button',
       icon: 'mdi-link',
-      titleT: 'Link',
+      titleT: 'system.editor.link',
       command: () => openLinkDialog(),
       show: () => isDefined(editor?.extensionManager.schema.marks.link),
       active: () => editor?.isActive('link'),
@@ -64,7 +71,7 @@ export function useAnzutapToolbar(editor: Editor | undefined) {
       id: 'removeLink',
       type: 'button',
       icon: 'mdi-link-off',
-      titleT: 'Remove link',
+      titleT: 'system.editor.removeLink',
       command: () => editor?.chain().focus().extendMarkRange('link').unsetLink().run(),
       show: () => isDefined(editor?.extensionManager.schema.marks.link) && !!editor?.isActive('link'),
       active: () => false,

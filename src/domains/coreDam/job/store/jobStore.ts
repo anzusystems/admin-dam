@@ -1,5 +1,8 @@
-import type { Job } from '@/domains/coreDam/job/types/Job'
 import { useCommonJobFactory } from '@anzusystems/common-admin'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { ref } from 'vue'
+
+import type { Job } from '@/domains/coreDam/job/types/Job'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export const useJobOneStore = defineStore('damJobOneStore', () => {

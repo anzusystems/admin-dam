@@ -1,8 +1,9 @@
-import type { Ref } from 'vue'
-import { computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
 import type { ValidationScope } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
+
 import type { ElevenlabsVoice, GoogleTtsVoice } from '@/domains/coreDam/voiceFamily/types/Voice'
 
 const { required, minLength, maxLength, minValue, maxValue } = useValidate()

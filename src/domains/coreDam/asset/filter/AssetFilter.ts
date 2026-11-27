@@ -1,7 +1,8 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
-import { DamAssetStatus } from '@anzusystems/common-admin'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { DamAssetStatus, createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/asset/api/assetApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export const filterFieldsList = [
   { name: 'text' as const, default: null, type: 'string', variant: 'search' },
@@ -53,14 +54,9 @@ export const filterFieldsList = [
 const listFiltersStore = createFilterStore(filterFieldsList)
 
 export function useAssetListFilter() {
-  const { filterConfig, filterData } = createFilter(filterFieldsList, listFiltersStore, {
+  return createFilter(filterFieldsList, listFiltersStore, {
     elastic: true,
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

@@ -1,20 +1,26 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import {
+  ADamAuthorRemoteAutocompleteWithCached,
   AFormDatetimePicker,
   AFormTextField,
   ARow,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { ENTITY } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
 import { useAssetLicenceEditActions } from '@/domains/coreDam/assetLicence/composables/assetLicenceActions'
 import { useAssetLicenceValidation } from '@/domains/coreDam/assetLicence/composables/assetLicenceValidation'
 import { BADGE_MAX_LENGTH } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
 import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { assetLicence } = useAssetLicenceEditActions()
+// Authors are searched and created in the current ext system, not the licence's own.
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const { v$ } = useAssetLicenceValidation(assetLicence)
 
@@ -99,7 +105,7 @@ const { t } = useI18n()
         </ARow>
         <ARow v-if="assetLicence.autoDelete.active">
           <AFormTextField
-            v-model="assetLicence.autoDelete.olderThanDays"
+            v-model.number="assetLicence.autoDelete.olderThanDays"
             :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
             :v="v$.assetLicence.autoDelete.olderThanDays"
             type="number"
@@ -124,8 +130,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AuthorRemoteAutocompleteWithCached
+          <ADamAuthorRemoteAutocompleteWithCached
             v-model="assetLicence.internalRuleAuthors"
+            :ext-system="currentExtSystemId"
             :label="t('coreDam.assetLicence.model.internalRuleAuthors')"
             :validation-scope="false"
             multiple
@@ -142,8 +149,9 @@ const { t } = useI18n()
           />
         </ARow>
         <ARow>
-          <AuthorRemoteAutocompleteWithCached
+          <ADamAuthorRemoteAutocompleteWithCached
             v-model="assetLicence.defaultSource"
+            :ext-system="currentExtSystemId"
             :label="t('coreDam.assetLicence.model.defaultSource')"
             :validation-scope="false"
             source
@@ -151,6 +159,7 @@ const { t } = useI18n()
             data-cy="asset-licence-default-source"
           />
         </ARow>
+        <DamTrackingFields :data="assetLicence" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

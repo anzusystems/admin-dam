@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 import AssetSearchInput from '@/domains/coreDam/asset/components/toolbar/AssetSearchInput.vue'
 

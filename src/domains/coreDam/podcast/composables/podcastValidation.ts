@@ -1,6 +1,11 @@
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
 
-const { required, maxLength, minLength } = useValidate()
+const { required, maxLength, minLength, minValue } = useValidate()
 
 export function usePodcastValidation(podcast: Ref<Podcast>) {
   const rules = computed(() => ({
@@ -17,6 +22,14 @@ export function usePodcastValidation(podcast: Ref<Podcast>) {
         },
       },
       attributes: {
+        webOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
+        mobileOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
         rssUrl: {
           minLength: minLength(1),
           maxLength: maxLength(2048),

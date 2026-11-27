@@ -1,43 +1,7 @@
-import type { DamKeyword, DamKeywordMinimal } from '@anzusystems/common-admin'
-import { fetchKeywordListByIds } from '@/domains/coreDam/keyword/api/keywordApi'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useDamCachedKeywords } from '@anzusystems/common-admin'
 
-const mapFullToMinimal = (keyword: DamKeyword): DamKeywordMinimal => ({
-  id: keyword.id,
-  name: keyword.name,
-})
-
-const mapIdToMinimal = (id: DocId): DamKeywordMinimal => {
-  return { id: id, name: '' }
-}
-
-const { cache, toFetch, fetch, add, addManual, addManualMinimal, has, get, isLoaded } = defineCached<
-  DocId,
-  DamKeyword,
-  DamKeywordMinimal
->(mapFullToMinimal, mapIdToMinimal, (ids) => {
-  const { currentExtSystemId } = useCurrentExtSystem()
-  return fetchKeywordListByIds(currentExtSystemId.value, ids)
-})
-
-export const useCachedKeywords = () => {
-  return {
-    addManualToCachedKeywords: addManual,
-    addManualMinimalToCachedKeywords: addManualMinimal,
-    addToCachedKeywords: add,
-    fetchCachedKeywords: fetch,
-    toFetchCachedKeywords: toFetch,
-    cachedKeywords: cache,
-    hasCachedKeyword: has,
-    getCachedKeyword: get,
-    isLoadedCachedKeyword: isLoaded,
-  }
-}
-
-export const useCachedKeywordsForRemoteAutocomplete = () => {
-  return {
-    fetch,
-    add,
-    addManualMinimal,
-  }
-}
+/*
+ * Wraps the library's page-wide keyword name cache, keyed by the ext system `initCurrentExtSystemAndLicence` sets.
+ * A library widget mounted by admin-dam would also set that ext system.
+ */
+export const useCachedKeywords = () => useDamCachedKeywords()

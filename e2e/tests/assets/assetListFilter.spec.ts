@@ -13,6 +13,7 @@ import {
   chooseSorting,
   colourSwatch,
   fillFilter,
+  filterField,
   loadNextPage,
   openFilterDrawer,
   pickColourSwatch,
@@ -23,16 +24,11 @@ import {
 } from '@pages/assets/assetListFilterPage'
 
 /**
- * Finding assets again: the filter drawer, the quick type buttons, the ordering and the list's paging.
- *
- * One filter of each kind is covered rather than all ~35 fields, since the kind is what carries the
- * behaviour — a string, an exact id, a remote autocomplete, a multi-value select, a tri-state boolean,
- * an integer range, a datetime interval and the colour palette.
- *
- * Which assets came back is asserted only for fixtures this spec uploaded, and they are pinned down by
- * `Text`: the licence holds thousands of assets that other suites and real users keep changing, so a
- * filter asserted against those would only be testing today's data. `Text` is the one filter the search
- * reliably combines with the others — `Id` does not, which is DAM-B2 below.
+ * Finding assets again: the filter drawer, quick type buttons, ordering and paging.
+ * One filter of each kind is covered, not all ~35 fields, since the kind carries the behaviour.
+ * Results are asserted only for fixtures this spec uploaded, pinned by `Text`. The licence holds thousands of assets
+ * that others keep changing. `Text` is the one filter the search reliably combines with others; `Id` searches by
+ * the id alone (core-dam leaves the other filters out on purpose, and the drawer says so).
  */
 
 let page: Page
@@ -40,11 +36,14 @@ let IMAGE_ID = ''
 let DOCUMENT_ID = ''
 let KEYWORD_ID = ''
 
-/** Shared by both fixture titles, so one text search finds exactly this run's pair and nothing else. */
-const TOKEN = `Filter${RAND_NUM}`
+/**
+ * Shared by both fixture titles, so one text search finds exactly this run's pair and nothing else. The search
+ * splits letters from digits, so the letters must be no word: `Filter<n>` also found staging's "No filter".
+ */
+const TOKEN = `Zqf${RAND_NUM}`
 const TITLE_IMAGE = `${TOKEN} Img`
 const TITLE_DOCUMENT = `${TOKEN} Doc`
-const KEYWORD = `FilterKw${RAND_NUM}`
+const KEYWORD = `Zqk${RAND_NUM}`
 
 test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
   test.beforeAll(async ({ browser }) => {
@@ -102,7 +101,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     const params = await submitFilter(page)
     expect(params.get('text')).toBe(TOKEN)
     expect(params.get('type')).toBe('document')
-    // The image drops out, so the two filters are combined rather than replacing one another.
     await submitFilterForTiles(page, [TITLE_DOCUMENT])
   })
 
@@ -110,7 +108,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await resetFilter(page)
     await fillFilter(page, 'Text', TOKEN)
 
-    // Both fixtures were given a title, so both count as described.
     await chooseFilterOption(page, 'Popísaný', 'áno')
     expect((await submitFilter(page)).get('described')).toBe('true')
     await submitFilterForTiles(page, [TITLE_IMAGE, TITLE_DOCUMENT])
@@ -133,17 +130,19 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
-  test('combines the id filter with the other filters', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B2: an id filter makes the search ignore every other filter — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B2' })
-
+  // DAM-B2 was no bug: core-dam searches by id alone on purpose (AssetQueryFactory::getFilter).
+  test('searches by the id alone and says the other filters are left out', async () => {
     await resetFilter(page)
+    // The field's hint, only while it holds an id.
+    const idHint = filterField(page, 'Id').locator('.v-messages')
+    await expect(idHint).toHaveCount(0)
     await fillFilter(page, 'Id', IMAGE_ID)
+    await expect(idHint).toHaveText('S vyplneným Id sa ostatné filtre nepoužijú.')
     await submitFilterForTiles(page, [TITLE_IMAGE])
 
-    // The id belongs to an image, so asking for documents as well can only come back empty.
+    // A document type filter would drop the image; with an id it is not applied.
     await chooseFilterOption(page, 'Typ', 'Dokument')
-    await submitFilterForTiles(page, [], 15000)
+    await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
   test('finds the tagged asset by its keyword', async () => {
@@ -151,7 +150,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await pickFilterKeyword(page, KEYWORD)
 
     expect((await submitFilter(page)).get('keywordIds')).toBe(KEYWORD_ID)
-    // The keyword was created by this run, so it can only be on the image it was typed into.
     await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
@@ -166,25 +164,27 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     const params = await submitFilter(page)
     expect(params.get('widthFrom')).toBe(String(width - 1))
     expect(params.get('widthUntil')).toBe(String(width + 1))
-    // The document has no width at all, so a width range drops it along with everything outside the range.
-    // This is the slowest step of the spec: an image's dimensions reach the search index a good while
-    // after its file is `processed`, and until they do a width range matches nothing at all.
+    // The document has no width, so a width range drops it.
+    // This is the slowest step: an image's dimensions reach the search index a good
+    // while after its file is `processed`, and until then a width range matches nothing.
     await submitFilterForTiles(page, [TITLE_IMAGE])
   })
 
-  test('narrows the width range from the upper bound alone', { tag: '@bug' }, async () => {
-    test.fail() // DAM-B10: an upper bound on its own keeps assets that have no width — see KNOWN-BUGS.md
-    test.info().annotations.push({ type: 'bug', description: 'DAM-B10' })
-
+  // DAM-B10, fixed in 3.0: an upper bound on its own kept the assets without a width, which core-dam indexes as 0.
+  test('narrows the width range from the upper bound alone', async () => {
     const width: number = (await getAsset(page, IMAGE_ID)).mainFile.imageAttributes.width
 
-    // The upper bound has to bite on its own: it shares its row with "Šírka od" and binds its own field.
-    // Below the image's width it drops the image, and the document has no width to be within a range at
-    // all — so the pair this run uploaded is gone and the `Text` filter leaves nothing else.
+    // The upper bound must work on its own: it shares a row with "Šírka od" and binds its own field.
+    // Below the image's width it drops the image, and the document has no
+    // width, so the pair is gone and the `Text` filter leaves nothing.
     await resetFilter(page)
     await fillFilter(page, 'Text', TOKEN)
     await fillFilter(page, 'Šírka do', String(width - 1))
-    expect((await submitFilter(page)).get('widthFrom')).toBeNull()
+    const params = await submitFilter(page)
+    expect(params.get('widthUntil')).toBe(String(width - 1))
+    // Sent with a lower bound of 1, so the document (width 0 in the index) is left out.
+    expect(params.get('widthFrom')).toBe('1')
+    await expect(filterField(page, 'Šírka od').locator('input').first()).toHaveValue('')
     await submitFilterForTiles(page, [], 15000)
   })
 
@@ -197,17 +197,16 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     const from = new Date(params.get('createdAtFrom') ?? '')
     const until = new Date(params.get('createdAtUntil') ?? '')
     expect(until.getTime() - from.getTime(), 'the "1 deň" preset spans a day').toBe(24 * 60 * 60 * 1000)
-    // The fixtures were uploaded minutes ago, so a one-day window has to still hold them.
     await submitFilterForTiles(page, [TITLE_IMAGE, TITLE_DOCUMENT])
   })
 
   test('sends the picked colour swatch as the dominant colour', async () => {
     await resetFilter(page)
-    await expect(colourSwatch(page, 'red').locator('.mdi-check')).toBeHidden()
+    await expect(colourSwatch(page, 'Červená').locator('.mdi-check')).toBeHidden()
 
-    const hex = await pickColourSwatch(page, 'red')
-    // Which assets are "closest" to a palette colour is the backend's judgement, and not something a
-    // fixture can be given, so this asserts the query the palette builds rather than the assets it returns.
+    const hex = await pickColourSwatch(page, 'Červená')
+    // Which assets are closest to a palette colour is the backend's judgement and cannot be
+    // set up in a fixture. This asserts the query the palette builds, not the assets returned.
     expect((await submitFilter(page)).get('closestMostDominantColor')).toBe(hex)
   })
 
@@ -221,12 +220,11 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     expect(params.get('type'), 'the quick type button is cleared too').toBeNull()
     expect(params.get('closestMostDominantColor')).toBeNull()
     expect(params.get('order[score_date]'), 'the ordering survives a filter reset').toBe('asc')
-    await expect(colourSwatch(page, 'red').locator('.mdi-check')).toBeHidden()
+    await expect(colourSwatch(page, 'Červená').locator('.mdi-check')).toBeHidden()
   })
 
   test('limits the list with the quick asset type buttons', async () => {
     expect((await chooseAssetType(page, 'image')).get('type')).toBe('image')
-    // They toggle instead of selecting: a second type is added to the first.
     expect((await chooseAssetType(page, 'video')).get('type')).toBe('image,video')
 
     // "V podcastoch" is not one more type — it asks for audio that is in a podcast.
@@ -250,9 +248,8 @@ test.describe.serial(`${ADMIN_SUITE} - Asset list filters`, () => {
     await expect(tiles(page)).toHaveCount(25)
 
     expect((await loadNextPage(page)).get('offset')).toBe('25')
-    // The page is appended to the grid rather than replacing it. Only the lower bound is asserted: the
-    // scrolling that reaches the end of the first page can already be into the second one by then, and
-    // the list answers that with a third.
+    // Only the lower bound is asserted: scrolling to the end of the first page
+    // can already reach into the second, and the list then loads a third.
     await expect(tiles(page)).not.toHaveCount(25)
     expect(await tiles(page).count(), 'the second page is appended to the first').toBeGreaterThanOrEqual(50)
   })

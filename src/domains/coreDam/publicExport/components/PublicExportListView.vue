@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { ACard, useI18n } from '@anzusystems/common-admin'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
-import { ACL } from '@/domains/system/auth/auth'
-import PublicExportDatatable from '@/domains/coreDam/publicExport/components/PublicExportDatatable.vue'
+import { ACard, defineBreadcrumbs } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import PublicExportCreateButton from '@/domains/coreDam/publicExport/components/PublicExportCreateButton.vue'
+import PublicExportDatatable from '@/domains/coreDam/publicExport/components/PublicExportDatatable.vue'
 import { usePublicExportListActions } from '@/domains/coreDam/publicExport/composables/publicExportActions'
+import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { listLoading } = usePublicExportListActions()
 
@@ -16,9 +19,9 @@ const afterCreate = () => {
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [{ title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' }])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
+])
 </script>
 
 <template>

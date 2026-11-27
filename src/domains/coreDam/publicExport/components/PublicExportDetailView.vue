@@ -1,37 +1,46 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionDeleteButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
+import {
+  AActionCloseButtonHistory,
+  AActionDeleteButton,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
+import PublicExportDetail from '@/domains/coreDam/publicExport/components/PublicExportDetail.vue'
 import {
   usePublicExportDetailActions,
   usePublicExportRemoveActions,
 } from '@/domains/coreDam/publicExport/composables/publicExportActions'
-import PublicExportDetail from '@/domains/coreDam/publicExport/components/PublicExportDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, publicExport } = usePublicExportDetailActions()
 const { removePublicExport } = usePublicExportRemoveActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
-    {
-      title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.detail'),
-      routeName: '/(coreDam)/public-exports/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.publicExport.list'), routeName: '/(coreDam)/public-exports' },
+  {
+    title: publicExport.value.slug || t('breadcrumb.coreDam.publicExport.detail'),
+    routeName: '/(coreDam)/public-exports/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/public-exports',
+  skipRouteNames: ['/(coreDam)/public-exports/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -49,14 +58,17 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/public-exports/[id]/edit'"
         />
       </Acl>
-      <Acl :permission="ACL.DAM_PUBLIC_EXPORT_UPDATE">
+      <Acl :permission="ACL.DAM_PUBLIC_EXPORT_DELETE">
         <AActionDeleteButton
           v-if="!detailLoading"
           data-cy="button-delete"
           @delete-record="removePublicExport(id)"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/public-exports'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/public-exports'"
+        :skip-route-names="['/(coreDam)/public-exports/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

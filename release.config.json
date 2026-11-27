@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "repo": "anzusystems/admin-dam",
+  "publish": "none",
+  "releaseWorkflow": "release.yml",
+  "changelogIndex": "CHANGELOG.md",
+  "node": "24",
+  "ci": {
+    "checks": [
+      "yarn ci"
+    ]
+  }
+}

@@ -1,49 +1,51 @@
 <script lang="ts" setup>
-import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
-import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
-import AssetCustomMetadataForm from '@/domains/coreDam/shared/components/customMetadata/AssetCustomMetadataForm.vue'
-import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
-import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
-import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
-import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
-import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
-import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
-import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
-import AuthorRemoteAutocompleteWithCached from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteWithCached.vue'
-import { useAuthorAssetTypeConfig } from '@/domains/coreDam/author/composables/authorConfig'
-import { useSourceAssetTypeConfig } from '@/domains/coreDam/author/composables/sourceConfig'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import KeywordRemoteAutocompleteWithCached from '@/domains/coreDam/keyword/components/KeywordRemoteAutocompleteWithCached.vue'
-import { useKeywordAssetTypeConfig } from '@/domains/coreDam/keyword/composables/keywordConfig'
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
+  ABooleanValue,
   ACopyText,
+  ADamAssetCustomMetadataForm,
+  ADamAuthorRemoteAutocompleteWithCached,
+  ADamKeywordRemoteAutocompleteWithCached,
+  ADamSourcesAuthorsRow,
   ADatetime,
-  assetFileIsAudioFile,
-  assetFileIsImageFile,
-  assetFileIsVideoFile,
+  ARow,
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
+  assetFileIsAudioFile,
+  assetFileIsImageFile,
+  assetFileIsVideoFile,
   dateDiff,
   dateNow,
   dateTimePretty,
   dateTimeToDate,
+  isUndefined,
   prettyBytes,
-  DamSourcesAuthorsRow,
+  useDamAuthorAssetTypeConfig,
   useDamCreditPreview,
+  useDamKeywordAssetTypeConfig,
+  useDamSourceAssetTypeConfig,
   useRemainingTime,
 } from '@anzusystems/common-admin'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const emit = defineEmits<{
-  (e: 'mainRouteChanged'): void
-  (e: 'mainRouteChanged'): void
-}>()
+import AssetMetadataAudioAttributes from '@/domains/coreDam/asset/components/AssetMetadataAudioAttributes.vue'
+import AssetMetadataExif from '@/domains/coreDam/asset/components/AssetMetadataExif.vue'
+import AssetMetadataImageAttributes from '@/domains/coreDam/asset/components/AssetMetadataImageAttributes.vue'
+import AssetMetadataVideoAttributes from '@/domains/coreDam/asset/components/AssetMetadataVideoAttributes.vue'
+import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
+import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
+import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
+import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
-const { remainingTimeShort } = useRemainingTime()
+const { currentExtSystemId } = useCurrentExtSystem()
 
 const panels = ref(['metadata', 'file'])
 
@@ -57,21 +59,13 @@ const {
   ttsAudio,
 } = useAssetDetailActions()
 
-const assetType = computed(() => {
-  return asset.value?.attributes.assetType || DamAssetTypeDefault
-})
+const assetType = computed(() => asset.value?.attributes.assetType || DamAssetTypeDefault)
 
-const isTypeImage = computed(() => {
-  return assetType.value === DamAssetType.Image
-})
+const isTypeImage = computed(() => assetType.value === DamAssetType.Image)
 
-const isTypeAudio = computed(() => {
-  return assetType.value === DamAssetType.Audio
-})
+const isTypeAudio = computed(() => assetType.value === DamAssetType.Audio)
 
-const isTypeVideo = computed(() => {
-  return assetType.value === DamAssetType.Video
-})
+const isTypeVideo = computed(() => assetType.value === DamAssetType.Video)
 
 const { addToCachedAssetLicences, fetchCachedAssetLicences } = useCachedAssetLicences()
 
@@ -85,14 +79,8 @@ watch(
   { immediate: true }
 )
 
-const assetMainFile = computed<null | AssetFile>(() => {
-  return asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
-})
-
-const autoDeleteIn = computed(() =>
-  asset.value?.autoDeleteAt
-    ? remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(asset.value.autoDeleteAt), dateNow(), 's')))
-    : ''
+const assetMainFile = computed<null | AssetFile>(() =>
+  asset.value && asset.value.mainFile ? (asset.value.mainFile as AssetFile) : null
 )
 
 const routableAssetFile = computed(() => {
@@ -100,24 +88,46 @@ const routableAssetFile = computed(() => {
   return null
 })
 
-const { keywordEnabled, keywordRequired } = useKeywordAssetTypeConfig(assetType.value)
+// useDamKeywordAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { keywordEnabled, keywordRequired } = useDamKeywordAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
-const { authorEnabled, authorRequired } = useAuthorAssetTypeConfig(assetType.value)
+// useDamAuthorAssetTypeConfig takes a plain DamAssetTypeType and ext system, not refs, so the read is
+// forced by its signature. Making the config reactive means changing that composable.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { authorEnabled, authorRequired } = useDamAuthorAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
-const { sourceEnabled, sourceRequired } = useSourceAssetTypeConfig(assetType.value)
-
-const onAnyMetadataChange = () => {
-  metadataTouch()
-}
+// The same as for authors above.
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const { sourceEnabled, sourceRequired } = useDamSourceAssetTypeConfig(assetType.value, currentExtSystemId.value)
 
 const { getCachedAuthor } = useCachedAuthors()
-const { currentExtSystemId } = useCurrentExtSystem()
 const credit = useDamCreditPreview(
   getCachedAuthor,
   currentExtSystemId,
   () => asset.value?.sources ?? [],
-  () => asset.value?.authors ?? [],
+  () => asset.value?.authors ?? []
 )
+
+const { remainingTimeShort } = useRemainingTime()
+const autoDeleteIn = computed(() =>
+  asset.value?.autoDeleteAt
+    ? remainingTimeShort(Math.max(0, dateDiff(dateTimeToDate(asset.value.autoDeleteAt), dateNow(), 's')))
+    : ''
+)
+
+/*
+ * Without the right to update assets the form only shows the asset, as "Save" is hidden.
+ * Nothing in it can be saved, so nothing counts as unsaved and leaving is never asked about.
+ */
+const { can } = useAuth()
+const readonly = computed(() => !can(ACL.DAM_ASSET_UPDATE))
+
+const onAnyMetadataChange = () => {
+  if (readonly.value) return
+  metadataTouch()
+}
 </script>
 
 <template>
@@ -133,10 +143,13 @@ const credit = useDamCreditPreview(
       value="metadata"
     >
       <VExpansionPanelText>
-        <AssetCustomMetadataForm
+        <ADamAssetCustomMetadataForm
           v-if="asset"
           v-model="asset.metadata.customData"
           :asset-type="assetType"
+          :ext-system="currentExtSystemId"
+          :readonly="readonly"
+          :validation-scope="AssetMetadataValidationScopeSymbol"
           @any-change="onAnyMetadataChange"
         >
           <template #after-pinned>
@@ -150,12 +163,14 @@ const credit = useDamCreditPreview(
                   subject="keyword"
                   system="dam"
                 >
-                  <KeywordRemoteAutocompleteWithCached
+                  <ADamKeywordRemoteAutocompleteWithCached
                     v-model="asset.keywords"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.keywords')"
                     data-cy="custom-field-keywords"
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -163,7 +178,7 @@ const credit = useDamCreditPreview(
                 </ASystemEntityScope>
               </VCol>
             </VRow>
-            <DamSourcesAuthorsRow
+            <ADamSourcesAuthorsRow
               :source-enabled="sourceEnabled"
               :author-enabled="authorEnabled"
               :credit="credit"
@@ -174,14 +189,16 @@ const credit = useDamCreditPreview(
                   subject="author"
                   system="dam"
                 >
-                  <AuthorRemoteAutocompleteWithCached
+                  <ADamAuthorRemoteAutocompleteWithCached
                     v-model="asset.sources"
                     v-model:counterpart="asset.authors"
+                    :ext-system="currentExtSystemId"
                     :label="t('common.damImage.asset.model.sources')"
                     data-cy="custom-field-sources"
                     source
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="sourceRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -194,15 +211,17 @@ const credit = useDamCreditPreview(
                   subject="author"
                   system="dam"
                 >
-                  <AuthorRemoteAutocompleteWithCached
+                  <ADamAuthorRemoteAutocompleteWithCached
                     v-model="asset.authors"
                     v-model:counterpart="asset.sources"
+                    :ext-system="currentExtSystemId"
                     :label="t('coreDam.asset.model.authors')"
                     :author-conflicts="authorConflicts"
                     data-cy="custom-field-authors"
                     :source="sourceEnabled ? false : undefined"
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -210,15 +229,23 @@ const credit = useDamCreditPreview(
                   />
                 </ASystemEntityScope>
               </template>
-            </DamSourcesAuthorsRow>
+            </ADamSourcesAuthorsRow>
             <VRow
               density="compact"
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('common.damImage.asset.model.mainFileSingleUse')"
+                >
+                  <ABooleanValue :value="mainFileSingleUse" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -228,9 +255,17 @@ const credit = useDamCreditPreview(
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.model.ttsAudio')"
+                >
+                  <ABooleanValue :value="ttsAudio" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="ttsAudio"
                   :label="t('coreDam.asset.model.ttsAudio')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -240,9 +275,17 @@ const credit = useDamCreditPreview(
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                >
+                  <ABooleanValue :value="mainFileOverrideInternal" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
@@ -252,15 +295,23 @@ const credit = useDamCreditPreview(
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.detail.info.field.flags.internal')"
+                >
+                  <ABooleanValue :value="mainFileInternal" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileInternal"
                   :disabled="!mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.internal')"
+                  @update:model-value="onAnyMetadataChange"
                 />
               </VCol>
             </VRow>
           </template>
-        </AssetCustomMetadataForm>
+        </ADamAssetCustomMetadataForm>
       </VExpansionPanelText>
     </VExpansionPanel>
     <VExpansionPanel
@@ -298,16 +349,14 @@ const credit = useDamCreditPreview(
           <VCol cols="3">
             {{ t('common.model.tracking.created') }}
           </VCol>
-          <VCol cols="9">
-            {{ dateTimePretty(asset.createdAt) }}<br><CachedDamUserChip :id="asset.createdBy" />
-          </VCol>
+          <VCol cols="9"> {{ dateTimePretty(asset.createdAt) }}<br /><CachedDamUserChip :id="asset.createdBy" /> </VCol>
         </VRow>
         <VRow>
           <VCol cols="3">
             {{ t('common.model.tracking.modified') }}
           </VCol>
           <VCol cols="9">
-            {{ dateTimePretty(asset.modifiedAt) }}<br><CachedDamUserChip :id="asset.modifiedBy" />
+            {{ dateTimePretty(asset.modifiedAt) }}<br /><CachedDamUserChip :id="asset.modifiedBy" />
           </VCol>
         </VRow>
         <VRow
@@ -345,7 +394,7 @@ const credit = useDamCreditPreview(
                 :asset-file="routableAssetFile"
                 :asset-type="assetType"
                 :title="asset.texts.displayTitle"
-                @main-route-changed="emit('mainRouteChanged')"
+                is-main-file
               />
             </VCol>
           </VRow>

@@ -2,12 +2,8 @@
   "adminSwitcherConfigUrl": "${ADMIN_SWITCHER_CONFIG_URL}",
   "appEnvironment": "${APP_ENVIRONMENT}",
   "appVersion": "${APP_VERSION}",
-  "apiLogError": {
-    "enabled": ${API_LOG_ERROR_ENABLED},
-    "apiUrl": "${API_LOG_ERROR_URL}"
-  },
+  "appLabel": "${APP_LABEL}",
   "logoutCoreDamUrl": "${LOGOUT_CORE_DAM_URL}",
-  "uploadStatusFallback": ${UPLOAD_STATUS_FALLBACK},
   "cookies": {
     "refreshTokenExistsName": "${COOKIES_REFRESH_TOKEN_EXISTS_NAME}",
     "jwtPayloadName": "${COOKIES_JWT_PAYLOAD_NAME}"
@@ -15,7 +11,6 @@
   "dam": {
     "apiUrl": "${DAM_API_URL}",
     "apiTimeout": 30,
-    "imageUrl": "${DAM_IMAGE_URL}",
     "adminUrl": "${DAM_ADMIN_URL}",
     "authorCleanPhraseTestSample": "${DAM_AUTHOR_CLEAN_PHRASE_TEST_SAMPLE}"
   },
@@ -24,6 +19,6 @@
     "webSocketUrl": "${NOTIFICATION_WEBSOCKET_URL}"
   },
   "sentry": {
-    "dsn": "${SENTRY_DSN}"
+    "dsn": ""
   }
 }

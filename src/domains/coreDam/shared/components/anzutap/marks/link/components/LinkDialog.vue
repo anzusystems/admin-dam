@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormTextarea, AFormTextField, ARow } from '@anzusystems/common-admin'
+import { ADialogToolbar, AFormTextField, AFormTextarea, ARow, useAlerts, useValidate } from '@anzusystems/common-admin'
 import type { Editor } from '@tiptap/core'
-import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 import useVuelidate from '@vuelidate/core'
+import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 
 const props = withDefaults(
   defineProps<{
@@ -68,7 +71,7 @@ const v$ = useVuelidate(rules, currentLink, { $stopPropagation: true })
     :retain-focus="false"
   >
     <VCard v-if="dialog">
-      <ADialogToolbar @on-cancel="onClose">
+      <ADialogToolbar @cancel="onClose">
         {{ t('common.model.link') }}
       </ADialogToolbar>
       <VCardText>

@@ -1,5 +1,7 @@
-import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
+import { computed, readonly, ref } from 'vue'
+
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
+import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 export const FooterViewUpload = {
   Hidden: 'hidden',
@@ -28,15 +30,19 @@ export function useAssetFooterUploadView() {
     }
   }
 
+  /*
+   * The upload gives back the full-page view and list keys only while it holds them. Its
+   * "save and finish" answer can come after it closed, when a selection may cover the page.
+   */
   const hideUpload = () => {
-    assetListStore.keyboardNavigationEnable()
+    if (footerViewUpload.value === FooterViewUpload.Full) {
+      assetListStore.keyboardNavigationEnable()
+      customDialog.value = false
+    }
     setFooterViewUpload(FooterViewUpload.Hidden)
-    customDialog.value = false
   }
 
-  const showMinimalUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Minimal
-  })
+  const showMinimalUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Minimal)
 
   const setMinimalUpload = () => {
     assetListStore.keyboardNavigationEnable()
@@ -44,9 +50,7 @@ export function useAssetFooterUploadView() {
     customDialog.value = false
   }
 
-  const showFullUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Full
-  })
+  const showFullUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Full)
 
   const setFullUpload = () => {
     assetListStore.keyboardNavigationDisable()
@@ -54,9 +58,7 @@ export function useAssetFooterUploadView() {
     customDialog.value = true
   }
 
-  const showCompactUpload = computed(() => {
-    return footerViewUpload.value !== FooterViewUpload.Compact
-  })
+  const showCompactUpload = computed(() => footerViewUpload.value !== FooterViewUpload.Compact)
 
   const setCompactUpload = () => {
     assetListStore.keyboardNavigationEnable()

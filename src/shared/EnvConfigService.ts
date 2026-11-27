@@ -1,15 +1,13 @@
-import type { EnvConfig } from '@/shared/types/EnvConfig'
+import { startWithEnvConfig } from '@anzusystems/common-admin'
+
+import type { DeployedEnvConfig, EnvConfig } from '@/shared/types/EnvConfig'
 
 export const envConfig: EnvConfig = {
   adminSwitcherConfigUrl: '',
   appEnvironment: '',
   appVersion: '',
-  apiLogError: {
-    enabled: false,
-    apiUrl: '',
-  },
+  appLabel: '',
   logoutCoreDamUrl: '',
-  uploadStatusFallback: true,
   cookies: {
     refreshTokenExistsName: 'anz_rte',
     jwtPayloadName: 'anz_jp',
@@ -17,7 +15,6 @@ export const envConfig: EnvConfig = {
   dam: {
     apiUrl: '',
     apiTimeout: 1,
-    imageUrl: '',
     adminUrl: '',
     authorCleanPhraseTestSample: '',
   },
@@ -30,70 +27,28 @@ export const envConfig: EnvConfig = {
   },
 }
 
-const setEnvConfig = (data: EnvConfig) => {
+const setEnvConfig = (data: DeployedEnvConfig) => {
   try {
     envConfig.adminSwitcherConfigUrl = data.adminSwitcherConfigUrl
     envConfig.appEnvironment = data.appEnvironment
     envConfig.appVersion = data.appVersion
-    envConfig.apiLogError.enabled = data.apiLogError.enabled
-    envConfig.apiLogError.apiUrl = data.apiLogError.apiUrl
+    envConfig.appLabel = data.appLabel ?? ''
     envConfig.logoutCoreDamUrl = data.logoutCoreDamUrl
     envConfig.cookies.refreshTokenExistsName = data.cookies.refreshTokenExistsName
     envConfig.cookies.jwtPayloadName = data.cookies.jwtPayloadName
     envConfig.dam.apiUrl = data.dam.apiUrl
     envConfig.dam.apiTimeout = data.dam.apiTimeout
-    envConfig.dam.imageUrl = data.dam.imageUrl
     envConfig.dam.adminUrl = data.dam.adminUrl
     envConfig.dam.authorCleanPhraseTestSample = data.dam.authorCleanPhraseTestSample
-    envConfig.notification.enabled = data.notification.enabled
-    envConfig.notification.webSocketUrl = data.notification.webSocketUrl
-    envConfig.uploadStatusFallback = data.uploadStatusFallback
+    // The service is off unless a deployment enables it. A missing block or value means off.
+    envConfig.notification.enabled = data.notification?.enabled ?? false
+    envConfig.notification.webSocketUrl = data.notification?.webSocketUrl ?? ''
     envConfig.sentry.dsn = data.sentry.dsn
   } catch (err) {
     throw new Error('Unable to load env config. Incorrect fields in json.')
   }
 }
 
-const getNavigatorLanguage = (): string => {
-  return window.navigator.languages && window.navigator.languages.length
-    ? window.navigator.languages[0]
-    : navigator.language || 'en'
-}
-
-const onConfigError = (error: Error) => {
-  const userLang = getNavigatorLanguage()
-  let errorMessage = 'Fatal error. Please contact administrator.'
-  if (userLang === 'sk-SK' || userLang === 'sk') {
-    errorMessage = 'Fatálna chyba. Prosím kontaktujte administrátora.'
-  }
-  const appDiv = document.getElementById('app')
-  appDiv?.insertAdjacentHTML(
-    'beforeend',
-    `<div style='color:red;text-align:center;font-weight:bold;margin:20px;'>${errorMessage}</div>`
-  )
-  console.error(error)
-}
-
-export const loadEnvConfig = (callback: () => void) => {
-  fetch('/config.json?random=' + Date.now())
-    .then((res) => {
-      if (res.ok) {
-        const contentType = res.headers.get('content-type')
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Unable to load env config. Incorrect content type.')
-        }
-        return res.json()
-      }
-      throw new Error('Unable to load env config. Incorrect response code.')
-    })
-    .then((config) => {
-      if (Object.keys(config).length < 1) {
-        throw new Error('Unable to load env config. Incorrect response body.')
-      }
-      setEnvConfig(config)
-      callback()
-    })
-    .catch((err) => {
-      onConfigError(err)
-    })
-}
+// The fetch, checks and fatal error live in the library. A failed
+// start is reported as itself, not as a config load failure.
+export const loadEnvConfig = (callback: () => void | Promise<void>) => startWithEnvConfig(setEnvConfig, callback)

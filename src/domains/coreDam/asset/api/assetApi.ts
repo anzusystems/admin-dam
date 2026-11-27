@@ -1,63 +1,109 @@
-import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { damClient } from '@/shared/apiClients/damClient'
-import { isSourceEnabled } from '@/domains/coreDam/author/composables/sourceConfig'
-import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
-import type { DamAssetTypeType } from '@anzusystems/common-admin'
 import {
-  AnzuApiForbiddenError,
-  AnzuApiForbiddenOperationError,
   AnzuApiValidationError,
-  type AnzuApiValidationResponseData,
-  AnzuFatalError,
-  type AssetCustomData,
-  type AssetDetailItemDto,
-  type AssetMetadataDto,
-  type AssetSearchListItemDto,
-  axiosErrorResponseHasForbiddenOperationData,
-  axiosErrorResponseHasValidationData,
-  axiosErrorResponseIsForbidden,
-  type DocIdNullable,
-  type UploadQueueItem,
-  useDamConfigState,
-  type ValidationError,
-} from '@anzusystems/common-admin'
-import {
-  type FilterConfig,
-  type FilterData,
-  type Pagination,
+  DamAssetStatus,
+  HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_OK,
+  apiErrorStatus,
+  customDataFormElementName,
+  isAnzuApiValidationError,
+  isArray,
+  isDamSourceEnabled,
+  isNull,
+  isUndefined,
+  useAlerts,
+  useApiCommand,
+  useApiFetchItems,
   useApiFetchList,
   useApiRequest,
-} from '@anzusystems/common-admin/labs'
+  useDamConfigState,
+} from '@anzusystems/common-admin'
+import type {
+  AnzuApiValidationResponseData,
+  AssetCustomData,
+  AssetDetailItemDto,
+  AssetMetadataDto,
+  AssetSearchListItemDto,
+  DamAssetTypeType,
+  DocId,
+  DocIdNullable,
+  FilterConfig,
+  FilterData,
+  IntegerId,
+  Pagination,
+  UploadQueueItem,
+  ValidationError,
+} from '@anzusystems/common-admin'
 import { isAxiosError } from 'axios'
+import type { AxiosError } from 'axios'
 import type { Ref } from 'vue'
+
+import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import type { AssetCreateDto } from '@/domains/coreDam/asset/types/Asset'
+import {
+  metadataOfQueueRow,
+  metadataSaveSent,
+  nextMetadataOrder,
+  queueRowBaseline,
+  rebaseCustomData,
+  sameMetadataValue,
+  setQueueRowBaseline,
+} from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import type { AssetFormMetadata, QueueRowMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import { i18n } from '@/plugins/i18n'
+import { damApiBase } from '@/shared/apiClients/damApiBase'
+import { damClient } from '@/shared/apiClients/damClient'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 export interface AssetMetadataBulkItem {
   id: DocId
-  keywords: DocId[]
-  authors: DocId[]
-  sources?: DocId[]
   described: boolean
-  customData: AssetCustomData
-  mainFileSingleUse: boolean | null
-  mainFileOverrideInternal: boolean
-  mainFileInternal: boolean
-  ttsAudio: boolean
+  /*
+   * Optional on purpose. `AssetMetadataBulkManager` guards each
+   * field with `isXUndefined()`, so an omitted field is not written.
+   * This lets a save skip flags the form never showed and fields nobody changed.
+   * The backend still runs its internal rules afterwards, which can change `internal` on their own.
+   */
+  keywords?: DocId[]
+  authors?: DocId[]
+  sources?: DocId[]
+  customData?: AssetCustomData
+  mainFileSingleUse?: boolean | null
+  mainFileOverrideInternal?: boolean
+  mainFileInternal?: boolean
+  ttsAudio?: boolean
 }
 
 const BULK_METADATA_LIMIT = 10
 const END_POINT = '/adm/v1/asset'
 export const ENTITY = 'asset'
-const FETCH_BY_IDS_MAX_LIMIT = 25
+const FETCH_BY_IDS_MAX_LIMIT = 50
 
 export const useFetchAssetList = (licenceIds: IntegerId[]) =>
-  useApiFetchList<AssetSearchListItemDto[]>({
-    client: damClient,
-    system: SYSTEM_CORE_DAM,
+  useApiFetchList<AssetSearchListItemDto>({
+    ...damApiBase,
     entity: ENTITY,
     urlTemplate: END_POINT + '/licence',
     options: { params: { licences: licenceIds.join(',') } },
   })
+
+/**
+ * Ranges core-dam indexes as 0 for an asset without that property: a document has no width, an image no duration.
+ * An upper bound on its own would keep every such asset, so it is sent with a lower bound of 1.
+ */
+const RANGES_ZERO_WHEN_MISSING = ['pixelSize', 'width', 'height', 'ratioWidth', 'ratioHeight', 'duration', 'bitrate']
+
+const isEmptyBound = (value: unknown) => isNull(value) || isUndefined(value) || value === ''
+
+export function withRangeLowerBounds(filterData: FilterData): FilterData {
+  let data = filterData
+  for (const range of RANGES_ZERO_WHEN_MISSING) {
+    if (!isEmptyBound(data[`${range}From`]) || isEmptyBound(data[`${range}Until`])) continue
+    if (data === filterData) data = { ...filterData }
+    data[`${range}From`] = 1
+  }
+  return data
+}
 
 export const fetchAssetList = (
   licenceIds: IntegerId[],
@@ -65,8 +111,8 @@ export const fetchAssetList = (
   filterData: FilterData,
   filterConfig: FilterConfig
 ) => {
-  const { executeFetch } = useFetchAssetList(licenceIds)
-  return executeFetch(pagination, filterData, filterConfig)
+  const { execute } = useFetchAssetList(licenceIds)
+  return execute(pagination, withRangeLowerBounds(filterData), filterConfig)
 }
 
 async function fetchAssetListByIdsSequence(ids: DocId[], extSystemId: IntegerId) {
@@ -86,16 +132,18 @@ async function fetchAssetListByIdsSequence(ids: DocId[], extSystemId: IntegerId)
 export const fetchAssetListByIds: (ids: DocId[], extSystemId: IntegerId) => Promise<AssetDetailItemDto[]> = (
   ids: DocId[],
   extSystemId: IntegerId
-) => {
-  return new Promise((resolve, reject) => {
+) =>
+  new Promise((resolve, reject) => {
     fetchAssetListByIdsSequence(ids, extSystemId)
       .then((responses) => {
         if (responses.length === 0) {
           reject(responses)
         } else if (
-          responses.every((res) => {
-            return res.status === HTTP_STATUS_OK
-          })
+          responses.every(
+            (res) =>
+              // A response without the list does not mean "none of these assets exist".
+              res.status === HTTP_STATUS_OK && Array.isArray(res.data?.data)
+          )
         ) {
           const final = []
           for (let i = 0; i < responses.length; i++) {
@@ -111,254 +159,515 @@ export const fetchAssetListByIds: (ids: DocId[], extSystemId: IntegerId) => Prom
         reject(err)
       })
   })
+
+// The response is not typed here. The caller below validates it.
+const useFetchWaitingAssets = () =>
+  useApiRequest<{ data?: unknown }, null>({ ...damApiBase, method: 'GET', entity: ENTITY })
+
+/*
+ * Fetches assets of a licence by id for the upload queue poll, in batches of fifty like `fetchAssetListByIds`.
+ * `report: false` keeps a failed call out of the api error logger. The error is still thrown.
+ * `useApiFetchItems` cannot silence a single call, so the list is validated here.
+ * A response without the list is always rejected. It must never read as "none of these assets exist".
+ */
+export const fetchWaitingAssets = async (ids: DocId[], licenceId: number, options?: { report?: boolean }) => {
+  const { execute } = useFetchWaitingAssets()
+  const found: AssetDetailItemDto[] = []
+  for (let offset = 0; offset < ids.length; offset += FETCH_BY_IDS_MAX_LIMIT) {
+    const batch = ids.slice(offset, offset + FETCH_BY_IDS_MAX_LIMIT)
+    const body = await execute({
+      // Full URL instead of a template parameter: a parameter would be encoded, including its commas.
+      urlTemplate: END_POINT + `/licence/${licenceId}/ids/${batch.join(',')}`,
+      report: options?.report,
+    })
+    if (!Array.isArray(body?.data)) throw new Error('assetApi: unexpected asset list')
+    found.push(...(body.data as AssetDetailItemDto[]))
+  }
+
+  return found
 }
 
 export const useFetchAsset = () =>
   useApiRequest<AssetDetailItemDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id',
   })
 
-export const fetchAsset = (id: DocId) => {
-  const { executeRequest } = useFetchAsset()
-  return executeRequest({ urlParams: { id } })
+/*
+ * `report: false` keeps a failed call out of the api error logger. The error is still thrown.
+ * Used by the upload queue poll, which already reported the first failure of a streak.
+ */
+export const fetchAsset = (id: DocId, options?: { report?: boolean }) => {
+  const { execute } = useFetchAsset()
+  return execute({ urlParams: { id }, report: options?.report })
 }
 
 export const useFetchAssetByFileId = () =>
   useApiRequest<AssetDetailItemDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/asset-file/:fileId',
   })
 
 export const fetchAssetByFileId = (fileId: DocId) => {
-  const { executeRequest } = useFetchAssetByFileId()
-  return executeRequest({ urlParams: { fileId } })
+  const { execute } = useFetchAssetByFileId()
+  return execute({ urlParams: { fileId } })
 }
 
 export const useFetchAssetMetadata = () =>
   useApiRequest<AssetMetadataDto, null>({
-    client: damClient,
+    ...damApiBase,
     method: 'GET',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:id/metadata',
   })
 
 export const fetchAssetMetadata = (id: DocId) => {
-  const { executeRequest } = useFetchAssetMetadata()
-  return executeRequest({ urlParams: { id } })
+  const { execute } = useFetchAssetMetadata()
+  return execute({ urlParams: { id } })
 }
 
+/** Whether a save sends sources of an asset of the type: only where the current ext system has them. */
+const sourcesSent = (assetType: DamAssetTypeType) => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+
+  return isDamSourceEnabled(assetType, currentExtSystemId.value)
+}
+
+/** Items the bulk save sends: those with an asset whose metadata the user may edit. */
+export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueItem & { assetId: DocId } =>
+  !isNull(item.assetId) && item.canEditMetadata
+
+/*
+ * Builds the bulk save payload per row, with the metadata the server will hold after the save.
+ * A row sends only fields that differ from what it last got from or saved to the
+ * server. Sending untouched fields would overwrite another editor's changes.
+ * A sent row is marked described. A row whose server state or described flag is unknown is sent whole.
+ * `base` is the custom data the row's changes were made against, for rebasing them onto a fresh read before sending.
+ */
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
-  const dtoItems: AssetMetadataBulkItem[] = []
+  const dtoItems: Array<{
+    item: UploadQueueItem
+    dtoItem: AssetMetadataBulkItem
+    metadata: QueueRowMetadata
+    changed: Partial<QueueRowMetadata>
+    base?: QueueRowMetadata['customData']
+  }> = []
   items.forEach((item) => {
-    if (!isNull(item.assetId) && item.canEditMetadata) {
-      dtoItems.push({
-        id: item.assetId,
-        keywords: item.keywords,
-        authors: item.authors,
-        ...(isSourceEnabled(item.assetType) ? { sources: item.sources } : {}),
-        described: true,
-        customData: item.customData,
-        mainFileSingleUse: item.mainFileSingleUse,
-        mainFileOverrideInternal: false,
-        mainFileInternal: false,
-        ttsAudio: false,
-      })
+    if (hasMetadataToSave(item)) {
+      // Copied when the save starts. The row can still be edited while its batch waits for earlier batches.
+      const metadata = metadataOfQueueRow(item)
+      const known = queueRowBaseline(item)
+      const whole = !known || isUndefined(known.described)
+      const changed: Partial<QueueRowMetadata> = {}
+      if (whole || !sameMetadataValue(metadata.keywords, known.keywords)) changed.keywords = metadata.keywords
+      if (whole || !sameMetadataValue(metadata.authors, known.authors)) changed.authors = metadata.authors
+      // Only where the ext system has sources for the asset type. The row offers them only there.
+      if (sourcesSent(item.assetType) && (whole || !sameMetadataValue(metadata.sources, known.sources))) {
+        changed.sources = metadata.sources
+      }
+      // Sent whole when any part differs, as the server treats an omitted form field as emptied. Rebased before sending.
+      if (whole || !sameMetadataValue(metadata.customData, known.customData)) changed.customData = metadata.customData
+      if (!isNull(metadata.mainFileSingleUse) && (whole || metadata.mainFileSingleUse !== known.mainFileSingleUse)) {
+        changed.mainFileSingleUse = metadata.mainFileSingleUse
+      }
+      /*
+       * Nothing to write: the asset is described and the row matches the server.
+       * Sending it anyway would make core-dam treat it as a change and notify all listeners.
+       */
+      if (!whole && known.described && Object.keys(changed).length === 0) return
+      const base = !whole && !isUndefined(changed.customData) ? known.customData : undefined
+      dtoItems.push({ item, dtoItem: { id: item.assetId, described: true, ...changed }, metadata, changed, base })
     }
   })
 
   return dtoItems
 }
 
-async function updateMetadataSequence(items: UploadQueueItem[]) {
-  const totalCalls = Math.ceil(items.length / BULK_METADATA_LIMIT)
-  const bulkItems = listItemsToMetadataBulkItems(items)
-  const responses = []
-  if (bulkItems.length === 0) return Promise.resolve([])
-
-  for (let i = 0; i < totalCalls; i++) {
-    const offset = i * BULK_METADATA_LIMIT
-    const reduced = bulkItems.slice(offset, offset + BULK_METADATA_LIMIT)
-    const res = await damClient().patch(END_POINT + '/metadata-bulk-update', JSON.stringify(reduced))
-    responses.push(res)
-  }
-  return responses
-}
-
-export const bulkUpdateAssetsMetadata = (items: UploadQueueItem[]) => {
-  return new Promise((resolve, reject) => {
-    updateMetadataSequence(items)
-      .then((responses) => {
-        if (responses.length === 0) {
-          reject(responses)
-        } else if (
-          responses.every((res) => {
-            return res.status === HTTP_STATUS_OK
-          })
-        ) {
-          resolve(responses)
-        } else {
-          reject(responses)
-        }
-      })
-      .catch((err) => {
-        //
-        reject(err)
-      })
+// Only a 200 counts as saved. The response body is not read.
+const useUpdateMetadataBulk = () =>
+  useApiCommand<AssetMetadataBulkItem[]>({
+    ...damApiBase,
+    method: 'PATCH',
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/metadata-bulk-update',
+    options: { validateStatus: (status) => status === HTTP_STATUS_OK },
   })
+
+/*
+ * Metadata save rejected by validation.
+ * `fields` use request keys such as `[0].customData.title`. The
+ * index is the asset's position in its batch, not a screen row.
+ * `named` holds the same fields with form names, which are shown to the user.
+ */
+class AssetMetadataValidationError extends AnzuApiValidationError {
+  named: ValidationError[]
+
+  constructor(axiosError: AxiosError, named: ValidationError[]) {
+    super(axiosError, SYSTEM_CORE_DAM, ENTITY, axiosError)
+    this.named = named
+  }
 }
 
-const { showUnknownError, showApiValidationError } = useAlerts()
+const metadataFieldName = (key: string, assetTypeAt: (index: number) => DamAssetTypeType | undefined) => {
+  const { t } = i18n.global
+  const indexed = key.match(/^\[(\d+)\]\.(.+)$/)
+  const path = indexed ? indexed[2] : key
+  if (path === 'keywords') return t('coreDam.asset.model.keywords')
+  if (path === 'authors') return t('coreDam.asset.model.authors')
+  if (path === 'sources') return t('common.damImage.asset.model.sources')
+  const property = path.split('.').at(-1) ?? path
+  const assetType = indexed ? assetTypeAt(Number(indexed[1])) : undefined
+  if (path.startsWith('customData.') && !isUndefined(assetType)) {
+    const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
+    const { currentExtSystemId } = useCurrentExtSystem()
+    const found = getDamConfigAssetCustomFormElements(currentExtSystemId.value)?.[assetType].find(
+      (element) => element.property === property
+    )
+    if (found) return customDataFormElementName(found)
+  }
 
-const handleMetadataValidationError = (error: Error, assetType: DamAssetTypeType) => {
-  const { getDamConfigAssetCustomFormElements } = useDamConfigState(damClient)
+  return property
+}
+
+/*
+ * Maps a save failure for display. Validation errors get field names,
+ * and a field rejected in several assets of the batch is listed once.
+ * Other errors are returned unchanged.
+ */
+const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAssetTypeType | undefined) => {
+  if (!isAnzuApiValidationError(error) || !isAxiosError(error.cause)) return error
+  const data = error.cause.response?.data as AnzuApiValidationResponseData
+  const named = new Map<string, Set<string>>()
+  for (const [key, errors] of Object.entries(data.fields)) {
+    const name = metadataFieldName(key, assetTypeAt)
+    named.set(name, new Set([...(named.get(name) ?? []), ...errors]))
+  }
+
+  return new AssetMetadataValidationError(
+    error.cause,
+    Array.from(named, ([field, errors]) => ({ field, errors: [...errors] }))
+  )
+}
+
+// Assets deleted in this session, added once the delete request was answered, or found deleted by a metadata save.
+const deletedHere = new Set<DocId>()
+
+/** Whether the asset was deleted here. A read sent before the delete can still return the old asset. */
+export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
+
+/*
+ * A metadata save found these assets deleted meanwhile, by another editor or in another tab.
+ * Nothing of their request was saved. `inQueue`: the save was of queue rows, not of the detail or the panel.
+ */
+export class AssetsGoneMeanwhileError extends Error {
+  readonly assetIds: DocId[]
+  readonly inQueue: boolean
+
+  constructor(assetIds: DocId[], inQueue: boolean) {
+    super('assetApi: assets deleted meanwhile')
+    this.assetIds = assetIds
+    this.inQueue = inQueue
+  }
+}
+
+const goneMeanwhile = (assetIds: DocId[], inQueue: boolean) => {
+  assetIds.forEach((assetId) => deletedHere.add(assetId))
+
+  return new AssetsGoneMeanwhileError(assetIds, inQueue)
+}
+
+const useFetchAssetsOfExtSystem = () =>
+  useApiRequest<{ data?: unknown }, null>({ ...damApiBase, method: 'GET', entity: ENTITY })
+
+/*
+ * Reads the assets a save is about to send, in one request. The read leaves out an asset that no longer exists.
+ * One being deleted counts as gone too.
+ * Through the library, so a failure is reported and shown like the save's own. `report: false` keeps it unreported.
+ * A save sends at most a batch, fewer than one read takes. A response without the list never means "all gone".
+ */
+const readForSave = async (assetIds: DocId[], options?: { report?: boolean }) => {
   const { currentExtSystemId } = useCurrentExtSystem()
-  const configAssetCustomFormElements = getDamConfigAssetCustomFormElements(currentExtSystemId.value)
-  if (isUndefined(configAssetCustomFormElements)) {
-    throw new Error('Custom form elements must be initialised.')
+  const { execute } = useFetchAssetsOfExtSystem()
+  const body = await execute({
+    // Full URL instead of a template parameter: a parameter would be encoded, including its commas.
+    urlTemplate: END_POINT + `/ext-system/${currentExtSystemId.value}/ids/${assetIds.join(',')}`,
+    report: options?.report,
+  })
+  if (!Array.isArray(body?.data)) throw new Error('assetApi: unexpected asset list')
+  const found = new Map<DocId, AssetDetailItemDto>()
+  for (const read of body.data as AssetDetailItemDto[]) {
+    if (read.attributes?.assetStatus !== DamAssetStatus.Deleting) found.set(read.id, read)
   }
-  if (!isAxiosError(error) || !error.response || !error.response.data) return
-  const data = error.response.data as AnzuApiValidationResponseData
-  const items = [] as ValidationError[]
-  for (const [key, values] of Object.entries(data.fields)) {
-    const field = key.split('.').pop()
-    const found = configAssetCustomFormElements[assetType].find((item) => item.property === field)
-    if (found) {
-      items.push({
-        field: found.name,
-        errors: values,
-      })
+
+  return { found, gone: assetIds.filter((assetId) => !found.has(assetId)) }
+}
+
+const ID_FIELD = /^(?:\[(\d+)\]\.)?(?:id|asset)$/
+
+/*
+ * The error of a failed save, or `AssetsGoneMeanwhileError` when the save failed because assets of it no longer exist.
+ * Today core-dam answers 500 for a deleted asset, so a 500 is followed by one read of the assets.
+ * A 404 too: it does not say what is missing, and a proxy answers it during a deploy.
+ * A 422 naming the asset id says it without the read.
+ */
+const goneAfterFailure = async (error: unknown, assetIds: DocId[], inQueue: boolean) => {
+  if (isAnzuApiValidationError(error)) {
+    if (!isAxiosError(error.cause)) return error
+    const fields = Object.keys((error.cause.response?.data as AnzuApiValidationResponseData)?.fields ?? {})
+    const named = fields.map((field) => field.match(ID_FIELD))
+    if (named.length === 0 || named.some((match) => !match)) return error
+    const gone = named.map((match) => assetIds[Number(match?.[1] ?? 0)]).filter((assetId) => !isUndefined(assetId))
+
+    return gone.length > 0 ? goneMeanwhile([...new Set(gone)], inQueue) : error
+  }
+  const status = apiErrorStatus(error)
+  if (status !== HTTP_STATUS_NOT_FOUND && (isUndefined(status) || status < 500)) return error
+  try {
+    // Not written down: the save's own failure already is, and it stands if this read fails too.
+    const { gone } = await readForSave(assetIds, { report: false })
+
+    return gone.length > 0 ? goneMeanwhile(gone, inQueue) : error
+  } catch {
+    // Unknown whether they exist. The save's own error stands.
+    return error
+  }
+}
+
+type BulkItem = ReturnType<typeof listItemsToMetadataBulkItems>[number]
+
+const saveBatch = async (rows: BulkItem[], execute: ReturnType<typeof useUpdateMetadataBulk>['execute']) => {
+  /*
+   * Skips assets deleted while earlier batches were in flight. The
+   * queue stays usable meanwhile, and the delete removes the row.
+   * An empty batch is not sent.
+   */
+  const batch = rows.filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
+  if (batch.length === 0) return
+  const ids = batch.map(({ dtoItem }) => dtoItem.id)
+  /*
+   * Custom data go rebased onto the assets as the server has them right now, read in one request just before
+   * sending: the row's changes over another editor's. Sending the row's whole copy would delete or revert those.
+   */
+  if (batch.some(({ base }) => !isUndefined(base))) {
+    const { found, gone } = await readForSave(ids)
+    if (gone.length > 0) throw goneMeanwhile(gone, true)
+    batch.forEach((row) => {
+      const fresh = found.get(row.dtoItem.id)
+      if (isUndefined(row.base) || isUndefined(fresh)) return
+      row.changed.customData = rebaseCustomData(row.metadata.customData, row.base, fresh.metadata.customData)
+      row.dtoItem.customData = row.changed.customData
+    })
+  }
+  try {
+    await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
+  } catch (error) {
+    throw withNamedFields(await goneAfterFailure(error, ids, true), (index) => batch[index]?.item.assetType)
+  }
+  /*
+   * After a successful save, later saves diff against what was sent.
+   * Only the sent fields are written, over the current row state. A read or another
+   * save may have changed it meanwhile, and the click-time copy would revert that.
+   * This runs when the save is answered, because a read sent earlier may return pre-save data.
+   * The row shows custom fields it took from the fresh read, unless they were changed in it since the click.
+   */
+  const savedAt = nextMetadataOrder()
+  batch.forEach(({ item, metadata, changed, base }) => {
+    setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
+    if (!isUndefined(base) && !isUndefined(changed.customData)) {
+      item.customData = rebaseCustomData(item.customData, metadata.customData, changed.customData)
     }
+  })
+  // Also updates the detail or panel holding one of these assets.
+  useAssetDetailStore().savedAsDescribed(ids)
+}
+
+/*
+ * Saves ten rows per batch, sequentially. The server saves a batch atomically.
+ * A failed batch stops later ones, earlier ones stay saved, and retrying is safe.
+ * Only rows with changes are sent. If none have changes, no request is made and the save still succeeds.
+ */
+export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
+  // The buttons are disabled when no row can be sent (`nothingToSave`).
+  if (!items.some(hasMetadataToSave)) throw new Error('assetApi: no metadata to save')
+  const bulkItems = listItemsToMetadataBulkItems(items)
+  const { execute } = useUpdateMetadataBulk()
+  // Counts the filtered array. Counting the input sent trailing PATCHes with an empty body.
+  const batches: BulkItem[][] = []
+  for (let offset = 0; offset < bulkItems.length; offset += BULK_METADATA_LIMIT) {
+    batches.push(bulkItems.slice(offset, offset + BULK_METADATA_LIMIT))
   }
-  if (items.length) {
-    showApiValidationError(items, -1, true)
+  // Marks every batch as in flight from the click until it is answered. All bodies are built now.
+  const answered = batches.map((batch) => metadataSaveSent(batch.map(({ dtoItem }) => dtoItem.id)))
+  try {
+    for (const [index, batch] of batches.entries()) {
+      await saveBatch(batch, execute)
+      answered[index]()
+    }
+  } finally {
+    // Ends the failed batch and the batches it stopped.
+    answered.forEach((end) => end())
+  }
+}
+
+const { showErrorsDefault, showUnknownError, showApiValidationError, showWarning } = useAlerts()
+
+/** Shows the error message for a failed metadata save by failure kind. The single place for this message. */
+export const showMetadataSaveError = (error: unknown) => {
+  if (error instanceof AssetsGoneMeanwhileError) {
+    const { t } = i18n.global
+    // The queue's stays until closed: rows went, and the other rows are to be saved again.
+    if (error.inQueue) showWarning(t('coreDam.asset.detail.deletedMeanwhileRows', error.assetIds.length), -1)
+    else showWarning(t('coreDam.asset.detail.deletedMeanwhile'))
     return
   }
-  showUnknownError()
+  if (error instanceof AssetMetadataValidationError) {
+    showApiValidationError(error.named, -1, true)
+    return
+  }
+  if (!showErrorsDefault(error)) showUnknownError()
 }
 
-export const updateAssetMetadata = (
-  asset: AssetDetailItemDto,
-  mainFileSingleUse: boolean | null,
-  mainFileOverrideInternal: boolean,
-  mainFileInternal: boolean,
-  ttsAudio: boolean
-) => {
-  return new Promise<AssetMetadataBulkItem[]>((resolve, reject) => {
-    const data: AssetMetadataBulkItem = {
-      id: asset.id,
-      keywords: asset.keywords,
-      authors: asset.authors,
-      ...(isSourceEnabled(asset.attributes.assetType) ? { sources: asset.sources } : {}),
-      described: true,
-      customData: asset.metadata.customData,
-      mainFileSingleUse: mainFileSingleUse,
-      mainFileOverrideInternal: mainFileOverrideInternal,
-      mainFileInternal: mainFileInternal,
-      ttsAudio: ttsAudio,
-    }
-    damClient()
-      .patch(END_POINT + '/metadata-bulk-update', JSON.stringify([data]))
-      .then((res) => {
-        if (res.status === HTTP_STATUS_OK) {
-          resolve(res.data)
-        } else {
-          //
-          reject()
-        }
-      })
-      .catch((err) => {
-        if (axiosErrorResponseIsForbidden(err)) {
-          return reject(new AnzuApiForbiddenError(err))
-        }
-        if (axiosErrorResponseHasValidationData(err)) {
-          handleMetadataValidationError(err, asset.attributes.assetType)
-          return reject(new AnzuApiValidationError(err, SYSTEM_CORE_DAM, ENTITY, err))
-        }
-        if (axiosErrorResponseHasForbiddenOperationData(err)) {
-          return reject(new AnzuApiForbiddenOperationError(err, err))
-        }
-        return reject(new AnzuFatalError(err))
-      })
+/*
+ * The same request for the one asset of the detail or the panel, which reads the answer: the metadata as core-dam
+ * saved them. A licence that enforces single use turns the main file's single use on whatever was sent.
+ */
+const useSaveAssetMetadata = () =>
+  useApiFetchItems<AssetMetadataBulkItem, AssetMetadataBulkItem[]>({
+    ...damApiBase,
+    method: 'PATCH',
+    shape: 'array',
+    entity: ENTITY,
+    urlTemplate: END_POINT + '/metadata-bulk-update',
+    options: { validateStatus: (status) => status === HTTP_STATUS_OK },
   })
+
+// An empty PHP array, as core-dam may write empty custom data.
+const customDataOf = (value: unknown) => (isArray(value) ? {} : (value as AssetCustomData))
+
+/*
+ * Saves the form of one asset: only the fields that differ from what the server had (`known`), so another editor's
+ * changes to the other fields stay. Changed custom data go rebased onto a fresh read of the asset, as in the queue.
+ * Without `known` everything is sent. Resolves to what the server has after the save,
+ * from its answer, or from what was sent when the answer lacks the asset.
+ */
+export const updateAssetMetadata = async (
+  asset: AssetDetailItemDto,
+  typed: AssetFormMetadata,
+  known: AssetFormMetadata | undefined
+): Promise<AssetFormMetadata> => {
+  const differs = (field: keyof AssetFormMetadata) => !known || !sameMetadataValue(typed[field], known[field])
+  const sent: Partial<AssetFormMetadata> = {}
+  if (differs('keywords')) sent.keywords = typed.keywords
+  if (differs('authors')) sent.authors = typed.authors
+  if (sourcesSent(asset.attributes.assetType) && differs('sources')) sent.sources = typed.sources
+  if (differs('mainFileSingleUse')) sent.mainFileSingleUse = typed.mainFileSingleUse
+  if (differs('mainFileOverrideInternal')) sent.mainFileOverrideInternal = typed.mainFileOverrideInternal
+  if (differs('mainFileInternal')) sent.mainFileInternal = typed.mainFileInternal
+  if (differs('ttsAudio')) sent.ttsAudio = typed.ttsAudio
+  if (differs('customData')) {
+    sent.customData = typed.customData
+    if (known) {
+      const { found, gone } = await readForSave([asset.id])
+      const fresh = found.get(asset.id)
+      if (gone.length > 0 || isUndefined(fresh)) throw goneMeanwhile([asset.id], false)
+      sent.customData = rebaseCustomData(typed.customData, known.customData, fresh.metadata.customData)
+    }
+  }
+  /*
+   * Nothing to write: the asset is described and the form matches the server. Not sent, as in the queue:
+   * core-dam would count the fields left out as a change and call the ext systems back.
+   */
+  if (known && asset.flags?.described && Object.keys(sent).length === 0) return { ...known }
+  const { execute } = useSaveAssetMetadata()
+  let answer: AssetMetadataBulkItem[]
+  try {
+    answer = await execute({ body: [{ id: asset.id, described: true, ...sent }] })
+  } catch (error) {
+    throw withNamedFields(await goneAfterFailure(error, [asset.id], false), () => asset.attributes.assetType)
+  }
+  // Also marks the asset described in the detail or panel if it holds this asset.
+  useAssetDetailStore().savedAsDescribed([asset.id])
+  const expected: AssetFormMetadata = { ...(known ?? typed), ...sent }
+  const saved = answer.find((item) => item.id === asset.id)
+  if (isUndefined(saved)) return expected
+
+  return {
+    keywords: saved.keywords ?? expected.keywords,
+    authors: saved.authors ?? expected.authors,
+    sources: saved.sources ?? expected.sources,
+    customData: isUndefined(saved.customData) ? expected.customData : customDataOf(saved.customData),
+    mainFileSingleUse: saved.mainFileSingleUse ?? expected.mainFileSingleUse,
+    mainFileOverrideInternal: saved.mainFileOverrideInternal ?? expected.mainFileOverrideInternal,
+    mainFileInternal: saved.mainFileInternal ?? expected.mainFileInternal,
+    ttsAudio: saved.ttsAudio ?? expected.ttsAudio,
+  }
 }
 
 export const useDeleteAsset = () =>
-  useApiRequest<AssetDetailItemDto, null>({
-    client: damClient,
-    method: 'DELETE',
-    system: SYSTEM_CORE_DAM,
-    entity: ENTITY,
-    urlTemplate: END_POINT + '/:id',
-  })
+  useApiCommand<null>({ ...damApiBase, method: 'DELETE', entity: ENTITY, urlTemplate: END_POINT + '/:id' })
 
-export const deleteAsset = (id: DocId) => {
-  const { executeRequest } = useDeleteAsset()
-  return executeRequest({ urlParams: { id } })
+export const deleteAsset = async (id: DocId) => {
+  const { execute } = useDeleteAsset()
+  await execute({ urlParams: { id } })
+  // An in-flight bulk save skips this asset from now on.
+  deletedHere.add(id)
 }
 
 export const useUpdateAssetCategory = () =>
-  useApiRequest<unknown, { id: DocId; distributionCategory: DocIdNullable }>({
-    client: damClient,
+  useApiCommand<{ id: DocId; distributionCategory: DocIdNullable }>({
+    ...damApiBase,
     method: 'PUT',
-    system: SYSTEM_CORE_DAM,
     entity: '',
     urlTemplate: END_POINT + '/:assetId',
   })
 
 export const updateAssetCategory = (assetId: DocId, distributionCategoryId: DocIdNullable) => {
-  const { executeRequest } = useUpdateAssetCategory()
-  return executeRequest({
+  const { execute } = useUpdateAssetCategory()
+  return execute({
     urlParams: { assetId },
-    object: { id: assetId, distributionCategory: distributionCategoryId },
+    body: { id: assetId, distributionCategory: distributionCategoryId },
   })
 }
 
 export const useCreateAsset = () =>
   useApiRequest<AssetDetailItemDto, AssetCreateDto>({
-    client: damClient,
+    ...damApiBase,
     method: 'POST',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/licence/:licenceId',
   })
 
 export const createAsset = (licenceId: IntegerId, data: AssetCreateDto) => {
-  const { executeRequest } = useCreateAsset()
-  return executeRequest({ urlParams: { licenceId }, object: data })
+  const { execute } = useCreateAsset()
+  return execute({ urlParams: { licenceId }, body: data })
 }
 
 export const useSetSibling = () =>
   useApiRequest<AssetDetailItemDto, object>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:assetId/sibling/:targetAssetId',
   })
 
 export const setSibling = (assetId: DocId, targetAssetId: DocId) => {
-  const { executeRequest } = useSetSibling()
-  return executeRequest({ urlParams: { assetId, targetAssetId }, object: {} })
+  const { execute } = useSetSibling()
+  return execute({ urlParams: { assetId, targetAssetId }, body: {} })
 }
 
 export const useRemoveSibling = () =>
   useApiRequest<AssetDetailItemDto, object>({
-    client: damClient,
+    ...damApiBase,
     method: 'PATCH',
-    system: SYSTEM_CORE_DAM,
     entity: ENTITY,
     urlTemplate: END_POINT + '/:assetId/sibling',
   })
 
 export const removeSibling = (assetId: DocId) => {
-  const { executeRequest } = useRemoveSibling()
-  return executeRequest({ urlParams: { assetId }, object: {} })
+  const { execute } = useRemoveSibling()
+  return execute({ urlParams: { assetId }, body: {} })
 }

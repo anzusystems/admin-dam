@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { envConfig } from '@/shared/EnvConfigService'
+import { UserAuthType, useDamConfigStore } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import LoginFormSimple from '@/domains/system/views/components/LoginFormSimple.vue'
 import LoginFormSso from '@/domains/system/views/components/LoginFormSso.vue'
-import { useDamConfigStore, UserAuthType } from '@anzusystems/common-admin'
+import { envConfig } from '@/shared/EnvConfigService'
 
 const damConfigStore = useDamConfigStore()
 

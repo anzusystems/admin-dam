@@ -2,6 +2,7 @@ import { Editor } from '@tiptap/core'
 import { MarkType } from '@tiptap/pm/model'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { find } from 'linkifyjs'
+
 import { getLinkMarkAttributesFromHref } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkAttrs'
 
 type PasteHandlerOptions = {

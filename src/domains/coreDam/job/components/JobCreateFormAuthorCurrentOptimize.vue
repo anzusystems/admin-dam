@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { AFormTextField, ARow } from '@anzusystems/common-admin'
-import { useJobApi } from '@anzusystems/common-admin/labs'
+import { AFormTextField, ARow, useAlerts, useJobApi, useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
+import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'
 import { damClient } from '@/shared/apiClients/damClient'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import type { JobAuthorCurrentOptimize } from '@/domains/coreDam/job/types/Job'
-import { useJobFactory } from '@/domains/coreDam/job/factory/JobFactory'
 
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-  (e: 'closeDialog'): void
-}>()
+const emit = defineEmits<{ onSuccess: []; closeDialog: [] }>()
 
 const buttonLoading = ref(false)
 const { createAuthorCurrentOptimize } = useJobFactory()

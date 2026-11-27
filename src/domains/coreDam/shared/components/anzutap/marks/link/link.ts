@@ -1,18 +1,23 @@
-import { Mark, markPasteRule, mergeAttributes, type PasteRuleMatch } from '@tiptap/core'
+import { isUndefined } from '@anzusystems/common-admin'
+import { Mark, markPasteRule, mergeAttributes } from '@tiptap/core'
+import type { PasteRuleMatch } from '@tiptap/core'
 import { Plugin, Transaction } from '@tiptap/pm/state'
 import { find, registerCustomProtocol, reset } from 'linkifyjs'
+import { ref } from 'vue'
+import type { Ref } from 'vue'
+
+import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
+import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 import { autolink } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/autolink'
 import { clickHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/clickHandler'
-import { pasteHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/pasteHandler'
-import type { LinkVariantType } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/LinkVariant'
-import { isValidLinkVariant } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation'
 import {
   getLinkMarkAttributesFromHref,
   getVariantFromHref,
 } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkAttrs'
+import { isValidLinkVariant } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/linkVariantValidation'
+import { pasteHandler } from '@/domains/coreDam/shared/components/anzutap/marks/link/helpers/pasteHandler'
 import { MarkName } from '@/domains/coreDam/shared/components/anzutap/marks/marks'
 import { NodeName } from '@/domains/coreDam/shared/components/anzutap/nodes/nodes'
-import { useLink } from '@/domains/coreDam/shared/components/anzutap/marks/link/composables/useLink'
 
 // source: https://github.com/ueberdosis/tiptap/tree/main/packages/extension-link
 
@@ -182,6 +187,9 @@ declare module '@tiptap/core' {
 // From DOMPurify
 // https://github.com/cure53/DOMPurify/blob/main/src/regexp.js
 
+// Copied verbatim from DOMPurify's ATTR_WHITESPACE.
+// The control range is intended: C0 characters must be stripped before the protocol check.
+// oxlint-disable-next-line no-control-regex
 const ATTR_WHITESPACE = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205F\u3000]/g
 
 export function isAllowedUri(uri: string | undefined, protocols?: LinkOptions['protocols']) {
@@ -201,7 +209,10 @@ export function isAllowedUri(uri: string | undefined, protocols?: LinkOptions['p
     !uri ||
     uri
       .replace(ATTR_WHITESPACE, '')
-      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.\-]+(?:[^a-z+.\-:]|$))`, 'i'))
+      // Hyphens are escaped as `\\-` because this is a template literal.
+      // A single backslash is consumed before RegExp sees it.
+      // A bare `-` between `.` and `:` would then form the range U+002E-U+003A, matching `/` and digits.
+      .match(new RegExp(`^(?:(?:${allowedProtocols.join('|')}):|[^a-z]|[a-z0-9+.\\-]+(?:[^a-z+.\\-:]|$))`, 'i'))
   )
 }
 
@@ -268,20 +279,16 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
       href: {
         default: null,
         parseHTML: (element) => element.getAttribute('href'),
-        renderHTML: (attributes) => {
-          return {
-            href: attributes.href,
-          }
-        },
+        renderHTML: (attributes) => ({
+          href: attributes.href,
+        }),
       },
       external: {
         default: true,
         parseHTML: (element) => Boolean(element.getAttribute('data-external')),
-        renderHTML: (attributes) => {
-          return {
-            'data-external': attributes.external,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-external': attributes.external,
+        }),
       },
       internal: {
         default: null,
@@ -296,23 +303,20 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           }
           return null
         },
-        renderHTML: (attributes) => {
-          return attributes.internal
+        renderHTML: (attributes) =>
+          attributes.internal
             ? {
                 'data-internal-type': attributes.internal.type,
                 'data-internal-id': attributes.internal.id,
               }
-            : {}
-        },
+            : {},
       },
       nofollow: {
         default: false,
         parseHTML: (element) => Boolean(element.getAttribute('data-nofollow')),
-        renderHTML: (attributes) => {
-          return {
-            'data-nofollow': attributes.nofollow,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-nofollow': attributes.nofollow,
+        }),
       },
       variant: {
         default: 'link',
@@ -324,11 +328,9 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           }
           return getVariantFromHref(href)
         },
-        renderHTML: (attributes) => {
-          return {
-            'data-variant': attributes.variant,
-          }
-        },
+        renderHTML: (attributes) => ({
+          'data-variant': attributes.variant,
+        }),
       },
     }
   },
@@ -464,9 +466,8 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
 
       unsetLink:
         () =>
-        ({ chain }) => {
-          return chain().unsetMark(this.name, { extendEmptyMarkRange: true }).setMeta('preventAutolink', true).run()
-        },
+        ({ chain }) =>
+          chain().unsetMark(this.name, { extendEmptyMarkRange: true }).setMeta('preventAutolink', true).run(),
       unsetOrToggleOffLink:
         () =>
         ({ chain, tr, state }) => {
@@ -518,14 +519,12 @@ export const Link = Mark.create<LinkOptions, LinkStorage>({
           return foundLinks
         },
         type: this.type,
-        getAttributes: (match) => {
-          return {
-            href: match.data?.href,
-            variant: match.data?.variant,
-            external: match.data?.external,
-            nofollow: match.data?.nofollow,
-          }
-        },
+        getAttributes: (match) => ({
+          href: match.data?.href,
+          variant: match.data?.variant,
+          external: match.data?.external,
+          nofollow: match.data?.nofollow,
+        }),
       }),
     ]
   },

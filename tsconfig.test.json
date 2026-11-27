@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.app.json",
+  // `plugins.d.ts` is not decoration: it augments common-admin (`AclRegistry`), vue-i18n
+  // (`DefineLocaleMessage`, the app's messages) and vue-router (`RouteMeta`), and nothing imports it
+  // by name. Reached-by-import alone would leave the augmentations out of the test program.
+  "include": [
+    "env.d.ts",
+    "src/plugins.d.ts",
+    "src/test/**/*",
+    "src/**/*.test.ts",
+    "src/**/*.spec.ts"
+  ],
+  "exclude": ["src/auto-imports.d.ts"],
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsc/tsconfig.test.tsbuildinfo",
+    "types": ["vitest/globals", "node"],
+    "noEmit": true,
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  }
+}

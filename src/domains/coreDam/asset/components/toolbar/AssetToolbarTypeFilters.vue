@@ -1,34 +1,29 @@
 <script lang="ts" setup>
-import { type DamAssetTypeType, DamAssetType } from '@anzusystems/common-admin'
+import { DamAssetType } from '@anzusystems/common-admin'
+import type { DamAssetTypeType } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useAssetListActions } from '@/domains/coreDam/asset/components/list/composables/assetListActions'
 
 const { t } = useI18n()
 
 const { setTypeAndFetch, togglePodcastAndFetch, filterData } = useAssetListActions()
 
-const isImageActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Image)
-})
+const isImageActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Image))
 
-const isAudioActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio)
-})
+const isAudioActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Audio))
 
-const isVideoActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Video)
-})
+const isVideoActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Video))
 
-const isDocumentActive = computed(() => {
-  return (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Document)
-})
+const isDocumentActive = computed(() => (filterData.type as DamAssetTypeType[]).includes(DamAssetType.Document))
 
-const isPodcastActive = computed(() => {
-  return filterData.inPodcast === true
-})
+const isPodcastActive = computed(() => filterData.inPodcast === true)
 </script>
 
 <template>
   <VBtn
+    :aria-label="t('coreDam.asset.list.allTypes')"
     variant="text"
     icon
     size="x-small"
@@ -48,6 +43,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.image')"
+    :aria-pressed="isImageActive"
     icon
     size="x-small"
     class="mr-1"
@@ -69,6 +66,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.video')"
+    :aria-pressed="isVideoActive"
     icon
     size="x-small"
     class="mr-1"
@@ -90,6 +89,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.audio')"
+    :aria-pressed="isAudioActive"
     icon
     size="x-small"
     class="mr-1"
@@ -111,6 +112,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.assetType.document')"
+    :aria-pressed="isDocumentActive"
     icon
     size="x-small"
     data-cy="button-document-types"
@@ -131,6 +134,8 @@ const isPodcastActive = computed(() => {
     </VTooltip>
   </VBtn>
   <VBtn
+    :aria-label="t('coreDam.asset.filter.inPodcast')"
+    :aria-pressed="isPodcastActive"
     icon
     size="x-small"
     data-cy="button-in-podcast-types"

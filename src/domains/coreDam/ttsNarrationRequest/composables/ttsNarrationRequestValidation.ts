@@ -1,8 +1,9 @@
-import type { Ref } from 'vue'
-import { computed } from 'vue'
-import useVuelidate from '@vuelidate/core'
 import type { IntegerIdNullable, ValidationScope } from '@anzusystems/common-admin'
 import { useValidate } from '@anzusystems/common-admin'
+import useVuelidate from '@vuelidate/core'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
+
 import type { TtsSynthesizeRequestDto } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 
 const { required, minLength, maxLength, minValue } = useValidate()

@@ -1,24 +1,37 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
 import {
   AFormDatetimePicker,
-  AFormTextarea,
   AFormTextField,
+  AFormTextarea,
   AFormValueObjectOptionsSelect,
   ARow,
+  ASortableListEditor,
   ASystemEntityScope,
 } from '@anzusystems/common-admin'
-import { ASortableListEditor, type ListEditorHandle, type ListViewItem } from '@anzusystems/common-admin/labs'
-import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
-import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
-import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
+import type { ListEditorHandle, ListViewItem } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
-import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
+import { DeviceType } from '@/domains/coreDam/asset/valueObject/DeviceType'
+import { ExportType } from '@/domains/coreDam/asset/valueObject/ExportType'
+import { ENTITY } from '@/domains/coreDam/podcast/api/podcastApi'
+import PodcastExportDataManageDialog from '@/domains/coreDam/podcast/components/PodcastExportDataManageDialog.vue'
+import { usePodcastEditActions } from '@/domains/coreDam/podcast/composables/podcastActions'
+import {
+  PodcastExportDataValidationSymbol,
+  exportDataCombination,
+  exportDataCombinationTaken,
+} from '@/domains/coreDam/podcast/composables/podcastExportDataValidations'
+import { usePodcastValidation } from '@/domains/coreDam/podcast/composables/podcastValidation'
 import { usePodcastExportDataFactory } from '@/domains/coreDam/podcast/factory/PodcastExportDataFactory'
+import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
+import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
+import { usePodcastMode } from '@/domains/coreDam/podcast/valueObject/PodcastMode'
 import DeviceTypeChip from '@/domains/coreDam/publicExport/components/DeviceTypeChip.vue'
 import ExportTypeChip from '@/domains/coreDam/publicExport/components/ExportTypeChip.vue'
-import PodcastExportDataManageDialog from '@/domains/coreDam/podcast/components/PodcastExportDataManageDialog.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { podcast } = usePodcastEditActions()
 
@@ -41,9 +54,32 @@ defineExpose({
   commit: (saved?: PodcastExportData[]) => exportDataEditor.value?.commit(saved),
 })
 
+const podcastOneStore = usePodcastOneStore()
+
+// Every pair of export type and device type, the defaults first. The server takes each pair once per podcast.
+const PAIRS = Object.values(ExportType).flatMap((exportType) =>
+  Object.values(DeviceType).map((deviceType) => ({ exportType, deviceType }))
+)
+
+const exportDataRowError = (row: PodcastExportData) => {
+  if (exportDataCombinationTaken(row, podcast.value.exportData)) {
+    return t('coreDam.podcastExportData.validation.combinationTaken')
+  }
+  if (podcastOneStore.exportDataRefused.get(row.id) === exportDataCombination(row)) {
+    return t('coreDam.podcastExportData.validation.combinationRefused')
+  }
+
+  return ''
+}
+const exportDataRowValid = (row: PodcastExportData) => !exportDataRowError(row)
+
 const onAddExportData = () => {
   const item = createPodcastExportData(podcast.value.id)
-  item.position = podcast.value.exportData.length + 1
+  // The first pair no row holds yet. The defaults are taken in nearly every podcast.
+  const free = PAIRS.find(
+    (pair) => !podcast.value.exportData.some((row) => exportDataCombination(row) === exportDataCombination(pair))
+  )
+  if (free) Object.assign(item, free)
   podcast.value.exportData.push(item)
   managedPodcastExportData.value = item
   addingNewExportData.value = true
@@ -95,8 +131,9 @@ const onCancel = () => {
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcast.attributes.webOrderPosition"
+            v-model.number="podcast.attributes.webOrderPosition"
             :label="t('coreDam.podcast.model.attributes.webOrderPosition')"
+            :v="v$.podcast.attributes.webOrderPosition"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"
@@ -104,8 +141,9 @@ const onCancel = () => {
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcast.attributes.mobileOrderPosition"
+            v-model.number="podcast.attributes.mobileOrderPosition"
             :label="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
+            :v="v$.podcast.attributes.mobileOrderPosition"
             type="number"
             :step="1"
             data-cy="podcast-web-order-number"
@@ -162,6 +200,12 @@ const onCancel = () => {
             ref="exportDataEditor"
             v-model="podcast.exportData"
             :show-add-button="false"
+            :position="false"
+            :show-reorder-toggle="false"
+            disable-reorder
+            :unsaved-section-label="t('coreDam.podcast.model.exportData')"
+            :validate="exportDataRowValid"
+            :validation-scope="PodcastExportDataValidationSymbol"
             @edit="onEditPodcastExportData"
           >
             <template #item-compact="{ raw }: { raw: PodcastExportData }">
@@ -169,6 +213,15 @@ const onCancel = () => {
               <ExportTypeChip :type="raw.exportType" />
               {{ t('coreDam.podcastExportData.model.deviceType') }}:
               <DeviceTypeChip :type="raw.deviceType" />
+            </template>
+            <template #after-item="{ raw }: { raw: PodcastExportData }">
+              <div
+                v-if="exportDataRowError(raw)"
+                class="text-error text-body-small px-4 pb-2"
+                data-cy="export-data-row-error"
+              >
+                {{ exportDataRowError(raw) }}
+              </div>
             </template>
           </ASortableListEditor>
           <VBtn
@@ -209,12 +262,14 @@ const onCancel = () => {
             show-actions
           />
         </ARow>
+        <DamTrackingFields :data="podcast" />
       </VCol>
     </VRow>
     <PodcastExportDataManageDialog
       v-if="managedPodcastExportData"
       v-model="managedPodcastExportData"
       v-model:manage-dialog="podcastExportDataManageDialog"
+      :rows="podcast.exportData"
       @on-cancel="onCancel"
     />
   </ASystemEntityScope>

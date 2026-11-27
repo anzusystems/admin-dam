@@ -1,48 +1,40 @@
 <script lang="ts" setup>
 import {
   ADatatableConfigButton,
+  ADatatableOrdering,
+  ADatatablePagination,
   ADatetime,
   ATableCopyIdButton,
   ATableDetailButton,
   ATableEditButton,
-} from '@anzusystems/common-admin'
-import {
-  ADatatableOrdering,
-  ADatatablePagination,
+  SORT_BY_ID,
   createDatatableColumnsConfig,
-  DatatablePaginationKey,
-  FilterConfigKey,
-  FilterDataKey,
-  useFilterHelpers,
+  useDatatableList,
   usePagination,
-} from '@anzusystems/common-admin/labs'
-import { useDebounceFn } from '@vueuse/core'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+} from '@anzusystems/common-admin'
+import { useRouter } from 'vue-router'
+
 import { ENTITY } from '@/domains/coreDam/authorCleanPhrase/api/AuthorCleanPhraseApi'
 import AuthorCleanPhraseFilter from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseFilter.vue'
-import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
-import { ACL } from '@/domains/system/auth/auth'
-import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
-import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
-import AuthorCleanPhraseTypeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
 import AuthorCleanPhraseModeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseModeStatusChip.vue'
+import AuthorCleanPhraseTypeStatusChip from '@/domains/coreDam/authorCleanPhrase/components/AuthorCleanPhraseTypeStatusChip.vue'
+import { useAuthorCleanPhraseListActions } from '@/domains/coreDam/authorCleanPhrase/composables/authorCleanPhraseActions'
+import { useAuthorCleanPhraseListFilter } from '@/domains/coreDam/authorCleanPhrase/filter/AuthorCleanPhraseFilter'
+import type { AuthorCleanPhrase } from '@/domains/coreDam/authorCleanPhrase/types/AuthorCleanPhrase'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
+import { SYSTEM_CORE_DAM, SYSTEM_DAM } from '@/shared/systems'
 
 type DatatableItem = AuthorCleanPhrase
 
 const router = useRouter()
+const { useCurrentUser } = useAuth()
+const { isSuperAdmin } = useCurrentUser(SYSTEM_DAM)
 
 const { filterData, filterConfig } = useAuthorCleanPhraseListFilter()
-provide(FilterConfigKey, filterConfig)
-provide(FilterDataKey, filterData)
 
 const { fetchList, listItems, datatableHiddenColumns } = useAuthorCleanPhraseListActions()
-const { resetFilter, submitFilter, loadStoredFilters } = useFilterHelpers(filterData, filterConfig, {
-  populateUrlParams: false,
-  storeFiltersLocalStorage: false,
-})
 
 const { pagination } = usePagination(SORT_BY_ID)
-provide(DatatablePaginationKey, pagination)
 
 const onRowClick = (event: unknown, { item }: { item: DatatableItem }) => {
   router.push({ name: '/(coreDam)/author-clean-phrases/[id]', params: { id: item.id } })
@@ -55,26 +47,13 @@ const { columnsVisible, columnsAll, columnsHidden } = createDatatableColumnsConf
   ENTITY
 )
 
-const getList = useDebounceFn(() => {
-  fetchList(pagination, filterData, filterConfig)
-})
-
-const sortByChange = () => {
-  filterConfig.touched = false
-  submitFilter(pagination, getList)
-}
-
-const submitFilterAction = () => {
-  submitFilter(pagination, getList)
-}
-
-const resetFilterAction = () => {
-  resetFilter(pagination, getList)
-}
-
-onMounted(() => {
-  loadStoredFilters(pagination, getList)
-})
+const { getList, sortByChange, submitFilterAction, resetFilterAction } = useDatatableList(
+  filterData,
+  filterConfig,
+  pagination,
+  fetchList,
+  { populateUrlParams: false, storeFiltersLocalStorage: false }
+)
 
 defineExpose({
   refresh: getList,
@@ -101,7 +80,6 @@ defineExpose({
         :headers="columnsVisible"
         :items="listItems"
         :items-length="listItems.length"
-        item-value="id"
         @click:row="onRowClick"
       >
         <template #item.phrase="{ item }: { item: DatatableItem }">
@@ -128,19 +106,17 @@ defineExpose({
                 :route-name="'/(coreDam)/author-clean-phrases/[id]'"
               />
             </Acl>
-            <Acl :permission="ACL.DAM_AUTHOR_CLEAN_PHRASE_UPDATE">
-              <ATableEditButton
-                :route-params="{ id: item.id }"
-                :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
-              />
-            </Acl>
+            <!-- TODO(BE): core-dam checks dam_authorCleanPhrase_update without the record, a 403 for all but a super
+                 admin; gate on the key once the check takes the record (ACL BE task #86852/3.11). -->
+            <ATableEditButton
+              v-if="isSuperAdmin"
+              :route-params="{ id: item.id }"
+              :route-name="'/(coreDam)/author-clean-phrases/[id]/edit'"
+            />
           </div>
         </template>
         <template #bottom>
-          <ADatatablePagination
-            v-model="pagination"
-            @change="getList"
-          />
+          <ADatatablePagination @change="getList" />
         </template>
       </VDataTableServer>
     </div>

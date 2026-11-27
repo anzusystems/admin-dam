@@ -6,15 +6,15 @@ import {
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
-import { useJobStatus } from '@anzusystems/common-admin'
+  isUndefined,
+  useJobStatus,
+} from '@anzusystems/common-admin'
+import { inject } from 'vue'
+
 import { useJobListActions } from '@/domains/coreDam/job/composables/jobActions'
 import { allowedTimeIntervalValuesSubject } from '@/domains/system/composables/timeInterval'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

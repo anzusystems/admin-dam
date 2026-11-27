@@ -1,4 +1,7 @@
-import { DamDistributionStatus, type DamDistributionStatusType } from '@anzusystems/common-admin'
+import { DamDistributionStatus } from '@anzusystems/common-admin'
+import type { DamDistributionStatusType, ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export function useDistributionStatus() {
   const { t } = useI18n()
@@ -31,9 +34,8 @@ export function useDistributionStatus() {
     },
   ])
 
-  const getDistributionStatusOption = (value: DamDistributionStatusType) => {
-    return DistributionStatusOptions.value.find((item) => item.value === value)
-  }
+  const getDistributionStatusOption = (value: DamDistributionStatusType) =>
+    DistributionStatusOptions.value.find((item) => item.value === value)
 
   return {
     DistributionStatusOptions,

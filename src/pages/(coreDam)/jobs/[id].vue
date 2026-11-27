@@ -3,6 +3,7 @@ import JobDetailView from '@/domains/coreDam/job/components/JobDetailView.vue'
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/jobs/:id(\\d+)',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_JOB_READ],

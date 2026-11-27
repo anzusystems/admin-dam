@@ -1,10 +1,15 @@
 <script lang="ts" setup>
-import { ACopyText, ARow, AUserAndTimeTrackingFields } from '@anzusystems/common-admin'
-import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
-import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import { ACopyText, ARow } from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import CachedAssetLicenceChip from '@/domains/coreDam/assetLicence/components/CachedAssetLicenceChip.vue'
+import { useAssetLicenceGroupOneStore } from '@/domains/coreDam/assetLicenceGroup/store/assetLicenceGroupStore'
 import CachedAssetListViewChip from '@/domains/coreDam/assetListView/components/CachedAssetListViewChip.vue'
 import { useAssetListViewByGroupActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
+import CachedExtSystemChip from '@/domains/coreDam/extSystem/components/CachedExtSystemChip.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const { assetLicenceGroup } = storeToRefs(useAssetLicenceGroupOneStore())
@@ -58,7 +63,7 @@ watch(
       <ARow :title="t('coreDam.assetLicenceGroup.model.id')">
         <ACopyText :value="assetLicenceGroup.id" />
       </ARow>
-      <AUserAndTimeTrackingFields :data="assetLicenceGroup" />
+      <DamTrackingFields :data="assetLicenceGroup" />
     </VCol>
   </VRow>
 </template>

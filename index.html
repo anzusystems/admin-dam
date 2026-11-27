@@ -14,7 +14,10 @@
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
     <style>
-      @layer vuetify-core, vuetify-components, vuetify-overrides, vuetify-utilities, vuetify-final;
+      @layer vuetify-core, vuetify-components, vuetify-overrides, anzu-common, vuetify-utilities, vuetify-final;
+      @layer vuetify-core.reset, vuetify-core.base;
+      @layer vuetify-utilities.theme-base, vuetify-utilities.typography, vuetify-utilities.helpers, vuetify-utilities.theme-background, vuetify-utilities.theme-foreground;
+      @layer vuetify-final.transitions, vuetify-final.trumps;
     </style>
   </head>
   <body>

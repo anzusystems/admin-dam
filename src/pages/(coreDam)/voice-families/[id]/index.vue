@@ -3,6 +3,7 @@ import VoiceFamilyDetailView from '@/domains/coreDam/voiceFamily/components/Voic
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/voice-families/:id([0-9a-f-]{36})',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_TTS_VOICE_FAMILY_READ],

@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import {
   AFilterString,
   AFilterValueObjectOptionsSelect,
   AFilterWrapper,
   FilterConfigKey,
   FilterDataKey,
-} from '@anzusystems/common-admin/labs'
+  isUndefined,
+} from '@anzusystems/common-admin'
+import { inject } from 'vue'
+
+import { useAssetType } from '@/domains/coreDam/asset/valueObject/DamAssetType'
 import { useDistributionCategorySelectListActions } from '@/domains/coreDam/distributionCategorySelect/composables/distributionCategorySelectActions'
 
-const emit = defineEmits<{
-  (e: 'submit'): void
-  (e: 'reset'): void
-}>()
+const emit = defineEmits<{ submit: []; reset: [] }>()
 
 const filterConfig = inject(FilterConfigKey)
 const filterData = inject(FilterDataKey)

@@ -1,4 +1,6 @@
-import { type DamAssetListViewMinimal, fetchDamAssetListViewListByIds } from '@anzusystems/common-admin'
+import type { DamAssetListViewMinimal, IntegerId } from '@anzusystems/common-admin'
+import { defineCached, fetchDamAssetListViewListByIds } from '@anzusystems/common-admin'
+
 import { damClient } from '@/shared/apiClients/damClient'
 
 const mapFullToMinimal = (listView: DamAssetListViewMinimal): DamAssetListViewMinimal => ({
@@ -14,14 +16,12 @@ const { cache, fetch, add, addManual, has, get, isLoaded } = defineCached<
   DamAssetListViewMinimal
 >(mapFullToMinimal, mapIdToMinimal, (ids: IntegerId[]) => fetchDamAssetListViewListByIds(damClient, ids))
 
-export const useCachedAssetListViews = () => {
-  return {
-    addManualToCachedAssetListViews: addManual,
-    addToCachedAssetListViews: add,
-    fetchCachedAssetListViews: fetch,
-    cachedAssetListViews: cache,
-    hasCachedAssetListView: has,
-    getCachedAssetListView: get,
-    isLoadedCachedAssetListView: isLoaded,
-  }
-}
+export const useCachedAssetListViews = () => ({
+  addManualToCachedAssetListViews: addManual,
+  addToCachedAssetListViews: add,
+  fetchCachedAssetListViews: fetch,
+  cachedAssetListViews: cache,
+  hasCachedAssetListView: has,
+  getCachedAssetListView: get,
+  isLoadedCachedAssetListView: isLoaded,
+})

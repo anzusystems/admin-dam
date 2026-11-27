@@ -1,3 +1,5 @@
+import { ref } from 'vue'
+
 export const VideoShowDetailTab = {
   Detail: 'detail',
   Episodes: 'episodes',

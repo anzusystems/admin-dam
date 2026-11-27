@@ -1,19 +1,22 @@
 <script lang="ts" setup>
 import { ADialogToolbar, AFormValueObjectOptionsSelect, JOB_RESOURCE_USER_DATA_DELETE } from '@anzusystems/common-admin'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
+import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
+import JobCreateFormDefault from '@/domains/coreDam/job/components/JobCreateFormDefault.vue'
+import JobCreateFormPodcastSynchronizer from '@/domains/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
+import JobCreateFormSynchronizeImageChanged from '@/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
+import JobCreateFormUserDataDelete from '@/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue'
 import {
   JOB_AUTHOR_CURRENT_OPTIMIZE,
   JOB_RESOURCE_ASSET_FILE_REPROCESS_INTERNAL_FLAG,
   JOB_RESOURCE_PODCAST_SYNCHRONIZER,
   JOB_RESOURCE_SYNCHRONIZE_IMAGE_CHANGED,
-  type JobResource,
   useJobResource,
 } from '@/domains/coreDam/job/valueObject/JobResource'
-import JobCreateFormPodcastSynchronizer from '@/domains/coreDam/job/components/JobCreateFormPodcastSynchronizer.vue'
-import JobCreateFormUserDataDelete from '@/domains/coreDam/job/components/JobCreateFormUserDataDelete.vue'
-import JobCreateFormDefault from '@/domains/coreDam/job/components/JobCreateFormDefault.vue'
-import JobCreateFormAuthorCurrentOptimize from '@/domains/coreDam/job/components/JobCreateFormAuthorCurrentOptimize.vue'
-import JobCreateFormAssetFileReprocessInternalFlag from '@/domains/coreDam/job/components/JobCreateFormAssetFileReprocessInternalFlag.vue'
-import JobCreateFormSynchronizeImageChanged from '@/domains/coreDam/job/components/JobCreateFormSynchronizeImageChanged.vue'
+import type { JobResource } from '@/domains/coreDam/job/valueObject/JobResource'
 
 withDefaults(
   defineProps<{
@@ -27,9 +30,7 @@ withDefaults(
     dataCy: 'button-create',
   }
 )
-const emit = defineEmits<{
-  (e: 'onSuccess'): void
-}>()
+const emit = defineEmits<{ onSuccess: [] }>()
 
 const { t } = useI18n()
 
@@ -80,7 +81,7 @@ const onSuccess = () => {
     :max-width="500"
   >
     <VCard>
-      <ADialogToolbar @on-cancel="closeDialog">
+      <ADialogToolbar @cancel="closeDialog">
         {{ t('common.job.button.create') }}
       </ADialogToolbar>
       <div class="pa-6">

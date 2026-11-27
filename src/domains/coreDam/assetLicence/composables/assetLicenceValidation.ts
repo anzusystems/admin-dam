@@ -1,6 +1,10 @@
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
 import type { Ref } from 'vue'
-import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
+import { computed } from 'vue'
+
 import { useBadgeRules } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
+import type { DamAssetLicenceExtended } from '@/domains/coreDam/assetLicence/types/AssetLicence'
 
 const { required, minLength, minValue } = useValidate()
 

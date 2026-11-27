@@ -49,7 +49,6 @@ test.describe.serial(`${ADMIN_SUITE} - Asset metadata autofill`, () => {
   })
 })
 
-/** Exact chip text, ignoring the surrounding whitespace Vuetify renders. */
 function chip(text: string): RegExp {
   return new RegExp(`^\\s*${text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`)
 }

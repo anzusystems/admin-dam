@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { AFormDatetimePicker, AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
+import { ENTITY } from '@/domains/coreDam/podcastEpisode/api/podcastEpisodeApi'
 import { usePodcastEpisodeEditActions } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeActions'
 import { usePodcastEpisodeValidation } from '@/domains/coreDam/podcastEpisode/composables/podcastEpisodeValidation'
-import ImagePreview from '@/domains/coreDam/asset/components/ImagePreview.vue'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { podcastEpisode } = usePodcastEpisodeEditActions()
 
@@ -33,7 +36,7 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.webOrderPosition"
+            v-model.number="podcastEpisode.attributes.webOrderPosition"
             :label="t('coreDam.podcastEpisode.model.attributes.webOrderPosition')"
             :v="v$.podcastEpisode.attributes.webOrderPosition"
             type="number"
@@ -43,7 +46,7 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.mobileOrderPosition"
+            v-model.number="podcastEpisode.attributes.mobileOrderPosition"
             :label="t('coreDam.podcastEpisode.model.attributes.mobileOrderPosition')"
             :v="v$.podcastEpisode.attributes.mobileOrderPosition"
             type="number"
@@ -53,7 +56,7 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.duration"
+            v-model.number="podcastEpisode.attributes.duration"
             :label="t('coreDam.podcastEpisode.model.attributes.duration')"
             :v="v$.podcastEpisode.attributes.duration"
             type="number"
@@ -85,7 +88,7 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.seasonNumber"
+            v-model.number="podcastEpisode.attributes.seasonNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
             :v="v$.podcastEpisode.attributes.seasonNumber"
             type="number"
@@ -95,7 +98,7 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.episodeNumber"
+            v-model.number="podcastEpisode.attributes.episodeNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
             :v="v$.podcastEpisode.attributes.episodeNumber"
             type="number"
@@ -140,12 +143,14 @@ const { t } = useI18n()
       >
         <ARow>
           <ImagePreview
+            v-if="podcastEpisode.licence"
             v-model="podcastEpisode.imagePreview"
             :licence="podcastEpisode.licence"
             show-actions
             data-cy="select-image-preview"
           />
         </ARow>
+        <DamTrackingFields :data="podcastEpisode" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

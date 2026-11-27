@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
-import {
-  useAnzutapToolbar,
-  type ToolbarItemButton,
-  type ToolbarItemSeparator,
-} from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
+import { computed } from 'vue'
+
+import { useAnzutapToolbar } from '@/domains/coreDam/shared/components/anzutap/components/anzutapToolbar'
 import AnzutapToolbarItem from '@/domains/coreDam/shared/components/anzutap/components/AnzutapToolbarItem.vue'
 
 const props = withDefaults(
@@ -20,25 +18,10 @@ const props = withDefaults(
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
 const { itemsRow1 } = useAnzutapToolbar(props.editor)
 
-const enabledItems = ref<Array<ToolbarItemButton | ToolbarItemSeparator>>([])
-
-const items = computed(() => {
-  return {
-    row1Visible: enabledItems.value,
-  }
-})
-
-onMounted(async () => {
-  const items: Array<ToolbarItemButton | ToolbarItemSeparator> = []
-  itemsRow1.forEach((item) => {
-    if (item.type === 'separator') {
-      items.push(item)
-    } else if (item.show()) {
-      items.push(item)
-    }
-  })
-  enabledItems.value = items
-})
+// Recomputed on every editor state change: some items show only at the cursor position, such as link removal.
+const items = computed(() => ({
+  row1Visible: itemsRow1.filter((item) => item.type === 'separator' || item.show()),
+}))
 </script>
 
 <template>

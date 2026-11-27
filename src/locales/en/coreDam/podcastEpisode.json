@@ -30,7 +30,8 @@
       "fromRss": "From RSS",
       "webPublicExportEnabled": "Web export enabled",
       "mobilePublicExportEnabled": "Mobile export enabled"
-    }
+    },
+    "image": "Image"
   },
   "filter": {
     "id": "ID",

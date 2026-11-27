@@ -24,4 +24,9 @@ const SOURCE_SECTION = {
   otherKindExists: 'coreDam.source.isAuthor',
 } as const
 
+/** Sources are authors flagged as source, with their own section on the same views. */
 export const getAuthorSection = (source: boolean) => (source ? SOURCE_SECTION : AUTHOR_SECTION)
+
+/** The section of a page by its route, for what the page needs before its record loads. */
+export const getAuthorSectionOfRoute = (routeName: unknown) =>
+  getAuthorSection(String(routeName).startsWith(SOURCE_SECTION.routeList))

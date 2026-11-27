@@ -1,6 +1,8 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/ttsNarrationRequest/api/ttsNarrationRequestApi'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const fields = [
   { name: 'status' as const, variant: 'in', default: [], type: 'string' },
@@ -10,13 +12,8 @@ const fields = [
 const store = createFilterStore(fields)
 
 export function useTtsNarrationRequestListFilter() {
-  const { filterConfig, filterData } = createFilter(fields, store, {
+  return createFilter(fields, store, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
   })
-
-  return {
-    filterConfig,
-    filterData,
-  }
 }

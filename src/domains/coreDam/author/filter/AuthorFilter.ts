@@ -1,4 +1,6 @@
-import { createFilter, createFilterStore, type MakeFilterOption } from '@anzusystems/common-admin/labs'
+import { createFilter, createFilterStore } from '@anzusystems/common-admin'
+import type { MakeFilterOption } from '@anzusystems/common-admin'
+
 import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
@@ -17,30 +19,24 @@ const sourceFields = listFields(true)
 const authorStore = createFilterStore(authorFields)
 const sourceStore = createFilterStore(sourceFields)
 
+// The Sources section lists sources only, so its `source` filter is fixed and not shown.
 export function useAuthorListFilter(sourceSection: boolean) {
-  const fields = sourceSection ? sourceFields : authorFields
-  const { filterConfig, filterData } = createFilter(fields, sourceSection ? sourceStore : authorStore, {
+  return createFilter(sourceSection ? sourceFields : authorFields, sourceSection ? sourceStore : authorStore, {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }
 
 export function useAuthorInnerFilter() {
   const fields = [
     { name: 'text' as const, variant: 'search', default: null, type: 'string' },
-    // Merged authors are not offered; the API keeps canBeCurrentAuthor false exactly for authors with current authors.
-    { name: 'canBeCurrentAuthor' as const, default: true, type: 'boolean' },
-    { name: 'source' as const, default: null, type: 'boolean', render: { skip: true } },
+    { name: 'canBeCurrentAuthor' as const, default: null, type: 'boolean' },
   ] satisfies readonly MakeFilterOption[]
 
-  const { filterConfig, filterData } = createFilter(fields, createFilterStore(fields), {
+  return createFilter(fields, createFilterStore(fields), {
     system: SYSTEM_CORE_DAM,
     subject: ENTITY,
     elastic: true,
   })
-
-  return { filterConfig, filterData }
 }

@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const PodcastMode = {
   Import: 'import',
   NotImport: 'not_import',
@@ -20,9 +24,7 @@ export function usePodcastMode() {
     },
   ])
 
-  const getPodcastModeOption = (value: PodcastModeType) => {
-    return podcastModeOptions.value.find((item) => item.value === value)
-  }
+  const getPodcastModeOption = (value: PodcastModeType) => podcastModeOptions.value.find((item) => item.value === value)
 
   return {
     podcastModeOptions,

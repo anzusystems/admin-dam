@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { UploadQueueItem } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
+import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetQueueItemList from '@/domains/coreDam/asset/components/queue/AssetQueueItemList.vue'
-import type { UploadQueueItem } from '@anzusystems/common-admin'
 
 const props = withDefaults(
   defineProps<{
@@ -15,12 +17,10 @@ const props = withDefaults(
 
 const uploadQueuesStore = useUploadQueuesStore()
 
-const list = computed(() => {
-  return uploadQueuesStore.getQueueItems(props.queueId)
-})
+const list = computed(() => uploadQueuesStore.getQueueItems(props.queueId))
 
 const cancelItem = (data: { index: number; item: UploadQueueItem; queueId: string }) => {
-  uploadQueuesStore.stopItemUpload(data.queueId, data.item, data.index)
+  uploadQueuesStore.stopItemUpload(data.queueId, data.item)
 }
 </script>
 

@@ -1,20 +1,32 @@
 <script lang="ts" setup>
-import { ADialogToolbar, AFormDatetimePicker, AFormTextarea, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
-import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import {
+  ADialogToolbar,
+  AFormDatetimePicker,
+  AFormTextarea,
+  ARow,
+  ASystemEntityScope,
+  defineRecordSave,
+  isNull,
+  useAlerts,
+} from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
+import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
 import {
   ENTITY,
   useCreateVideoShowEpisode,
   usePrepareFormDataVideoShowEpisode,
 } from '@/domains/coreDam/videoShowEpisode/api/videoShowEpisodeApi'
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
 import { useVideoShowEpisodeValidation } from '@/domains/coreDam/videoShowEpisode/composables/videoShowEpisodeValidation'
-import VideoShowRemoteAutocomplete from '@/domains/coreDam/videoShow/components/VideoShowRemoteAutocomplete.vue'
+import { useVideoShowEpisodeFactory } from '@/domains/coreDam/videoShowEpisode/factory/VideoShowEpisodeFactory'
+import type { VideoShowEpisode } from '@/domains/coreDam/videoShowEpisode/types/VideoShowEpisode'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const props = withDefaults(
   defineProps<{
-    modelValue: boolean
     dataCy?: string
     assetId: DocId
   }>(),
@@ -22,28 +34,27 @@ const props = withDefaults(
     dataCy: undefined,
   }
 )
-const emit = defineEmits<{
-  (e: 'update:modelValue', data: boolean): void
-  (e: 'reloadList'): void
-}>()
+const emit = defineEmits<{ reloadList: [] }>()
+
+const modelValue = defineModel<boolean>({ required: true })
 const value = computed({
   get() {
-    return props.modelValue
+    return modelValue.value
   },
   set(newValue: boolean) {
-    emit('update:modelValue', newValue)
+    modelValue.value = newValue
   },
 })
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
-const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+const { showRecordWas } = useAlerts()
 
 const { createDefault } = useVideoShowEpisodeFactory()
 const videoShowEpisode = ref<VideoShowEpisode>(createDefault(currentExtSystemId.value))
 
-const { executeRequest: createVideoShowEpisode } = useCreateVideoShowEpisode()
-const { executeRequest: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
+const { execute: createVideoShowEpisode } = useCreateVideoShowEpisode()
+const { execute: prepareFormDataVideoShowEpisode } = usePrepareFormDataVideoShowEpisode()
 
 const saving = ref(false)
 const loadingFormData = ref(false)
@@ -55,24 +66,11 @@ const closeDialog = (reloadList = false) => {
   if (reloadList) emit('reloadList')
 }
 
-const submit = async () => {
-  try {
-    saving.value = true
-    v$.value.$touch()
-    if (v$.value.$invalid) {
-      showValidationError()
-      saving.value = false
-      return
-    }
-    await createVideoShowEpisode({ object: videoShowEpisode.value })
-    showRecordWas('created')
-    closeDialog(true)
-  } catch (error) {
-    showErrorsDefault(error)
-  } finally {
-    saving.value = false
-  }
-}
+const submit = defineRecordSave(saving, v$, async () => {
+  await createVideoShowEpisode({ body: videoShowEpisode.value })
+  showRecordWas('created')
+  closeDialog(true)
+})
 
 const loadFormData = async () => {
   if (!videoShowEpisode.value.videoShow) return
@@ -84,9 +82,7 @@ const loadFormData = async () => {
   loadingFormData.value = false
 }
 
-const videoShowEpisodeVideoShow = computed(() => {
-  return videoShowEpisode.value.videoShow
-})
+const videoShowEpisodeVideoShow = computed(() => videoShowEpisode.value.videoShow)
 
 watch(videoShowEpisodeVideoShow, (newValue, oldValue) => {
   if (newValue !== oldValue && !isNull(newValue)) {
@@ -105,7 +101,7 @@ onMounted(async () => {
     :width="500"
   >
     <VCard v-if="value">
-      <ADialogToolbar @on-cancel="closeDialog(false)">
+      <ADialogToolbar @cancel="closeDialog(false)">
         {{ t('coreDam.videoShowEpisode.button.addNewVideoShowEpisode') }}
       </ADialogToolbar>
       <VCardText>

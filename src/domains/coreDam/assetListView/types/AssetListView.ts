@@ -1,3 +1,10 @@
+import type {
+  AnzuUserAndTimeTrackingAware,
+  IntegerId,
+  IntegerIdNullable,
+  ResourceNameSystemAware,
+} from '@anzusystems/common-admin'
+
 export interface AssetListView extends AnzuUserAndTimeTrackingAware, ResourceNameSystemAware {
   id: IntegerId
   name: string
@@ -7,4 +14,3 @@ export interface AssetListView extends AnzuUserAndTimeTrackingAware, ResourceNam
   licences: IntegerId[]
   uploadLicence: IntegerIdNullable
 }
-

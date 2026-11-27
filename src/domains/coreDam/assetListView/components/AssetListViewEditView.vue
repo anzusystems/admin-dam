@@ -1,7 +1,18 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionSaveButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAssetListViewEditActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
+import {
+  AActionCloseButtonHistory,
+  AActionSaveButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AssetListViewEditForm from '@/domains/coreDam/assetListView/components/AssetListViewEditForm.vue'
+import { useAssetListViewEditActions } from '@/domains/coreDam/assetListView/composables/assetListViewActions'
 import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const route = useRoute()
@@ -12,22 +23,19 @@ const { detailLoading, saveButtonLoading, saveAndCloseButtonLoading, fetchData, 
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' },
-    {
-      title: assetListView.value.name || t('breadcrumb.coreDam.assetListView.edit'),
-      routeName: '/(coreDam)/asset-list-views/[id]/edit',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetListView.list'), routeName: '/(coreDam)/asset-list-views' },
+  {
+    title: assetListView.value.name || t('breadcrumb.coreDam.assetListView.edit'),
+    routeName: '/(coreDam)/asset-list-views/[id]/edit',
+  },
+])
 
-const getData = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getData()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/asset-list-views',
+  skipRouteNames: ['/(coreDam)/asset-list-views/[id]'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -44,7 +52,10 @@ onBeforeUnmount(() => {
         :disabled="saveAndCloseButtonLoading"
         @save-record="onUpdate"
       />
-      <AActionCloseButton :route-name="'/(coreDam)/asset-list-views'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-list-views'"
+        :skip-route-names="['/(coreDam)/asset-list-views/[id]']"
+      />
     </template>
   </ActionbarWrapper>
 

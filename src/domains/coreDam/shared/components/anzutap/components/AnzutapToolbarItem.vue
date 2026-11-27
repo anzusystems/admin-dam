@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 import type {
   ToolbarItemButton,
   ToolbarItemSeparator,
@@ -10,6 +12,8 @@ withDefaults(
   }>(),
   {}
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -21,6 +25,8 @@ withDefaults(
   </template>
   <template v-else-if="item.type === 'button'">
     <VBtn
+      :aria-label="t(item.titleT)"
+      :aria-pressed="item.toggle ? !!item.active() : undefined"
       :class="[
         'anzutap-toolbar__item',
         'anzutap-toolbar__item--button',
@@ -34,7 +40,7 @@ withDefaults(
       <VTooltip
         anchor="bottom"
         activator="parent"
-        :text="item.titleT"
+        :text="t(item.titleT)"
       />
     </VBtn>
   </template>

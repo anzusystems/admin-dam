@@ -3,6 +3,7 @@ import DistributionCategoryDetailView from '@/domains/coreDam/distributionCatego
 import { ACL } from '@/domains/system/auth/auth'
 
 definePage({
+  path: '/distribution-categories/:id([0-9a-f-]{36})',
   meta: {
     requiresAuth: true,
     requiredPermissions: [ACL.DAM_DISTRIBUTION_CATEGORY_READ],

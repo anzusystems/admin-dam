@@ -1,18 +1,22 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
-import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import {
+  ADamAuthorCachedChip,
   AFormTextField,
   AFormValueObjectOptionsSelect,
   ARow,
   ASystemEntityScope,
   useDamAuthorType,
 } from '@anzusystems/common-admin'
-import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import { BADGE_MAX_LENGTH } from '@/domains/coreDam/assetLicence/composables/badgeValidation'
-import { PRIORITY_MAX, useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import { ENTITY } from '@/domains/coreDam/author/api/authorApi'
 import AuthorRemoteAutocomplete from '@/domains/coreDam/author/components/AuthorRemoteAutocomplete.vue'
-import AuthorRemoteAutocompleteCachedAuthorChip from '@/domains/coreDam/author/components/AuthorRemoteAutocompleteCachedAuthorChip.vue'
+import { useAuthorEditActions } from '@/domains/coreDam/author/composables/authorActions'
+import { PRIORITY_MAX, useAuthorValidation } from '@/domains/coreDam/author/composables/authorValidation'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { author } = useAuthorEditActions()
 const { v$ } = useAuthorValidation(author)
@@ -112,13 +116,14 @@ watch(hasCurrentAuthors, (hasParents) => {
           />
         </ARow>
         <ARow :title="t('coreDam.author.model.childAuthors')">
-          <AuthorRemoteAutocompleteCachedAuthorChip
+          <ADamAuthorCachedChip
             v-for="authorId in author.childAuthors"
             :id="authorId"
             :key="authorId"
             class="pr-2"
           />
         </ARow>
+        <DamTrackingFields :data="author" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

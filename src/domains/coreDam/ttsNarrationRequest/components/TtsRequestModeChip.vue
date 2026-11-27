@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
 import { AChipNoLink } from '@anzusystems/common-admin'
+import { computed } from 'vue'
+
 import type { TtsRequestModeType } from '@/domains/coreDam/ttsNarrationRequest/types/TtsNarrationRequest'
 import { useTtsRequestMode } from '@/domains/coreDam/ttsNarrationRequest/valueObject/TtsRequestMode'
 

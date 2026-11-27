@@ -1,14 +1,20 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { ABooleanValue, ADatetime } from '@anzusystems/common-admin'
+import {
+  ABooleanValue,
+  ADatatablePagination,
+  ADatetime,
+  DatatablePaginationKey,
+  usePagination,
+} from '@anzusystems/common-admin'
 import type { DocId } from '@anzusystems/common-admin'
-import { ADatatablePagination, DatatablePaginationKey, usePagination } from '@anzusystems/common-admin/labs'
-import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
-import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import { computed, onMounted, provide, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import VoiceBindingCreateDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingCreateDialog.vue'
 import VoiceBindingEditDialog from '@/domains/coreDam/voiceFamily/components/VoiceBindingEditDialog.vue'
 import VoiceDiscriminatorChip from '@/domains/coreDam/voiceFamily/components/VoiceDiscriminatorChip.vue'
+import { useVoiceListActions } from '@/domains/coreDam/voiceFamily/composables/voiceActions'
+import type { Voice } from '@/domains/coreDam/voiceFamily/types/Voice'
 import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const props = withDefaults(
@@ -78,7 +84,6 @@ onMounted(() => {
       ]"
       :items="listItems"
       :items-length="pagination.totalCount"
-      item-value="id"
       @click:row="onRowClick"
     >
       <template #item.discriminator="{ item }: { item: Voice }">
@@ -103,6 +108,7 @@ onMounted(() => {
         <div class="d-flex justify-end">
           <VBtn
             v-if="canEdit"
+            :aria-label="t('coreDam.voice.button.edit')"
             variant="text"
             icon
             size="small"
@@ -119,12 +125,19 @@ onMounted(() => {
           </VBtn>
           <VBtn
             v-if="canDelete"
+            :aria-label="t('common.button.moreOptions')"
             variant="text"
             icon
             size="small"
             class="mx-1"
           >
             <VIcon icon="mdi-dots-horizontal" />
+            <VTooltip
+              activator="parent"
+              location="bottom"
+            >
+              {{ t('common.button.moreOptions') }}
+            </VTooltip>
             <VMenu activator="parent">
               <VCard min-width="200">
                 <VList>
@@ -139,10 +152,7 @@ onMounted(() => {
         </div>
       </template>
       <template #bottom>
-        <ADatatablePagination
-          v-model="pagination"
-          @change="fetchVoices"
-        />
+        <ADatatablePagination @change="fetchVoices" />
       </template>
     </VDataTableServer>
 

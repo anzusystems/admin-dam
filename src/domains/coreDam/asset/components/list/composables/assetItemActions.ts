@@ -1,9 +1,11 @@
 import type { AssetSearchListItemDto } from '@anzusystems/common-admin'
 import { assetFileIsImageFile, resolveSourceBadges } from '@anzusystems/common-admin'
-import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
-import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { computed } from 'vue'
+
 import { useCurrentAssetLicence } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import type { AssetListItem } from '@/domains/coreDam/asset/store/assetListStore'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 
 const IMAGE_HEIGHT = 200
 const IMAGE_BG_COLOR_DEFAULT = '#ccc'
@@ -16,17 +18,11 @@ const DEFAULT_IMAGE_PROPERTIES = {
 }
 
 export function useAssetItemActions(item: AssetListItem) {
-  const asset = computed<AssetSearchListItemDto>(() => {
-    return item.asset
-  })
+  const asset = computed<AssetSearchListItemDto>(() => item.asset)
 
-  const assetType = computed(() => {
-    return asset.value.attributes.assetType
-  })
+  const assetType = computed(() => asset.value.attributes.assetType)
 
-  const assetStatus = computed(() => {
-    return asset.value.attributes.assetStatus
-  })
+  const assetStatus = computed(() => asset.value.attributes.assetStatus)
 
   const imageProperties = computed(() => {
     if (asset.value.mainFile && asset.value.mainFile.links && asset.value.mainFile.links.image_list) {
@@ -58,16 +54,16 @@ export function useAssetItemActions(item: AssetListItem) {
     listLicenceIds.value.length > 1 ? (getCachedAssetLicence(asset.value.licence)?.badge ?? '') : ''
   )
 
+  // The list read caches the sources of its page (`useAssetListActions`).
   const { getCachedAuthor } = useCachedAuthors()
   const sourceBadges = computed(() => resolveSourceBadges(asset.value.sources, getCachedAuthor))
 
-  const getBgColor = () => {
-    return assetFileIsImageFile(asset.value.mainFile) &&
-      asset.value.mainFile.imageAttributes &&
-      asset.value.mainFile.imageAttributes.mostDominantColor
+  const getBgColor = () =>
+    assetFileIsImageFile(asset.value.mainFile) &&
+    asset.value.mainFile.imageAttributes &&
+    asset.value.mainFile.imageAttributes.mostDominantColor
       ? asset.value.mainFile.imageAttributes.mostDominantColor
       : IMAGE_BG_COLOR_DEFAULT
-  }
 
   return {
     asset,

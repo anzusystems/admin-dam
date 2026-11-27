@@ -4,9 +4,7 @@
     "name": "Názov",
     "flags": {
       "reviewed": "Skontrolované"
-    },
-    "createdBy": "Vytvoril",
-    "modifiedBy": "Upravil"
+    }
   },
   "filter": {
     "id": "ID",

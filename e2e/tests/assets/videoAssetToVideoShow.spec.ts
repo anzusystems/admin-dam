@@ -2,6 +2,7 @@ import { test, type Page } from '@playwright/test'
 import { prepareUser } from '@pages/shared/login'
 import { ADMIN_SUITE, RAND_NUM } from '@pages/shared/constants'
 import { uploadAndDescribe, waitForAssetList } from '@pages/shared/upload'
+import { uniqueFixtureCopy } from '@pages/shared/fixtures'
 import { cleanupAssets, waitForAssetProcessed } from '@pages/shared/api'
 import { deleteViaApi } from '@pages/shared/crud'
 import { createVideoShow } from '@pages/settings/videoShowPage'
@@ -38,7 +39,9 @@ test.describe.serial(`${ADMIN_SUITE} - Video asset to video show episode`, () =>
     const listLoaded = waitForAssetList(page)
     await page.goto('/assets')
     await listLoaded
-    ASSET_ID = await uploadAndDescribe(page, 'video/sample.mp4')
+    // A copy of its own: the sample itself, uploaded meanwhile by a spec in another worker, comes back as a
+    // read-only duplicate, which no metadata form opens for.
+    ASSET_ID = await uploadAndDescribe(page, uniqueFixtureCopy('video/sample.mp4'))
     await waitForAssetProcessed(page, ASSET_ID, { done: ['processed', 'duplicate'] })
   })
 

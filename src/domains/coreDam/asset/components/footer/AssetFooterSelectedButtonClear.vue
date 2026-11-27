@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { ADialogToolbar, eventClickBlur } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 withDefaults(
   defineProps<{
@@ -13,9 +15,7 @@ withDefaults(
     dataCy: 'button-clear',
   }
 )
-const emit = defineEmits<{
-  (e: 'confirm'): void
-}>()
+const emit = defineEmits<{ confirm: [] }>()
 
 const dialog = ref(false)
 
@@ -39,6 +39,7 @@ const { t } = useI18n()
   <div class="d-inline-flex">
     <VBtn
       v-if="variant === 'small'"
+      :aria-label="t('coreDam.asset.selected.clear')"
       variant="text"
       :width="26"
       :height="26"
@@ -57,6 +58,7 @@ const { t } = useI18n()
     </VBtn>
     <VBtn
       v-else-if="variant === 'normal'"
+      :aria-label="t('coreDam.asset.selected.cancel')"
       :height="36"
       :width="36"
       variant="text"
@@ -79,7 +81,7 @@ const { t } = useI18n()
         v-if="dialog"
         data-cy="delete-panel"
       >
-        <ADialogToolbar @on-cancel="onCancel">
+        <ADialogToolbar @cancel="onCancel">
           {{ t('coreDam.asset.selected.clearOverlay.title') }}
         </ADialogToolbar>
         <VCardText>

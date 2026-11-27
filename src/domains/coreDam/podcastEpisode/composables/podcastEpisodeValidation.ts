@@ -1,3 +1,8 @@
+import { useValidate } from '@anzusystems/common-admin'
+import { useVuelidate } from '@vuelidate/core'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
+
 import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
 
 const { required, maxLength, minLength, minValue, maxValue, url } = useValidate()
@@ -20,6 +25,18 @@ export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>)
         },
       },
       attributes: {
+        webOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
+        mobileOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
+        duration: {
+          required,
+          minValue: minValue(0),
+        },
         seasonNumber: {
           minValue: minValue(1),
           maxValue: maxValue(65535),

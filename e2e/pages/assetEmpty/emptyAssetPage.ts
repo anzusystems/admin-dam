@@ -37,7 +37,6 @@ export async function createEmptyAsset(page: Page, type: EmptyAssetType): Promis
   return String((await response.json()).id)
 }
 
-/** Upload a fixture into the first slot of the empty asset from its slots tab. */
 export async function uploadIntoFirstSlot(page: Page, assetId: string, file: string): Promise<void> {
   const slotsReloaded = page.waitForResponse((response: Response) =>
     response.url().startsWith(`${CORE_DAM_API}/asset-slot/asset/${assetId}`)

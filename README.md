@@ -15,3 +15,11 @@ The software development team in Petit Press a.s. has developed a cloud based DA
 - [E2E testing](e2e/README.md)
 
 - [Changelog](CHANGELOG.md) — releases follow [Semantic Versioning](https://semver.org)
+
+## Releasing
+
+Releases are made with [release-tools](https://github.com/anzusystems/release-tools) ([guide](https://github.com/anzusystems/release-tools/blob/main/docs/guide.md)), never by hand in GitHub:
+
+- `yarn release:start` — starts a release (a branch and a folder of its own) or a hotfix of an older line.
+- `yarn release:publish` — publishes a prerelease, a dev build or the final. The tag is created by the command, CI checks and builds it and creates the GitHub Release, and the final is merged into `main`.
+- `yarn release:cleanup` — deletes old dev builds and tags that never became a release.

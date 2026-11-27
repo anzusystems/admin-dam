@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
-import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import { AActionDeleteButton } from '@anzusystems/common-admin'
+import type { DocId } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
+import CachedPodcastChip from '@/domains/coreDam/podcast/components/CachedPodcastChip.vue'
 import PodcastLastImportStatusChip from '@/domains/coreDam/podcast/components/PodcastLastImportStatusChip.vue'
+import type { PodcastEpisode } from '@/domains/coreDam/podcastEpisode/types/PodcastEpisode'
+import { ACL } from '@/domains/system/auth/auth'
 
 withDefaults(
   defineProps<{
@@ -10,11 +15,11 @@ withDefaults(
   }>(),
   {}
 )
-const emit = defineEmits<{
-  (e: 'deleteRecord', id: DocId): void
-}>()
+const emit = defineEmits<{ deleteRecord: [id: DocId] }>()
 
 const { t } = useI18n()
+// Off for an asset being deleted.
+const assetDetailStore = useAssetDetailStore()
 </script>
 
 <template>
@@ -30,7 +35,11 @@ const { t } = useI18n()
       </div>
     </div>
     <div>
-      <AActionDeleteButton @delete-record="emit('deleteRecord', item.id)" />
+      <AActionDeleteButton
+        :acl="ACL.DAM_PODCAST_EPISODE_DELETE"
+        :disabled="assetDetailStore.isDeleting"
+        @delete-record="emit('deleteRecord', item.id)"
+      />
     </div>
   </div>
 </template>

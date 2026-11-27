@@ -1,3 +1,5 @@
+import { computed, readonly, ref } from 'vue'
+
 import { useMainWrapper } from '@/domains/system/composables/useMainWrapper'
 
 export const FooterViewUploadSlots = {
@@ -29,18 +31,14 @@ export function useAssetFooterUploadSlotsView() {
     customDialog.value = false
   }
 
-  const showMinimalUpload = computed(() => {
-    return footerViewUploadSlots.value !== FooterViewUploadSlots.Minimal
-  })
+  const showMinimalUpload = computed(() => footerViewUploadSlots.value !== FooterViewUploadSlots.Minimal)
 
   const setMinimalUpload = () => {
     setFooterViewUploadSlots(FooterViewUploadSlots.Minimal)
     customDialog.value = false
   }
 
-  const showCompactUpload = computed(() => {
-    return footerViewUploadSlots.value !== FooterViewUploadSlots.Compact
-  })
+  const showCompactUpload = computed(() => footerViewUploadSlots.value !== FooterViewUploadSlots.Compact)
 
   const setCompactUpload = () => {
     setFooterViewUploadSlots(FooterViewUploadSlots.Compact)

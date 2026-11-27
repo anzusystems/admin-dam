@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { SYSTEM_CORE_DAM } from '@/shared/systems'
+import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import { useI18n } from 'vue-i18n'
+
 import { ENTITY } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { useExtSystemEditActions } from '@/domains/coreDam/extSystem/composables/extSystemActions'
 import { useExtSystemValidation } from '@/domains/coreDam/extSystem/composables/extSystemValidation'
-import { AFormTextField, ARow, ASystemEntityScope } from '@anzusystems/common-admin'
+import DamTrackingFields from '@/domains/coreDam/shared/components/DamTrackingFields.vue'
 import UserRemoteAutocomplete from '@/domains/coreDam/user/components/UserRemoteAutocomplete.vue'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { extSystem } = useExtSystemEditActions()
 
@@ -39,6 +42,7 @@ const { t } = useI18n()
             disable-init-fetch
           />
         </ARow>
+        <DamTrackingFields :data="extSystem" />
       </VCol>
     </VRow>
   </ASystemEntityScope>

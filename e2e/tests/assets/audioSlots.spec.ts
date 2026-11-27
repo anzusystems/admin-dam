@@ -20,7 +20,6 @@ import {
 let page: Page
 let ASSET_ID = ''
 
-/** `expectSlot` of the page object, bound to this suite's shared page. */
 const expectSlotRow = (slot: string, texts: string[], absent: string[] = []) => expectSlot(page, slot, texts, absent)
 
 test.describe.serial(`${ADMIN_SUITE} - Audio slots`, () => {
@@ -104,7 +103,6 @@ test.describe.serial(`${ADMIN_SUITE} - Audio slots`, () => {
 
     await twinRow(page).locator('.v-chip--link').click()
     await expect(page).toHaveURL(new RegExp(`/assets/${twin.id}$`))
-    // The tile shows the display title, which falls back to the file name for an untitled asset.
     expect((await getAsset(page, twin.id)).texts.displayTitle.trim()).toBe(twin.tileTitle)
 
     await openSlots(page, ASSET_ID)

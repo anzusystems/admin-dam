@@ -1,25 +1,38 @@
 <script lang="ts" setup>
-import { useAuth } from '@/domains/system/auth/auth'
+import { ADialogToolbar, isNull, useAlerts, useDamConfigStore } from '@anzusystems/common-admin'
+import type {
+  DamAssetLicence,
+  DamCurrentUserDto,
+  DamExtSystem,
+  IntegerId,
+  IntegerIdNullable,
+} from '@anzusystems/common-admin'
+import { storeToRefs } from 'pinia'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router'
+
+import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
 import {
   licenceSelectionAllowed,
   useCurrentAssetLicence,
   useCurrentExtSystem,
 } from '@/domains/coreDam/asset/composables/currentExtSystem'
-import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
-import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
-import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
-import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { leaveAfterAsking, uploadsRunning } from '@/domains/coreDam/asset/composables/uploadsRunning'
+import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
+import { useCachedAssetLicences } from '@/domains/coreDam/assetLicence/composables/cachedAssetLicences'
+import { useFetchExtSystem } from '@/domains/coreDam/extSystem/api/extSystemApi'
 import { QUEUE_ID_MASS_EDIT, QUEUE_ID_UPLOAD_GLOBAL } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
-import AssetToolbarExtSystemLicenceDialog from '@/domains/coreDam/asset/components/toolbar/AssetToolbarExtSystemLicenceDialog.vue'
+import { updateCurrentUser } from '@/domains/coreDam/user/api/userApi'
+import { useAuth } from '@/domains/system/auth/auth'
 import { SYSTEM_DAM } from '@/shared/systems'
-import {
-  ADialogToolbar,
-  type DamAssetLicence,
-  type DamCurrentUserDto,
-  type DamExtSystem,
-  useDamConfigStore,
-} from '@anzusystems/common-admin'
+
+interface Selection {
+  selectedListView: IntegerIdNullable
+  selectedLicence: IntegerIdNullable
+}
 
 const { t } = useI18n()
 
@@ -30,12 +43,13 @@ const { currentUser } = useCurrentUser<DamCurrentUserDto>(SYSTEM_DAM)
 
 const { currentExtSystemId, currentListViewId } = useCurrentExtSystem()
 const { currentAssetLicenceId } = useCurrentAssetLicence()
+const assetDetailStore = useAssetDetailStore()
 const uploadQueuesStore = useUploadQueuesStore()
 const { addToCachedAssetLicences, fetchCachedAssetLicences, getCachedAssetLicence } = useCachedAssetLicences()
 
 const { showErrorsDefault } = useAlerts()
 
-const { executeRequest: fetchExtSystem } = useFetchExtSystem()
+const { execute: fetchExtSystem } = useFetchExtSystem()
 
 const currentExtSystem = ref<DamExtSystem | undefined>(undefined)
 const currentAssetLicence = ref<DamAssetLicence | undefined>(undefined)
@@ -81,14 +95,39 @@ const displayTextLicence = computed(() => {
 
 const saving = ref(false)
 const dialog = ref(false)
-const pendingSelection = ref<{ selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable } | null>(null)
+const pendingSelection = ref<Selection | null>(null)
 
-const switchTo = async (selection: { selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable }) => {
+/*
+ * Blocks leaving the page while switching. The browser back button to an entry where
+ * ADAM was loaded or reloaded bypasses Vuetify, which otherwise only closes the dialog.
+ * Also blocks address changes: another provider's page is the same
+ * router page and is fully re-rendered. A query-only change is allowed.
+ */
+onBeforeRouteLeave(() => !saving.value)
+onBeforeRouteUpdate((to, from) => to.path === from.path || !saving.value)
+
+/** `queuesGivenUp`: the user agreed to lose the work of the queues, so the browser does not ask about it again. */
+const switchTo = async (selection: Selection, queuesGivenUp = false) => {
+  // A second switch while the first is on its way would send the same change once more.
   if (saving.value) return
   saving.value = true
+  // The switch ends in a page reload, which drops unsaved panel metadata. Ask before anything is sent.
+  const leavesUnsaved = assetDetailStore.panelHoldsUnsavedMetadata
+  if (leavesUnsaved && !(await assetDetailStore.askToLeaveUnsaved())) {
+    saving.value = false
+    return
+  }
   try {
     await updateCurrentUser(selection)
-    window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
+    // Already given up above. Reset so the browser does not ask about them again on reload.
+    if (leavesUnsaved) assetDetailStore.reset()
+    // `assign` returns before the page goes. Closed first, the dialogs cannot be confirmed or cancelled meanwhile.
+    dialog.value = false
+    pendingSelection.value = null
+    const reload = () => window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
+    // A "Stay" of the browser would keep this page while the new selection is already saved.
+    if (queuesGivenUp) leaveAfterAsking(reload)
+    else reload()
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -96,12 +135,15 @@ const switchTo = async (selection: { selectedListView: IntegerIdNullable; select
   }
 }
 
-const requestSwitch = (selection: { selectedListView: IntegerIdNullable; selectedLicence: IntegerIdNullable }) => {
-  // Switching reloads the page, which drops uploads and edits that live only in the queues.
-  const workInProgress = [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some(
-    (queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0
-  )
+const requestSwitch = (selection: Selection) => {
+  // The change on its way decides where the page goes; a newer pick would only sit behind it.
+  if (saving.value) return
+  // Switching reloads the page, which drops uploads and edits that live only in the queues, slot uploads included.
+  const workInProgress =
+    uploadsRunning() ||
+    [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some((queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0)
   if (workInProgress) {
+    dialog.value = false
     pendingSelection.value = selection
     return
   }
@@ -114,13 +156,22 @@ const onSelectView = (id: IntegerId) => {
 }
 
 const onSelectLicence = (id: IntegerId) => {
-  if (!currentUser.value || (isNull(currentListViewId.value) && id === currentAssetLicenceId.value)) return
+  if (!currentUser.value || (isNull(currentListViewId.value) && id === currentAssetLicenceId.value)) {
+    dialog.value = false
+    return
+  }
   requestSwitch({ selectedLicence: id, selectedListView: null })
 }
 
 const onConfirmPending = () => {
   if (!pendingSelection.value) return
-  switchTo(pendingSelection.value)
+  switchTo(pendingSelection.value, true)
+}
+
+// Closing it would not stop a change the switch is sending: the page still reloads.
+const onCancelPending = () => {
+  if (saving.value) return
+  pendingSelection.value = null
 }
 
 onMounted(async () => {
@@ -198,15 +249,16 @@ onMounted(async () => {
     v-model="dialog"
     :ext-system-name="displayTextExtSystem"
     :licence-name="displayTextLicence"
+    :saving="saving"
     @select="onSelectLicence"
   />
   <VDialog
     :model-value="!!pendingSelection"
     :width="500"
-    @update:model-value="pendingSelection = null"
+    @update:model-value="onCancelPending"
   >
     <VCard v-if="pendingSelection">
-      <ADialogToolbar @on-cancel="pendingSelection = null">
+      <ADialogToolbar @cancel="onCancelPending">
         {{ t('system.mainBar.listViewSwitch.title') }}
       </ADialogToolbar>
       <VCardText>
@@ -214,7 +266,11 @@ onMounted(async () => {
       </VCardText>
       <VCardActions>
         <VSpacer />
-        <ABtnTertiary @click.stop="pendingSelection = null">
+        <ABtnTertiary
+          :disabled="saving"
+          data-cy="button-cancel-list-view-switch"
+          @click.stop="onCancelPending"
+        >
           {{ t('common.button.cancel') }}
         </ABtnTertiary>
         <ABtnPrimary

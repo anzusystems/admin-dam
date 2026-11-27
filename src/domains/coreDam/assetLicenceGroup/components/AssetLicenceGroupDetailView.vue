@@ -1,33 +1,41 @@
 <script lang="ts" setup>
-import { AActionCloseButton, AActionEditButton, ACard, useI18n } from '@anzusystems/common-admin'
-import { useAssetLicenceGroupDetailActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
+import {
+  AActionCloseButtonHistory,
+  AActionEditButton,
+  ACard,
+  defineBreadcrumbs,
+  stringToInt,
+  useRecordPage,
+} from '@anzusystems/common-admin'
+import { onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+
 import AssetLicenceGroupDetail from '@/domains/coreDam/assetLicenceGroup/components/AssetLicenceGroupDetail.vue'
-import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
+import { useAssetLicenceGroupDetailActions } from '@/domains/coreDam/assetLicenceGroup/composables/assetLicenceGroupActions'
 import { ACL } from '@/domains/system/auth/auth'
+import ActionbarWrapper from '@/layouts/ActionbarWrapper.vue'
 
 const { detailLoading, fetchData, resetStore, assetLicenceGroup } = useAssetLicenceGroupDetailActions()
 
 const { t } = useI18n()
 
-const breadcrumbs = defineBreadcrumbs(
-  computed(() => [
-    { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-groups' },
-    {
-      title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.detail'),
-      routeName: '/(coreDam)/asset-licence-groups/[id]',
-    },
-  ])
-)
+const breadcrumbs = defineBreadcrumbs(() => [
+  { title: t('breadcrumb.coreDam.assetLicenceGroup.list'), routeName: '/(coreDam)/asset-licence-groups' },
+  {
+    title: assetLicenceGroup.value.name || t('breadcrumb.coreDam.assetLicenceGroup.detail'),
+    routeName: '/(coreDam)/asset-licence-groups/[id]',
+  },
+])
 
 const route = useRoute()
 const id = stringToInt((route.params as { id: string }).id)
 
-const getDetail = () => {
-  fetchData(id)
-}
-
-onMounted(() => {
-  getDetail()
+useRecordPage({
+  fallbackRouteName: '/(coreDam)/asset-licence-groups',
+  skipRouteNames: ['/(coreDam)/asset-licence-groups/[id]/edit'],
+  loading: detailLoading,
+  load: (signal) => fetchData(id, { signal }),
 })
 
 onBeforeUnmount(() => {
@@ -45,7 +53,10 @@ onBeforeUnmount(() => {
           :route-name="'/(coreDam)/asset-licence-groups/[id]/edit'"
         />
       </Acl>
-      <AActionCloseButton :route-name="'/(coreDam)/asset-licence-groups'" />
+      <AActionCloseButtonHistory
+        :fallback-route-name="'/(coreDam)/asset-licence-groups'"
+        :skip-route-names="['/(coreDam)/asset-licence-groups/[id]/edit']"
+      />
     </template>
   </ActionbarWrapper>
 

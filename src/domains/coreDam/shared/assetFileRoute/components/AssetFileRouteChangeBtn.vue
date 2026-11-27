@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 withDefaults(
   defineProps<{
     buttonT?: string
@@ -24,6 +26,7 @@ const { t } = useI18n()
 <template>
   <VBtn
     v-if="variant === 'button'"
+    :aria-label="t(buttonT)"
     size="x-small"
     icon
     variant="text"

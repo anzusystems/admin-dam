@@ -1,3 +1,7 @@
+import type { ValueObjectOption } from '@anzusystems/common-admin'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 export const ExportType = {
   Web: 'web',
   Mobile: 'mobile',
@@ -20,9 +24,7 @@ export function useExportTypeTypes() {
     },
   ])
 
-  const getExportTypeOption = (value: ExportTypeType) => {
-    return exportTypeOptions.value.find((item) => item.value === value)
-  }
+  const getExportTypeOption = (value: ExportTypeType) => exportTypeOptions.value.find((item) => item.value === value)
 
   return {
     exportTypeOptions,

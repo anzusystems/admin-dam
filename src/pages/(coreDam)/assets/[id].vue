@@ -12,5 +12,8 @@ definePage({
 </script>
 
 <template>
-  <AssetDetailView />
+  <!-- AppLayoutMain is a bare VApp: without this the page has no main landmark. -->
+  <VMain>
+    <AssetDetailView />
+  </VMain>
 </template>
