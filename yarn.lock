@@ -5,9 +5,9 @@ __metadata:
   version: 10
   cacheKey: 10
 
-"@anzusystems/common-admin@npm:2.0.0-rc.28":
-  version: 2.0.0-rc.28
-  resolution: "@anzusystems/common-admin@npm:2.0.0-rc.28"
+"@anzusystems/common-admin@npm:2.0.0-rc.29":
+  version: 2.0.0-rc.29
+  resolution: "@anzusystems/common-admin@npm:2.0.0-rc.29"
   peerDependencies:
     "@mdi/font": ^7.4.47
     "@sentry/vite-plugin": ^11.19.0
@@ -63,7 +63,7 @@ __metadata:
       optional: true
     vitest:
       optional: true
-  checksum: 10/5fadfd1063d2e72b59b1cca461b2a923e431b96afb8fe1e872031a7f193c96f4cfc0dcba7e729aa9c6f9a69f78e7084672d6367fa784d648f59750469babe0ea
+  checksum: 10/d62487e4c9fe281614dc6907eab2aee99657baf7101e3873208d6ec508893c11a054b6a0dcc93b3724fb4dd5eb0e44066046956a83f66d3ec1735e08ba7e64c8
   languageName: node
   linkType: hard
 
@@ -2833,7 +2833,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "adam-admin@workspace:."
   dependencies:
-    "@anzusystems/common-admin": "npm:2.0.0-rc.28"
+    "@anzusystems/common-admin": "npm:2.0.0-rc.29"
     "@floating-ui/dom": "npm:^1.8.0"
     "@intlify/unplugin-vue-i18n": "npm:^11.2.8"
     "@mdi/font": "npm:7.4.47"
