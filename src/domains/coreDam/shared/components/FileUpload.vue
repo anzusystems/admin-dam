@@ -211,6 +211,8 @@ const onFileChange = (event: Event) => {
   if (dragEvent && dragEvent.target && dragEvent.target.files) {
     // @ts-ignore
     setFiles(dragEvent.target.files)
+    // `setFiles` copied the files. Cleared, so picking the same file again fires a change, as in the library's `AFileInput`.
+    ;(dragEvent.target as HTMLInputElement).value = ''
   } else if (dragEvent && dragEvent.dataTransfer && dragEvent.dataTransfer.files) {
     setFiles(Array.from(dragEvent.dataTransfer.files as ArrayLike<File>))
   }

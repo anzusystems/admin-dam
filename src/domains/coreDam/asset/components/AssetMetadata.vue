@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import type { AssetFile } from '@anzusystems/common-admin'
 import {
+  ABooleanValue,
   ACopyText,
   ADamAssetCustomMetadataForm,
   ADamAuthorRemoteAutocompleteWithCached,
   ADamKeywordRemoteAutocompleteWithCached,
   ADamSourcesAuthorsRow,
   ADatetime,
+  ARow,
   ASystemEntityScope,
   DamAssetType,
   DamAssetTypeDefault,
@@ -40,6 +42,7 @@ import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAut
 import AssetFileMainRoute from '@/domains/coreDam/shared/assetFileRoute/components/AssetFileMainRoute.vue'
 import CachedDamUserChip from '@/domains/coreDam/shared/components/CachedDamUserChip.vue'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
+import { ACL, useAuth } from '@/domains/system/auth/auth'
 
 const { t } = useI18n()
 const { currentExtSystemId } = useCurrentExtSystem()
@@ -114,7 +117,15 @@ const autoDeleteIn = computed(() =>
     : ''
 )
 
+/*
+ * Without the right to update assets the form only shows the asset, as "Save" is hidden.
+ * Nothing in it can be saved, so nothing counts as unsaved and leaving is never asked about.
+ */
+const { can } = useAuth()
+const readonly = computed(() => !can(ACL.DAM_ASSET_UPDATE))
+
 const onAnyMetadataChange = () => {
+  if (readonly.value) return
   metadataTouch()
 }
 </script>
@@ -137,6 +148,7 @@ const onAnyMetadataChange = () => {
           v-model="asset.metadata.customData"
           :asset-type="assetType"
           :ext-system="currentExtSystemId"
+          :readonly="readonly"
           :validation-scope="AssetMetadataValidationScopeSymbol"
           @any-change="onAnyMetadataChange"
         >
@@ -158,6 +170,7 @@ const onAnyMetadataChange = () => {
                     data-cy="custom-field-keywords"
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="keywordRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -185,6 +198,7 @@ const onAnyMetadataChange = () => {
                     source
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="sourceRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -207,6 +221,7 @@ const onAnyMetadataChange = () => {
                     :source="sourceEnabled ? false : undefined"
                     clearable
                     multiple
+                    :disabled="readonly"
                     :required="authorRequired"
                     :validation-scope="AssetMetadataValidationScopeSymbol"
                     @update:model-value="onAnyMetadataChange"
@@ -220,7 +235,14 @@ const onAnyMetadataChange = () => {
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('common.damImage.asset.model.mainFileSingleUse')"
+                >
+                  <ABooleanValue :value="mainFileSingleUse" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileSingleUse"
                   :label="t('common.damImage.asset.model.mainFileSingleUse')"
                   @update:model-value="onAnyMetadataChange"
@@ -233,7 +255,14 @@ const onAnyMetadataChange = () => {
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.model.ttsAudio')"
+                >
+                  <ABooleanValue :value="ttsAudio" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="ttsAudio"
                   :label="t('coreDam.asset.model.ttsAudio')"
                   @update:model-value="onAnyMetadataChange"
@@ -246,7 +275,14 @@ const onAnyMetadataChange = () => {
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
+                >
+                  <ABooleanValue :value="mainFileOverrideInternal" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.overrideInternal')"
                   @update:model-value="onAnyMetadataChange"
@@ -259,7 +295,14 @@ const onAnyMetadataChange = () => {
               class="my-2"
             >
               <VCol>
+                <ARow
+                  v-if="readonly"
+                  :title="t('coreDam.asset.detail.info.field.flags.internal')"
+                >
+                  <ABooleanValue :value="mainFileInternal" />
+                </ARow>
                 <VSwitch
+                  v-else
                   v-model="mainFileInternal"
                   :disabled="!mainFileOverrideInternal"
                   :label="t('coreDam.asset.detail.info.field.flags.internal')"

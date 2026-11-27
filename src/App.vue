@@ -5,11 +5,14 @@ import { useTitle } from '@vueuse/core'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
+import { useUploadsRunningUnloadGuard } from '@/domains/coreDam/asset/composables/uploadsRunning'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { envConfig } from '@/shared/EnvConfigService'
 
 const route = useRoute()
 const { initGlobalDragState } = useDropzoneGlobalDragState()
+
+useUploadsRunningUnloadGuard()
 
 // Prefixes the title with the environment name, so a non-production tab shows it at once.
 // Production sets no label and keeps the plain title.

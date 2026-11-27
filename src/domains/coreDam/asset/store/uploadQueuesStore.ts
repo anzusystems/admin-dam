@@ -46,7 +46,7 @@ import type {
   UploadSettlePolicy,
 } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { ref, toRaw } from 'vue'
+import { computed, ref, toRaw } from 'vue'
 
 import { fetchAsset, fetchAssetListByIds, fetchWaitingAssets } from '@/domains/coreDam/asset/api/assetApi'
 import { fetchAssetSlotFiles } from '@/domains/coreDam/asset/api/assetSlotApi'
@@ -823,8 +823,21 @@ export const useUploadQueuesStore = defineStore('damUploadQueuesStore', () => {
     metadataFailures.clear()
   }
 
+  /*
+   * A file still to be sent or being sent by any queue: an upload, a slot upload or an import from an external provider.
+   * A reload or a closed window loses it. A file the server already processes is not lost.
+   */
+  const uploadsRunning = computed(() =>
+    Object.values(queues.value).some((queue) =>
+      queue.items.some(
+        (item) => item.status === UploadQueueItemStatus.Waiting || item.status === UploadQueueItemStatus.Uploading
+      )
+    )
+  )
+
   return {
     queues,
+    uploadsRunning,
     getQueueFileInputKey: core.getQueueFileInputKey,
     getQueue: core.getQueue,
     getQueueItems: core.getQueueItems,

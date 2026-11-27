@@ -54,7 +54,11 @@ const arrow = async (over: Element) => {
   await settled()
 }
 
-const reads = () => ['asset-1', 'asset-2', 'asset-3', UPLOADED].map((assetId) => server.assetReads(assetId))
+// Reads into the panel or the detail, which read one asset. A save reads its assets as a list, which is not counted.
+const reads = () =>
+  ['asset-1', 'asset-2', 'asset-3', UPLOADED].map(
+    (assetId) => server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + assetId).length
+  )
 
 const standsOut = (button: HTMLButtonElement) => button.classList.contains('v-btn--variant-flat')
 

@@ -4,16 +4,13 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import {
-  bulkUpdateAssetsMetadata,
-  hasMetadataToSave,
-  showMetadataSaveError,
-} from '@/domains/coreDam/asset/api/assetApi'
+import { bulkUpdateAssetsMetadata, hasMetadataToSave } from '@/domains/coreDam/asset/api/assetApi'
 import AssetFooterSelectedButtonClear from '@/domains/coreDam/asset/components/footer/AssetFooterSelectedButtonClear.vue'
 import AssetQueueEditable from '@/domains/coreDam/asset/components/queue/AssetQueueEditable.vue'
 import { MASS_OPERATIONS_FROM } from '@/domains/coreDam/asset/components/queue/massOperations'
 import { useAssetFooterBulkSave } from '@/domains/coreDam/asset/composables/assetFooterBulkSave'
 import { useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
+import { metadataSaveFailed } from '@/domains/coreDam/asset/composables/metadataSaveFailed'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { QUEUE_ID_MASS_EDIT } from '@/domains/coreDam/shared/services/upload/uploadQueueIds'
@@ -87,7 +84,7 @@ const onSave = async () => {
     refreshDetailAsset(savedAssetIds)
   } catch (error) {
     typedKeptAfterFailure(left)
-    showMetadataSaveError(error)
+    metadataSaveFailed(error)
   } finally {
     panelTakesTypingAgain(left)
     saveButtonLoading.value = false
@@ -122,7 +119,7 @@ const onSaveAndClose = async () => {
     whileOnPage(() => void onClearConfirm())
   } catch (error) {
     typedKeptAfterFailure(left)
-    showMetadataSaveError(error)
+    metadataSaveFailed(error)
   } finally {
     panelTakesTypingAgain(left)
     saveAndCloseButtonLoading.value = false

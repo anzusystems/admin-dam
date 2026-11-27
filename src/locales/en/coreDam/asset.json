@@ -133,6 +133,7 @@
     "fileFailedOpenAgain": "Processing of the file failed. You can save after opening the asset again.",
     "fileProcessedOpenAgain": "The file is processed. Saving becomes possible after the detail is opened again.",
     "deletedMeanwhile": "The asset has been deleted meanwhile.",
+    "deletedMeanwhileRows": "The asset has been deleted meanwhile and its row removed. Save the other rows again. | {count} assets have been deleted meanwhile and their rows removed. Save the other rows again.",
     "exif": {
       "title": "Main file EXIF ({count})"
     },

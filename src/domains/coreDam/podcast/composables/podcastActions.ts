@@ -8,8 +8,8 @@ import type {
 } from '@anzusystems/common-admin'
 import {
   defineRecordLoader,
+  isAnzuApiValidationError,
   isUndefined,
-  renumberPositions,
   useAlerts,
   usePageNavigation,
 } from '@anzusystems/common-admin'
@@ -20,15 +20,24 @@ import { ref } from 'vue'
 
 import { useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import {
+  ENTITY,
   useFetchPodcast,
   useFetchPodcastListByExtSystem,
   useFetchPodcastListByIds,
   useUpdatePodcast,
 } from '@/domains/coreDam/podcast/api/podcastApi'
+import { exportDataCombination } from '@/domains/coreDam/podcast/composables/podcastExportDataValidations'
 import { usePodcastOneStore } from '@/domains/coreDam/podcast/store/podcastStore'
 import type { Podcast } from '@/domains/coreDam/podcast/types/Podcast'
+import { SYSTEM_CORE_DAM } from '@/shared/systems'
 
 const { showValidationError, showRecordWas, showErrorsDefault } = useAlerts()
+
+type SentExportData = Array<{ id: IntegerId; pair: string }>
+const EXPORT_DATA_ROW_FIELD = new RegExp(
+  '^' + SYSTEM_CORE_DAM + '\\.' + ENTITY + '\\.model\\.exportData\\[(\\d+)\\]\\.'
+)
+const NOT_UNIQUE = 'error_field_not_unique'
 
 const datatableHiddenColumns = ref<Array<string>>(['id'])
 const listLoading = ref(false)
@@ -94,7 +103,23 @@ export const usePodcastEditActions = () => {
     podcastOneStore.setPodcast(podcast)
   })
 
+  /*
+   * Marks the export-data rows the server refused as not unique, at the row.
+   * Its errors name a row by its place in the save: `exportData[2].exportType`.
+   */
+  const markRefusedExportData = (error: unknown, sent: SentExportData) => {
+    if (!isAnzuApiValidationError(error)) return
+    const refused = new Map<IntegerId, string>()
+    error.fields.forEach(({ field, errors }) => {
+      const index = EXPORT_DATA_ROW_FIELD.exec(field)?.[1]
+      const row = isUndefined(index) ? undefined : sent[Number(index)]
+      if (row && errors.includes(NOT_UNIQUE)) refused.set(row.id, row.pair)
+    })
+    podcastOneStore.exportDataRefused = refused
+  }
+
   const onUpdate = async (close = false, onSuccess: ((podcast: Podcast) => void) | undefined = undefined) => {
+    let sentExportData: SentExportData = []
     try {
       close ? (saveAndCloseButtonLoading.value = true) : (saveButtonLoading.value = true)
       v$.value.$touch()
@@ -104,14 +129,13 @@ export const usePodcastEditActions = () => {
         saveAndCloseButtonLoading.value = false
         return
       }
-      // Renumber positions to match the editor's visual order; new rows carry a negative temp id
-      // for the editor key, but the API expects id 0 to create a new export-data entity.
+      // New rows carry a negative temp id for the editor key, but the API expects id 0 to create a new export-data entity.
       const object: Podcast = {
         ...podcast.value,
-        exportData: renumberPositions(podcast.value.exportData).map((item) =>
-          item.id < 0 ? { ...item, id: 0 } : item
-        ),
+        exportData: podcast.value.exportData.map((item) => (item.id < 0 ? { ...item, id: 0 } : item)),
       }
+      // In the order sent, which the server's errors refer to. The rows can change during the request.
+      sentExportData = podcast.value.exportData.map((row) => ({ id: row.id, pair: exportDataCombination(row) }))
       const updatedPodcast = await updatePodcast({
         urlParams: { id: podcastOneStore.podcast.id },
         body: object,
@@ -124,6 +148,7 @@ export const usePodcastEditActions = () => {
       if (!close) return
       push({ name: '/(coreDam)/podcasts' })
     } catch (error) {
+      markRefusedExportData(error, sentExportData)
       showErrorsDefault(error)
     } finally {
       saveButtonLoading.value = false

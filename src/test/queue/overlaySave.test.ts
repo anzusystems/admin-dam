@@ -269,6 +269,8 @@ describe('the overlay of the uploads', () => {
       'keeps the queue, reads no list and says why when the save fails: %s',
       async (_name, refuse, alert) => {
         server.on('PATCH', BULK, refuse)
+        // The asset exists: a server error is not taken for an asset deleted meanwhile.
+        server.asset(assetDetail('asset-1'))
         const { save, alerts, held, shown } = await mountOverlay([editable('asset-1')], namedTitle)
 
         save().click()
@@ -377,6 +379,8 @@ describe('the overlay of the uploads', () => {
       'keeps the queue and the overlay, and says why, when the save fails: %s',
       async (_name, refuse, alert) => {
         server.on('PATCH', BULK, refuse)
+        // The asset exists: a server error is not taken for an asset deleted meanwhile.
+        server.asset(assetDetail('asset-1'))
         const { saveAndFinish, alerts, held, shown } = await mountOverlay([editable('asset-1')], namedTitle)
 
         saveAndFinish()?.click()
@@ -989,6 +993,8 @@ describe('the overlay of the assets picked for mass edit', () => {
 
     it.each(refusals)('keeps them all, and says why, when the save fails: %s', async (_name, refuse, alert) => {
       server.on('PATCH', BULK, refuse)
+      // The asset exists: a server error is not taken for an asset deleted meanwhile.
+      server.asset(assetDetail('asset-1'))
       const { save, alerts, held, shown, ticked } = await mountOverlay([picked('asset-1')], namedTitle)
 
       save().click()
@@ -1040,6 +1046,8 @@ describe('the overlay of the assets picked for mass edit', () => {
 
     it.each(refusals)('keeps them all, and says why, when the save fails: %s', async (_name, refuse, alert) => {
       server.on('PATCH', BULK, refuse)
+      // The asset exists: a server error is not taken for an asset deleted meanwhile.
+      server.asset(assetDetail('asset-1'))
       const { saveAndFinish, alerts, held, shown, ticked } = await mountOverlay([picked('asset-1')], namedTitle)
 
       saveAndFinish().click()

@@ -514,7 +514,19 @@ describe('a mass-edit row whose metadata are read twice', () => {
       baseline: [ui.baseline(row())?.keywords, ui.baseline(row())?.customData],
     })
 
-    return { ...ui, row, answer, held, save: () => ui.save(EDIT) }
+    /*
+     * A save that sends custom data reads the asset again just before, and that read is held as well.
+     * It is answered with `asset`, what the server has then.
+     */
+    const saveReading = async (asset: ReturnType<typeof assetDetail>) => {
+      const reads = answers.length
+      const saving = ui.save(EDIT)
+      await eventually(() => expect(answers).toHaveLength(reads + 1))
+      answers[reads](asset)
+      await saving
+    }
+
+    return { ...ui, row, answer, held, save: () => ui.save(EDIT), saveReading }
   }
 
   it('takes the newer answer when the older one came first and nobody changed the row', async () => {
@@ -566,10 +578,10 @@ describe('a mass-edit row whose metadata are read twice', () => {
    * A "nobody changed it" check would accept the newer read, which was sent before the save.
    */
   it('keeps what was saved between the two answers, and the next save sends only what is typed after it', async () => {
-    const { row, answer, held, save } = await twiceRead()
+    const { row, answer, held, saveReading } = await twiceRead()
     await answer('older', answered('keyword-older', 'older'))
     row().customData = { ...row().customData, title: 'typed' }
-    await save()
+    await saveReading(answered('keyword-older', 'older'))
 
     await answer('newer', answered('keyword-newer', 'newer'))
 
@@ -578,7 +590,7 @@ describe('a mass-edit row whose metadata are read twice', () => {
       baseline: [['keyword-older'], customData('typed')],
     })
     row().customData = { ...row().customData, note: 'typed later' }
-    await save()
+    await saveReading(answered('keyword-older', 'typed'))
     expect(saved()).toEqual([
       [{ id: 'asset-1', described: true, customData: customData('typed') }],
       [{ id: 'asset-1', described: true, customData: { title: 'typed', note: 'typed later' } }],
@@ -675,20 +687,42 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
     const before = () => [onServer('asset-1'), onServer('asset-2')]
     before().forEach((asset) => server.asset(asset))
     let answerRead = () => undefined as void
-    server.on(
-      'GET',
-      BATCH_READ,
-      () =>
-        new Promise<FakeDamAnswer>((resolve) => {
-          answerRead = () => resolve({ status: 200, data: { data: before() } })
-        })
-    )
+    // What the server has of the asset of the panel: as before, then as the panel saved it.
+    let current = onServer('asset-1')
+    server.on('GET', BATCH_READ, (request) => {
+      /*
+       * Only the picking read is held. The read of the panel save before it sends custom data,
+       * and the queue's read again once that save is answered, read the one asset and get what the server has.
+       */
+      if (!request.url.includes(',')) return { status: 200, data: { data: [current] } }
+
+      return new Promise<FakeDamAnswer>((resolve) => {
+        answerRead = () => resolve({ status: 200, data: { data: before() } })
+      })
+    })
     let answerSave: (() => void) | undefined = undefined
     const held = { save: false }
-    server.on('PATCH', BULK, () => {
-      if (!held.save) return { status: 200, data: [] }
+    server.on('PATCH', BULK, (request) => {
+      const written = () => {
+        const [item] = JSON.parse(request.data as string) as Array<{ customData?: Record<string, unknown> }>
+        if (!item.customData) return
+        current = onServer('asset-1', {
+          metadata: { customData: item.customData, authorSuggestions: {}, keywordSuggestions: {} },
+        })
+      }
+      if (!held.save) {
+        written()
 
-      return new Promise<FakeDamAnswer>((resolve) => (answerSave = () => resolve({ status: 200, data: [] })))
+        return { status: 200, data: [] }
+      }
+
+      return new Promise<FakeDamAnswer>(
+        (resolve) =>
+          (answerSave = () => {
+            written()
+            resolve({ status: 200, data: [] })
+          })
+      )
     })
     const ui = await start({}, { customForm: { image: [customField('title'), customField('note')] } })
     const { useAssetListStore } = await import('@/domains/coreDam/asset/store/assetListStore')
@@ -715,7 +749,8 @@ describe('an asset saved from the panel of the list while its mass-edit row is s
       row,
       pickBoth: async () => {
         tile(1).dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }))
-        await eventually(() => expect(server.sent('GET', BATCH_READ)).toHaveLength(1))
+        const picking = () => server.sent('GET', BATCH_READ).filter((request) => request.url.includes(','))
+        await eventually(() => expect(picking()).toHaveLength(1))
       },
       holdSave: () => (held.save = true),
       startSave: async () => {
@@ -822,6 +857,8 @@ describe('a mass-edit row that gets its form from the notification while its rea
 
 describe('one asset in a row of the upload queue and in a row of the mass edit', () => {
   it('is changed by a mass operation only in the queue the operation was made in', async () => {
+    // The save reads the asset again before it sends custom data.
+    server.asset(onServer('asset-1'))
     const { store, save } = await start({
       [UPLOADS]: [queueRow({ status: 'uploaded', canEditMetadata: true })],
       [EDIT]: [queueRow({ type: 'asset', status: 'uploaded', canEditMetadata: true })],

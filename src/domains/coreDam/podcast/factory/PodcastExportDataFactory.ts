@@ -16,7 +16,6 @@ export function usePodcastExportDataFactory() {
     deviceType: DeviceTypeDefault,
     podcast: podcastId,
     body: {},
-    position: 0,
     createdAt: dateTimeNow(),
     modifiedAt: dateTimeNow(),
     createdBy: null,

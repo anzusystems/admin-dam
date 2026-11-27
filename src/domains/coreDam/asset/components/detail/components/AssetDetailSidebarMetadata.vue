@@ -5,16 +5,18 @@ import { useVuelidate } from '@vuelidate/core'
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { showMetadataSaveError, updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
+import { updateAssetMetadata } from '@/domains/coreDam/asset/api/assetApi'
 import AssetMetadata from '@/domains/coreDam/asset/components/AssetMetadata.vue'
 import AssetDetailSidebarActionsWrapper from '@/domains/coreDam/asset/components/detail/components/AssetDetailSidebarActionsWrapper.vue'
 import AssetDownloadButton from '@/domains/coreDam/asset/components/detail/components/AssetDownloadButton.vue'
 import { useAssetDeleted } from '@/domains/coreDam/asset/components/detail/composables/assetDeleted'
 import { useAssetDetailActions } from '@/domains/coreDam/asset/components/detail/composables/assetDetailActions'
 import { assetDeleteOnItsWay, deleteAssetOnce } from '@/domains/coreDam/asset/composables/assetDeleteOnce'
+import { metadataSaveFailed } from '@/domains/coreDam/asset/composables/metadataSaveFailed'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import { metadataMayStillChange, useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
+import { assetWithMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { AssetMetadataValidationScopeSymbol } from '@/domains/coreDam/shared/validationScopes'
 import { ACL } from '@/domains/system/auth/auth'
 
@@ -32,15 +34,7 @@ const emit = defineEmits<{ postDelete: [data: DocId] }>()
 
 const { t } = useI18n()
 
-const {
-  asset,
-  metadataAreTouched,
-  mainFileSingleUse,
-  mainFileOverrideInternal,
-  mainFileInternal,
-  ttsAudio,
-  saveHeldBack,
-} = useAssetDetailActions()
+const { asset, metadataAreTouched, saveHeldBack } = useAssetDetailActions()
 const assetDetailStore = useAssetDetailStore()
 const uploadQueueStore = useUploadQueuesStore()
 const assetListStore = useAssetListStore()
@@ -88,32 +82,28 @@ const onSave = async () => {
     return
   }
   // Snapshot taken at start: another asset can be opened, or this one edited, while the save is in flight.
-  // `mainFileSingleUse` is the detail's own switch, not the value the asset was opened with.
-  const saved = { ...cloneDeep(asset.value), mainFileSingleUse: mainFileSingleUse.value }
+  // The switches are the detail's own, not the values the asset was opened with.
+  const form = asset.value
+  const saved = cloneDeep(form)
+  const typed = assetDetailStore.typedMetadata(form)
+  const known = assetDetailStore.serverMetadataOf(form)
   /*
    * Called before the request so edits made during it are not counted as sent.
    * Other asset reads also see it, since their answer can predate this save.
    */
-  const saveAnswered = assetDetailStore.saveSent(asset.value)
+  const saveAnswered = assetDetailStore.saveSent(form)
   let failed = false
   try {
-    const onServer = await updateAssetMetadata(
-      saved,
-      mainFileSingleUse.value,
-      mainFileOverrideInternal.value,
-      mainFileInternal.value,
-      ttsAudio.value
-    )
-    // As core-dam saved it: a licence that enforces single use turns it on. Its tile badge and queue row follow.
-    const singleUse = onServer?.mainFileSingleUse ?? saved.mainFileSingleUse
-    assetDetailStore.savedMainFileSingleUse(saved.id, saved.mainFileSingleUse, singleUse)
-    assetListStore.setMainFileSingleUseById(saved.id, singleUse)
+    const onServer = await updateAssetMetadata(saved, typed, known)
+    // As core-dam saved it: a licence that enforces single use turns it on, another editor may have changed the rest.
+    assetDetailStore.formSaved(form, typed, onServer)
+    assetListStore.setMainFileSingleUseById(saved.id, onServer.mainFileSingleUse)
     // Also update the asset's queue row: a later bulk save sends that row.
-    uploadQueueStore.updateAssetMetadata({ ...saved, mainFileSingleUse: singleUse })
+    uploadQueueStore.updateAssetMetadata(assetWithMetadata(saved, onServer))
     showRecordWas('updated')
   } catch (error) {
     failed = true
-    showMetadataSaveError(error)
+    metadataSaveFailed(error)
   } finally {
     saveAnswered(failed)
     saveButtonLoading.value = false

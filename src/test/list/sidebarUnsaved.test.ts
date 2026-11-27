@@ -49,7 +49,11 @@ const arrow = async (key: typeof RIGHT | typeof LEFT, over: Element = document.b
   await settled()
 }
 
-const reads = () => ['asset-1', 'asset-2', 'asset-3'].map((assetId) => server.assetReads(assetId))
+// Reads into the panel or the detail, which read one asset. A save reads its assets as a list, which is not counted.
+const reads = () =>
+  ['asset-1', 'asset-2', 'asset-3'].map(
+    (assetId) => server.sent('GET').filter((request) => request.url === '/adm/v1/asset/' + assetId).length
+  )
 
 const readAlone = () =>
   server.sent('GET', /^\/adm\/v1\/asset\/asset-\d$/).map((request) => request.url.split('/').pop())

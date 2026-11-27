@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { AUnsavedConfirmDialog, DatatablePaginationKey } from '@anzusystems/common-admin'
-import { onKeyUp, useEventListener } from '@vueuse/core'
+import { onKeyUp } from '@vueuse/core'
 import { computed, onBeforeUnmount, onMounted, onUnmounted, provide } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
 
 import AssetUpload from '@/domains/coreDam/asset/components/AssetUpload.vue'
 import AssetDetailDialog from '@/domains/coreDam/asset/components/detail/components/AssetDetailDialog.vue'
@@ -22,6 +21,7 @@ import AssetToolbarSorting from '@/domains/coreDam/asset/components/toolbar/Asse
 import AssetToolbarTypeFilters from '@/domains/coreDam/asset/components/toolbar/AssetToolbarTypeFilters.vue'
 import { FooterViewSelected, useAssetFooterSelectedView } from '@/domains/coreDam/asset/composables/assetFooterSelected'
 import { FooterViewUpload, useAssetFooterUploadView } from '@/domains/coreDam/asset/composables/assetFooterUpload'
+import { useAssetLeaveGuard } from '@/domains/coreDam/asset/composables/assetLeaveGuard'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
 import GridViewToggle from '@/domains/system/components/GridViewToggle.vue'
@@ -99,38 +99,8 @@ onKeyUp('ArrowLeft', async (e) => {
   await onArrowLeft(e)
 })
 
-/*
- * Unsaved metadata in the detail or side panel is lost with the page, so ask before leaving.
- * The URL of an open detail replaces this page's URL. That is not leaving the page and is not asked about.
- */
-const holdsUnsavedMetadata = () => assetDetailStore.showsUnsavedMetadata || assetDetailStore.panelHoldsUnsavedMetadata
-
-/*
- * Ask as the last step before navigation settles, not in the page's leave
- * guard, which runs first. A later guard can still cancel the navigation.
- * Vuetify adds such a guard for every dialog and menu. Browser back
- * over an open one only closes it, which is not leaving the page.
- */
-const router = useRouter()
-const pageOfTheList = useRoute().matched.at(-1)
-const stopAskingOnTheWayOut = router.beforeResolve((to) => {
-  // Another query or hash of the list is the same page still.
-  if (to.matched.some((record) => record === pageOfTheList)) return true
-
-  return !holdsUnsavedMetadata() || assetDetailStore.askToLeaveUnsaved()
-})
-onUnmounted(stopAskingOnTheWayOut)
-
-/*
- * The page cannot ask on reload or window close, so the browser shows its own prompt.
- * Downloading a file from the detail does not trigger it, because the link opens in another tab.
- */
-useEventListener(window, 'beforeunload', (event) => {
-  if (!holdsUnsavedMetadata()) return
-  event.preventDefault()
-  // Older browsers ask only when this is set.
-  event.returnValue = ''
-})
+// Unsaved metadata in the detail or side panel is lost with the page.
+useAssetLeaveGuard(() => assetDetailStore.showsUnsavedMetadata || assetDetailStore.panelHoldsUnsavedMetadata)
 
 onMounted(async () => {
   await listMounted()

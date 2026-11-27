@@ -84,7 +84,7 @@ const create = async () => await createPodcastEpisode({ body: podcastEpisode.val
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.seasonNumber"
+            v-model.number="podcastEpisode.attributes.seasonNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.seasonNumber')"
             :v="v$.podcastEpisode.attributes.seasonNumber"
             type="number"
@@ -94,7 +94,7 @@ const create = async () => await createPodcastEpisode({ body: podcastEpisode.val
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="podcastEpisode.attributes.episodeNumber"
+            v-model.number="podcastEpisode.attributes.episodeNumber"
             :label="t('coreDam.podcastEpisode.model.attributes.episodeNumber')"
             :v="v$.podcastEpisode.attributes.episodeNumber"
             type="number"

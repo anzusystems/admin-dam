@@ -1,6 +1,7 @@
 import type { UploadQueueItem } from '@anzusystems/common-admin'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { formMetadataOfAsset } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { assetDetail, createFakeDam, queueRow } from '@/test/support/fakeDam'
 import type { FakeDam } from '@/test/support/fakeDam'
 import { eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
@@ -194,7 +195,9 @@ describe('the save of the asset detail', () => {
   const detailSave = async (setup: Partial<UploadUiSetup>) => {
     await startUploadUi({ server, ...setup })
     const api = await import('@/domains/coreDam/asset/api/assetApi')
-    await api.updateAssetMetadata(onServer('asset-1', { sources: ['source-1'] }) as never, null, false, false, false)
+    const asset = onServer('asset-1', { sources: ['source-1'] }) as never
+    // Nothing known of the server: everything is sent.
+    await api.updateAssetMetadata(asset, formMetadataOfAsset(asset), undefined)
 
     return saved()[0][0]
   }

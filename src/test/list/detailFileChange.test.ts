@@ -336,6 +336,8 @@ describe('the file card of the Info tab, when the file is made private from it o
         TYPED,
         [],
       ])
+      // The save reads the asset again before it sends custom data. The server answers that read at once.
+      answerRead = onServer
       expect(await detail.save()).toContain(TYPED)
       expect(alerts()).toEqual([UPDATED])
     }

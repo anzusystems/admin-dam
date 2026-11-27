@@ -2,6 +2,7 @@
 import {
   ADamAssetImage,
   ADamAssetImageRoiSelect,
+  AUnsavedConfirmDialog,
   isDocId,
   isString,
   useAlerts,
@@ -29,6 +30,7 @@ import {
   AssetDetailTabDefault,
   useAssetDetailTab,
 } from '@/domains/coreDam/asset/composables/assetDetailTab'
+import { useAssetLeaveGuard } from '@/domains/coreDam/asset/composables/assetLeaveGuard'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
@@ -63,6 +65,9 @@ const {
 const { wide, panelId } = useDetailInfoPanel()
 
 const assetFileId = ref<DocId>('')
+
+// The page is the detail, so its unsaved metadata is lost with it.
+useAssetLeaveGuard(() => assetDetailStore.showsUnsavedMetadata)
 
 // The asset reported deleted by the detail's event. The page is emptied of it.
 let emptiedOf: DocId | null = null
@@ -286,4 +291,10 @@ onUnmounted(() => {
       </div>
     </VCard>
   </div>
+  <!-- Drawn only while it asks: a mounted Vuetify dialog holds every navigation of the page back by a timer. -->
+  <AUnsavedConfirmDialog
+    v-if="assetDetailStore.leaveUnsavedQuestion"
+    :model-value="assetDetailStore.leaveUnsavedQuestion"
+    @resolve="assetDetailStore.answerLeaveUnsaved"
+  />
 </template>

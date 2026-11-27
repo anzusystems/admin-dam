@@ -199,6 +199,8 @@ const SAVE_AND_FINISH = 'Save and finish'
 const SAVED = { title: 'saved', note: 'kept' }
 
 const readsOfPanel = () => server.assetReads('asset-2')
+// Reads of the asset alone, as the panel reads it. A save reads its assets in a list.
+const panelReads = () => server.sent('GET').filter((request) => request.url === '/adm/v1/asset/asset-2').length
 
 const massButton = (list: List, name: string) =>
   eventually(() => {
@@ -269,7 +271,8 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
   })
 
   it('keeps what was typed when the save fails after "Leave anyway", and asks about it again', async () => {
-    const { list, before } = await typedAndPicked()
+    const { list } = await typedAndPicked()
+    const before = panelReads()
     server.on('PATCH', BULK, () => {
       throw httpError(500)
     })
@@ -279,7 +282,7 @@ describe('a save of the mass edit that saves the asset of the panel with metadat
     await answer(LEAVE)
 
     await eventually(() => expect(list.alerts()).toHaveLength(1))
-    expect([readsOfPanel() - before, list.title().value, standsOut(list.save())]).toEqual([0, TYPED, true])
+    expect([panelReads() - before, list.title().value, standsOut(list.save())]).toEqual([0, TYPED, true])
     ;(await massButton(list, SAVE)).click()
     await settled()
     expect(questions()).toHaveLength(1)

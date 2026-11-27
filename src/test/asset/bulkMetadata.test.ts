@@ -5,6 +5,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import type { Component } from 'vue'
 import { VLayout } from 'vuetify/components'
 
+import { formMetadataOfAsset } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { assetDetail, assetFile, createFakeDam, httpError, queueRow, validationError } from '@/test/support/fakeDam'
 import type { FakeAssetFile, FakeDam, FakeDamAnswer } from '@/test/support/fakeDam'
 import { buttonsNamed, customField, eventually, startUploadUi, stopUploadUi } from '@/test/support/uploadUi'
@@ -39,6 +40,8 @@ const queueItem = (over: Record<string, unknown> = {}) => ({
   mainFileInternal: null,
   ...over,
 })
+
+const formOf = (asset: ReturnType<typeof assetDetail>) => formMetadataOfAsset(asset as never)
 
 const load = async () => {
   vi.resetModules()
@@ -179,11 +182,16 @@ const saves: Array<[string, (api: Awaited<ReturnType<typeof load>>['api']) => Pr
   ['the bulk save', (api) => api.bulkUpdateAssetsMetadata([queueItem()] as never)],
   [
     'the save of one asset',
-    (api) => api.updateAssetMetadata(assetDetail('asset-1') as never, null, false, false, false),
+    (api) => api.updateAssetMetadata(assetDetail('asset-1') as never, formOf(assetDetail('asset-1')), undefined),
   ],
 ]
 
 describe.each(saves)('%s', (_name, save) => {
+  // The asset exists. A failure is not taken for a deleted asset, which `queue/metadataRebase.test.ts` covers.
+  beforeEach(() => {
+    server.asset(assetDetail('asset-1'))
+  })
+
   it.each(failures)('fails with the error the alerts know: %s', async (_failure, refuse, isKind) => {
     const { library, api } = await load()
     server.on('PATCH', BULK, refuse)
@@ -215,6 +223,73 @@ describe.each(saves)('%s', (_name, save) => {
     await save(api)
 
     expect(saved()).toHaveLength(1)
+  })
+})
+
+/*
+ * A save of changed custom data reads the assets right before it and sends the change rebased onto that read.
+ * The read went past the library: a timeout or server error of it said "System error" and was never written down.
+ */
+const BATCH_READ = /^\/adm\/v1\/asset\/ext-system\/\d+\/ids\/.+$/
+
+const readingSaves: Array<[string, (api: Awaited<ReturnType<typeof load>>['api']) => Promise<unknown>]> = [
+  [
+    'the bulk save',
+    async (api) => {
+      const { setQueueRowBaseline } = await import('@/domains/coreDam/shared/services/upload/queueRowBaseline')
+      const row = queueItem({ customData: { headline: 'typed' } })
+      const onServer = { keywords: ['keyword-1'], authors: ['author-1'], sources: [], customData: { headline: 'x' } }
+      setQueueRowBaseline(row as never, { ...onServer, mainFileSingleUse: null, described: true }, 1)
+
+      return api.bulkUpdateAssetsMetadata([row] as never)
+    },
+  ],
+  [
+    'the save of one asset',
+    (api) => {
+      const asset = assetDetail('asset-1')
+
+      return api.updateAssetMetadata(
+        asset as never,
+        { ...formOf(asset), customData: { title: 'typed' } },
+        formOf(asset)
+      )
+    },
+  ],
+]
+
+describe.each(readingSaves)('the read before %s', (_name, save) => {
+  beforeEach(() => {
+    server.asset(assetDetail('asset-1'))
+  })
+
+  it('fails with the error the alerts know when it gets no answer in time, and nothing is saved', async () => {
+    const { library, api } = await load()
+    server.on('GET', BATCH_READ, failWith(timedOut))
+
+    const failed = await save(api).then(
+      () => undefined,
+      (error: unknown) => error
+    )
+
+    expect([library.isAnzuApiTimeoutError(failed), saved()]).toEqual([true, []])
+  })
+
+  it('is written down when the server fails it, as the other requests are', async () => {
+    const { library, api } = await load()
+    const logged: Array<number | undefined> = []
+    library.setApiErrorLogger((_error, context) => {
+      logged.push(context.status)
+    })
+    server.on(
+      'GET',
+      BATCH_READ,
+      failWith(() => httpError(500))
+    )
+
+    await expect(save(api)).rejects.toBeDefined()
+
+    expect([logged, saved()]).toEqual([[500], []])
   })
 })
 
@@ -262,6 +337,8 @@ describe('the save of one asset', () => {
     asset: ReturnType<typeof assetDetail> = assetDetail('asset-1')
   ) => {
     server.on('GET', /^\/adm\/v1\/(keyword|author)\//, () => ({ status: 200, data: { data: [] } }))
+    // A save reads the asset again before sending custom data, and after a failure.
+    server.asset(asset)
     const ui = await startUploadUi({ server, ...setup })
     const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
     useAssetDetailStore().setAsset(asset as never)
@@ -365,6 +442,30 @@ describe('the save of one asset', () => {
       expect(saved()).toHaveLength(1)
     })
 
+    /*
+     * core-dam counts a save that leaves out fields of an asset with a caption, authors or sources as a change, and
+     * calls the ext systems back. The queue sends nothing for a described asset whose row matches the server.
+     */
+    it('sends nothing for a described asset when nothing differs, and says it is saved', async () => {
+      const described = assetDetail('asset-1', { flags: { described: true } })
+      const { save, alerts } = await mountPanel(panel, namedTitle, described)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(saved()).toEqual([])
+    })
+
+    it('marks an asset nobody described as described, though nothing else differs', async () => {
+      const notYet = assetDetail('asset-1', { flags: { described: false } })
+      const { save, alerts } = await mountPanel(panel, namedTitle, notYet)
+
+      save().click()
+      await eventually(() => expect(alerts()).toEqual([UPDATED]))
+
+      expect(saved()).toEqual([[{ id: 'asset-1', described: true }]])
+    })
+
     // The server names a field by its key in the list that was
     // sent. The user is told once, using the form's name for it.
     it.each([
@@ -444,6 +545,7 @@ describe('the save of one asset', () => {
       return held
     }
     const openAsset = async (asset: ReturnType<typeof assetDetail>) => {
+      server.asset(asset)
       const { useAssetDetailStore } = await import('@/domains/coreDam/asset/store/assetDetailStore')
       useAssetDetailStore().setAsset(asset as never)
       await nextTick()

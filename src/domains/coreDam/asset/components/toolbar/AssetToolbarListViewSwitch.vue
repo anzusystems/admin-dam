@@ -18,6 +18,7 @@ import {
   useCurrentAssetLicence,
   useCurrentExtSystem,
 } from '@/domains/coreDam/asset/composables/currentExtSystem'
+import { leaveAfterAsking, uploadsRunning } from '@/domains/coreDam/asset/composables/uploadsRunning'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useUploadQueuesStore } from '@/domains/coreDam/asset/store/uploadQueuesStore'
 import { fetchAssetLicence } from '@/domains/coreDam/assetLicence/api/assetLicenceApi'
@@ -105,7 +106,8 @@ const pendingSelection = ref<Selection | null>(null)
 onBeforeRouteLeave(() => !saving.value)
 onBeforeRouteUpdate((to, from) => to.path === from.path || !saving.value)
 
-const switchTo = async (selection: Selection) => {
+/** `queuesGivenUp`: the user agreed to lose the work of the queues, so the browser does not ask about it again. */
+const switchTo = async (selection: Selection, queuesGivenUp = false) => {
   // A second switch while the first is on its way would send the same change once more.
   if (saving.value) return
   saving.value = true
@@ -122,7 +124,10 @@ const switchTo = async (selection: Selection) => {
     // `assign` returns before the page goes. Closed first, the dialogs cannot be confirmed or cancelled meanwhile.
     dialog.value = false
     pendingSelection.value = null
-    window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
+    const reload = () => window.location.assign(router.resolve({ name: '/(coreDam)/assets' }).href)
+    // A "Stay" of the browser would keep this page while the new selection is already saved.
+    if (queuesGivenUp) leaveAfterAsking(reload)
+    else reload()
   } catch (error) {
     showErrorsDefault(error)
   } finally {
@@ -133,10 +138,10 @@ const switchTo = async (selection: Selection) => {
 const requestSwitch = (selection: Selection) => {
   // The change on its way decides where the page goes; a newer pick would only sit behind it.
   if (saving.value) return
-  // Switching reloads the page, which drops uploads and edits that live only in the queues.
-  const workInProgress = [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some(
-    (queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0
-  )
+  // Switching reloads the page, which drops uploads and edits that live only in the queues, slot uploads included.
+  const workInProgress =
+    uploadsRunning() ||
+    [QUEUE_ID_UPLOAD_GLOBAL, QUEUE_ID_MASS_EDIT].some((queueId) => uploadQueuesStore.getQueueTotalCount(queueId) > 0)
   if (workInProgress) {
     dialog.value = false
     pendingSelection.value = selection
@@ -160,7 +165,7 @@ const onSelectLicence = (id: IntegerId) => {
 
 const onConfirmPending = () => {
   if (!pendingSelection.value) return
-  switchTo(pendingSelection.value)
+  switchTo(pendingSelection.value, true)
 }
 
 // Closing it would not stop a change the switch is sending: the page still reloads.

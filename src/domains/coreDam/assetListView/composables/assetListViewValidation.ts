@@ -26,6 +26,9 @@ export function useAssetListViewValidation(assetListView: Ref<AssetListView>) {
         minLength: minLength(1),
         maxLength: maxLength(LICENCES_MAX),
       },
+      position: {
+        required,
+      },
     },
   }))
   const v$ = useVuelidate(rules, { assetListView })

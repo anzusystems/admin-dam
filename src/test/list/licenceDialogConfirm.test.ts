@@ -1,3 +1,4 @@
+import type { UploadQueueItemStatusType } from '@anzusystems/common-admin'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createFakeDam, httpError, queueRow } from '@/test/support/fakeDam'
@@ -35,11 +36,15 @@ const sent = () => server.sent('PATCH', CURRENT_USER).length
 
 const spins = (button: HTMLButtonElement) => button.classList.contains('v-btn--loading')
 
-const withTheOtherLicencePicked = async ({ queued = false } = {}) => {
+const withTheOtherLicencePicked = async ({
+  queued = false,
+  status = 'uploaded',
+  queueId = 'global',
+}: { queued?: boolean; status?: UploadQueueItemStatusType; queueId?: string } = {}) => {
   const ui = await startUploadUi({
     server,
     grants: ['dam_asset_update'],
-    queues: queued ? { global: [queueRow({ status: 'uploaded', assetId: 'asset-9', fileId: 'file-9' })] } : {},
+    queues: queued ? { [queueId]: [queueRow({ status, assetId: 'asset-9', fileId: 'file-9' })] } : {},
   })
   const config = ui.library.useDamConfigStore()
   config.damPrvConfig = {
@@ -331,5 +336,73 @@ describe('the question to finish all work first, asked while a queue holds rows'
     await settled()
 
     expect([sent(), assign.mock.calls.length]).toEqual([1, 1])
+  })
+
+  /*
+   * The question says the work in the queues will be lost. The browser asked a second time on the way out,
+   * and its "Stay" kept this page while the other licence was already saved for the next one.
+   */
+  it('is the only question: the browser does not ask again while the page goes', async () => {
+    const dialog = await withTheOtherLicencePicked({ queued: true, status: 'uploading' })
+    const { useUploadsRunningUnloadGuard } = await import('@/domains/coreDam/asset/composables/uploadsRunning')
+    useUploadsRunningUnloadGuard()
+    const browserAsked: boolean[] = []
+    assign.mockImplementation(() => {
+      const going = new Event('beforeunload', { cancelable: true })
+      window.dispatchEvent(going)
+      browserAsked.push(going.defaultPrevented)
+    })
+    dialog.confirm.click()
+    const confirm = await eventually(() => {
+      const found = document.body.querySelector<HTMLButtonElement>('[data-cy="button-confirm-list-view-switch"]')
+      expect(found).not.toBeNull()
+
+      return found!
+    })
+
+    confirm.click()
+
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+    expect([sent(), browserAsked]).toEqual([1, [false]])
+  })
+
+  // A page that stays all the same, kept by a question of another page, still has its upload to lose.
+  it('lets the browser ask again later, once the page stayed', async () => {
+    const dialog = await withTheOtherLicencePicked({ queued: true, status: 'uploading' })
+    const { useUploadsRunningUnloadGuard } = await import('@/domains/coreDam/asset/composables/uploadsRunning')
+    useUploadsRunningUnloadGuard()
+    dialog.confirm.click()
+    const confirm = await eventually(() => {
+      const found = document.body.querySelector<HTMLButtonElement>('[data-cy="button-confirm-list-view-switch"]')
+      expect(found).not.toBeNull()
+
+      return found!
+    })
+    confirm.click()
+    await eventually(() => expect(assign).toHaveBeenCalledTimes(1))
+
+    await vi.advanceTimersByTimeAsync(5000)
+    const going = new Event('beforeunload', { cancelable: true })
+    window.dispatchEvent(going)
+
+    expect(going.defaultPrevented).toBe(true)
+  })
+
+  // A slot upload of an asset's detail is lost the same way. The question was not asked, only the browser's.
+  it('is asked while a slot upload runs, before anything is sent', async () => {
+    const dialog = await withTheOtherLicencePicked({
+      queued: true,
+      status: 'uploading',
+      queueId: 'slot-upload-asset-9',
+    })
+
+    dialog.confirm.click()
+    await settled()
+
+    expect([
+      !!document.body.querySelector('[data-cy="button-confirm-list-view-switch"]'),
+      sent(),
+      assign.mock.calls.length,
+    ]).toEqual([true, 0, 0])
   })
 })

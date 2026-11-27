@@ -18,6 +18,9 @@ export function useAuthorCleanPhraseValidation(authorCleanPhrase: Ref<AuthorClea
         minLength: minLength(2),
         maxLength: maxLength(255),
       },
+      position: {
+        required,
+      },
     },
   }))
   const v$ = useVuelidate(rules, { authorCleanPhrase })

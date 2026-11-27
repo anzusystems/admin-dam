@@ -34,8 +34,9 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="videoShowEpisode.attributes.webOrderPosition"
+            v-model.number="videoShowEpisode.attributes.webOrderPosition"
             :label="t('coreDam.videoShowEpisode.model.attributes.webOrderPosition')"
+            :v="v$.videoShowEpisode.attributes.webOrderPosition"
             type="number"
             :step="1"
             data-cy="videoShowEpisode-web-order-number"
@@ -43,8 +44,9 @@ const { t } = useI18n()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="videoShowEpisode.attributes.mobileOrderPosition"
+            v-model.number="videoShowEpisode.attributes.mobileOrderPosition"
             :label="t('coreDam.videoShowEpisode.model.attributes.mobileOrderPosition')"
+            :v="v$.videoShowEpisode.attributes.mobileOrderPosition"
             type="number"
             :step="1"
             data-cy="videoShowEpisode-web-order-number"

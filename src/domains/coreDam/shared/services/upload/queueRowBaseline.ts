@@ -1,4 +1,4 @@
-import { cloneDeep, isArray, isObject } from '@anzusystems/common-admin'
+import { cloneDeep, isArray, isObject, isUndefined } from '@anzusystems/common-admin'
 import type { AssetCustomData, AssetDetailItemDto, DocId, UploadQueueItem } from '@anzusystems/common-admin'
 import { toRaw } from 'vue'
 
@@ -119,6 +119,56 @@ export const sameMetadataValue = (a: unknown, b: unknown): boolean => {
   )
 }
 
+/**
+ * Custom data `mine` rebased onto `theirs`: keys `mine` changed against `base` keep its value, all other keys take
+ * the value of `theirs`, which can be another editor's. A key without a value is left out.
+ * The server deletes a custom field a save leaves out, so a save sends its custom data rebased onto a fresh read.
+ * A key both changed keeps `mine`: the later save wins.
+ */
+export const rebaseCustomData = (
+  mine: AssetCustomData,
+  base: AssetCustomData,
+  theirs: AssetCustomData
+): AssetCustomData => {
+  const rebased: AssetCustomData = {}
+  for (const key of new Set([...Object.keys(mine), ...Object.keys(theirs)])) {
+    const value = sameMetadataValue(mine[key], base[key]) ? theirs[key] : mine[key]
+    if (!isUndefined(value)) rebased[key] = value
+  }
+
+  return rebased
+}
+
+/** What the detail and the panel form edit: the asset metadata and the switches the form shows. */
+export interface AssetFormMetadata extends Omit<QueueRowMetadata, 'mainFileSingleUse'> {
+  mainFileSingleUse: boolean
+  mainFileOverrideInternal: boolean
+  mainFileInternal: boolean
+  ttsAudio: boolean
+}
+
+/** The form metadata of a read asset. A switch shows off where the asset has no main file or no value. */
+export const formMetadataOfAsset = (asset: AssetDetailItemDto): AssetFormMetadata => ({
+  keywords: asset.keywords,
+  authors: asset.authors,
+  sources: asset.sources ?? [],
+  customData: asset.metadata.customData,
+  mainFileSingleUse: asset.mainFileSingleUse || false,
+  mainFileOverrideInternal: asset.mainFile?.flags.overrideInternal || false,
+  mainFileInternal: asset.mainFile?.flags.internal || false,
+  ttsAudio: asset.assetFileProperties?.ttsAudio || false,
+})
+
+/** The asset with the form metadata in its fields, as the queue takes an asset the detail or the panel saved. */
+export const assetWithMetadata = (asset: AssetDetailItemDto, metadata: AssetFormMetadata): AssetDetailItemDto => ({
+  ...asset,
+  keywords: metadata.keywords,
+  authors: metadata.authors,
+  sources: metadata.sources,
+  mainFileSingleUse: metadata.mainFileSingleUse,
+  metadata: { ...asset.metadata, customData: metadata.customData },
+})
+
 /** Whether the row got its metadata after `sentAt`. If so, a response requested at `sentAt` is stale. */
 export const queueRowGivenSince = (item: UploadQueueItem, sentAt: number) =>
   (baselines.get(toRaw(item))?.at ?? 0) > sentAt
@@ -139,5 +189,22 @@ export const queueRowTakesAnswer = (item: UploadQueueItem, sentAt: number) => {
     sameMetadataValue(item.sources ?? [], known.baseline.sources) &&
     sameMetadataValue(item.customData, known.baseline.customData) &&
     item.mainFileSingleUse === known.baseline.mainFileSingleUse
+  )
+}
+
+/**
+ * Whether the row holds metadata typed or picked into it that the server does not have, by its baseline.
+ * False for a row without a baseline: what the server has of it is not known.
+ */
+export const queueRowHoldsUnsaved = (item: UploadQueueItem) => {
+  const known = baselines.get(toRaw(item))?.baseline
+  if (!known) return false
+
+  return !(
+    sameMetadataValue(item.keywords, known.keywords) &&
+    sameMetadataValue(item.authors, known.authors) &&
+    sameMetadataValue(item.sources ?? [], known.sources) &&
+    sameMetadataValue(item.customData, known.customData) &&
+    item.mainFileSingleUse === known.mainFileSingleUse
   )
 }

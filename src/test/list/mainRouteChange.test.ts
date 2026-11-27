@@ -377,6 +377,8 @@ describe('the asset read again once the address of its file has changed', () => 
       ])
       if (place === inDetail) expect([shown(), address()]).toEqual(['2 / 3 asset-2', '/assets/asset-2'])
       expect([questions(), list.alerts()]).toEqual([[], []])
+      // The save reads the asset again before it sends custom data. The server answers that read at once.
+      server.assetBy('asset-2', () => onServer('asset-2'))
       const save = buttonsNamed(panel(), 'Save')[0]
       expect(standsOut(save)).toBe(true)
       save.click()

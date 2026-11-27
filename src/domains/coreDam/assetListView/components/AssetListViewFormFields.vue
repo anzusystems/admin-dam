@@ -106,8 +106,9 @@ watch(
   </ARow>
   <ARow>
     <AFormTextField
-      v-model="assetListView.position"
+      v-model.number="assetListView.position"
       :label="t('coreDam.assetListView.model.position')"
+      :v="v$.assetListView.position"
       type="number"
       data-cy="asset-list-view-position"
     />

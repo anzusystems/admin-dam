@@ -67,7 +67,7 @@ const { authorCleanPhraseModeOptions } = useAuthorCleanPhraseModeTypes()
         </ARow>
         <ARow>
           <AFormTextField
-            v-model="authorCleanPhrase.position"
+            v-model.number="authorCleanPhrase.position"
             :label="t('coreDam.authorCleanPhrase.model.position')"
             :v="v$.authorCleanPhrase.position"
             type="number"

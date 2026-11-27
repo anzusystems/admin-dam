@@ -2,6 +2,7 @@
 import {
   ADamAssetImage,
   ADamAssetImageRoiSelect,
+  AUnsavedConfirmDialog,
   isDocId,
   isString,
   useAlerts,
@@ -29,6 +30,7 @@ import {
   AssetDetailTabDefault,
   useAssetDetailTab,
 } from '@/domains/coreDam/asset/composables/assetDetailTab'
+import { useAssetLeaveGuard } from '@/domains/coreDam/asset/composables/assetLeaveGuard'
 import { useCurrentAssetLicence, useCurrentExtSystem } from '@/domains/coreDam/asset/composables/currentExtSystem'
 import { useAssetDetailStore } from '@/domains/coreDam/asset/store/assetDetailStore'
 import { useAssetListStore } from '@/domains/coreDam/asset/store/assetListStore'
@@ -64,10 +66,17 @@ const { wide, panelId } = useDetailInfoPanel()
 
 const assetId = ref<DocId>('')
 
-const closeDialog = () => {
+// The page is the detail, so its unsaved metadata is lost with it.
+useAssetLeaveGuard(() => assetDetailStore.showsUnsavedMetadata)
+
+/*
+ * Leaves first and closes the detail only once the list opened. The leave
+ * question needs the detail open, and "Stay" keeps it open with what was typed.
+ */
+const closeDialog = async () => {
   assetListStore.keyboardNavigationEnable()
+  if (await router.push({ name: '/(coreDam)/assets' })) return
   assetDetailStore.hideDetail()
-  router.push({ name: '/(coreDam)/assets' })
 }
 
 // The asset reported deleted by the detail's event. The page closes over it.
@@ -300,4 +309,10 @@ onUnmounted(() => {
       </div>
     </VCard>
   </div>
+  <!-- Drawn only while it asks: a mounted Vuetify dialog holds every navigation of the page back by a timer. -->
+  <AUnsavedConfirmDialog
+    v-if="assetDetailStore.leaveUnsavedQuestion"
+    :model-value="assetDetailStore.leaveUnsavedQuestion"
+    @resolve="assetDetailStore.answerLeaveUnsaved"
+  />
 </template>

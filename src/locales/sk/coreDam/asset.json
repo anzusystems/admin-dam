@@ -133,6 +133,7 @@
     "fileFailedOpenAgain": "Spracovanie súboru zlyhalo. Uložiť pôjde po novom otvorení assetu.",
     "fileProcessedOpenAgain": "Súbor je spracovaný. Uložiť bude možné po novom otvorení detailu.",
     "deletedMeanwhile": "Asset bol medzitým zmazaný.",
+    "deletedMeanwhileRows": "Asset bol medzitým zmazaný a jeho riadok bol odstránený. Ostatné riadky uložte znova. | {count} assety boli medzitým zmazané a ich riadky boli odstránené. Ostatné riadky uložte znova. | {count} assetov bolo medzitým zmazaných a ich riadky boli odstránené. Ostatné riadky uložte znova.",
     "exif": {
       "title": "EXIF hlavného súboru ({count})"
     },

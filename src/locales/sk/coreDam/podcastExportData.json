@@ -9,5 +9,9 @@
   "meta": {
     "create": "Vytvoriť exportné dáta podcastu",
     "edit": "Upraviť exportné dáta podcastu"
+  },
+  "validation": {
+    "combinationTaken": "Tento typ exportu s týmto typom zariadenia už má iný riadok.",
+    "combinationRefused": "Server túto dvojicu odmietol: na serveri ju ešte má iný riadok. Dajte tomuto riadku zatiaľ inú dvojicu, napríklad pôvodnú, uložte a potom mu túto dvojicu nastavte znova."
   }
 }

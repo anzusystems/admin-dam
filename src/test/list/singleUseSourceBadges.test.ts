@@ -187,9 +187,10 @@ describe('the single use core-dam saved', () => {
     buttonsNamed(list.panel(), 'Save')[0].click()
     await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
 
-    expect((JSON.parse(server.sent('PATCH', BULK)[0].data as string) as unknown[])[0]).toMatchObject({
+    // The switch was not changed, so the save leaves it out. The licence turns single use on anyway.
+    expect((JSON.parse(server.sent('PATCH', BULK)[0].data as string) as unknown[])[0]).toEqual({
       id: 'asset-2',
-      mainFileSingleUse: false,
+      described: true,
     })
     expect(list.switchIn(list.panel()).checked).toBe(true)
     expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', list.t(SINGLE_USE)]])

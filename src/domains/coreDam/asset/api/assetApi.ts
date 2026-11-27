@@ -1,8 +1,12 @@
 import {
   AnzuApiValidationError,
+  DamAssetStatus,
+  HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_OK,
+  apiErrorStatus,
   customDataFormElementName,
   isAnzuApiValidationError,
+  isArray,
   isDamSourceEnabled,
   isNull,
   isUndefined,
@@ -41,10 +45,11 @@ import {
   metadataSaveSent,
   nextMetadataOrder,
   queueRowBaseline,
+  rebaseCustomData,
   sameMetadataValue,
   setQueueRowBaseline,
 } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
-import type { QueueRowMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import type { AssetFormMetadata, QueueRowMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 import { i18n } from '@/plugins/i18n'
 import { damApiBase } from '@/shared/apiClients/damApiBase'
 import { damClient } from '@/shared/apiClients/damClient'
@@ -241,6 +246,7 @@ export const hasMetadataToSave = (item: UploadQueueItem): item is UploadQueueIte
  * A row sends only fields that differ from what it last got from or saved to the
  * server. Sending untouched fields would overwrite another editor's changes.
  * A sent row is marked described. A row whose server state or described flag is unknown is sent whole.
+ * `base` is the custom data the row's changes were made against, for rebasing them onto a fresh read before sending.
  */
 const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
   const dtoItems: Array<{
@@ -248,6 +254,7 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
     dtoItem: AssetMetadataBulkItem
     metadata: QueueRowMetadata
     changed: Partial<QueueRowMetadata>
+    base?: QueueRowMetadata['customData']
   }> = []
   items.forEach((item) => {
     if (hasMetadataToSave(item)) {
@@ -262,7 +269,7 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
       if (sourcesSent(item.assetType) && (whole || !sameMetadataValue(metadata.sources, known.sources))) {
         changed.sources = metadata.sources
       }
-      // Sent whole when any part differs. The server treats an omitted form field as emptied.
+      // Sent whole when any part differs, as the server treats an omitted form field as emptied. Rebased before sending.
       if (whole || !sameMetadataValue(metadata.customData, known.customData)) changed.customData = metadata.customData
       if (!isNull(metadata.mainFileSingleUse) && (whole || metadata.mainFileSingleUse !== known.mainFileSingleUse)) {
         changed.mainFileSingleUse = metadata.mainFileSingleUse
@@ -272,7 +279,8 @@ const listItemsToMetadataBulkItems = (items: UploadQueueItem[]) => {
        * Sending it anyway would make core-dam treat it as a change and notify all listeners.
        */
       if (!whole && known.described && Object.keys(changed).length === 0) return
-      dtoItems.push({ item, dtoItem: { id: item.assetId, described: true, ...changed }, metadata, changed })
+      const base = !whole && !isUndefined(changed.customData) ? known.customData : undefined
+      dtoItems.push({ item, dtoItem: { id: item.assetId, described: true, ...changed }, metadata, changed, base })
     }
   })
 
@@ -345,11 +353,89 @@ const withNamedFields = (error: unknown, assetTypeAt: (index: number) => DamAsse
   )
 }
 
-// Assets deleted in this session, added once the delete request was answered.
+// Assets deleted in this session, added once the delete request was answered, or found deleted by a metadata save.
 const deletedHere = new Set<DocId>()
 
 /** Whether the asset was deleted here. A read sent before the delete can still return the old asset. */
 export const assetDeletedHere = (assetId: DocId) => deletedHere.has(assetId)
+
+/*
+ * A metadata save found these assets deleted meanwhile, by another editor or in another tab.
+ * Nothing of their request was saved. `inQueue`: the save was of queue rows, not of the detail or the panel.
+ */
+export class AssetsGoneMeanwhileError extends Error {
+  readonly assetIds: DocId[]
+  readonly inQueue: boolean
+
+  constructor(assetIds: DocId[], inQueue: boolean) {
+    super('assetApi: assets deleted meanwhile')
+    this.assetIds = assetIds
+    this.inQueue = inQueue
+  }
+}
+
+const goneMeanwhile = (assetIds: DocId[], inQueue: boolean) => {
+  assetIds.forEach((assetId) => deletedHere.add(assetId))
+
+  return new AssetsGoneMeanwhileError(assetIds, inQueue)
+}
+
+const useFetchAssetsOfExtSystem = () =>
+  useApiRequest<{ data?: unknown }, null>({ ...damApiBase, method: 'GET', entity: ENTITY })
+
+/*
+ * Reads the assets a save is about to send, in one request. The read leaves out an asset that no longer exists.
+ * One being deleted counts as gone too.
+ * Through the library, so a failure is reported and shown like the save's own. `report: false` keeps it unreported.
+ * A save sends at most a batch, fewer than one read takes. A response without the list never means "all gone".
+ */
+const readForSave = async (assetIds: DocId[], options?: { report?: boolean }) => {
+  const { currentExtSystemId } = useCurrentExtSystem()
+  const { execute } = useFetchAssetsOfExtSystem()
+  const body = await execute({
+    // Full URL instead of a template parameter: a parameter would be encoded, including its commas.
+    urlTemplate: END_POINT + `/ext-system/${currentExtSystemId.value}/ids/${assetIds.join(',')}`,
+    report: options?.report,
+  })
+  if (!Array.isArray(body?.data)) throw new Error('assetApi: unexpected asset list')
+  const found = new Map<DocId, AssetDetailItemDto>()
+  for (const read of body.data as AssetDetailItemDto[]) {
+    if (read.attributes?.assetStatus !== DamAssetStatus.Deleting) found.set(read.id, read)
+  }
+
+  return { found, gone: assetIds.filter((assetId) => !found.has(assetId)) }
+}
+
+const ID_FIELD = /^(?:\[(\d+)\]\.)?(?:id|asset)$/
+
+/*
+ * The error of a failed save, or `AssetsGoneMeanwhileError` when the save failed because assets of it no longer exist.
+ * Today core-dam answers 500 for a deleted asset, so a 500 is followed by one read of the assets.
+ * A 404 too: it does not say what is missing, and a proxy answers it during a deploy.
+ * A 422 naming the asset id says it without the read.
+ */
+const goneAfterFailure = async (error: unknown, assetIds: DocId[], inQueue: boolean) => {
+  if (isAnzuApiValidationError(error)) {
+    if (!isAxiosError(error.cause)) return error
+    const fields = Object.keys((error.cause.response?.data as AnzuApiValidationResponseData)?.fields ?? {})
+    const named = fields.map((field) => field.match(ID_FIELD))
+    if (named.length === 0 || named.some((match) => !match)) return error
+    const gone = named.map((match) => assetIds[Number(match?.[1] ?? 0)]).filter((assetId) => !isUndefined(assetId))
+
+    return gone.length > 0 ? goneMeanwhile([...new Set(gone)], inQueue) : error
+  }
+  const status = apiErrorStatus(error)
+  if (status !== HTTP_STATUS_NOT_FOUND && (isUndefined(status) || status < 500)) return error
+  try {
+    // Not written down: the save's own failure already is, and it stands if this read fails too.
+    const { gone } = await readForSave(assetIds, { report: false })
+
+    return gone.length > 0 ? goneMeanwhile(gone, inQueue) : error
+  } catch {
+    // Unknown whether they exist. The save's own error stands.
+    return error
+  }
+}
 
 type BulkItem = ReturnType<typeof listItemsToMetadataBulkItems>[number]
 
@@ -361,23 +447,42 @@ const saveBatch = async (rows: BulkItem[], execute: ReturnType<typeof useUpdateM
    */
   const batch = rows.filter(({ dtoItem }) => !deletedHere.has(dtoItem.id))
   if (batch.length === 0) return
+  const ids = batch.map(({ dtoItem }) => dtoItem.id)
+  /*
+   * Custom data go rebased onto the assets as the server has them right now, read in one request just before
+   * sending: the row's changes over another editor's. Sending the row's whole copy would delete or revert those.
+   */
+  if (batch.some(({ base }) => !isUndefined(base))) {
+    const { found, gone } = await readForSave(ids)
+    if (gone.length > 0) throw goneMeanwhile(gone, true)
+    batch.forEach((row) => {
+      const fresh = found.get(row.dtoItem.id)
+      if (isUndefined(row.base) || isUndefined(fresh)) return
+      row.changed.customData = rebaseCustomData(row.metadata.customData, row.base, fresh.metadata.customData)
+      row.dtoItem.customData = row.changed.customData
+    })
+  }
   try {
     await execute({ body: batch.map(({ dtoItem }) => dtoItem) })
   } catch (error) {
-    throw withNamedFields(error, (index) => batch[index]?.item.assetType)
+    throw withNamedFields(await goneAfterFailure(error, ids, true), (index) => batch[index]?.item.assetType)
   }
   /*
    * After a successful save, later saves diff against what was sent.
    * Only the sent fields are written, over the current row state. A read or another
    * save may have changed it meanwhile, and the click-time copy would revert that.
    * This runs when the save is answered, because a read sent earlier may return pre-save data.
+   * The row shows custom fields it took from the fresh read, unless they were changed in it since the click.
    */
   const savedAt = nextMetadataOrder()
-  batch.forEach(({ item, metadata, changed }) =>
+  batch.forEach(({ item, metadata, changed, base }) => {
     setQueueRowBaseline(item, { ...(queueRowBaseline(item) ?? metadata), ...changed, described: true }, savedAt)
-  )
+    if (!isUndefined(base) && !isUndefined(changed.customData)) {
+      item.customData = rebaseCustomData(item.customData, metadata.customData, changed.customData)
+    }
+  })
   // Also updates the detail or panel holding one of these assets.
-  useAssetDetailStore().savedAsDescribed(batch.map(({ dtoItem }) => dtoItem.id))
+  useAssetDetailStore().savedAsDescribed(ids)
 }
 
 /*
@@ -408,10 +513,17 @@ export const bulkUpdateAssetsMetadata = async (items: UploadQueueItem[]) => {
   }
 }
 
-const { showErrorsDefault, showUnknownError, showApiValidationError } = useAlerts()
+const { showErrorsDefault, showUnknownError, showApiValidationError, showWarning } = useAlerts()
 
 /** Shows the error message for a failed metadata save by failure kind. The single place for this message. */
 export const showMetadataSaveError = (error: unknown) => {
+  if (error instanceof AssetsGoneMeanwhileError) {
+    const { t } = i18n.global
+    // The queue's stays until closed: rows went, and the other rows are to be saved again.
+    if (error.inQueue) showWarning(t('coreDam.asset.detail.deletedMeanwhileRows', error.assetIds.length), -1)
+    else showWarning(t('coreDam.asset.detail.deletedMeanwhile'))
+    return
+  }
   if (error instanceof AssetMetadataValidationError) {
     showApiValidationError(error.named, -1, true)
     return
@@ -433,37 +545,66 @@ const useSaveAssetMetadata = () =>
     options: { validateStatus: (status) => status === HTTP_STATUS_OK },
   })
 
-/** Saves the form of one asset. Resolves to the asset as core-dam saved it, `undefined` when the answer lacks it. */
+// An empty PHP array, as core-dam may write empty custom data.
+const customDataOf = (value: unknown) => (isArray(value) ? {} : (value as AssetCustomData))
+
+/*
+ * Saves the form of one asset: only the fields that differ from what the server had (`known`), so another editor's
+ * changes to the other fields stay. Changed custom data go rebased onto a fresh read of the asset, as in the queue.
+ * Without `known` everything is sent. Resolves to what the server has after the save,
+ * from its answer, or from what was sent when the answer lacks the asset.
+ */
 export const updateAssetMetadata = async (
   asset: AssetDetailItemDto,
-  mainFileSingleUse: boolean | null,
-  mainFileOverrideInternal: boolean,
-  mainFileInternal: boolean,
-  ttsAudio: boolean
-) => {
-  const data: AssetMetadataBulkItem = {
-    id: asset.id,
-    keywords: asset.keywords,
-    authors: asset.authors,
-    ...(sourcesSent(asset.attributes.assetType) ? { sources: asset.sources } : {}),
-    described: true,
-    customData: asset.metadata.customData,
-    mainFileSingleUse: mainFileSingleUse,
-    mainFileOverrideInternal: mainFileOverrideInternal,
-    mainFileInternal: mainFileInternal,
-    ttsAudio: ttsAudio,
+  typed: AssetFormMetadata,
+  known: AssetFormMetadata | undefined
+): Promise<AssetFormMetadata> => {
+  const differs = (field: keyof AssetFormMetadata) => !known || !sameMetadataValue(typed[field], known[field])
+  const sent: Partial<AssetFormMetadata> = {}
+  if (differs('keywords')) sent.keywords = typed.keywords
+  if (differs('authors')) sent.authors = typed.authors
+  if (sourcesSent(asset.attributes.assetType) && differs('sources')) sent.sources = typed.sources
+  if (differs('mainFileSingleUse')) sent.mainFileSingleUse = typed.mainFileSingleUse
+  if (differs('mainFileOverrideInternal')) sent.mainFileOverrideInternal = typed.mainFileOverrideInternal
+  if (differs('mainFileInternal')) sent.mainFileInternal = typed.mainFileInternal
+  if (differs('ttsAudio')) sent.ttsAudio = typed.ttsAudio
+  if (differs('customData')) {
+    sent.customData = typed.customData
+    if (known) {
+      const { found, gone } = await readForSave([asset.id])
+      const fresh = found.get(asset.id)
+      if (gone.length > 0 || isUndefined(fresh)) throw goneMeanwhile([asset.id], false)
+      sent.customData = rebaseCustomData(typed.customData, known.customData, fresh.metadata.customData)
+    }
   }
+  /*
+   * Nothing to write: the asset is described and the form matches the server. Not sent, as in the queue:
+   * core-dam would count the fields left out as a change and call the ext systems back.
+   */
+  if (known && asset.flags?.described && Object.keys(sent).length === 0) return { ...known }
   const { execute } = useSaveAssetMetadata()
   let answer: AssetMetadataBulkItem[]
   try {
-    answer = await execute({ body: [data] })
+    answer = await execute({ body: [{ id: asset.id, described: true, ...sent }] })
   } catch (error) {
-    throw withNamedFields(error, () => asset.attributes.assetType)
+    throw withNamedFields(await goneAfterFailure(error, [asset.id], false), () => asset.attributes.assetType)
   }
   // Also marks the asset described in the detail or panel if it holds this asset.
   useAssetDetailStore().savedAsDescribed([asset.id])
+  const expected: AssetFormMetadata = { ...(known ?? typed), ...sent }
+  const saved = answer.find((item) => item.id === asset.id)
+  if (isUndefined(saved)) return expected
 
-  return answer.find((item) => item.id === asset.id)
+  return {
+    keywords: saved.keywords ?? expected.keywords,
+    authors: saved.authors ?? expected.authors,
+    sources: saved.sources ?? expected.sources,
+    customData: isUndefined(saved.customData) ? expected.customData : customDataOf(saved.customData),
+    mainFileSingleUse: saved.mainFileSingleUse ?? expected.mainFileSingleUse,
+    mainFileOverrideInternal: saved.mainFileOverrideInternal ?? expected.mainFileOverrideInternal,
+    mainFileInternal: saved.mainFileInternal ?? expected.mainFileInternal,
+    ttsAudio: saved.ttsAudio ?? expected.ttsAudio,
+  }
 }
 
 export const useDeleteAsset = () =>

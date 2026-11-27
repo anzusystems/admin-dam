@@ -1,3 +1,4 @@
+import { RELOAD_VETO_GRACE } from '@anzusystems/common-admin'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 import { START_LOCATION } from 'vue-router'
@@ -10,11 +11,21 @@ const accessDeniedExtSystemId = ref<number | undefined>(undefined)
 let appInitialized = false
 let hasAuthCookie = true
 
+let newVersion = false
+let uploading = false
+// The library's own check, reduced to what the guard decides on: a new version and the admin's postponement.
+const checkForNewVersion = vi.fn((options?: { postponeWhile?: () => boolean }) => {
+  if (!newVersion || options?.postponeWhile?.()) return false
+  return true
+})
+
 vi.mock('@anzusystems/common-admin', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
+  checkForNewVersion: (options?: { postponeWhile?: () => boolean }) => checkForNewVersion(options),
   useDamConfigState: () => ({ loadDamPubConfig }),
   useDamConfigStore: () => ({ initialized }),
 }))
+vi.mock('@/domains/coreDam/asset/composables/uploadsRunning', () => ({ uploadsRunning: () => uploading }))
 vi.mock('@/domains/system/composables/appInitialize', () => ({
   createAppInitialize: () => createAppInitialize(),
   useAppInitialize: () => ({
@@ -62,6 +73,8 @@ beforeEach(() => {
   accessDeniedExtSystemId.value = undefined
   appInitialized = false
   hasAuthCookie = true
+  newVersion = false
+  uploading = false
 })
 
 describe('the route guard', () => {
@@ -140,6 +153,26 @@ describe('the route guard', () => {
     expect(await beforeEachRoute(errorRoute, fromNowhere)).toBeUndefined()
   })
 
+  // A load that hangs used to be waited for twice, once for the page and once more for the redirect to the error page.
+  it('does not load the configuration again on the way to the error page a failed load sent the user to', async () => {
+    const { beforeEachRoute } = await load()
+    loadDamPubConfig.mockRejectedValue(new Error('timeout'))
+
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toEqual(failedAt)
+    expect(await beforeEachRoute({ ...failedAt, meta: { requiresAuth: false } } as never, fromNowhere)).toBeUndefined()
+    expect(loadDamPubConfig).toHaveBeenCalledTimes(1)
+  })
+
+  // Its retry opens the failed page as a document, which loads the configuration itself.
+  it('lets a reload of the error page retry without loading the configuration first', async () => {
+    const { beforeEachRoute } = await load()
+    const target = '/assets?licence=2#type=image&text=a%26b'
+
+    expect(await beforeEachRoute(errorRouteFor(target), START_LOCATION)).toBe(false)
+    expect(openAppPath).toHaveBeenCalledWith(target, { replace: true })
+    expect(loadDamPubConfig).not.toHaveBeenCalled()
+  })
+
   it('runs the start-up again when the error page is reloaded', async () => {
     const { beforeEachRoute } = await load()
     initialized.value = { damPubConfig: true }
@@ -193,6 +226,36 @@ describe('the route guard', () => {
     await beforeEachRoute(protectedRoute, fromNowhere)
 
     expect(createAppInitialize).toHaveBeenCalledTimes(1)
+  })
+
+  // The reload to a new version killed a running upload (#87746). The page opens, and the system bar keeps its link.
+  it('opens the page without reloading to a new version while a file is being uploaded', async () => {
+    const { beforeEachRoute } = await load()
+    initialized.value = { damPubConfig: true }
+    appInitialized = true
+    newVersion = true
+    uploading = true
+
+    expect(await beforeEachRoute(protectedRoute, fromNowhere)).toBeUndefined()
+    expect(checkAbility).toHaveBeenCalledTimes(1)
+  })
+
+  it('holds the navigation for the reload to a new version once no file is being uploaded', async () => {
+    vi.useFakeTimers()
+    try {
+      const { beforeEachRoute } = await load()
+      initialized.value = { damPubConfig: true }
+      appInitialized = true
+      newVersion = true
+
+      const answer = beforeEachRoute(protectedRoute, fromNowhere)
+      await vi.advanceTimersByTimeAsync(RELOAD_VETO_GRACE)
+
+      expect(await answer).toBe(false)
+      expect(checkAbility).not.toHaveBeenCalled()
+    } finally {
+      vi.useRealTimers()
+    }
   })
 
   it('sends a visitor with no cookie to sign in', async () => {

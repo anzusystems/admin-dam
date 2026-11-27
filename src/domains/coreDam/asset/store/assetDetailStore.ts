@@ -1,4 +1,4 @@
-import { AssetFileProcessStatus, DamAssetStatus, useAssetSuggestions } from '@anzusystems/common-admin'
+import { AssetFileProcessStatus, DamAssetStatus, cloneDeep, useAssetSuggestions } from '@anzusystems/common-admin'
 import type {
   AssetDetailItemDto,
   AssetFile,
@@ -7,11 +7,17 @@ import type {
   DocIdNullable,
 } from '@anzusystems/common-admin'
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef, toRaw } from 'vue'
 
 import { useCachedAuthors } from '@/domains/coreDam/author/composables/cachedAuthors'
 import { useCachedKeywords } from '@/domains/coreDam/keyword/composables/cachedKeywords'
-import { metadataSaveSent } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import {
+  formMetadataOfAsset,
+  metadataSaveSent,
+  rebaseCustomData,
+  sameMetadataValue,
+} from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
+import type { AssetFormMetadata } from '@/domains/coreDam/shared/services/upload/queueRowBaseline'
 
 // When the server last changed the file image (a rotation does). Empty for other file types.
 const manipulatedAt = (file: AssetFile) => ('manipulatedAt' in file ? (file.manipulatedAt ?? '') : '')
@@ -150,6 +156,49 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     return of?.onTheirWay ? null : (of?.sent ?? 0)
   }
 
+  /*
+   * What the server has of each form's asset: as read, then as each save of the form left it.
+   * A save sends only what the user changed against it, so it keeps what another editor saved in the other fields.
+   */
+  const onServer = new WeakMap<AssetDetailItemDto, AssetFormMetadata>()
+
+  /** What the server had of the form's asset when last read or saved. Unknown for a form this store never held. */
+  const serverMetadataOf = (form: AssetDetailItemDto) => onServer.get(toRaw(form))
+
+  /** A copy of what the held form shows now, its switches included: what a save sends from. */
+  const typedMetadata = (form: AssetDetailItemDto): AssetFormMetadata =>
+    cloneDeep({
+      ...formMetadataOfAsset(form),
+      mainFileSingleUse: mainFileSingleUse.value,
+      mainFileOverrideInternal: mainFileOverrideInternal.value,
+      mainFileInternal: mainFileInternal.value,
+      ttsAudio: ttsAudio.value,
+    })
+
+  /**
+   * A form save was answered with what the server now has (`saved`), which can include another editor's changes.
+   * While the form still holds that asset, each of its fields and custom fields shows the saved value,
+   * unless it changed since the save took `typed`. The form's server state takes `saved`.
+   */
+  function formSaved(form: AssetDetailItemDto, typed: AssetFormMetadata, saved: AssetFormMetadata) {
+    const held = asset.value
+    if (!held || toRaw(held) !== toRaw(form)) return
+    onServer.set(toRaw(form), cloneDeep(saved))
+    const unchanged = (field: keyof AssetFormMetadata, now: unknown) => sameMetadataValue(now, typed[field])
+    if (unchanged('keywords', held.keywords)) held.keywords = [...saved.keywords]
+    if (unchanged('authors', held.authors)) held.authors = [...saved.authors]
+    if (unchanged('sources', held.sources ?? [])) held.sources = [...saved.sources]
+    held.metadata.customData = rebaseCustomData(held.metadata.customData, typed.customData, saved.customData)
+    if (unchanged('mainFileSingleUse', mainFileSingleUse.value)) mainFileSingleUse.value = saved.mainFileSingleUse
+    if (unchanged('mainFileOverrideInternal', mainFileOverrideInternal.value)) {
+      mainFileOverrideInternal.value = saved.mainFileOverrideInternal
+    }
+    if (unchanged('mainFileInternal', mainFileInternal.value)) mainFileInternal.value = saved.mainFileInternal
+    if (unchanged('ttsAudio', ttsAudio.value)) ttsAudio.value = saved.ttsAudio
+    // Names of authors and keywords another editor added.
+    prefetchLazyData(held)
+  }
+
   /** The held asset is being deleted, here or elsewhere per the server. Nothing of it may be changed. */
   const isDeleting = computed(() => asset.value?.attributes?.assetStatus === DamAssetStatus.Deleting)
 
@@ -272,6 +321,7 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     authorConflicts.value = getAuthorConflicts(newAsset.metadata.authorSuggestions)
     prefetchLazyData(newAsset) // todo check
     toldOfMainFile = null
+    onServer.set(toRaw(newAsset), cloneDeep(formMetadataOfAsset(newAsset)))
     asset.value = newAsset
   }
 
@@ -301,7 +351,15 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     toldOfMainFile = null
     asset.value.mainFile = read.mainFile
     asset.value.attributes.assetStatus = read.attributes.assetStatus
-    if (anotherFile) readMainFileSwitches(read)
+    if (!anotherFile) return
+    readMainFileSwitches(read)
+    // The switches show the other file's server values now.
+    const known = onServer.get(toRaw(asset.value))
+    if (!known) return
+    const switches = formMetadataOfAsset(read)
+    known.mainFileSingleUse = switches.mainFileSingleUse
+    known.mainFileOverrideInternal = switches.mainFileOverrideInternal
+    known.mainFileInternal = switches.mainFileInternal
   }
 
   /*
@@ -412,15 +470,6 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
   function savedAsDescribed(assetIds: DocId[]) {
     if (!asset.value?.flags || !assetIds.includes(asset.value.id)) return
     asset.value.flags.described = true
-  }
-
-  /**
-   * A form save of the asset was answered with the single use core-dam saved, which a licence that enforces single use
-   * turns on whatever was sent. The switch takes it while the form holds that asset and the switch still shows `sent`.
-   */
-  function savedMainFileSingleUse(assetId: DocId, sent: boolean, saved: boolean) {
-    if (asset.value?.id !== assetId || mainFileSingleUse.value !== sent) return
-    mainFileSingleUse.value = saved
   }
 
   /**
@@ -535,7 +584,9 @@ export const useAssetDetailStore = defineStore('damAssetDetailStore', () => {
     fileStatusOnServer,
     mainFileOfRead,
     savedAsDescribed,
-    savedMainFileSingleUse,
+    serverMetadataOf,
+    typedMetadata,
+    formSaved,
     prefetchLazyData,
     setView,
     setDistributionCategory,

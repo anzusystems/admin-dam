@@ -105,7 +105,7 @@ const { t } = useI18n()
         </ARow>
         <ARow v-if="assetLicence.autoDelete.active">
           <AFormTextField
-            v-model="assetLicence.autoDelete.olderThanDays"
+            v-model.number="assetLicence.autoDelete.olderThanDays"
             :label="t('coreDam.assetLicence.model.autoDelete.olderThanDays')"
             :v="v$.assetLicence.autoDelete.olderThanDays"
             type="number"

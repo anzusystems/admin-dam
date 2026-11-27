@@ -9,5 +9,9 @@
   "meta": {
     "create": "Create podcast export data",
     "edit": "Edit podcast export data"
+  },
+  "validation": {
+    "combinationTaken": "Another row already has this export type with this device type.",
+    "combinationRefused": "The server refused this pair: another row still has it on the server. Give this row another pair for now, its previous one for example, save, then set this pair again."
   }
 }

@@ -9,12 +9,15 @@ import PodcastExportDataBodyEditor from '@/domains/coreDam/podcast/components/Po
 import { usePodcastExportDataValidation } from '@/domains/coreDam/podcast/composables/podcastExportDataValidations'
 import type { PodcastExportData } from '@/domains/coreDam/podcast/types/PodcastExportData'
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     readonly?: boolean
+    /** The podcast's rows. A pair of export type and device type another row holds is refused. */
+    rows?: PodcastExportData[]
   }>(),
   {
     readonly: false,
+    rows: () => [],
   }
 )
 
@@ -24,7 +27,7 @@ const podcastExportData = defineModel<PodcastExportData>({ required: true })
 const podcastExportDataManageDialog = defineModel<boolean>('manageDialog', { required: true })
 
 const { showValidationError } = useAlerts()
-const { v$ } = usePodcastExportDataValidation(podcastExportData)
+const { v$ } = usePodcastExportDataValidation(podcastExportData, () => props.rows)
 const { t } = useI18n()
 const { exportTypeOptions } = useExportTypeTypes()
 const { deviceTypeOptions } = useDeviceTypeTypes()

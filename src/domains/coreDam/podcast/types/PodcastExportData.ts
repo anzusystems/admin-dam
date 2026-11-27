@@ -15,5 +15,4 @@ export interface PodcastExportData extends AnzuUserAndTimeTrackingAware, Resourc
   deviceType: DeviceTypeType
   podcast: DocIdNullable
   body: JSONContent
-  position: number
 }

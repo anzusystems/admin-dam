@@ -116,15 +116,9 @@ describe('saving the metadata of an asset in the sidebar of its detail', () => {
     await press(save())
 
     await eventually(() => expect(alerts()).toEqual([UPDATED]))
+    // Nothing differs from what the server has, so the save only marks the asset described.
     expect(server.sent('PATCH', BULK).map((request) => JSON.parse(request.data as string))).toEqual([
-      [
-        expect.objectContaining({
-          id: 'asset-1',
-          keywords: ['keyword-1'],
-          authors: ['author-1'],
-          customData: { title: 'filled' },
-        }),
-      ],
+      [{ id: 'asset-1', described: true }],
     ])
   })
 })

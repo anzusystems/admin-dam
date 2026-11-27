@@ -10,6 +10,7 @@ import { storeToRefs } from 'pinia'
 import { START_LOCATION } from 'vue-router'
 import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 
+import { uploadsRunning } from '@/domains/coreDam/asset/composables/uploadsRunning'
 import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { checkAbility } from '@/router/checkAbility'
@@ -31,13 +32,21 @@ export const beforeEachRoute = async (
   const damConfigStore = useDamConfigStore()
   const { initialized } = storeToRefs(damConfigStore)
 
-  // Waits while the reload commits. Aborted after 3s if a beforeunload veto keeps the page alive.
-  if (checkForNewVersion()) {
+  /*
+   * Waits while the reload commits. Aborted after 3s if a beforeunload veto keeps the page alive.
+   * Not while a file is being uploaded, which the reload would kill: the page opens, the system bar
+   * keeps its link to the new version, and the first navigation after the uploads end reloads.
+   */
+  if (checkForNewVersion({ postponeWhile: uploadsRunning })) {
     return new Promise<NavigationGuardReturn>((resolve) => setTimeout(() => resolve(false), RELOAD_VETO_GRACE))
   }
 
   if (!initLanguageMessagesLoaded.value) await initLoadLanguageMessages()
-  if (!initialized.value.damPubConfig) {
+  /*
+   * Not for the error page, which does not use it. A failed load redirects there, and loading again
+   * on that redirect waited for the same timeout a second time. Its retry is a full load, which loads it.
+   */
+  if (!initialized.value.damPubConfig && to.path !== ERROR_PAGE_PATH) {
     try {
       await loadDamPubConfig()
     } catch (error) {
@@ -51,7 +60,7 @@ export const beforeEachRoute = async (
        * Once the app is up, a running upload queue is worth more than a full reload.
        */
       if (!isAppInitialized()) {
-        return to.path === ERROR_PAGE_PATH ? undefined : errorPageFor(to)
+        return errorPageFor(to)
       }
     }
   }

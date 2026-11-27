@@ -25,6 +25,18 @@ export function usePodcastEpisodeValidation(podcastEpisode: Ref<PodcastEpisode>)
         },
       },
       attributes: {
+        webOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
+        mobileOrderPosition: {
+          required,
+          minValue: minValue(0),
+        },
+        duration: {
+          required,
+          minValue: minValue(0),
+        },
         seasonNumber: {
           minValue: minValue(1),
           maxValue: maxValue(65535),

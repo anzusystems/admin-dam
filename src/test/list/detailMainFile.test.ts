@@ -323,7 +323,8 @@ const openDetail = async (place: Place) => {
       await settled()
       const sent = JSON.parse(String(server.sent('PATCH', BULK).at(-1)?.data))[0]
 
-      return [sent.customData.title, [sent.mainFileSingleUse, sent.mainFileOverrideInternal, sent.mainFileInternal]]
+      // A field the save leaves out is one that does not differ from what the server has.
+      return [sent.customData?.title, [sent.mainFileSingleUse, sent.mainFileOverrideInternal, sent.mainFileInternal]]
     },
     openInfo: () => tab('button-meta'),
     openSlots: async () => {
@@ -463,10 +464,11 @@ describe('the form of a detail, once the asset has another main file under metad
   })
 
   /*
-   * "Save" sends the three switches and the server writes them onto the current main
-   * file. The switches of the previous main file used to be written over the new one's.
+   * The server writes the switches a save sends onto the current main file. The switches of the
+   * previous main file used to be written over the new one's. They show the new file's now, which
+   * the server has, so a save leaves them out. A switch flipped after that is sent.
    */
-  it('shows the three switches of the new main file, and "Save" sends them', async () => {
+  it('shows the three switches of the new main file, and "Save" writes none of the old ones over them', async () => {
     switches[FIRST] = { singleUse: true, overrideInternal: false, internal: false }
     switches[SECOND] = { singleUse: false, overrideInternal: true, internal: true }
     const detail = await openDetail(inTheDialogOfTheList)
@@ -479,7 +481,9 @@ describe('the form of a detail, once the asset has another main file under metad
     await detail.openInfo()
 
     expect([detail.info().file, detail.switches()]).toEqual([SECOND, [false, true, true]])
-    expect(await detail.save()).toEqual([TYPED, [false, true, true]])
+    expect(await detail.save()).toEqual([TYPED, [undefined, undefined, undefined]])
+    await detail.flip(SWITCHES[0])
+    expect(await detail.save()).toEqual([undefined, [true, undefined, undefined]])
   })
 
   it('shows a switch that was flipped and not saved as the new main file has it', async () => {
@@ -493,7 +497,7 @@ describe('the form of a detail, once the asset has another main file under metad
     await detail.openInfo()
 
     expect([detail.info().file, detail.switches()]).toEqual([SECOND, [false, false, false]])
-    expect((await detail.save())[1]).toEqual([false, false, false])
+    expect((await detail.save())[1]).toEqual([undefined, undefined, undefined])
   })
 
   it('leaves a switch as it was flipped when only the route of the main file has changed', async () => {
@@ -506,7 +510,7 @@ describe('the form of a detail, once the asset has another main file under metad
     await detail.openInfo()
 
     expect([detail.info(), detail.switches()]).toEqual([{ file: FIRST, route: PRIVATE }, [true, false, false]])
-    expect((await detail.save())[1]).toEqual([true, false, false])
+    expect((await detail.save())[1]).toEqual([true, undefined, undefined])
   })
 })
 
@@ -547,7 +551,7 @@ describe('the Info tab of a detail, once the main file of the asset is deleted i
       { file: SECOND, route: PRIVATE },
       [false, false, false],
     ])
-    expect(await detail.save()).toEqual([TYPED, [false, false, false]])
+    expect(await detail.save()).toEqual([TYPED, [undefined, undefined, undefined]])
   })
 
   it('shows no file once the only one is deleted, and the switches off', async () => {
@@ -562,7 +566,8 @@ describe('the Info tab of a detail, once the main file of the asset is deleted i
     await detail.openInfo()
 
     expect([reads(), detail.info(), detail.switches()]).toEqual([2, { file: null, route: null }, [false, null, null]])
-    expect(await detail.save()).toEqual([TYPED, [false, false, false]])
+    // Off, as the server has them for an asset without a main file, so the save leaves them out.
+    expect(await detail.save()).toEqual([TYPED, [undefined, undefined, undefined]])
   })
 
   /*
