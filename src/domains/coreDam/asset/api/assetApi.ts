@@ -1,6 +1,7 @@
 import {
   AnzuApiValidationError,
   HTTP_STATUS_OK,
+  customDataFormElementName,
   isAnzuApiValidationError,
   isDamSourceEnabled,
   isNull,
@@ -318,7 +319,7 @@ const metadataFieldName = (key: string, assetTypeAt: (index: number) => DamAsset
     const found = getDamConfigAssetCustomFormElements(currentExtSystemId.value)?.[assetType].find(
       (element) => element.property === property
     )
-    if (found) return found.name
+    if (found) return customDataFormElementName(found)
   }
 
   return property

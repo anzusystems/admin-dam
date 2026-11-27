@@ -385,6 +385,23 @@ describe('the save of one asset', () => {
       expect(alerts()).toEqual([FIX + '\n' + name + ': Required field is empty.'])
     })
 
+    // The library gives the elements of a DAM form a key: the name is in the admin's language, not as stored in DAM.
+    it('names a custom field in the language of the admin', async () => {
+      server.on(
+        'PATCH',
+        BULK,
+        failWith(() => validationError({ '[0].customData.title': ['error_field_empty'] }))
+      )
+      const keyed = { ...titled('Titulok fotky'), nameKey: 'common.damCustomFormElement.asset.title' }
+      const { save, alerts } = await mountPanel(panel, { customForm: { image: [keyed] } })
+
+      save().click()
+      await eventually(() => expect(alerts()).not.toEqual([]))
+      await vi.advanceTimersByTimeAsync(100)
+
+      expect(alerts()).toEqual([FIX + '\nTitle: Required field is empty.'])
+    })
+
     it.each([
       ['a server error (500)', failWith(() => httpError(500)), SYSTEM_ERROR],
       ['no access (403)', failWith(() => httpError(403)), ACCESS_DENIED],

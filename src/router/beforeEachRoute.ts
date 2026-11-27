@@ -1,6 +1,7 @@
 import {
   RELOAD_VETO_GRACE,
   checkForNewVersion,
+  isDefined,
   useDamConfigState,
   useDamConfigStore,
   useRouteHistory,
@@ -12,9 +13,8 @@ import type { NavigationGuardReturn, RouteLocationNormalized } from 'vue-router'
 import { createAppInitialize, useAppInitialize } from '@/domains/system/composables/appInitialize'
 import { initLanguageMessagesLoaded, initLoadLanguageMessages } from '@/loadLanguageMessages'
 import { checkAbility } from '@/router/checkAbility'
+import { ERROR_PAGE_PATH, errorPageFor, errorPageReturnPath, openAppPath, withReturnPath } from '@/router/errorPage'
 import { damClient } from '@/shared/apiClients/damClient'
-
-const ERROR_PATH = '/error'
 
 export const beforeEachRoute = async (
   to: RouteLocationNormalized,
@@ -51,14 +51,17 @@ export const beforeEachRoute = async (
        * Once the app is up, a running upload queue is worth more than a full reload.
        */
       if (!isAppInitialized()) {
-        return to.path === ERROR_PATH ? undefined : ERROR_PATH
+        return to.path === ERROR_PAGE_PATH ? undefined : errorPageFor(to)
       }
     }
   }
-  // A reload of the error page runs start-up again, like the page's button.
+  // A reload of the error page runs start-up again, like the page's button, for the page that failed to open.
   // The start-up's own redirect here has `redirectedFrom`, so a repeated failure stays on the page.
-  if (to.path === ERROR_PATH && from === START_LOCATION && !to.redirectedFrom) {
-    return { path: '/' }
+  if (to.path === ERROR_PAGE_PATH && from === START_LOCATION && !to.redirectedFrom) {
+    const target = errorPageReturnPath(to.query)
+    if (target === '/') return { path: '/' }
+    openAppPath(target, { replace: true })
+    return false
   }
   if (to.meta.requiresAuth) {
     return await checkGuard(to)
@@ -66,11 +69,13 @@ export const beforeEachRoute = async (
 }
 
 const checkGuard = async (to: RouteLocationNormalized): Promise<NavigationGuardReturn> => {
-  const { isAppInitialized, hasAppAuthCookie } = useAppInitialize()
+  const { isAppInitialized, hasAppAuthCookie, accessDeniedExtSystemId } = useAppInitialize()
   if (isAppInitialized()) {
     return await checkAbility(to)
   } else if (hasAppAuthCookie()) {
-    return await createAppInitialize(to)
+    const result = await createAppInitialize(to)
+    // A retry of a link into an ext system the user may not read is refused again. The home page opens their own.
+    return isDefined(accessDeniedExtSystemId.value) ? result : withReturnPath(result, to)
   } else {
     return '/login'
   }

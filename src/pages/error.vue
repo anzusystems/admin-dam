@@ -2,8 +2,10 @@
 import { AGenericView, isDefined } from '@anzusystems/common-admin'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { useAppInitialize } from '@/domains/system/composables/appInitialize'
+import { errorPageReturnPath, openAppPath } from '@/router/errorPage'
 
 definePage({
   meta: {
@@ -25,11 +27,13 @@ const text = computed(() =>
     : t('system.errorPage.subTitle')
 )
 
+const route = useRoute()
+
 // A full load, not a router push. Start-up leaves module state behind,
 // such as a half-filled config store and a login status nothing clears.
-// Only a fresh document gives a clean retry.
+// Only a fresh document gives a clean retry, of the page that failed to open.
 const reload = () => {
-  window.location.href = '/'
+  openAppPath(errorPageReturnPath(route.query))
 }
 </script>
 

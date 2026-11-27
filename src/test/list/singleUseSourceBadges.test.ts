@@ -22,6 +22,8 @@ const BULK = /^\/adm\/v1\/asset\/metadata-bulk-update$/
 const SOURCES = /^\/adm\/v1\/author\/ext-system\/1\/search$/
 const UPDATED = 'Record was updated'
 const SWITCH = 'Single-use license'
+// The title of the "1×" badge, a text of common-admin.
+const SINGLE_USE = 'common.damImage.asset.metaIcons.singleUse'
 const LIST = '/assets'
 
 const source = (id: string, name: string, badge: string, priority: number) => ({
@@ -60,6 +62,9 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
     grants: ['dam_asset_update', 'dam_image_update'],
     queues: { 'some-queue': [queueRow({ type: 'asset', status: 'uploaded', assetId: 'asset-2' })] },
   })
+  // The instance the started UI uses: each start evaluates modules anew.
+  const { i18n } = await import('@/plugins/i18n')
+  expect(i18n.global.te(SINGLE_USE)).toBe(true)
   const { useAuth } = await import('@/domains/system/auth/auth')
   const { currentUser, setCurrentUser } = useAuth().useCurrentUser('dam')
   setCurrentUser({
@@ -101,6 +106,7 @@ const openList = async (view: 'tiles' | 'table' = 'tiles') => {
 
   return {
     ...ui,
+    t: (key: string) => i18n.global.t(key),
     tiles,
     panel,
     detail,
@@ -152,7 +158,7 @@ describe.each(['tiles', 'table'] as const)('the asset list as %s', (view) => {
       expect(list.badges(0)).toEqual([
         ['asset-source-badge', 'HIGH', 'Source: High agency'],
         ['asset-source-badge', 'LOW', 'Source: Low agency'],
-        ['asset-single-use-badge', '1×', 'Single use image'],
+        ['asset-single-use-badge', '1×', list.t(SINGLE_USE)],
       ])
     )
     expect(list.badges(1)).toEqual([])
@@ -186,7 +192,7 @@ describe('the single use core-dam saved', () => {
       mainFileSingleUse: false,
     })
     expect(list.switchIn(list.panel()).checked).toBe(true)
-    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', 'Single use image']])
+    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', list.t(SINGLE_USE)]])
     expect(list.store.getQueueItems('some-queue')[0].mainFileSingleUse).toBe(true)
   })
 
@@ -205,7 +211,7 @@ describe('the single use core-dam saved', () => {
     await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
 
     expect(list.switchIn(list.detail()!).checked).toBe(true)
-    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', 'Single use image']])
+    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', list.t(SINGLE_USE)]])
     expect(list.store.getQueueItems('some-queue')[0].mainFileSingleUse).toBe(true)
   })
 
@@ -283,7 +289,7 @@ describe('the single use core-dam saved', () => {
     await eventually(() => expect(list.alerts()).toEqual([UPDATED]))
 
     expect(list.switchIn(list.panel()).checked).toBe(false)
-    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', 'Single use image']])
+    expect(list.badges(1)).toEqual([['asset-single-use-badge', '1×', list.t(SINGLE_USE)]])
     expect(list.badges(2)).toEqual([])
   })
 })
